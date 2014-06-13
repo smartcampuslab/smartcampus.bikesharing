@@ -2,7 +2,9 @@ package smartcampus.activity;
 
 import java.util.ArrayList;
 
+import smartcampus.model.Bike;
 import smartcampus.model.Station;
+import smartcampus.util.BikeOverlayItem;
 import smartcampus.util.CustomInfoWindow;
 import smartcampus.util.MarkerOverlay;
 import smartcampus.util.StationOverlayItem;
@@ -35,9 +37,13 @@ public class OsmMap extends ActionBarActivity
 
 	// the stations to show in the map
 	ArrayList<Station> stations;
+	ArrayList<Bike> bikes;
 
 	// marker for the stations
 	MarkerOverlay<StationOverlayItem> stationsMarkersOverlay;
+
+	// marker for the bikes
+	MarkerOverlay<BikeOverlayItem> bikesMarkersOverlay;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -58,7 +64,11 @@ public class OsmMap extends ActionBarActivity
 
 		// get the station from the parcels
 		stations = getIntent().getExtras().getParcelableArrayList("stations");
+		
+		// get the bikes from the parcels
+		bikes = getIntent().getExtras().getParcelableArrayList("bikes");
 
+		
 		// stuff for my Location
 		myLoc = new MyLocationOverlay(getApplicationContext(), mapView);
 		myLoc.enableMyLocation();
@@ -68,7 +78,6 @@ public class OsmMap extends ActionBarActivity
 		// add the markers on the mapView
 		addMarkers();
 
-		
 		setActionBar();
 	}
 
@@ -91,6 +100,36 @@ public class OsmMap extends ActionBarActivity
 
 	private void addMarkers()
 	{
+		addStationsMarkers();
+		addBikesMarkers();
+	}
+
+	private void addBikesMarkers()
+	{
+		Resources res = getResources();
+
+		ArrayList<BikeOverlayItem> markers = new ArrayList<BikeOverlayItem>();
+
+		for (int i = 0; i < bikes.size(); i++)
+		{
+			markers.add(new BikeOverlayItem(bikes.get(i).getId(), "bike", bikes
+					.get(i).getPosition(), bikes.get(i)));
+			
+			Drawable markerImage = null;
+			markerImage = res.getDrawable(R.drawable.anarchich_bike);
+
+			markers.get(i).setMarker(markerImage);
+		}
+
+		bikesMarkersOverlay = new MarkerOverlay<BikeOverlayItem>(
+				getApplicationContext(), markers, mapView,
+				new CustomInfoWindow(mapView, getApplicationContext()));
+
+		mapView.getOverlays().add(bikesMarkersOverlay);
+	}
+
+	private void addStationsMarkers()
+	{
 		// markers at:
 		// http://openclipart.org/detail/184847/map-marker-vector-by-rfvectors.com-184847
 		Resources res = getResources();
@@ -99,8 +138,8 @@ public class OsmMap extends ActionBarActivity
 
 		for (int i = 0; i < stations.size(); i++)
 		{
-			markers.add(new StationOverlayItem(stations.get(i)
-					.getName(), "station", stations.get(i).getPosition(), stations.get(i)));
+			markers.add(new StationOverlayItem(stations.get(i).getName(),
+					"station", stations.get(i).getPosition(), stations.get(i)));
 
 			Drawable markerImage = null;
 			if (stations.get(i).getBikesPresentPercentage() > 0.5)

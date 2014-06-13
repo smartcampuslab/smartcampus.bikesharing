@@ -2,15 +2,18 @@ package smartcampus.activity;
 
 import smartcampus.model.Station;
 import smartcampus.util.ReportsAdapter;
-import smartcampus.util.Tools;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
 public class StationDetails extends ActionBarActivity
@@ -30,11 +33,39 @@ public class StationDetails extends ActionBarActivity
 		LayoutInflater inflater = getLayoutInflater();
 		View header = inflater.inflate(R.layout.stations_model, null);
 		
+		TextView name;
+		TextView street;
+		TextView availableBike, availableSlots;
+		TextView distance;	
+
+		name=(TextView)header.findViewById(R.id.name);
+		street=(TextView)header.findViewById(R.id.street);
+		availableBike=(TextView)header.findViewById(R.id.available_bikes);
+		availableSlots=(TextView)header.findViewById(R.id.available_slots);
+		distance=(TextView)header.findViewById(R.id.distance);
+				
 		// get the station from the parcels
 		station = getIntent().getExtras().getParcelable("station");
 		mList=(ListView)findViewById(R.id.details);
 		mList.addHeaderView(header);
+		name.setText(station.getName());
+		street.setText(station.getStreet());
+		availableBike.setText(station.getNSlotsUsed()+"");
+		availableSlots.setText(station.getNSlotsEmpty()+"");
+		distance.setText("5 Km");
 		mList.setAdapter(new ReportsAdapter(this, 0, station.getReports()));
+		
+		distance.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=padova"));
+				startActivity(i);
+			}
+		});
+		
+		
+		
 	}
 
 	@Override

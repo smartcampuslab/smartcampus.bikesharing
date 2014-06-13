@@ -2,10 +2,12 @@ package smartcampus.activity;
 
 import java.util.ArrayList;
 
+import smartcampus.model.Bike;
 import smartcampus.model.Station;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,7 +21,10 @@ public class MainActivity extends ActionBarActivity
 	private Button toMap, toStations;
 
 	private ArrayList<Station> s;
-
+	
+	private ArrayList<Bike> bikes;
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -31,7 +36,7 @@ public class MainActivity extends ActionBarActivity
 		addListeners();
 
 		s = new ArrayList<Station>();
-
+		bikes = new ArrayList<Bike>();
 		// s.add(new Station(new CompleteAddress(Locale.ITALIAN, "Rovereto",
 		// "STAZIONE FF.SS. - Piazzale Orsi", "38068", 45.890189, 11.034275)));
 		// s.add(new Station(new CompleteAddress(Locale.ITALIAN, "Rovereto",
@@ -81,6 +86,7 @@ public class MainActivity extends ActionBarActivity
 		s.add(new Station(new GeoPoint(45.891021, 11.038729), "PIAZZA ROSMINI - via boh",
 				6));
 
+		bikes.add(new Bike(new GeoPoint(45.924255, 11.064859), "0"));
 		s.get(0).setUsedSlots(11);
 		s.get(0).addReport("segnalazione 1");
 		s.get(0).addReport("segnalazione 2");
@@ -100,7 +106,12 @@ public class MainActivity extends ActionBarActivity
 			{
 				Intent mapIntent = new Intent(getApplicationContext(),
 						OsmMap.class);
+				
+		
+				mapIntent.putParcelableArrayListExtra("bikes", bikes);
 				mapIntent.putParcelableArrayListExtra("stations", s);
+				
+				
 				startActivity(mapIntent);
 			}
 		});
@@ -108,10 +119,13 @@ public class MainActivity extends ActionBarActivity
 			
 			@Override
 			public void onClick(View v) {
-				Intent mapIntent = new Intent(getApplicationContext(),
+				Intent listIntent = new Intent(getApplicationContext(),
 						StationsActivity.class);
-				mapIntent.putParcelableArrayListExtra("stations", s);
-				startActivity(mapIntent);
+				
+				
+				listIntent.putParcelableArrayListExtra("stations", s);
+				
+				startActivity(listIntent);
 			}
 		});
 	}

@@ -2,7 +2,6 @@ package smartcampus.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
 import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 
 public class Bike implements Parcelable
@@ -25,19 +24,19 @@ public class Bike implements Parcelable
 		id = source.readString();
 	}
 
-	public static final Parcelable.Creator<Station> CREATOR = new Creator<Station>()
+	public static final Parcelable.Creator<Bike> CREATOR = new Creator<Bike>()
 	{
 
 		@Override
-		public Station[] newArray(int size)
+		public Bike[] newArray(int size)
 		{
-			return new Station[size];
+			return new Bike[size];
 		}
 
 		@Override
-		public Station createFromParcel(Parcel source)
+		public Bike createFromParcel(Parcel source)
 		{
-			return new Station(source);
+			return new Bike(source);
 		}
 	};
 
@@ -50,9 +49,7 @@ public class Bike implements Parcelable
 	@Override
 	public void writeToParcel(Parcel dest, int flags)
 	{
-		// Log.d("parcelable", Double.toString(position.getLongitudeE6()));
-		// Log.d("parcelable", Double.toString(position.getLongitudeE6()));
-		// Log.d("parcelable", "-----");
+
 
 		dest.writeInt(position.getLatitudeE6());
 		dest.writeInt(position.getLongitudeE6());
@@ -65,5 +62,8 @@ public class Bike implements Parcelable
 		return new GeoPoint(position.getLatitudeE6(), position.getLongitudeE6());
 	}
 
-
+	public String getId()
+	{
+		return id;
+	}
 }
