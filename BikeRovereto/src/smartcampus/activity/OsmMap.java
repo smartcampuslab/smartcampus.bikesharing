@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import smartcampus.model.Bike;
 import smartcampus.model.Station;
+import smartcampus.util.BikeInfoWindow;
 import smartcampus.util.BikeOverlayItem;
 import smartcampus.util.CustomInfoWindow;
 import smartcampus.util.MarkerOverlay;
@@ -21,6 +22,9 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 import eu.trentorise.smartcampus.bikerovereto.R;
+import eu.trentorise.smartcampus.osm.android.bonuspack.location.GeocoderNominatim;
+import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
+import eu.trentorise.smartcampus.osm.android.util.OSMGeocoding;
 import eu.trentorise.smartcampus.osm.android.views.MapController;
 import eu.trentorise.smartcampus.osm.android.views.MapView;
 import eu.trentorise.smartcampus.osm.android.views.overlay.MyLocationOverlay;
@@ -44,7 +48,7 @@ public class OsmMap extends ActionBarActivity
 
 	// marker for the bikes
 	MarkerOverlay<BikeOverlayItem> bikesMarkersOverlay;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -68,13 +72,12 @@ public class OsmMap extends ActionBarActivity
 		// get the bikes from the parcels
 		bikes = getIntent().getExtras().getParcelableArrayList("bikes");
 
-		
 		// stuff for my Location
 		myLoc = new MyLocationOverlay(getApplicationContext(), mapView);
 		myLoc.enableMyLocation();
 		myLoc.enableCompass();
 		mapView.getOverlays().add(myLoc);
-
+		
 		// add the markers on the mapView
 		addMarkers();
 
@@ -123,7 +126,7 @@ public class OsmMap extends ActionBarActivity
 
 		bikesMarkersOverlay = new MarkerOverlay<BikeOverlayItem>(
 				getApplicationContext(), markers, mapView,
-				new CustomInfoWindow(mapView, getApplicationContext()));
+				new BikeInfoWindow(mapView, getApplicationContext()));
 
 		mapView.getOverlays().add(bikesMarkersOverlay);
 	}

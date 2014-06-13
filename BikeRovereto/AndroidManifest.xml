@@ -42,6 +42,10 @@
             android:name="smartcampus.activity.StationDetails"
             android:label="@string/title_activity_station_details" >
         </activity>
+        <activity
+            android:name="smartcampus.activity.SignalActivity"
+            android:label="@string/title_activity_signal" >
+        </activity>
     </application>
 
 </manifest>

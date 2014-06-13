@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.view.MotionEvent;
+import eu.trentorise.smartcampus.osm.android.bonuspack.overlays.InfoWindow;
 import eu.trentorise.smartcampus.osm.android.bonuspack.overlays.ItemizedOverlayWithBubble;
 import eu.trentorise.smartcampus.osm.android.views.MapView;
 import eu.trentorise.smartcampus.osm.android.views.overlay.OverlayItem;
@@ -16,9 +17,9 @@ public class MarkerOverlay<Item extends OverlayItem> extends ItemizedOverlayWith
 
 	public MarkerOverlay(Context applicationContext,
 			List<Item> markers, MapView mapView,
-			CustomInfoWindow customInfoWindow)
+			InfoWindow infoWindow)
 	{
-		super(applicationContext, markers, mapView, customInfoWindow);
+		super(applicationContext, markers, mapView, infoWindow);
 	}
 
 	

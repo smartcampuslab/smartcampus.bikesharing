@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fumetto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/info_bubble"
+    android:orientation="horizontal" >
+
+    <ImageView
+        android:id="@+id/bubble_image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="150dp"
+        android:orientation="vertical"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp" >
+
+        <TextView
+            android:id="@+id/bubble_title"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0"
+            android:maxEms="17"
+            android:text="Title"
+            android:textColor="#666666" />
+
+        <TextView
+            android:id="@+id/bubble_description"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0"
+            android:maxEms="17"
+            android:text="Description"
+            android:textColor="#ff9200"
+            android:textSize="12dp"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/bubble_subdescription"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="0"
+            android:maxEms="17"
+            android:text="Address"
+            android:textColor="#000000"
+            android:textSize="10dp"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/btToSignal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/button"
+            android:text="@string/signal" />
+    </LinearLayout>
+
+</LinearLayout>
