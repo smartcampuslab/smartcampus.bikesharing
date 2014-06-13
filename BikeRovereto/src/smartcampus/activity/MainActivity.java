@@ -82,6 +82,9 @@ public class MainActivity extends ActionBarActivity
 				6));
 
 		s.get(0).setUsedSlots(11);
+		s.get(0).addReport("segnalazione 1");
+		s.get(0).addReport("segnalazione 2");
+		s.get(0).addReport("segnalazione 3");
 		s.get(1).setUsedSlots(12);
 		s.get(2).setUsedSlots(6);
 		s.get(3).setUsedSlots(5);

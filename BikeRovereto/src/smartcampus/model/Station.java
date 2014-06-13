@@ -68,6 +68,8 @@ public class Station implements Parcelable
 		street = source.readString();
 		nBikes = source.readInt();
 		maxSlots = source.readInt();
+		nReports = source.readInt();
+		reports = source.createStringArrayList();
 	}
 
 	public static final Parcelable.Creator<Station> CREATOR = new Creator<Station>()
@@ -105,6 +107,8 @@ public class Station implements Parcelable
 		dest.writeString(street);
 		dest.writeInt(nBikes);
 		dest.writeInt(maxSlots);
+		dest.writeInt(nReports);
+		dest.writeStringList(reports);
 	}
 
 	// getters and setters
@@ -165,6 +169,9 @@ public class Station implements Parcelable
 	public void addReport(String report){
 		reports.add(report);
 		nReports++;
+	}
+	public String getReport(int position){
+		return reports.get(position);
 	}
 	public int getNReports(){
 		return nReports;

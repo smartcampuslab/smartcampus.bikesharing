@@ -7,12 +7,16 @@ import java.util.Comparator;
 import smartcampus.model.Station;
 import smartcampus.util.StationsAdapter;
 import smartcampus.util.Tools;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
@@ -34,6 +38,16 @@ public class StationsActivity extends ActionBarActivity{
 		mList.setDivider(new ColorDrawable(Color.TRANSPARENT));
 		mList.setDividerHeight(Tools.convertDpToPixel(getBaseContext(), 5));
 		mList.setAdapter(stationsAdapter);
+		mList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position,
+					long id) {
+				Intent detailsIntent = new Intent(getApplicationContext(), StationDetails.class);
+				detailsIntent.putExtra("station", mStations.get(position));
+				startActivity(detailsIntent);
+			}
+		});
 		stationsAdapter.notifyDataSetChanged();
 		
 	}
