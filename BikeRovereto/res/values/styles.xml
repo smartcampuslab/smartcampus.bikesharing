@@ -4,12 +4,9 @@
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme" parent="Theme.AppCompat.Light">
-        <!--
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        -->
+    <style name="AppBaseTheme" parent="Theme.AppCompat.Light">        
+        <!-- Support library compatibility -->
+        <item name="actionBarStyle">@style/MyActionBar</item>        
     </style>
 
     <!-- Application theme. -->
@@ -17,6 +14,17 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
         <item name="android:windowBackground">@color/background</item>
         
+        
     </style>
 
+    
+     <!-- ActionBar styles -->
+    <style name="MyActionBar"
+           parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/action_bar_color</item>
+
+        <!-- Support library compatibility -->
+        <item name="background">@color/action_bar_color</item>
+    </style>
+    
 </resources>

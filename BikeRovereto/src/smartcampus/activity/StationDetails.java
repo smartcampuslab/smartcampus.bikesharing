@@ -31,7 +31,7 @@ public class StationDetails extends ActionBarActivity
 		setContentView(R.layout.activity_station_details);
 
 		LayoutInflater inflater = getLayoutInflater();
-		View header = inflater.inflate(R.layout.stations_model, null);
+		View header = inflater.inflate(R.layout.station_details_header, null);
 		
 		TextView name;
 		TextView street;
@@ -47,19 +47,21 @@ public class StationDetails extends ActionBarActivity
 		// get the station from the parcels
 		station = getIntent().getExtras().getParcelable("station");
 		mList=(ListView)findViewById(R.id.details);
-		mList.addHeaderView(header);
+		mList.addHeaderView(header, null, false);
+		
 		name.setText(station.getName());
 		street.setText(station.getStreet());
 		availableBike.setText(station.getNSlotsUsed()+"");
 		availableSlots.setText(station.getNSlotsEmpty()+"");
 		distance.setText("5 Km");
+		
 		mList.setAdapter(new ReportsAdapter(this, 0, station.getReports()));
 		
 		distance.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=padova"));
+				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:title=todo&ll="+ station.getPosition().getLatitudeE6() + "," + station.getPosition().getLongitudeE6() + "&mode=w"));
 				startActivity(i);
 			}
 		});
@@ -71,8 +73,6 @@ public class StationDetails extends ActionBarActivity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.station_details, menu);
 		return true;
 	}
@@ -80,9 +80,6 @@ public class StationDetails extends ActionBarActivity
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings)
 		{

@@ -16,6 +16,7 @@ public class Station implements Parcelable
 	private int maxSlots;
 	private int nReports;
 	private ArrayList<String> reports;
+	private int distance=-1; //>=0 only when distance is initialized
 
 	public Station(GeoPoint position, String nameAndStreet, int maxSlots)
 	{
@@ -136,6 +137,8 @@ public class Station implements Parcelable
 	{
 		return 0; // TODO: add unavailable slots
 	}
+	
+	
 
 	public double getBikesPresentPercentage()
 	{

@@ -17,6 +17,8 @@
     <string name="sort_available_bikes">Bici disponibili</string>
     <string name="sort_available_slots">Slot disponibili</string>
     <string name="sort_name">Nome</string>
-    <string name="title_activity_station_details">StationDetails</string>
+    <string name="title_activity_station_details">Dettagli stazione</string>
+    <string name="reports">Segnalazioni</string>
+    <string name="no_reports">Nessuna segnalazione</string>
 
 </resources>

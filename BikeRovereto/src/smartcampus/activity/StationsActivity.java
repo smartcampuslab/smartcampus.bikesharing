@@ -10,6 +10,9 @@ import smartcampus.util.Tools;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -19,12 +22,17 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import eu.trentorise.smartcampus.bikerovereto.R;
+import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 
 public class StationsActivity extends ActionBarActivity{
 	
+	private static final long LOCATION_REFRESH_TIME = 60000;
+	private static final float LOCATION_REFRESH_DISTANCE = 100;
 	ArrayList<Station> mStations;
 	ListView mList;
 	StationsAdapter stationsAdapter;
+	GeoPoint myLocation;
+	private LocationManager mLocationManager;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +57,10 @@ public class StationsActivity extends ActionBarActivity{
 			}
 		});
 		stationsAdapter.notifyDataSetChanged();
+		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
+		            LOCATION_REFRESH_DISTANCE, mLocationListener);
 		
 	}
 	
@@ -127,5 +139,24 @@ public class StationsActivity extends ActionBarActivity{
 		}
 		
 	}
+	
+	private final LocationListener mLocationListener = new LocationListener() {
+	    @Override
+	    public void onLocationChanged(final Location location) {
+	        myLocation=new GeoPoint(location);
+	    }
+
+		@Override
+		public void onProviderDisabled(String arg0) {			
+		}
+
+		@Override
+		public void onProviderEnabled(String arg0) {			
+		}
+
+		@Override
+		public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+		}
+	};
 
 }

@@ -120,10 +120,11 @@ int bool abc_config_actionMenuItemAllCaps 0x7f060005
 int bool abc_config_allowActionMenuItemTextWithIcon 0x7f060004
 int bool abc_config_showMenuShortcutsWhenKeyboardPresent 0x7f060003
 int bool abc_split_action_bar_is_narrow 0x7f060002
-int color abc_search_url_text_holo 0x7f070004
+int color abc_search_url_text_holo 0x7f070005
 int color abc_search_url_text_normal 0x7f070000
 int color abc_search_url_text_pressed 0x7f070002
 int color abc_search_url_text_selected 0x7f070001
+int color action_bar_color 0x7f070004
 int color background 0x7f070003
 int dimen abc_action_bar_default_height 0x7f080002
 int dimen abc_action_bar_icon_vertical_padding 0x7f080003
@@ -272,8 +273,8 @@ int id action_mode_close_button 0x7f050024
 int id action_settings 0x7f050052
 int id activity_chooser_view_content 0x7f050025
 int id always 0x7f05000b
-int id available_bikes 0x7f050050
-int id available_slots 0x7f050051
+int id available_bikes 0x7f05004f
+int id available_slots 0x7f050050
 int id beginning 0x7f050011
 int id black_bike 0x7f050048
 int id btToDetails 0x7f05004b
@@ -290,7 +291,7 @@ int id default_activity_button 0x7f050028
 int id details 0x7f050041
 int id dialog 0x7f05000e
 int id disableHome 0x7f050008
-int id distance 0x7f05004d
+int id distance 0x7f05004c
 int id dropdown 0x7f05000f
 int id edit_query 0x7f050030
 int id end 0x7f050013
@@ -307,7 +308,7 @@ int id listMode 0x7f050001
 int id list_item 0x7f050029
 int id map_view 0x7f050040
 int id middle 0x7f050012
-int id name 0x7f05004e
+int id name 0x7f05004d
 int id never 0x7f050009
 int id none 0x7f050010
 int id normal 0x7f050000
@@ -334,8 +335,8 @@ int id sort_available_slots 0x7f050056
 int id sort_distance 0x7f050054
 int id sort_name 0x7f050057
 int id split_action_bar 0x7f05001e
-int id stations_list 0x7f05004c
-int id street 0x7f05004f
+int id stations_list 0x7f050051
+int id street 0x7f05004e
 int id submit_area 0x7f050039
 int id tabMode 0x7f050002
 int id title 0x7f05002b
@@ -375,10 +376,10 @@ int layout actionbar_custom 0x7f030018
 int layout activity_main 0x7f030019
 int layout activity_osm_map 0x7f03001a
 int layout activity_station_details 0x7f03001b
-int layout details_header 0x7f03001c
-int layout fragment_main 0x7f03001d
-int layout fragment_osm_map 0x7f03001e
-int layout info_bubble 0x7f03001f
+int layout fragment_main 0x7f03001c
+int layout fragment_osm_map 0x7f03001d
+int layout info_bubble 0x7f03001e
+int layout station_details_header 0x7f03001f
 int layout stations_main 0x7f030020
 int layout stations_model 0x7f030021
 int layout support_simple_spinner_dropdown_item 0x7f030022
@@ -402,6 +403,8 @@ int string abc_shareactionprovider_share_with 0x7f0a000c
 int string abc_shareactionprovider_share_with_application 0x7f0a000b
 int string action_settings 0x7f0a000e
 int string app_name 0x7f0a000d
+int string no_reports 0x7f0a001e
+int string reports 0x7f0a001d
 int string sort 0x7f0a0017
 int string sort_available_bikes 0x7f0a0019
 int string sort_available_slots 0x7f0a001a
@@ -418,6 +421,7 @@ int string toggle_turn_off 0x7f0a0012
 int string toggle_turn_on 0x7f0a0011
 int style AppBaseTheme 0x7f0b008b
 int style AppTheme 0x7f0b008c
+int style MyActionBar 0x7f0b008d
 int style TextAppearance_AppCompat_Base_CompactMenu_Dialog 0x7f0b0063
 int style TextAppearance_AppCompat_Base_SearchResult 0x7f0b006d
 int style TextAppearance_AppCompat_Base_SearchResult_Subtitle 0x7f0b006f
