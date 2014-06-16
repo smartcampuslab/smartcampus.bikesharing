@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 import eu.trentorise.smartcampus.osm.android.util.BoundingBoxE6;
 import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 
@@ -119,6 +120,13 @@ public class Station implements Parcelable
 	public GeoPoint getPosition()
 	{
 		return new GeoPoint(position.getLatitudeE6(), position.getLongitudeE6());
+	}
+	
+	public double getLatitudeDegree(){
+		return position.getLatitudeE6() / 1E6;
+	}
+	public double getLongitudeDegree(){
+		return position.getLongitudeE6() / 1E6;
 	}
 
 	public String getName()

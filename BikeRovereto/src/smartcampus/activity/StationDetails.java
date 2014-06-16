@@ -11,18 +11,21 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 
-public class StationDetails extends ActionBarActivity
+public class StationDetails extends Fragment
 {
 
 	// the station with its details
@@ -36,17 +39,24 @@ public class StationDetails extends ActionBarActivity
 	TextView availableBike, availableSlots;
 	TextView distance;	
 	
-	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_station_details);
+	public StationDetails(){}
+	
+	
+	public static StationDetails newInstance(Station station){
+		StationDetails fragment = new StationDetails();
+	    Bundle bundle = new Bundle();
+	    bundle.putParcelable("station", station);
+	    fragment.setArguments(bundle);
 
-		LayoutInflater inflater = getLayoutInflater();
+	    return fragment;
+	}
+	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View rootView = inflater.inflate(R.layout.activity_station_details, container,false);
 		View header = inflater.inflate(R.layout.station_details_header, null);
 		
-		
-
 		name=(TextView)header.findViewById(R.id.name);
 		street=(TextView)header.findViewById(R.id.street);
 		availableBike=(TextView)header.findViewById(R.id.available_bikes);
@@ -54,8 +64,8 @@ public class StationDetails extends ActionBarActivity
 		distance=(TextView)header.findViewById(R.id.distance);
 				
 		// get the station from the parcels
-		station = getIntent().getExtras().getParcelable("station");
-		mList=(ListView)findViewById(R.id.details);
+		station = getArguments().getParcelable("station");
+		mList=(ListView)rootView.findViewById(R.id.details);
 		mList.addHeaderView(header, null, false);
 		
 		name.setText(station.getName());
@@ -64,40 +74,27 @@ public class StationDetails extends ActionBarActivity
 		availableSlots.setText(station.getNSlotsEmpty()+"");
 		distance.setText(Tools.formatDistance(station.getDistance()));
 		
-		mList.setAdapter(new ReportsAdapter(this, 0, station.getReports()));
+		mList.setAdapter(new ReportsAdapter(getActivity() , 0, station.getReports()));
 		
 		distance.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:title=todo&ll="+ station.getPosition().getLatitudeE6() + "," + station.getPosition().getLongitudeE6() + "&mode=w"));
+				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr="+ station.getLatitudeDegree() + "," + station.getLongitudeDegree()));
 				startActivity(i);
 			}
 		});		
-		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-	}
-
-	@Override
-	protected void onStart() {
-		if (station.getDistance()==Station.DISTANCE_NOT_VALID)
-			mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Tools.LOCATION_REFRESH_TIME,
-					Tools.LOCATION_REFRESH_DISTANCE, mLocationListener);
-		super.onStart();
-	}
+		mLocationManager = (LocationManager) getActivity().getSystemService(getActivity().LOCATION_SERVICE);
+		setHasOptionsMenu(true);
+		return rootView;
+	}		
 	
 	@Override
-	protected void onPause() {
-		mLocationManager.removeUpdates(mLocationListener);
-		super.onPause();
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.station_details, menu);
+		super.onCreateOptionsMenu(menu, inflater);
 	}
 	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
-		getMenuInflater().inflate(R.menu.station_details, menu);
-		return true;
-	}
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
@@ -114,8 +111,8 @@ public class StationDetails extends ActionBarActivity
 
 
 	private void addReport() {
-		View dialogContent = getLayoutInflater().inflate(R.layout.report_dialog, null);
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		View dialogContent = getActivity().getLayoutInflater().inflate(R.layout.report_dialog, null);
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
 		builder.setTitle(getString(R.string.report_in)+ " "+station.getName());
 		builder.setPositiveButton(R.string.report, new DialogInterface.OnClickListener() {
@@ -133,31 +130,5 @@ public class StationDetails extends ActionBarActivity
 		dialog.show();
 		
 	}
-
-	private void updateDistance()
-	{
-		station.setDistance(myLocation.distanceTo(station.getPosition()));
-		distance.setText(Tools.formatDistance(station.getDistance()));		
-	}
-
-	private final LocationListener mLocationListener = new LocationListener() {
-	    @Override
-	    public void onLocationChanged(final Location location) {
-	        myLocation=new GeoPoint(location);
-	        updateDistance();
-	    }
-
-		@Override
-		public void onProviderDisabled(String arg0) {			
-		}
-
-		@Override
-		public void onProviderEnabled(String arg0) {			
-		}
-
-		@Override
-		public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-		}
-	};
 
 }

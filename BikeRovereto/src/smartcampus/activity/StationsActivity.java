@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import smartcampus.activity.MainActivity.OnPositionAquiredListener;
 import smartcampus.model.Station;
 import smartcampus.util.StationsAdapter;
 import smartcampus.util.Tools;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -14,13 +16,19 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -28,125 +36,98 @@ import android.widget.ListView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 
-public class StationsActivity extends ActionBarActivity{
+public class StationsActivity extends Fragment{
 	
 	ArrayList<Station> mStations;
 	ListView mList;
 	StationsAdapter stationsAdapter;
-	GeoPoint myLocation;
-	private LocationManager mLocationManager;
 	String[] navTitles;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
 	
+	OnStationSelectListener mCallback;
+	
+    // Container Activity must implement this interface
+    public interface OnStationSelectListener {
+        public void onStationSelected(Station station);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mCallback = (OnStationSelectListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnStationSelectListener");
+        }
+    }
+
+	public StationsActivity(){}
+	
+	
+	public static StationsActivity newInstance(ArrayList<Station> stations){
+		StationsActivity fragment = new StationsActivity();
+	    Bundle bundle = new Bundle();
+	    bundle.putParcelableArrayList("stations", stations);
+	    fragment.setArguments(bundle);
+	    return fragment;
+	}
+	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
+		mStations= getArguments().getParcelableArrayList("stations");
+		((MainActivity)getActivity()).setOnPositionAquiredListener(new OnPositionAquiredListener() {
+			
+			@Override
+			public void onPositionAquired() {
+				stationsAdapter.notifyDataSetChanged();				
+			}
+		});
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.stations_main);		
-		mStations=getIntent().getExtras().getParcelableArrayList("stations");
+	}
+	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View rootView = inflater.inflate(R.layout.stations_main, container,false);
 		
-		stationsAdapter = new StationsAdapter(this, 0, mStations);
+		stationsAdapter = new StationsAdapter(getActivity(), 0, mStations);
 		
-		mList = (ListView)findViewById(R.id.stations_list);
+		mList = (ListView)rootView.findViewById(R.id.stations_list);
 		mList.setDivider(new ColorDrawable(Color.TRANSPARENT));
-		mList.setDividerHeight(Tools.convertDpToPixel(getBaseContext(), 5));
+		mList.setDividerHeight(Tools.convertDpToPixel(getActivity(), 5));
 		mList.setAdapter(stationsAdapter);
 		mList.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,
 					long id) {
-				Intent detailsIntent = new Intent(getApplicationContext(), StationDetails.class);
-				detailsIntent.putExtra("station", mStations.get(position));
-				startActivity(detailsIntent);
+				mCallback.onStationSelected(mStations.get(position));
 			}
 		});
 		stationsAdapter.notifyDataSetChanged();
-		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-		
-		navTitles= getResources().getStringArray(R.array.navTitles);
-		
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
-
-        mDrawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                mDrawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
-                R.string.drawer_open,  /* "open drawer" description */
-                R.string.drawer_close  /* "close drawer" description */
-                ) {
-        };
-
-        // Set the drawer toggle as the DrawerListener
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        // Set the adapter for the list view
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, navTitles));
-        // Set the list's click listener
-        mDrawerList.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
-					long arg3) {
-				switch (position) {
-				case 0:					
-					startActivity(new Intent(getApplicationContext(), OsmMap.class));
-					break;
-				default:					
-					startActivity(new Intent(getApplicationContext(), StationsActivity.class));
-					break;
-				}
-			}
-		});
-		
+		return rootView;
 	}
-	@Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
-    }
-
+	
+	
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
-
-	
-	@Override
-	protected void onStart() {
-		boolean allDistancesValid=true;
-		for (int i=0; i<mStations.size() && allDistancesValid; i++)
-		{
-			if (mStations.get(i).getDistance()==Station.DISTANCE_NOT_VALID)
-				allDistancesValid=false;
-		}
-		if (!allDistancesValid)
-			mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Tools.LOCATION_REFRESH_TIME,
-					Tools.LOCATION_REFRESH_DISTANCE, mLocationListener);
-		super.onStart();
-	}
-	
-
-	@Override
-	protected void onPause() {
-		mLocationManager.removeUpdates(mLocationListener);
-		super.onPause();
-	}
 	
 	
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.stations, menu);
-		return true;
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.stations, menu);
+		super.onCreateOptionsMenu(menu, inflater);
 	}
-	
+		
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -217,32 +198,5 @@ public class StationsActivity extends ActionBarActivity{
 		
 	}
 	
-	private void updateDistances()
-	{
-		for (Station station : mStations){
-			station.setDistance(myLocation.distanceTo(station.getPosition()));			
-		}
-	}
-	
-	private final LocationListener mLocationListener = new LocationListener() {
-	    @Override
-	    public void onLocationChanged(final Location location) {
-	        myLocation=new GeoPoint(location);
-	        updateDistances();
-	        stationsAdapter.notifyDataSetChanged();
-	    }
-
-		@Override
-		public void onProviderDisabled(String arg0) {			
-		}
-
-		@Override
-		public void onProviderEnabled(String arg0) {			
-		}
-
-		@Override
-		public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-		}
-	};
 
 }

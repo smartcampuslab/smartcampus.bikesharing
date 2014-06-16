@@ -13,11 +13,13 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +33,7 @@ import eu.trentorise.smartcampus.osm.android.views.MapController;
 import eu.trentorise.smartcampus.osm.android.views.MapView;
 import eu.trentorise.smartcampus.osm.android.views.overlay.MyLocationOverlay;
 
-public class OsmMap extends ActionBarActivity
+public class OsmMap extends Fragment
 {
 
 	// menu
@@ -57,43 +59,69 @@ public class OsmMap extends ActionBarActivity
 	MarkerOverlay<BikeOverlayItem> bikesMarkersOverlay;
 
 	// switch
-	ToggleButton btSwitch;
-
+	ToggleButton mToggle;
+	
+	
+	public OsmMap(){}
+	
+	public static OsmMap newInstance(ArrayList<Station> stations){		
+		OsmMap fragment = new OsmMap();
+	    Bundle bundle = new Bundle();
+	    bundle.putParcelableArrayList("stations", stations);
+	    fragment.setArguments(bundle);
+	    return fragment;
+	}
+	
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
+	public void onCreate(Bundle savedInstanceState) {
+		stations = getArguments().getParcelableArrayList("stations");
 		super.onCreate(savedInstanceState);
-
-		setContentView(R.layout.activity_osm_map);
-
+	}
+	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View rootView = inflater.inflate(R.layout.activity_osm_map, container,false);
 		// get the mapView and the controller
-		mapView = (MapView) findViewById(R.id.map_view);
+		mapView = (MapView) rootView.findViewById(R.id.map_view);
+		//mToggle = (ToggleButton) findViewById(R.id.togglebutton); TODO: implement
+		
 		mapController = mapView.getController();
 
+		bikes=new ArrayList<Bike>();
 		// mapView.setBuiltInZoomControls(true);
 		mapView.setMultiTouchControls(true);
 
 		// to keep the display on
 		// mapView.setKeepScreenOn(true);
 
-		setUpPointers();
-
 		// stuff for my Location
-		myLoc = new MyLocationOverlay(getApplicationContext(), mapView);
+		myLoc = new MyLocationOverlay(getActivity(), mapView);
 		myLoc.enableCompass();
 
 		// add the markers on the mapView
 		addMarkers();
 
-		setActionBar();
+		//setActionBar();
 
-		setSwitch();
+		//setSwitch();
 
 		mapView.getOverlays().add(myLoc);
+		
 
 		mapView.setScrollableAreaLimit(getBoundingBox());
+		return rootView;
 	}
-
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		Log.d("wtf!","ineedzoom!");
+		mapView.zoomToBoundingBox(getBoundingBox());
+		mapView.setMinZoomLevel(mapView.getZoomLevel());
+	}
+	
+/* TODO: what?!?
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus)
 	{
@@ -102,52 +130,18 @@ public class OsmMap extends ActionBarActivity
 		mapView.zoomToBoundingBox(getBoundingBox());
 		mapView.setMinZoomLevel(mapView.getZoomLevel());
 	}
-
+*/
+		
 	@Override
-	protected void onPause()
-	{
-		myLoc.disableMyLocation();
-		super.onPause();
-	}
-
-	@Override
-	protected void onStart()
-	{
-		myLoc.enableMyLocation();
-		super.onStart();
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
-
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		menu.add(Menu.NONE, MENU_ON_STATION_ID, Menu.NONE,
-				R.string.title_activity_stations);
-		return true;
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.main, menu);
+		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-
-		super.onOptionsItemSelected(item);
-
-		switch (item.getItemId())
-		{
-		case MENU_ON_STATION_ID:
-			Intent listIntent = new Intent(getApplicationContext(),
-					StationsActivity.class);
-
-			listIntent.putParcelableArrayListExtra("stations", stations);
-
-			startActivity(listIntent);
-
-			break;
-		default:
-			break;
-		}
+		super.onOptionsItemSelected(item);		
 		return true;
 	}
 
@@ -175,8 +169,8 @@ public class OsmMap extends ActionBarActivity
 		}
 
 		bikesMarkersOverlay = new MarkerOverlay<BikeOverlayItem>(
-				getApplicationContext(), markers, mapView, new BikeInfoWindow(
-						mapView, getApplicationContext()));
+				getActivity(), markers, mapView, new BikeInfoWindow(
+						mapView, getActivity()));
 
 		mapView.getOverlays().add(bikesMarkersOverlay);
 	}
@@ -212,12 +206,12 @@ public class OsmMap extends ActionBarActivity
 		}
 
 		stationsMarkersOverlay = new MarkerOverlay<StationOverlayItem>(
-				getApplicationContext(), markers, mapView,
-				new CustomInfoWindow(mapView, getApplicationContext()));
+				getActivity(), markers, mapView,
+				new CustomInfoWindow(mapView, getActivity()));
 
 		mapView.getOverlays().add(stationsMarkersOverlay);
 	}
-
+/* TODO: implement this!
 	private void setActionBar()
 	{
 		LayoutInflater inflater = (LayoutInflater) getSupportActionBar()
@@ -233,10 +227,10 @@ public class OsmMap extends ActionBarActivity
 				new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 						ViewGroup.LayoutParams.MATCH_PARENT));
 	}
-
+*/
 	private void setOnClickSwitch()
 	{
-		ToggleButton mToggle = (ToggleButton) findViewById(R.id.togglebutton);
+		
 		mToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
 		{
 			public void onCheckedChanged(CompoundButton buttonView,
@@ -256,9 +250,9 @@ public class OsmMap extends ActionBarActivity
 
 	private void setSwitch()
 	{
-		btSwitch = (ToggleButton) findViewById(R.id.togglebutton);
+		
 
-		btSwitch.setOnCheckedChangeListener(new OnCheckedChangeListener()
+		mToggle.setOnCheckedChangeListener(new OnCheckedChangeListener()
 		{
 
 			@Override
@@ -282,44 +276,6 @@ public class OsmMap extends ActionBarActivity
 			}
 		});
 
-	}
-
-	private void setUpPointers()
-	{
-		stations = new ArrayList<Station>();
-		bikes = new ArrayList<Bike>();
-
-		stations.add(new Station(new GeoPoint(45.890189, 11.034275),
-				"STAZIONE FF.SS. - Piazzale Orsi", 12));
-		stations.add(new Station(new GeoPoint(45.882221, 11.040483),
-				"OSPEDALE - Corso Verona", 12));
-		stations.add(new Station(new GeoPoint(45.886525, 11.044749),
-				"MUNICIPIO - Piazzetta Sichardt", 6));
-		stations.add(new Station(new GeoPoint(45.893571, 11.043891),
-				"MART - Corso Bettini", 6));
-		stations.add(new Station(new GeoPoint(45.866352, 11.019310),
-				"ZONA INDUSTRIALE - Viale Caproni", 6));
-		stations.add(new Station(new GeoPoint(45.892256, 11.039370),
-				"VIA PAOLI - Via Manzoni/Via Paoli", 12));
-		stations.add(new Station(new GeoPoint(45.840603, 11.009298),
-				"SACCO - Viale della Vittoria/Via Udine", 6));
-		stations.add(new Station(new GeoPoint(45.893120, 11.038846),
-				"SACCO - Viale della Vittoria/Via Udine", 12));
-		stations.add(new Station(new GeoPoint(45.883409, 11.072827),
-				"NORIGLIO - Via Chiesa San Martino", 6));
-		stations.add(new Station(new GeoPoint(45.904255, 11.044859),
-				"BRIONE - Piazza della Pace", 6));
-		stations.add(new Station(new GeoPoint(45.891021, 11.038729),
-				"PIAZZA ROSMINI - via boh", 6));
-
-		bikes.add(new Bike(new GeoPoint(45.924255, 11.064859), "0"));
-		stations.get(0).setUsedSlots(11);
-		stations.get(0).addReport("segnalazione 1");
-		stations.get(0).addReport("segnalazione 2");
-		stations.get(0).addReport("segnalazione 3");
-		stations.get(1).setUsedSlots(12);
-		stations.get(2).setUsedSlots(6);
-		stations.get(3).setUsedSlots(5);
 	}
 
 	private BoundingBoxE6 getBoundingBox()

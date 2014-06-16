@@ -2,15 +2,14 @@ package smartcampus.util;
 
 import java.util.ArrayList;
 
-import smartcampus.model.Station;
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import eu.trentorise.smartcampus.bikerovereto.R;
 
 public class ReportsAdapter extends ArrayAdapter<String>{
 
@@ -38,7 +37,6 @@ public class ReportsAdapter extends ArrayAdapter<String>{
 		else {
 			viewHolder=(ViewHolder)convertView.getTag();			
 		}
-		
 		viewHolder.report.setText(mReports.get(position));
 		return convertView;
 		
