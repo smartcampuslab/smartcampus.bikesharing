@@ -85,16 +85,16 @@ public class OsmMap extends ActionBarActivity
 
 		// stuff for my Location
 		myLoc = new MyLocationOverlay(getApplicationContext(), mapView);
-		myLoc.enableMyLocation();
 		myLoc.enableCompass();
-		mapView.getOverlays().add(myLoc);
-
 		// add the markers on the mapView
 		addMarkers();
 
 		setActionBar();
 
 		setSwitch();
+		
+		mapView.getOverlays().add(myLoc);
+		
 		mapView.getOverlays().add(
 				new MapOverlay(this, Station.getBoundingBox(stations)));
 	}
@@ -113,6 +113,14 @@ public class OsmMap extends ActionBarActivity
 		myLoc.disableFollowLocation();
 		myLoc.disableMyLocation();
 		super.onPause();
+	}
+	
+	@Override
+	protected void onStart()
+	{
+		myLoc.enableMyLocation();
+		myLoc.enableFollowLocation();
+		super.onStart();
 	}
 
 	@Override
@@ -151,8 +159,8 @@ public class OsmMap extends ActionBarActivity
 
 	private void addMarkers()
 	{
-		addStationsMarkers();
 		addBikesMarkers();
+		addStationsMarkers();
 	}
 
 	private void addBikesMarkers()
