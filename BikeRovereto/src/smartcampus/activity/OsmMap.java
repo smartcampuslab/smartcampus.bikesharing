@@ -7,10 +7,8 @@ import smartcampus.model.Station;
 import smartcampus.util.BikeInfoWindow;
 import smartcampus.util.BikeOverlayItem;
 import smartcampus.util.CustomInfoWindow;
-import smartcampus.util.MapOverlay;
 import smartcampus.util.MarkerOverlay;
 import smartcampus.util.StationOverlayItem;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -21,21 +19,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ToggleButton;
 import eu.trentorise.smartcampus.bikerovereto.R;
-import eu.trentorise.smartcampus.osm.android.api.IGeoPoint;
-import eu.trentorise.smartcampus.osm.android.bonuspack.overlays.ExtendedOverlayItem;
 import eu.trentorise.smartcampus.osm.android.util.BoundingBoxE6;
 import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 import eu.trentorise.smartcampus.osm.android.views.MapController;
 import eu.trentorise.smartcampus.osm.android.views.MapView;
 import eu.trentorise.smartcampus.osm.android.views.overlay.MyLocationOverlay;
-import eu.trentorise.smartcampus.osm.android.views.overlay.OverlayItem;
 
 public class OsmMap extends ActionBarActivity
 {
@@ -53,6 +47,7 @@ public class OsmMap extends ActionBarActivity
 
 	// the stations to show in the map
 	ArrayList<Station> stations;
+
 	ArrayList<Bike> bikes;
 
 	// marker for the stations
@@ -86,17 +81,17 @@ public class OsmMap extends ActionBarActivity
 		// stuff for my Location
 		myLoc = new MyLocationOverlay(getApplicationContext(), mapView);
 		myLoc.enableCompass();
+
 		// add the markers on the mapView
 		addMarkers();
 
 		setActionBar();
 
 		setSwitch();
-		
+
 		mapView.getOverlays().add(myLoc);
-		
-		mapView.getOverlays().add(
-				new MapOverlay(this, Station.getBoundingBox(stations)));
+
+		mapView.setScrollableAreaLimit(getBoundingBox());
 	}
 
 	@Override
@@ -104,22 +99,21 @@ public class OsmMap extends ActionBarActivity
 	{
 		// TODO Auto-generated method stub
 		super.onWindowFocusChanged(hasFocus);
-		mapView.zoomToBoundingBox(Station.getBoundingBox(stations));
+		mapView.zoomToBoundingBox(getBoundingBox());
+		mapView.setMinZoomLevel(mapView.getZoomLevel());
 	}
 
 	@Override
 	protected void onPause()
 	{
-		myLoc.disableFollowLocation();
 		myLoc.disableMyLocation();
 		super.onPause();
 	}
-	
+
 	@Override
 	protected void onStart()
 	{
 		myLoc.enableMyLocation();
-		myLoc.enableFollowLocation();
 		super.onStart();
 	}
 
@@ -326,5 +320,28 @@ public class OsmMap extends ActionBarActivity
 		stations.get(1).setUsedSlots(12);
 		stations.get(2).setUsedSlots(6);
 		stations.get(3).setUsedSlots(5);
+	}
+
+	private BoundingBoxE6 getBoundingBox()
+	{
+		BoundingBoxE6 toRtn;
+		BoundingBoxE6 stationsBoundingBox = Station.getBoundingBox(stations);
+		BoundingBoxE6 bikesBoundingBox = Bike.getBoundingBox(bikes);
+		toRtn = new BoundingBoxE6(
+				stationsBoundingBox.getLatNorthE6() > bikesBoundingBox.getLatNorthE6() ? stationsBoundingBox.getLatNorthE6()
+						: bikesBoundingBox.getLatNorthE6(),
+						
+				stationsBoundingBox.getLonEastE6() > bikesBoundingBox
+						.getLonEastE6() ? stationsBoundingBox.getLonEastE6()
+						: bikesBoundingBox.getLonEastE6(),
+						
+				stationsBoundingBox.getLatSouthE6() < bikesBoundingBox
+						.getLatSouthE6() ? stationsBoundingBox.getLatSouthE6()
+						: bikesBoundingBox.getLatSouthE6(),
+						
+				stationsBoundingBox.getLonWestE6() < bikesBoundingBox
+						.getLonWestE6() ? stationsBoundingBox.getLonWestE6()
+						: bikesBoundingBox.getLonWestE6());
+		return toRtn;
 	}
 }

@@ -35,22 +35,22 @@ public class MapOverlay extends Overlay
 	{
 		// ---when user lifts his finger---
 
-		if (event.getAction() == event.ACTION_DOWN
+		if (event.getAction() == event.ACTION_MOVE
 				&& event.getPointerCount() == 1)
 		{
 			BoundingBoxE6 mapBb = mapView.getProjection().getBoundingBox();
 
 			GeoPoint northWest, northEast, southWest, southEast;
-			northWest = new GeoPoint(mapBb.getLatNorthE6() + 1,
-					mapBb.getLonWestE6() - 1);
-			northEast = new GeoPoint(mapBb.getLatNorthE6() + 1,
-					mapBb.getLonEastE6() + 1);
-			southWest = new GeoPoint(mapBb.getLatSouthE6() - 1,
-					mapBb.getLonWestE6() - 1);
-			southEast = new GeoPoint(mapBb.getLatSouthE6() - 1,
-					mapBb.getLonEastE6() + 1);
+			northWest = new GeoPoint(mapBb.getLatNorthE6() + 150,
+					mapBb.getLonWestE6() - 150);
+			northEast = new GeoPoint(mapBb.getLatNorthE6() + 150,
+					mapBb.getLonEastE6() + 150);
+			southWest = new GeoPoint(mapBb.getLatSouthE6() - 150,
+					mapBb.getLonWestE6() - 150);
+			southEast = new GeoPoint(mapBb.getLatSouthE6() - 150,
+					mapBb.getLonEastE6() + 150);
 			Log.d("scroll", Boolean.toString(bb.contains(northWest) && bb.contains(northEast) && bb.contains(southWest) && bb.contains(southEast)))
-;			return false;//(bb.contains(northWest) && bb.contains(northEast) && bb.contains(southWest) && bb.contains(southEast)) ;
+;			return !(bb.contains(northWest) && bb.contains(northEast) && bb.contains(southWest) && bb.contains(southEast)) ;
 		}
 		return false;
 	}

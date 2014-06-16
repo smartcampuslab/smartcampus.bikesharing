@@ -1,7 +1,10 @@
 package smartcampus.model;
 
+import java.util.ArrayList;
+
 import android.os.Parcel;
 import android.os.Parcelable;
+import eu.trentorise.smartcampus.osm.android.util.BoundingBoxE6;
 import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 
 public class Bike implements Parcelable
@@ -66,4 +69,37 @@ public class Bike implements Parcelable
 	{
 		return id;
 	}
+	
+	public static BoundingBoxE6 getBoundingBox(ArrayList<Bike> bikes)
+	{
+		// the four edges of the bounding box
+
+		int north = Integer.MIN_VALUE;
+		int south = Integer.MAX_VALUE;
+		int west = Integer.MAX_VALUE;
+		int east = Integer.MIN_VALUE;
+
+		for (Bike b : bikes)
+		{
+			if (b.getPosition().getLatitudeE6() > north)
+			{
+				north = b.getPosition().getLatitudeE6();
+			}
+			else if (b.getPosition().getLatitudeE6() < south)
+			{
+				south = b.getPosition().getLatitudeE6();
+			}
+
+			if (b.getPosition().getLongitudeE6() > east)
+			{
+				east = b.getPosition().getLongitudeE6();
+			}
+			else if (b.getPosition().getLongitudeE6() < west)
+			{
+				west = b.getPosition().getLongitudeE6();
+			}
+		}
+		return new BoundingBoxE6(north, east, south, west);
+	}
+
 }
