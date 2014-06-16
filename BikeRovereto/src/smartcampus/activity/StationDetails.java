@@ -130,7 +130,7 @@ public class StationDetails extends ActionBarActivity
 		builder.setView(dialogContent);
 		AlertDialog dialog = builder.create();
 		
-		builder.show();
+		dialog.show();
 		
 	}
 

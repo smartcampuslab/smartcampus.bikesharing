@@ -7,8 +7,10 @@ import smartcampus.model.Station;
 import smartcampus.util.BikeInfoWindow;
 import smartcampus.util.BikeOverlayItem;
 import smartcampus.util.CustomInfoWindow;
+import smartcampus.util.MapOverlay;
 import smartcampus.util.MarkerOverlay;
 import smartcampus.util.StationOverlayItem;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -19,16 +21,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ToggleButton;
 import eu.trentorise.smartcampus.bikerovereto.R;
+import eu.trentorise.smartcampus.osm.android.api.IGeoPoint;
+import eu.trentorise.smartcampus.osm.android.bonuspack.overlays.ExtendedOverlayItem;
+import eu.trentorise.smartcampus.osm.android.util.BoundingBoxE6;
 import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 import eu.trentorise.smartcampus.osm.android.views.MapController;
 import eu.trentorise.smartcampus.osm.android.views.MapView;
 import eu.trentorise.smartcampus.osm.android.views.overlay.MyLocationOverlay;
+import eu.trentorise.smartcampus.osm.android.views.overlay.OverlayItem;
 
 public class OsmMap extends ActionBarActivity
 {
@@ -72,7 +79,7 @@ public class OsmMap extends ActionBarActivity
 		mapView.setMultiTouchControls(true);
 
 		// to keep the display on
-		mapView.setKeepScreenOn(true);
+		// mapView.setKeepScreenOn(true);
 
 		setUpPointers();
 
@@ -88,6 +95,8 @@ public class OsmMap extends ActionBarActivity
 		setActionBar();
 
 		setSwitch();
+		mapView.getOverlays().add(
+				new MapOverlay(this, Station.getBoundingBox(stations)));
 	}
 
 	@Override
@@ -96,6 +105,14 @@ public class OsmMap extends ActionBarActivity
 		// TODO Auto-generated method stub
 		super.onWindowFocusChanged(hasFocus);
 		mapView.zoomToBoundingBox(Station.getBoundingBox(stations));
+	}
+
+	@Override
+	protected void onPause()
+	{
+		myLoc.disableFollowLocation();
+		myLoc.disableMyLocation();
+		super.onPause();
 	}
 
 	@Override
@@ -114,8 +131,7 @@ public class OsmMap extends ActionBarActivity
 	{
 
 		super.onOptionsItemSelected(item);
-		
-		
+
 		switch (item.getItemId())
 		{
 		case MENU_ON_STATION_ID:
@@ -125,7 +141,7 @@ public class OsmMap extends ActionBarActivity
 			listIntent.putParcelableArrayListExtra("stations", stations);
 
 			startActivity(listIntent);
-			
+
 			break;
 		default:
 			break;
@@ -249,6 +265,10 @@ public class OsmMap extends ActionBarActivity
 			{
 				if (isChecked)
 				{
+					// close the bubble relative to the bikesMarkers if opened
+					bikesMarkersOverlay.hideBubble();
+
+					// remove the anarchic bikes
 					mapView.getOverlays().remove(bikesMarkersOverlay);
 					mapView.invalidate();
 				}
@@ -261,12 +281,12 @@ public class OsmMap extends ActionBarActivity
 		});
 
 	}
-	
+
 	private void setUpPointers()
 	{
 		stations = new ArrayList<Station>();
 		bikes = new ArrayList<Bike>();
-		
+
 		stations.add(new Station(new GeoPoint(45.890189, 11.034275),
 				"STAZIONE FF.SS. - Piazzale Orsi", 12));
 		stations.add(new Station(new GeoPoint(45.882221, 11.040483),
@@ -287,8 +307,8 @@ public class OsmMap extends ActionBarActivity
 				"NORIGLIO - Via Chiesa San Martino", 6));
 		stations.add(new Station(new GeoPoint(45.904255, 11.044859),
 				"BRIONE - Piazza della Pace", 6));
-		stations.add(new Station(new GeoPoint(45.891021, 11.038729), "PIAZZA ROSMINI - via boh",
-				6));
+		stations.add(new Station(new GeoPoint(45.891021, 11.038729),
+				"PIAZZA ROSMINI - via boh", 6));
 
 		bikes.add(new Bike(new GeoPoint(45.924255, 11.064859), "0"));
 		stations.get(0).setUsedSlots(11);

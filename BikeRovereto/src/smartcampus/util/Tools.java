@@ -9,10 +9,11 @@ public class Tools {
 
 	public static final long LOCATION_REFRESH_TIME = 60000;
 	public static final float LOCATION_REFRESH_DISTANCE = 100;
-
+	
 	public static int convertDpToPixel(Context context, int dp)
 	{
-		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
+		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+				context.getResources().getDisplayMetrics());
 	}
 	
 	public static String formatDistance(int distance){
