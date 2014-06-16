@@ -35,18 +35,24 @@ public class MapOverlay extends Overlay
 	{
 		// ---when user lifts his finger---
 
-		if (event.getAction() == event.ACTION_DOWN && event.getPointerCount() == 1)
+		if (event.getAction() == event.ACTION_DOWN
+				&& event.getPointerCount() == 1)
 		{
-			IGeoPoint iResult = mapView.getProjection().fromPixels((int) event.getX(),
-					(int) event.getY());
-			GeoPoint result = new GeoPoint(iResult.getLatitudeE6(),
-					iResult.getLongitudeE6());
-			
-			mapView.invalidate();
-			Log.d("scroll", Boolean.toString(bb.contains(result)));
-			return !bb.contains(result);
+			BoundingBoxE6 mapBb = mapView.getProjection().getBoundingBox();
+
+			GeoPoint northWest, northEast, southWest, southEast;
+			northWest = new GeoPoint(mapBb.getLatNorthE6() + 1,
+					mapBb.getLonWestE6() - 1);
+			northEast = new GeoPoint(mapBb.getLatNorthE6() + 1,
+					mapBb.getLonEastE6() + 1);
+			southWest = new GeoPoint(mapBb.getLatSouthE6() - 1,
+					mapBb.getLonWestE6() - 1);
+			southEast = new GeoPoint(mapBb.getLatSouthE6() - 1,
+					mapBb.getLonEastE6() + 1);
+			Log.d("scroll", Boolean.toString(bb.contains(northWest) && bb.contains(northEast) && bb.contains(southWest) && bb.contains(southEast)))
+;			return false;//(bb.contains(northWest) && bb.contains(northEast) && bb.contains(southWest) && bb.contains(southEast)) ;
 		}
-		return super.onTouchEvent(event, mapView);
+		return false;
 	}
 
 	/**
