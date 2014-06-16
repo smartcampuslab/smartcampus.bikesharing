@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     tools:context="smartcampus.activity.OsmMap"
     tools:ignore="MergeRootFrame" >
+    
   
     <eu.trentorise.smartcampus.osm.android.views.MapView
         android:id="@+id/map_view"

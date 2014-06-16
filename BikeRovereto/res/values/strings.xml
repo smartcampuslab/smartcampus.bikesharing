@@ -6,7 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_osm_map">OsmMap</string>
     <string name="toMap">OSM</string>
-    <string name="toggle_turn_on">solo e-motion</string>
+    <string name="toggle_turn_on">e-motion</string>
     <string name="toggle_turn_off">tutte le bici</string>
     <string name="title_activity_stations">Stazioni</string>
     <string name="station_used_slots">Posti occupati: </string>
@@ -22,5 +22,4 @@
     <string name="no_reports">Nessuna segnalazione</string>
     <string name="title_activity_signal">SignalActivity</string>
     <string name="signal">Segnala guasto</string>
-
 </resources>
