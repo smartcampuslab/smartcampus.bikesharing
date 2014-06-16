@@ -26,4 +26,6 @@
     <string name="report_other">Descrizione aggiuntiva</string>
     <string name="report_in">Segnala in</string>
     <string name="report">Segnala</string>
+    <string name="drawer_open">Apri</string>
+    <string name="drawer_close">Chiudi</string>
 </resources>

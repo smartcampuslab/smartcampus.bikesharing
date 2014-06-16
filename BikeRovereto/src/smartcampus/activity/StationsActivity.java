@@ -8,18 +8,22 @@ import smartcampus.model.Station;
 import smartcampus.util.StationsAdapter;
 import smartcampus.util.Tools;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
@@ -31,6 +35,10 @@ public class StationsActivity extends ActionBarActivity{
 	StationsAdapter stationsAdapter;
 	GeoPoint myLocation;
 	private LocationManager mLocationManager;
+	String[] navTitles;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+	private ActionBarDrawerToggle mDrawerToggle;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +65,59 @@ public class StationsActivity extends ActionBarActivity{
 		stationsAdapter.notifyDataSetChanged();
 		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 		
+		navTitles= getResources().getStringArray(R.array.navTitles);
+		
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,                  /* host Activity */
+                mDrawerLayout,         /* DrawerLayout object */
+                R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
+                R.string.drawer_open,  /* "open drawer" description */
+                R.string.drawer_close  /* "close drawer" description */
+                ) {
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        // Set the adapter for the list view
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, navTitles));
+        // Set the list's click listener
+        mDrawerList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+					long arg3) {
+				switch (position) {
+				case 0:					
+					startActivity(new Intent(getApplicationContext(), OsmMap.class));
+					break;
+				default:					
+					startActivity(new Intent(getApplicationContext(), StationsActivity.class));
+					break;
+				}
+			}
+		});
+		
 	}
+	@Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
 	
 	@Override
 	protected void onStart() {

@@ -24,7 +24,6 @@ public class StationsAdapter extends ArrayAdapter<Station>{
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		// TODO Auto-generated method stub		
 		ViewHolder viewHolder;
 		
 		if (convertView == null){
