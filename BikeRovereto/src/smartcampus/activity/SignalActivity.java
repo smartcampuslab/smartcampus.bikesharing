@@ -1,22 +1,21 @@
 package smartcampus.activity;
 
-import eu.trentorise.smartcampus.bikerovereto.R;
-import eu.trentorise.smartcampus.bikerovereto.R.id;
-import eu.trentorise.smartcampus.bikerovereto.R.layout;
-import eu.trentorise.smartcampus.bikerovereto.R.menu;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
+import smartcampus.model.Bike;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
+import android.widget.TextView;
+import eu.trentorise.smartcampus.bikerovereto.R;
 
 public class SignalActivity extends ActionBarActivity
 {
+	Bike bike;
+	TextView txtID;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -24,11 +23,11 @@ public class SignalActivity extends ActionBarActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_signal);
 
-		if (savedInstanceState == null)
-		{
-			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new PlaceholderFragment()).commit();
-		}
+		bike = getIntent().getExtras().getParcelable("bike");
+
+		txtID = (TextView) findViewById(R.id.bikeId);
+		
+		txtID.setText("ID: " + bike.getId());
 	}
 
 	@Override

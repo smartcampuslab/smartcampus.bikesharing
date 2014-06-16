@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:textOff="@string/toggle_turn_off"
-        android:textOn="@string/toggle_turn_on"/>
+        android:textOn="@string/toggle_turn_on"
+        android:layout_marginTop="2dp"/>
 
 </LinearLayout>
