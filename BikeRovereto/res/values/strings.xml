@@ -22,4 +22,8 @@
     <string name="no_reports">Nessuna segnalazione</string>
     <string name="title_activity_signal">SignalActivity</string>
     <string name="signal">Segnala guasto</string>
+    <string name="action_add_report">Crea segnalazione</string>
+    <string name="report_other">Descrizione aggiuntiva</string>
+    <string name="report_in">Segnala in</string>
+    <string name="report">Segnala</string>
 </resources>

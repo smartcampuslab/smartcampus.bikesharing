@@ -16,8 +16,9 @@ public class Station implements Parcelable
 	private int maxSlots;
 	private int nReports;
 	private ArrayList<String> reports;
-	private int distance=-1; //>=0 only when distance is initialized
-
+	public static final int DISTANCE_NOT_VALID = -1;
+	private int distance=DISTANCE_NOT_VALID; //>=0 only when distance is initialized
+	
 	public Station(GeoPoint position, String nameAndStreet, int maxSlots)
 	{
 		this.position = position;
@@ -65,6 +66,7 @@ public class Station implements Parcelable
 	public Station(Parcel source)
 	{
 		position = new GeoPoint(source.readInt(), source.readInt());
+		distance = source.readInt();
 		name = source.readString();
 		street = source.readString();
 		nBikes = source.readInt();
@@ -104,6 +106,7 @@ public class Station implements Parcelable
 
 		dest.writeInt(position.getLatitudeE6());
 		dest.writeInt(position.getLongitudeE6());
+		dest.writeInt(distance);
 		dest.writeString(name);
 		dest.writeString(street);
 		dest.writeInt(nBikes);
@@ -181,6 +184,14 @@ public class Station implements Parcelable
 	}
 	public ArrayList<String> getReports(){
 		return reports;
+	}
+	public int getDistance()
+	{
+		return distance;
+	}
+	public void setDistance(int distance)
+	{
+		this.distance=distance;
 	}
 	
 }

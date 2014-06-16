@@ -47,7 +47,7 @@ public class StationsAdapter extends ArrayAdapter<Station>{
 		viewHolder.street.setText(mStations.get(position).getStreet());
 		viewHolder.availableBike.setText(mStations.get(position).getNSlotsUsed()+"");
 		viewHolder.availableSlots.setText(mStations.get(position).getNSlotsEmpty()+"");
-		viewHolder.distance.setText("5 Km");
+		viewHolder.distance.setText(Tools.formatDistance(mStations.get(position).getDistance()));
 		
 		return convertView;
 		

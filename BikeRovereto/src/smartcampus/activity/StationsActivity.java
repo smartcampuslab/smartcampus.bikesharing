@@ -26,8 +26,6 @@ import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 
 public class StationsActivity extends ActionBarActivity{
 	
-	private static final long LOCATION_REFRESH_TIME = 60000;
-	private static final float LOCATION_REFRESH_DISTANCE = 100;
 	ArrayList<Station> mStations;
 	ListView mList;
 	StationsAdapter stationsAdapter;
@@ -58,11 +56,30 @@ public class StationsActivity extends ActionBarActivity{
 		});
 		stationsAdapter.notifyDataSetChanged();
 		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
-		            LOCATION_REFRESH_DISTANCE, mLocationListener);
 		
 	}
+	
+	@Override
+	protected void onStart() {
+		boolean allDistancesValid=true;
+		for (int i=0; i<mStations.size() && allDistancesValid; i++)
+		{
+			if (mStations.get(i).getDistance()==Station.DISTANCE_NOT_VALID)
+				allDistancesValid=false;
+		}
+		if (!allDistancesValid)
+			mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Tools.LOCATION_REFRESH_TIME,
+					Tools.LOCATION_REFRESH_DISTANCE, mLocationListener);
+		super.onStart();
+	}
+	
+
+	@Override
+	protected void onPause() {
+		mLocationManager.removeUpdates(mLocationListener);
+		super.onPause();
+	}
+	
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -127,7 +144,7 @@ public class StationsActivity extends ActionBarActivity{
 
 		@Override
 		public int compare(Station station0, Station station1) {
-			return station0.getNSlotsUsed()-station1.getNSlotsUsed(); //TODO: implementare distanza!
+			return station0.getDistance()-station1.getDistance();
 		}
 		
 	}
@@ -140,10 +157,19 @@ public class StationsActivity extends ActionBarActivity{
 		
 	}
 	
+	private void updateDistances()
+	{
+		for (Station station : mStations){
+			station.setDistance(myLocation.distanceTo(station.getPosition()));			
+		}
+	}
+	
 	private final LocationListener mLocationListener = new LocationListener() {
 	    @Override
 	    public void onLocationChanged(final Location location) {
 	        myLocation=new GeoPoint(location);
+	        updateDistances();
+	        stationsAdapter.notifyDataSetChanged();
 	    }
 
 		@Override
