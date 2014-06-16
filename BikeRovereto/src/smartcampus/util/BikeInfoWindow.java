@@ -6,6 +6,7 @@ package smartcampus.util;
 //import org.osmdroid.util.GeoPoint;
 //import org.osmdroid.views.MapView;
 
+import smartcampus.activity.SignalActivity;
 import smartcampus.activity.StationDetails;
 import smartcampus.model.Bike;
 import android.content.Context;
@@ -36,8 +37,9 @@ public class BikeInfoWindow extends DefaultInfoWindow
 			public void onClick(View v)
 			{
 				Intent detailsIntent = new Intent(mContext,
-						StationDetails.class);
+						SignalActivity.class);
 				detailsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
 				detailsIntent.putExtra("bike", bike);
 
 				mContext.startActivity(detailsIntent);
@@ -55,7 +57,6 @@ public class BikeInfoWindow extends DefaultInfoWindow
 	public void onOpen(ExtendedOverlayItem item)
 	{
 		super.onOpen(item);
-		Log.d("debug", "opened");
 		BikeOverlayItem sItem = (BikeOverlayItem) item;
 		bike = sItem.getBike();
 
