@@ -10,6 +10,7 @@ import smartcampus.activity.StationDetails;
 import smartcampus.model.Bike;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import eu.trentorise.smartcampus.bikerovereto.R;
@@ -54,7 +55,7 @@ public class BikeInfoWindow extends DefaultInfoWindow
 	public void onOpen(ExtendedOverlayItem item)
 	{
 		super.onOpen(item);
-
+		Log.d("debug", "opened");
 		BikeOverlayItem sItem = (BikeOverlayItem) item;
 		bike = sItem.getBike();
 
