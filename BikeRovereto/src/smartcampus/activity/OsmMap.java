@@ -104,11 +104,12 @@ public class OsmMap extends Fragment
 
 		mapView.getOverlays().add(myLoc);
 
-		mapView.setScrollableAreaLimit(getBoundingBox());
+		mapView.setScrollableAreaLimit(getBoundingBox(true));
 		setHasOptionsMenu(true);
+
 		return rootView;
 	}
-	
+
 	@Override
 	public void onStart()
 	{
@@ -116,13 +117,13 @@ public class OsmMap extends Fragment
 		super.onStart();
 		mapView.post(new Runnable()
 		{
-			
+
 			@Override
 			public void run()
 			{
-				mapView.zoomToBoundingBox(getBoundingBox());
+				mapView.zoomToBoundingBox(getBoundingBox(false));
 				mapView.setMinZoomLevel(mapView.getZoomLevel());
-				
+
 			}
 		});
 	}
@@ -269,26 +270,29 @@ public class OsmMap extends Fragment
 	 * }
 	 */
 
-	private BoundingBoxE6 getBoundingBox()
+	private BoundingBoxE6 getBoundingBox(boolean addFrame)
 	{
+
+		final int frame = addFrame? 40000: 0;
 		BoundingBoxE6 toRtn;
 		BoundingBoxE6 stationsBoundingBox = Station.getBoundingBox(stations);
 		BoundingBoxE6 bikesBoundingBox = Bike.getBoundingBox(bikes);
 		toRtn = new BoundingBoxE6(
 				stationsBoundingBox.getLatNorthE6() > bikesBoundingBox.getLatNorthE6() ? stationsBoundingBox.getLatNorthE6()
-						: bikesBoundingBox.getLatNorthE6(),
+						+ frame
+						: bikesBoundingBox.getLatNorthE6() + frame,
 
 				stationsBoundingBox.getLonEastE6() > bikesBoundingBox
-						.getLonEastE6() ? stationsBoundingBox.getLonEastE6()
-						: bikesBoundingBox.getLonEastE6(),
+						.getLonEastE6() ? stationsBoundingBox.getLonEastE6() + frame
+						: bikesBoundingBox.getLonEastE6() + frame,
 
 				stationsBoundingBox.getLatSouthE6() < bikesBoundingBox
-						.getLatSouthE6() ? stationsBoundingBox.getLatSouthE6()
-						: bikesBoundingBox.getLatSouthE6(),
+						.getLatSouthE6() ? stationsBoundingBox.getLatSouthE6() - frame
+						: bikesBoundingBox.getLatSouthE6() - frame,
 
 				stationsBoundingBox.getLonWestE6() < bikesBoundingBox
-						.getLonWestE6() ? stationsBoundingBox.getLonWestE6()
-						: bikesBoundingBox.getLonWestE6());
+						.getLonWestE6() ? stationsBoundingBox.getLonWestE6() - frame
+						: bikesBoundingBox.getLonWestE6() - frame);
 		return toRtn;
 	}
 }

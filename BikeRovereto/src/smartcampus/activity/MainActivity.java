@@ -86,7 +86,7 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 		stations.get(2).setUsedSlots(6);
 		stations.get(3).setUsedSlots(5);
 		
-		StationsActivity mainFragment = StationsActivity.newInstance(stations);
+		OsmMap mainFragment = OsmMap.newInstance(stations, bikes);
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 		transaction.replace(R.id.content_frame, mainFragment);
 		transaction.commit();
