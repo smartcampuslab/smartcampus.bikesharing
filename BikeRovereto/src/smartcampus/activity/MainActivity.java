@@ -46,7 +46,8 @@ public class MainActivity extends ActionBarActivity implements
 		public void onPositionAquired(GeoPoint myLocation);
 	}
 
-	public void setOnPositionAquiredListener(OnPositionAquiredListener onPositionAquiredListener)
+	public void setOnPositionAquiredListener(
+			OnPositionAquiredListener onPositionAquiredListener)
 	{
 		this.mCallback = onPositionAquiredListener;
 	}
@@ -125,10 +126,7 @@ public class MainActivity extends ActionBarActivity implements
 		// Set the adapter for the list view
 		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
 				android.R.layout.simple_list_item_1, navTitles));
-		// Set the list's click listener
-		mDrawerList
-				.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener()
-				{
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         // Set the adapter for the list view
@@ -136,39 +134,8 @@ public class MainActivity extends ActionBarActivity implements
         // Set the list's click listener
         mDrawerList.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
 
-					@Override
-					public void onItemClick(AdapterView<?> arg0, View arg1,
-							int position, long arg3)
-					{
-						switch (position)
-						{
-						case 0:
-							OsmMap mapFragment = OsmMap.newInstance(stations,
-									bikes);
-							FragmentTransaction transaction = getSupportFragmentManager()
-									.beginTransaction();
-							transaction
-									.replace(R.id.content_frame, mapFragment);
-							transaction.addToBackStack(null);
-							transaction.commit();
-							break;
-						default:
-							StationsActivity stationsFragment = StationsActivity
-									.newInstance(stations);
-							FragmentTransaction transaction1 = getSupportFragmentManager()
-									.beginTransaction();
-							transaction1.replace(R.id.content_frame,
-									stationsFragment);
-							transaction1.addToBackStack(null);
-							transaction1.commit();
-							break;
-						}
-						mDrawerLayout.closeDrawers();
-					}
-				});
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
-					long arg3) {
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
 				switch (position) {
 				case 0:					
 					OsmMap mapFragment = OsmMap.newInstance(stations, bikes);
@@ -188,6 +155,7 @@ public class MainActivity extends ActionBarActivity implements
 				mDrawerLayout.closeDrawers();
 			}
 		});
+
 
 		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -220,10 +188,12 @@ public class MainActivity extends ActionBarActivity implements
 	public void onStationSelected(Station station)
 	{
 		Log.d("station selected", station.getName());
-		StationDetails detailsFragment = StationDetails.newInstance(station, myLocation);
+		StationDetails detailsFragment = StationDetails.newInstance(station,
+				myLocation);
 		FragmentTransaction transaction = getSupportFragmentManager()
 				.beginTransaction();
-		transaction.setCustomAnimations(R.anim.slide_left, 0, 0, R.anim.slide_right);
+		transaction.setCustomAnimations(R.anim.slide_left, 0, 0,
+				R.anim.slide_right);
 		transaction.replace(R.id.content_frame, detailsFragment);
 		transaction.addToBackStack(null);
 		transaction.commit();
@@ -256,19 +226,13 @@ public class MainActivity extends ActionBarActivity implements
 	private final LocationListener mLocationListener = new LocationListener()
 	{
 
-		@Override
 		public void onLocationChanged(final Location location)
 		{
 			myLocation = new GeoPoint(location);
 			updateDistances();
-			mCallback.onPositionAquired(myLocation);
+			if (mCallback != null)
+				mCallback.onPositionAquired(myLocation);
 		}
-	    public void onLocationChanged(final Location location) {
-	        myLocation=new GeoPoint(location);
-	        updateDistances();
-	        if (mCallback!=null)
-	        	mCallback.onPositionAquired();
-	    }
 
 		@Override
 		public void onProviderDisabled(String arg0)
@@ -285,5 +249,4 @@ public class MainActivity extends ActionBarActivity implements
 		{
 		}
 	};
-
 }
