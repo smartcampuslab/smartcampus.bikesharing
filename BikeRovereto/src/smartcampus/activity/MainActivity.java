@@ -16,6 +16,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,7 +24,10 @@ import android.widget.ListView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 
-public class MainActivity extends ActionBarActivity implements OnStationSelectListener{
+public class MainActivity extends ActionBarActivity implements
+		OnStationSelectListener
+{
+
 
 	private String[] navTitles;
 	private int[] navIcons;
@@ -35,20 +39,24 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 	private LocationManager mLocationManager;
 	private GeoPoint myLocation;
 	private OnPositionAquiredListener mCallback;
-	
-	public interface OnPositionAquiredListener{
-        public void onPositionAquired();
+
+	public interface OnPositionAquiredListener
+	{
+		public void onPositionAquired(GeoPoint myLocation);
 	}
-	
-	public void setOnPositionAquiredListener(OnPositionAquiredListener onPositionAquiredListener){
-		this.mCallback=onPositionAquiredListener;
+
+	public void setOnPositionAquiredListener(
+			OnPositionAquiredListener onPositionAquiredListener)
+	{
+		this.mCallback = onPositionAquiredListener;
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		stations = new ArrayList<Station>();
 		bikes = new ArrayList<Bike>();
 
@@ -84,32 +92,34 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 		stations.get(1).setUsedSlots(12);
 		stations.get(2).setUsedSlots(6);
 		stations.get(3).setUsedSlots(5);
-		
+
 		OsmMap mainFragment = OsmMap.newInstance(stations, bikes);
-		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+		FragmentTransaction transaction = getSupportFragmentManager()
+				.beginTransaction();
 		transaction.replace(R.id.content_frame, mainFragment);
 		transaction.commit();
+
+		navTitles = getResources().getStringArray(R.array.navTitles);
+
 			
 		navTitles= getResources().getStringArray(R.array.navTitles);
 		navIcons = new int[] {R.drawable.ic_map, R.drawable.ic_station};
 		
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         
-        mDrawerToggle = new ActionBarDrawerToggle(
-        		this,                  /* host Activity */
-                mDrawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
-                R.string.drawer_open,  /* "open drawer" description */
-                R.string.drawer_close  /* "close drawer" description */
-                ) {
-        };
 
-        // Set the drawer toggle as the DrawerListener
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+		mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
+			mDrawerLayout, /* DrawerLayout object */
+			R.drawable.ic_drawer, /* nav drawer icon to replace 'Up' caret */
+			R.string.drawer_open, /* "open drawer" description */
+			R.string.drawer_close /* "close drawer" description */
+		);
+		// Set the drawer toggle as the DrawerListener
+		mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         // Set the adapter for the list view
         mDrawerList.setAdapter(new NavigationDrawerAdapter(this, navTitles, navIcons));
@@ -117,8 +127,7 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
         mDrawerList.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
-					long arg3) {
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
 				switch (position) {
 				case 0:					
 					OsmMap mapFragment = OsmMap.newInstance(stations, bikes);
@@ -139,75 +148,88 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 			}
 		});
 		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-		
 	}
 
 	@Override
-	public void onStationSelected(Station station) {
-		Log.d("station selected", station.getName());
-		StationDetails detailsFragment = StationDetails.newInstance(station);
-		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-		transaction.setCustomAnimations(R.anim.slide_left, 0, 0, R.anim.slide_right);
-		transaction.replace(R.id.content_frame, detailsFragment);
-		transaction.addToBackStack(null);
-		transaction.commit();		
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		getMenuInflater().inflate(R.menu.main, menu);
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		if (mDrawerToggle.onOptionsItemSelected(item)) {
-		      return true;
-		    }
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		if (mDrawerToggle.onOptionsItemSelected(item))
+		{
+			return true;
+		}
 		return super.onOptionsItemSelected(item);
 	}
 
-	
 	@Override
-	protected void onStart() {
-		super.onStart();
-		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Tools.LOCATION_REFRESH_TIME,
-				Tools.LOCATION_REFRESH_DISTANCE, mLocationListener);
+	public void onStationSelected(Station station)
+	{
+		Log.d("station selected", station.getName());
+		StationDetails detailsFragment = StationDetails.newInstance(station,
+				myLocation);
+		FragmentTransaction transaction = getSupportFragmentManager()
+				.beginTransaction();
+		transaction.setCustomAnimations(R.anim.slide_left, 0, 0,
+				R.anim.slide_right);
+		transaction.replace(R.id.content_frame, detailsFragment);
+		transaction.addToBackStack(null);
+		transaction.commit();
 	}
-	
+
 	@Override
-	protected void onPause() {
+	protected void onStart()
+	{
+		super.onStart();
+		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+				Tools.LOCATION_REFRESH_TIME, Tools.LOCATION_REFRESH_DISTANCE,
+				mLocationListener);
+	}
+
+	@Override
+	protected void onPause()
+	{
 		super.onPause();
 		mLocationManager.removeUpdates(mLocationListener);
 	}
 
 	private void updateDistances()
 	{
-		for (Station station : stations){
-			station.setDistance(myLocation.distanceTo(station.getPosition()));			
+		for (Station station : stations)
+		{
+			station.setDistance(myLocation.distanceTo(station.getPosition()));
 		}
 	}
-	
-	
-	private final LocationListener mLocationListener = new LocationListener() {
-	    
 
-		@Override
-	    public void onLocationChanged(final Location location) {
-	        myLocation=new GeoPoint(location);
-	        updateDistances();
-	        if (mCallback!=null)
-	        	mCallback.onPositionAquired();
-	    }
+	private final LocationListener mLocationListener = new LocationListener()
+	{
 
-		@Override
-		public void onProviderDisabled(String arg0) {			
+		public void onLocationChanged(final Location location)
+		{
+			myLocation = new GeoPoint(location);
+			updateDistances();
+			if (mCallback != null)
+				mCallback.onPositionAquired(myLocation);
 		}
 
 		@Override
-		public void onProviderEnabled(String arg0) {			
+		public void onProviderDisabled(String arg0)
+		{
 		}
 
 		@Override
-		public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+		public void onProviderEnabled(String arg0)
+		{
+		}
+
+		@Override
+		public void onStatusChanged(String arg0, int arg1, Bundle arg2)
+		{
 		}
 	};
-
-
-	
-
 }

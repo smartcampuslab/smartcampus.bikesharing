@@ -17,6 +17,7 @@ import android.widget.TextView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 import eu.trentorise.smartcampus.osm.android.bonuspack.overlays.DefaultInfoWindow;
 import eu.trentorise.smartcampus.osm.android.bonuspack.overlays.ExtendedOverlayItem;
+import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 import eu.trentorise.smartcampus.osm.android.views.MapView;
 
 public class CustomInfoWindow extends DefaultInfoWindow
@@ -24,13 +25,15 @@ public class CustomInfoWindow extends DefaultInfoWindow
 	//Context mContext;
 	MapView myMapView;
 	Station station;
+	GeoPoint currentLocation;
 
-	public CustomInfoWindow(MapView mapView, final FragmentManager fragmentManager)
+	public CustomInfoWindow(MapView mapView, final FragmentManager fragmentManager, GeoPoint myLocation)
 	{
 		super(R.layout.info_bubble, mapView);
 		//mContext = context;
 		myMapView = mapView;
 		Button btn = (Button) (mView.findViewById(R.id.btToDetails));
+		this.currentLocation = myLocation;
 		btn.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
@@ -42,7 +45,7 @@ public class CustomInfoWindow extends DefaultInfoWindow
 //
 //				mContext.startActivity(detailsIntent);
 				
-				StationDetails detailsFragment = StationDetails.newInstance(station);
+				StationDetails detailsFragment = StationDetails.newInstance(station, currentLocation);
 				FragmentTransaction transaction1 = fragmentManager.beginTransaction();
 				transaction1.replace(R.id.content_frame, detailsFragment);
 				transaction1.addToBackStack(null);

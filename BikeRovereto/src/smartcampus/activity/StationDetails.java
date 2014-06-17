@@ -6,20 +6,18 @@ import smartcampus.util.Tools;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikerovereto.R;
@@ -39,11 +37,12 @@ public class StationDetails extends Fragment
 	private TextView availableBike, availableSlots;
 	private TextView distance;
 
-	public static StationDetails newInstance(Station station)
+	public static StationDetails newInstance(Station station, GeoPoint currentLocation)
 	{
 		StationDetails fragment = new StationDetails();
 		Bundle bundle = new Bundle();
 		bundle.putParcelable("station", station);
+		bundle.putParcelable("position", currentLocation);
 		fragment.setArguments(bundle);
 
 		return fragment;
@@ -65,6 +64,8 @@ public class StationDetails extends Fragment
 
 		// get the station from the parcels
 		station = getArguments().getParcelable("station");
+		myLocation = getArguments().getParcelable("position");
+		
 		mList = (ListView) rootView.findViewById(R.id.details);
 		mList.addHeaderView(header, null, false);
 
@@ -83,10 +84,21 @@ public class StationDetails extends Fragment
 			@Override
 			public void onClick(View v)
 			{
+				String start = "";
+				String end = "";
+				
+				if(myLocation != null)
+				{
+					start = "daddr=" + myLocation.getLatitudeE6() / 1E6 + "," + myLocation.getLongitudeE6();  
+				}
+				else
+				{
+					Log.d("Debug", "nullll");
+				}
+				
+				end = "daddr="+ station.getLatitudeDegree() + ","+ station.getLongitudeDegree();
 				Intent i = new Intent(Intent.ACTION_VIEW, Uri
-						.parse("http://maps.google.com/maps?daddr="
-								+ station.getLatitudeDegree() + ","
-								+ station.getLongitudeDegree()));
+						.parse("http://maps.google.com/maps?" + start + "&" + end));
 				startActivity(i);
 			}
 		});

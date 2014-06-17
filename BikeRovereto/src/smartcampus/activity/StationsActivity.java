@@ -95,7 +95,7 @@ public class StationsActivity extends Fragment
 				{
 
 					@Override
-					public void onPositionAquired()
+					public void onPositionAquired(GeoPoint myLocation)
 					{
 						stationsAdapter.notifyDataSetChanged();
 					}
