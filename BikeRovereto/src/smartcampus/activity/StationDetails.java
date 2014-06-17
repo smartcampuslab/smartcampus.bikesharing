@@ -1,5 +1,6 @@
 package smartcampus.activity;
 
+import smartcampus.activity.MainActivity.OnPositionAquiredListener;
 import smartcampus.model.Station;
 import smartcampus.util.ReportsAdapter;
 import smartcampus.util.Tools;
@@ -30,7 +31,6 @@ public class StationDetails extends Fragment
 	private Station station;
 
 	private ListView mList;
-	private GeoPoint myLocation;
 	private LocationManager mLocationManager;
 	private TextView name;
 	private TextView street;
@@ -64,7 +64,6 @@ public class StationDetails extends Fragment
 
 		// get the station from the parcels
 		station = getArguments().getParcelable("station");
-		myLocation = getArguments().getParcelable("position");
 		
 		mList = (ListView) rootView.findViewById(R.id.details);
 		mList.addHeaderView(header, null, false);
@@ -84,27 +83,25 @@ public class StationDetails extends Fragment
 			@Override
 			public void onClick(View v)
 			{
-				String start = "";
-				String end = "";
-				
-				if(myLocation != null)
-				{
-					start = "daddr=" + myLocation.getLatitudeE6() / 1E6 + "," + myLocation.getLongitudeE6();  
-				}
-				else
-				{
-					Log.d("Debug", "nullll");
-				}
-				
-				end = "daddr="+ station.getLatitudeDegree() + ","+ station.getLongitudeDegree();
+				GeoPoint startPoint = ((MainActivity)getActivity()).getCurrentLocation();
 				Intent i = new Intent(Intent.ACTION_VIEW, Uri
-						.parse("http://maps.google.com/maps?" + start + "&" + end));
+						.parse(Tools.getPathString(startPoint, station.getPosition())));
 				startActivity(i);
 			}
 		});
 		mLocationManager = (LocationManager) getActivity().getSystemService(
 				getActivity().LOCATION_SERVICE);
 		setHasOptionsMenu(true);
+		
+		((MainActivity) getActivity()).setOnPositionAquiredListener(new OnPositionAquiredListener()
+		{
+
+			@Override
+			public void onPositionAquired()
+			{
+				distance.setText(Tools.formatDistance(station.getDistance()));
+			}
+		});
 		return rootView;
 	}
 

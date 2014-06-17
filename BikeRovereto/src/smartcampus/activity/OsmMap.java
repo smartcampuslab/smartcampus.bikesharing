@@ -39,20 +39,22 @@ public class OsmMap extends Fragment
 	// the tools to control the map
 	private MapController mapController;
 
-	MyLocationOverlay myLoc;
+	private MyLocationOverlay myLoc;
 
 	// the stations to show in the map
-	ArrayList<Station> stations;
+	private ArrayList<Station> stations;
 
-	ArrayList<Bike> bikes;
+	private ArrayList<Bike> bikes;
 
 	// marker for the stations
-	MarkerOverlay<StationOverlayItem> stationsMarkersOverlay;
+	private MarkerOverlay<StationOverlayItem> stationsMarkersOverlay;
 
 	// marker for the bikes
-	MarkerOverlay<BikeOverlayItem> bikesMarkersOverlay;
+	private MarkerOverlay<BikeOverlayItem> bikesMarkersOverlay;
 	
-	GeoPoint currentLocation;
+	private GeoPoint currentLocation;
+	
+	
 	public static OsmMap newInstance(ArrayList<Station> stations,
 			ArrayList<Bike> bikes)
 	{
@@ -69,17 +71,6 @@ public class OsmMap extends Fragment
 	{
 		stations = getArguments().getParcelableArrayList("stations");
 		bikes = getArguments().getParcelableArrayList("bikes");
-		
-		MainActivity a = (MainActivity) getActivity();
-		a.setOnPositionAquiredListener(new OnPositionAquiredListener()
-		{
-			
-			@Override
-			public void onPositionAquired(GeoPoint myLocation)
-			{
-				currentLocation = myLocation;
-			}
-		});
 		
 		super.onCreate(savedInstanceState);
 	}

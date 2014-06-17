@@ -1,5 +1,6 @@
 package smartcampus.activity;
 
+import smartcampus.activity.MainActivity.OnPositionAquiredListener;
 import smartcampus.model.Bike;
 import smartcampus.model.Station;
 import smartcampus.util.ReportsAdapter;
@@ -25,8 +26,9 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikerovereto.R;
+import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 
-public class SignalActivity extends Fragment
+public class SignalView extends Fragment
 {
 	private Bike bike;
 	private TextView txtID;
@@ -34,13 +36,12 @@ public class SignalActivity extends Fragment
 	private ListView mList;
 	private LocationManager mLocationManager;
 
-	public static SignalActivity newInstance(Bike bike)
+	public static SignalView newInstance(Bike bike)
 	{
-		SignalActivity fragment = new SignalActivity();
+		SignalView fragment = new SignalView();
 		Bundle bundle = new Bundle();
 		bundle.putParcelable("bike", bike);
 		fragment.setArguments(bundle);
-
 		return fragment;
 	}
 
@@ -58,16 +59,15 @@ public class SignalActivity extends Fragment
 		bike = getArguments().getParcelable("bike");
 
 		txtID.setText("ID: " + bike.getId());
-		distance.setText(Tools.formatDistance(bike.getDistance()));
+
 		mList = (ListView) rootView.findViewById(R.id.signal);
 		mList.addHeaderView(header, null, false);
 
 		distance.setText(Tools.formatDistance(bike.getDistance()));
 		final ReportsAdapter ra = new ReportsAdapter(getActivity(), 0,
 				bike.getReports());
-		
-		mList.setAdapter(new ReportsAdapter(getActivity(), 0, bike
-				.getReports()));
+
+		mList.setAdapter(new ReportsAdapter(getActivity(), 0, bike.getReports()));
 
 		distance.setOnClickListener(new OnClickListener()
 		{
@@ -75,10 +75,10 @@ public class SignalActivity extends Fragment
 			@Override
 			public void onClick(View v)
 			{
-				Intent i = new Intent(Intent.ACTION_VIEW, Uri
-						.parse("http://maps.google.com/maps?daddr="
-								+ bike.getLatitudeDegree() + ","
-								+ bike.getLongitudeDegree()));
+				GeoPoint startPoint = ((MainActivity) getActivity())
+						.getCurrentLocation();
+				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(Tools
+						.getPathString(startPoint, bike.getPosition())));
 				startActivity(i);
 			}
 		});
@@ -86,6 +86,18 @@ public class SignalActivity extends Fragment
 				getActivity().LOCATION_SERVICE);
 
 		setHasOptionsMenu(true);
+		
+		((MainActivity) getActivity())
+				.setOnPositionAquiredListener(new OnPositionAquiredListener()
+				{
+
+					@Override
+					public void onPositionAquired()
+					{
+						distance.setText(Tools.formatDistance(bike
+								.getDistance()));
+					}
+				});
 		return rootView;
 	}
 
