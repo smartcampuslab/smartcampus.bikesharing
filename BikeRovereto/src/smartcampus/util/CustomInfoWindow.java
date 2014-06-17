@@ -5,11 +5,11 @@ package smartcampus.util;
 //import org.osmdroid.util.GeoPoint;
 //import org.osmdroid.views.MapView;
 
-import smartcampus.activity.OsmMap;
 import smartcampus.activity.StationDetails;
 import smartcampus.model.Station;
 import android.content.Context;
-import android.content.Intent;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,26 +21,32 @@ import eu.trentorise.smartcampus.osm.android.views.MapView;
 
 public class CustomInfoWindow extends DefaultInfoWindow
 {
-	Context mContext;
+	//Context mContext;
 	MapView myMapView;
 	Station station;
 
-	public CustomInfoWindow(MapView mapView, Context context)
+	public CustomInfoWindow(MapView mapView, final FragmentManager fragmentManager)
 	{
 		super(R.layout.info_bubble, mapView);
-		mContext = context;
+		//mContext = context;
 		myMapView = mapView;
 		Button btn = (Button) (mView.findViewById(R.id.btToDetails));
 		btn.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
 			{
-				Intent detailsIntent = new Intent(mContext,
-						StationDetails.class);
-				detailsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				detailsIntent.putExtra("station", station);
-
-				mContext.startActivity(detailsIntent);
+//				Intent detailsIntent = new Intent(mContext,
+//						StationDetails.class);
+//				detailsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//				detailsIntent.putExtra("station", station);
+//
+//				mContext.startActivity(detailsIntent);
+				
+				StationDetails detailsFragment = StationDetails.newInstance(station);
+				FragmentTransaction transaction1 = fragmentManager.beginTransaction();
+				transaction1.replace(R.id.content_frame, detailsFragment);
+				transaction1.addToBackStack(null);
+				transaction1.commit();
 			}
 		});
 	}

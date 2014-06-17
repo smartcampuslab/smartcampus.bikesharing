@@ -9,13 +9,10 @@ import smartcampus.util.BikeOverlayItem;
 import smartcampus.util.CustomInfoWindow;
 import smartcampus.util.MarkerOverlay;
 import smartcampus.util.StationOverlayItem;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,12 +20,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.ToggleButton;
 import eu.trentorise.smartcampus.bikerovereto.R;
 import eu.trentorise.smartcampus.osm.android.util.BoundingBoxE6;
-import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 import eu.trentorise.smartcampus.osm.android.views.MapController;
 import eu.trentorise.smartcampus.osm.android.views.MapView;
 import eu.trentorise.smartcampus.osm.android.views.overlay.MyLocationOverlay;
@@ -57,33 +50,41 @@ public class OsmMap extends Fragment
 
 	// marker for the bikes
 	MarkerOverlay<BikeOverlayItem> bikesMarkersOverlay;
-	
-	public OsmMap(){}
-	
-	public static OsmMap newInstance(ArrayList<Station> stations){		
-		OsmMap fragment = new OsmMap();
-	    Bundle bundle = new Bundle();
-	    bundle.putParcelableArrayList("stations", stations);
-	    fragment.setArguments(bundle);
-	    return fragment;
+
+	public OsmMap()
+	{
 	}
-	
+
+	public static OsmMap newInstance(ArrayList<Station> stations,
+			ArrayList<Bike> bikes)
+	{
+		OsmMap fragment = new OsmMap();
+		Bundle bundle = new Bundle();
+		bundle.putParcelableArrayList("stations", stations);
+		bundle.putParcelableArrayList("bikes", bikes);
+		fragment.setArguments(bundle);
+		return fragment;
+	}
+
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState)
+	{
 		stations = getArguments().getParcelableArrayList("stations");
+		bikes = getArguments().getParcelableArrayList("bikes");
 		super.onCreate(savedInstanceState);
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.activity_osm_map, container,false);
+			Bundle savedInstanceState)
+	{
+		View rootView = inflater.inflate(R.layout.activity_osm_map, container,
+				false);
 		// get the mapView and the controller
 		mapView = (MapView) rootView.findViewById(R.id.map_view);
-		
+
 		mapController = mapView.getController();
 
-		bikes=new ArrayList<Bike>();
 		// mapView.setBuiltInZoomControls(true);
 		mapView.setMultiTouchControls(true);
 
@@ -97,40 +98,38 @@ public class OsmMap extends Fragment
 		// add the markers on the mapView
 		addMarkers();
 
-		//setActionBar();
+		// setActionBar();
 
-		//setSwitch();
+		// setSwitch();
 
 		mapView.getOverlays().add(myLoc);
-		
 
 		mapView.setScrollableAreaLimit(getBoundingBox());
-		
 		setHasOptionsMenu(true);
-		
 		return rootView;
 	}
 	
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onActivityCreated(savedInstanceState);
-	}
-	
-	
-/* TODO: what?!?
-	@Override
-	public void onWindowFocusChanged(boolean hasFocus)
+	public void onStart()
 	{
 		// TODO Auto-generated method stub
-		super.onWindowFocusChanged(hasFocus);
-		mapView.zoomToBoundingBox(getBoundingBox());
-		mapView.setMinZoomLevel(mapView.getZoomLevel());
+		super.onStart();
+		mapView.post(new Runnable()
+		{
+			
+			@Override
+			public void run()
+			{
+				mapView.zoomToBoundingBox(getBoundingBox());
+				mapView.setMinZoomLevel(mapView.getZoomLevel());
+				
+			}
+		});
 	}
-*/
-		
+
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+	{
 		inflater.inflate(R.menu.main, menu);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
@@ -138,8 +137,9 @@ public class OsmMap extends Fragment
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		super.onOptionsItemSelected(item);	
-		switch (item.getItemId()) {
+		super.onOptionsItemSelected(item);
+		switch (item.getItemId())
+		{
 		case R.id.myswitch:
 			item.setChecked(!item.isChecked());
 			if (item.isChecked())
@@ -160,7 +160,7 @@ public class OsmMap extends Fragment
 		default:
 			break;
 		}
-			
+
 		return true;
 	}
 
@@ -175,7 +175,6 @@ public class OsmMap extends Fragment
 		Resources res = getResources();
 
 		ArrayList<BikeOverlayItem> markers = new ArrayList<BikeOverlayItem>();
-
 		for (int i = 0; i < bikes.size(); i++)
 		{
 			markers.add(new BikeOverlayItem(bikes.get(i).getId(), "bike", bikes
@@ -187,9 +186,8 @@ public class OsmMap extends Fragment
 			markers.get(i).setMarker(markerImage);
 		}
 
-		bikesMarkersOverlay = new MarkerOverlay<BikeOverlayItem>(
-				getActivity(), markers, mapView, new BikeInfoWindow(
-						mapView, getActivity()));
+		bikesMarkersOverlay = new MarkerOverlay<BikeOverlayItem>(getActivity(),
+				markers, mapView, new BikeInfoWindow(mapView, getActivity()));
 
 		mapView.getOverlays().add(bikesMarkersOverlay);
 	}
@@ -225,77 +223,51 @@ public class OsmMap extends Fragment
 		}
 
 		stationsMarkersOverlay = new MarkerOverlay<StationOverlayItem>(
-				getActivity(), markers, mapView,
-				new CustomInfoWindow(mapView, getActivity()));
+				getActivity(), markers, mapView, new CustomInfoWindow(mapView,
+						getFragmentManager()));
 
 		mapView.getOverlays().add(stationsMarkersOverlay);
 	}
-/* TODO: implement this!
-	private void setActionBar()
-	{
-		LayoutInflater inflater = (LayoutInflater) getSupportActionBar()
-				.getThemedContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-		View customActionBarView = inflater.inflate(R.layout.actionbar_custom,
-				null);
 
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
-				ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME
-						| ActionBar.DISPLAY_SHOW_TITLE);
-		actionBar.setCustomView(customActionBarView,
-				new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-						ViewGroup.LayoutParams.MATCH_PARENT));
-	}
-*/
-	/*private void setOnClickSwitch()
-	{
-		
-		mToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-		{
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked)
-			{
-				if (isChecked)
-				{
-					Log.d("debug", "pressed");
-				}
-				else
-				{
-					Log.d("debug", "Notpressed");
-				}
-			}
-		});
-	}
-
-	private void setSwitch()
-	{
-		
-
-		mToggle.setOnCheckedChangeListener(new OnCheckedChangeListener()
-		{
-
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked)
-			{
-				if (isChecked)
-				{
-					// close the bubble relative to the bikesMarkers if opened
-					bikesMarkersOverlay.hideBubble();
-
-					// remove the anarchic bikes
-					mapView.getOverlays().remove(bikesMarkersOverlay);
-					mapView.invalidate();
-				}
-				else
-				{
-					mapView.getOverlays().add(bikesMarkersOverlay);
-					mapView.invalidate();
-				}
-			}
-		});
-
-	}*/
+	/*
+	 * TODO: implement this! private void setActionBar() { LayoutInflater
+	 * inflater = (LayoutInflater) getSupportActionBar()
+	 * .getThemedContext().getSystemService(LAYOUT_INFLATER_SERVICE); View
+	 * customActionBarView = inflater.inflate(R.layout.actionbar_custom, null);
+	 * 
+	 * ActionBar actionBar = getSupportActionBar();
+	 * actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
+	 * ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME |
+	 * ActionBar.DISPLAY_SHOW_TITLE);
+	 * actionBar.setCustomView(customActionBarView, new
+	 * ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+	 * ViewGroup.LayoutParams.MATCH_PARENT)); }
+	 */
+	/*
+	 * private void setOnClickSwitch() {
+	 * 
+	 * mToggle.setOnCheckedChangeListener(new
+	 * CompoundButton.OnCheckedChangeListener() { public void
+	 * onCheckedChanged(CompoundButton buttonView, boolean isChecked) { if
+	 * (isChecked) { Log.d("debug", "pressed"); } else { Log.d("debug",
+	 * "Notpressed"); } } }); }
+	 * 
+	 * private void setSwitch() {
+	 * 
+	 * 
+	 * mToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+	 * 
+	 * @Override public void onCheckedChanged(CompoundButton buttonView, boolean
+	 * isChecked) { if (isChecked) { // close the bubble relative to the
+	 * bikesMarkers if opened bikesMarkersOverlay.hideBubble();
+	 * 
+	 * // remove the anarchic bikes
+	 * mapView.getOverlays().remove(bikesMarkersOverlay); mapView.invalidate();
+	 * } else { mapView.getOverlays().add(bikesMarkersOverlay);
+	 * mapView.invalidate(); } } });
+	 * 
+	 * }
+	 */
 
 	private BoundingBoxE6 getBoundingBox()
 	{
@@ -305,15 +277,15 @@ public class OsmMap extends Fragment
 		toRtn = new BoundingBoxE6(
 				stationsBoundingBox.getLatNorthE6() > bikesBoundingBox.getLatNorthE6() ? stationsBoundingBox.getLatNorthE6()
 						: bikesBoundingBox.getLatNorthE6(),
-						
+
 				stationsBoundingBox.getLonEastE6() > bikesBoundingBox
 						.getLonEastE6() ? stationsBoundingBox.getLonEastE6()
 						: bikesBoundingBox.getLonEastE6(),
-						
+
 				stationsBoundingBox.getLatSouthE6() < bikesBoundingBox
 						.getLatSouthE6() ? stationsBoundingBox.getLatSouthE6()
 						: bikesBoundingBox.getLatSouthE6(),
-						
+
 				stationsBoundingBox.getLonWestE6() < bikesBoundingBox
 						.getLonWestE6() ? stationsBoundingBox.getLonWestE6()
 						: bikesBoundingBox.getLonWestE6());

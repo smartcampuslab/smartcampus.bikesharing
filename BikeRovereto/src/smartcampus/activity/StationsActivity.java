@@ -36,102 +36,120 @@ import android.widget.ListView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 
-public class StationsActivity extends Fragment{
-	
+public class StationsActivity extends Fragment
+{
+
 	ArrayList<Station> mStations;
 	ListView mList;
 	StationsAdapter stationsAdapter;
 	String[] navTitles;
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
+	private DrawerLayout mDrawerLayout;
+	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
-	
+
 	OnStationSelectListener mCallback;
-	
-    // Container Activity must implement this interface
-    public interface OnStationSelectListener {
-        public void onStationSelected(Station station);
-    }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        
-        // This makes sure that the container activity has implemented
-        // the callback interface. If not, it throws an exception
-        try {
-            mCallback = (OnStationSelectListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnStationSelectListener");
-        }
-    }
-
-	public StationsActivity(){}
-	
-	
-	public static StationsActivity newInstance(ArrayList<Station> stations){
-		StationsActivity fragment = new StationsActivity();
-	    Bundle bundle = new Bundle();
-	    bundle.putParcelableArrayList("stations", stations);
-	    fragment.setArguments(bundle);
-	    return fragment;
+	// Container Activity must implement this interface
+	public interface OnStationSelectListener
+	{
+		public void onStationSelected(Station station);
 	}
-	
+
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		mStations= getArguments().getParcelableArrayList("stations");
-		((MainActivity)getActivity()).setOnPositionAquiredListener(new OnPositionAquiredListener() {
-			
-			@Override
-			public void onPositionAquired() {
-				stationsAdapter.notifyDataSetChanged();				
-			}
-		});
+	public void onAttach(Activity activity)
+	{
+		super.onAttach(activity);
+
+		// This makes sure that the container activity has implemented
+		// the callback interface. If not, it throws an exception
+		try
+		{
+			mCallback = (OnStationSelectListener) activity;
+		}
+		catch (ClassCastException e)
+		{
+			throw new ClassCastException(activity.toString()
+					+ " must implement OnStationSelectListener");
+		}
+	}
+
+	public StationsActivity()
+	{
+	}
+
+	public static StationsActivity newInstance(ArrayList<Station> stations)
+	{
+		StationsActivity fragment = new StationsActivity();
+		Bundle bundle = new Bundle();
+		bundle.putParcelableArrayList("stations", stations);
+		fragment.setArguments(bundle);
+		return fragment;
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{
+		mStations = getArguments().getParcelableArrayList("stations");
+		((MainActivity) getActivity())
+				.setOnPositionAquiredListener(new OnPositionAquiredListener()
+				{
+
+					@Override
+					public void onPositionAquired()
+					{
+						stationsAdapter.notifyDataSetChanged();
+					}
+				});
 		super.onCreate(savedInstanceState);
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.stations_main, container,false);
-		
+			Bundle savedInstanceState)
+	{
+		View rootView = inflater.inflate(R.layout.stations_main, container,
+				false);
+
 		stationsAdapter = new StationsAdapter(getActivity(), 0, mStations);
-		
-		mList = (ListView)rootView.findViewById(R.id.stations_list);
+
+		mList = (ListView) rootView.findViewById(R.id.stations_list);
 		mList.setDivider(new ColorDrawable(Color.TRANSPARENT));
 		mList.setDividerHeight(Tools.convertDpToPixel(getActivity(), 5));
 		mList.setAdapter(stationsAdapter);
-		mList.setOnItemClickListener(new OnItemClickListener() {
+		mList.setOnItemClickListener(new OnItemClickListener()
+		{
 
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position,
-					long id) {
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id)
+			{
 				mCallback.onStationSelected(mStations.get(position));
 			}
 		});
 		stationsAdapter.notifyDataSetChanged();
 		return rootView;
 	}
-	
-	
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-	
-	
+
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+	public void onConfigurationChanged(Configuration newConfig)
+	{
+		super.onConfigurationChanged(newConfig);
+		mDrawerToggle.onConfigurationChanged(newConfig);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+	{
 		inflater.inflate(R.menu.stations, menu);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
-		
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
 
-		switch (item.getItemId()) {
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+
+		switch (item.getItemId())
+		{
 		case R.id.sort_distance:
 			sortByDistance();
 			break;
@@ -147,56 +165,73 @@ public class StationsActivity extends Fragment{
 		}
 		return true;
 	}
-	
-	
-	private void sortByDistance(){
-		Collections.sort(mStations, new DistanceComparator());	
+
+	private void sortByDistance()
+	{
+		Collections.sort(mStations, new DistanceComparator());
 		stationsAdapter.notifyDataSetChanged();
 	}
-	private void sortByName(){
+
+	private void sortByName()
+	{
 		Collections.sort(mStations, new NameComparator());
 		stationsAdapter.notifyDataSetChanged();
 	}
-	private void sortByAvailableSlots(){
+
+	private void sortByAvailableSlots()
+	{
 		Collections.sort(mStations, new AvailableSlotsComparator());
 		stationsAdapter.notifyDataSetChanged();
 	}
-	private void sortByAvailableBikes(){
+
+	private void sortByAvailableBikes()
+	{
 		Collections.sort(mStations, new AvailableBikesComparator());
 		stationsAdapter.notifyDataSetChanged();
 	}
-	private class AvailableSlotsComparator implements Comparator<Station> {
+
+	private class AvailableSlotsComparator implements Comparator<Station>
+	{
 
 		@Override
-		public int compare(Station station0, Station station1) {
-			return station1.getNSlotsEmpty()-station0.getNSlotsEmpty();
+		public int compare(Station station0, Station station1)
+		{
+			return station1.getNSlotsEmpty() - station0.getNSlotsEmpty();
 		}
-		
+
 	}
-	private class AvailableBikesComparator implements Comparator<Station> {
+
+	private class AvailableBikesComparator implements Comparator<Station>
+	{
 
 		@Override
-		public int compare(Station station0, Station station1) {
-			return station1.getNSlotsUsed()-station0.getNSlotsUsed();
+		public int compare(Station station0, Station station1)
+		{
+			return station1.getNSlotsUsed() - station0.getNSlotsUsed();
 		}
-		
+
 	}
-	private class DistanceComparator implements Comparator<Station> {
+
+	private class DistanceComparator implements Comparator<Station>
+	{
 
 		@Override
-		public int compare(Station station0, Station station1) {
-			return station0.getDistance()-station1.getDistance();
+		public int compare(Station station0, Station station1)
+		{
+			return station0.getDistance() - station1.getDistance();
 		}
-		
+
 	}
-	private class NameComparator implements Comparator<Station> {
+
+	private class NameComparator implements Comparator<Station>
+	{
 
 		@Override
-		public int compare(Station station0, Station station1) {
+		public int compare(Station station0, Station station1)
+		{
 			return station0.getName().compareToIgnoreCase(station1.getName());
 		}
-		
+
 	}
-	
 
 }

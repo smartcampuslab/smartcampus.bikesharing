@@ -121,7 +121,7 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 					long arg3) {
 				switch (position) {
 				case 0:					
-					OsmMap mapFragment = OsmMap.newInstance(stations);
+					OsmMap mapFragment = OsmMap.newInstance(stations, bikes);
 					FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 					transaction.replace(R.id.content_frame, mapFragment);
 					transaction.addToBackStack(null);

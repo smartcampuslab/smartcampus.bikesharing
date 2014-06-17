@@ -29,106 +29,123 @@ public class StationDetails extends Fragment
 {
 
 	// the station with its details
-	Station station;
-	
-	ListView mList;
-	GeoPoint myLocation;
-	private LocationManager mLocationManager;
-	TextView name;
-	TextView street;
-	TextView availableBike, availableSlots;
-	TextView distance;	
-	
-	public StationDetails(){}
-	
-	
-	public static StationDetails newInstance(Station station){
-		StationDetails fragment = new StationDetails();
-	    Bundle bundle = new Bundle();
-	    bundle.putParcelable("station", station);
-	    fragment.setArguments(bundle);
+	private Station station;
 
-	    return fragment;
+	private ListView mList;
+	private GeoPoint myLocation;
+	private LocationManager mLocationManager;
+	private TextView name;
+	private TextView street;
+	private TextView availableBike, availableSlots;
+	private TextView distance;
+
+	public static StationDetails newInstance(Station station)
+	{
+		StationDetails fragment = new StationDetails();
+		Bundle bundle = new Bundle();
+		bundle.putParcelable("station", station);
+		fragment.setArguments(bundle);
+
+		return fragment;
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.activity_station_details, container,false);
+			Bundle savedInstanceState)
+	{
+		View rootView = inflater.inflate(R.layout.activity_station_details,
+				container, false);
 		View header = inflater.inflate(R.layout.station_details_header, null);
-		
-		name=(TextView)header.findViewById(R.id.name);
-		street=(TextView)header.findViewById(R.id.street);
-		availableBike=(TextView)header.findViewById(R.id.available_bikes);
-		availableSlots=(TextView)header.findViewById(R.id.available_slots);
-		distance=(TextView)header.findViewById(R.id.distance);
-				
+
+		name = (TextView) header.findViewById(R.id.name);
+		street = (TextView) header.findViewById(R.id.street);
+		availableBike = (TextView) header.findViewById(R.id.available_bikes);
+		availableSlots = (TextView) header.findViewById(R.id.available_slots);
+		distance = (TextView) header.findViewById(R.id.distance);
+
 		// get the station from the parcels
 		station = getArguments().getParcelable("station");
-		mList=(ListView)rootView.findViewById(R.id.details);
+		mList = (ListView) rootView.findViewById(R.id.details);
 		mList.addHeaderView(header, null, false);
-		
+
 		name.setText(station.getName());
 		street.setText(station.getStreet());
-		availableBike.setText(station.getNSlotsUsed()+"");
-		availableSlots.setText(station.getNSlotsEmpty()+"");
+		availableBike.setText(station.getNSlotsUsed() + "");
+		availableSlots.setText(station.getNSlotsEmpty() + "");
 		distance.setText(Tools.formatDistance(station.getDistance()));
-		
-		mList.setAdapter(new ReportsAdapter(getActivity() , 0, station.getReports()));
-		
-		distance.setOnClickListener(new OnClickListener() {
-			
+
+		mList.setAdapter(new ReportsAdapter(getActivity(), 0, station
+				.getReports()));
+
+		distance.setOnClickListener(new OnClickListener()
+		{
+
 			@Override
-			public void onClick(View v) {
-				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr="+ station.getLatitudeDegree() + "," + station.getLongitudeDegree()));
+			public void onClick(View v)
+			{
+				Intent i = new Intent(Intent.ACTION_VIEW, Uri
+						.parse("http://maps.google.com/maps?daddr="
+								+ station.getLatitudeDegree() + ","
+								+ station.getLongitudeDegree()));
 				startActivity(i);
 			}
-		});		
-		mLocationManager = (LocationManager) getActivity().getSystemService(getActivity().LOCATION_SERVICE);
+		});
+		mLocationManager = (LocationManager) getActivity().getSystemService(
+				getActivity().LOCATION_SERVICE);
 		setHasOptionsMenu(true);
 		return rootView;
-	}		
-	
+	}
+
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+	{
 		inflater.inflate(R.menu.station_details, menu);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
 		int id = item.getItemId();
-		switch (id){
-			case R.id.action_add_report:
-				addReport();
-				break;
-			case R.id.action_settings:
-				break;
+		switch (id)
+		{
+		case R.id.action_add_report:
+			addReport();
+			break;
+		case R.id.action_settings:
+			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
-
-	private void addReport() {
-		View dialogContent = getActivity().getLayoutInflater().inflate(R.layout.report_dialog, null);
+	private void addReport()
+	{
+		View dialogContent = getActivity().getLayoutInflater().inflate(
+				R.layout.report_dialog, null);
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-		builder.setTitle(getString(R.string.report_in)+ " "+station.getName());
-		builder.setPositiveButton(R.string.report, new DialogInterface.OnClickListener() {
-	           public void onClick(DialogInterface dialog, int id) {
-	        	   //TODO: implement report
-	           }
-	       });
-		builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-	           public void onClick(DialogInterface dialog, int id) {	               
-	           }
-	       });
+		builder.setTitle(getString(R.string.report_in) + " "
+				+ station.getName());
+		builder.setPositiveButton(R.string.report,
+				new DialogInterface.OnClickListener()
+				{
+					public void onClick(DialogInterface dialog, int id)
+					{
+						// TODO: implement report
+					}
+				});
+		builder.setNegativeButton(android.R.string.cancel,
+				new DialogInterface.OnClickListener()
+				{
+					public void onClick(DialogInterface dialog, int id)
+					{
+					}
+				});
 		builder.setView(dialogContent);
 		AlertDialog dialog = builder.create();
-		
+
 		dialog.show();
-		
+
 	}
 
 }
