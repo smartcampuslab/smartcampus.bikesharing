@@ -4,5 +4,6 @@
 	 android:layout_height="match_parent"
 	 android:padding="10dp"
 	 android:id="@+id/details"
+     android:fadingEdge="none"
 	 android:clipToPadding="false"
 	 android:scrollbarStyle="outsideOverlay" />
