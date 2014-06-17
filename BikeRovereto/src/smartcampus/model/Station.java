@@ -15,6 +15,7 @@ public class Station implements Parcelable
 
 	private int nBikes;
 	private int maxSlots;
+	
 	private int nReports;
 	private ArrayList<String> reports;
 	public static final int DISTANCE_NOT_VALID = -1;

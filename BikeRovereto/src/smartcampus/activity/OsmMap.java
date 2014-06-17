@@ -188,7 +188,7 @@ public class OsmMap extends Fragment
 		}
 
 		bikesMarkersOverlay = new MarkerOverlay<BikeOverlayItem>(getActivity(),
-				markers, mapView, new BikeInfoWindow(mapView, getActivity()));
+				markers, mapView, new BikeInfoWindow(mapView, getFragmentManager()));
 
 		mapView.getOverlays().add(bikesMarkersOverlay);
 	}

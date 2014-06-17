@@ -7,11 +7,10 @@ package smartcampus.util;
 //import org.osmdroid.views.MapView;
 
 import smartcampus.activity.SignalActivity;
-import smartcampus.activity.StationDetails;
 import smartcampus.model.Bike;
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.Button;
 import eu.trentorise.smartcampus.bikerovereto.R;
@@ -25,10 +24,9 @@ public class BikeInfoWindow extends DefaultInfoWindow
 	MapView myMapView;
 	Bike bike;
 
-	public BikeInfoWindow(MapView mapView, Context context)
+	public BikeInfoWindow(MapView mapView, final FragmentManager fragmentManager)
 	{
 		super(R.layout.bike_info_bubble, mapView);
-		mContext = context;
 		myMapView = mapView;
 		
 		Button btn = (Button) (mView.findViewById(R.id.btToSignal));
@@ -36,13 +34,19 @@ public class BikeInfoWindow extends DefaultInfoWindow
 		{
 			public void onClick(View v)
 			{
-				Intent detailsIntent = new Intent(mContext,
-						SignalActivity.class);
-				detailsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-				detailsIntent.putExtra("bike", bike);
-
-				mContext.startActivity(detailsIntent);
+//				Intent detailsIntent = new Intent(mContext,
+//						SignalActivity.class);
+//				detailsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//
+//				detailsIntent.putExtra("bike", bike);
+//
+//				mContext.startActivity(detailsIntent);
+				
+				SignalActivity detailsFragment = SignalActivity.newInstance(bike);
+				FragmentTransaction transaction1 = fragmentManager.beginTransaction();
+				transaction1.replace(R.id.content_frame, detailsFragment);
+				transaction1.addToBackStack(null);
+				transaction1.commit();
 			}
 		});
 	}

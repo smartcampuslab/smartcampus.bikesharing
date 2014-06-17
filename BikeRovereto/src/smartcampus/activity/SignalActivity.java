@@ -1,76 +1,143 @@
 package smartcampus.activity;
 
 import smartcampus.model.Bike;
+import smartcampus.model.Station;
+import smartcampus.util.ReportsAdapter;
+import smartcampus.util.Tools;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.DataSetObserver;
+import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
-public class SignalActivity extends ActionBarActivity
+public class SignalActivity extends Fragment
 {
-	Bike bike;
-	TextView txtID;
+	private Bike bike;
+	private TextView txtID;
+	private TextView distance;
+	private ListView mList;
+	private LocationManager mLocationManager;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState)
+	public static SignalActivity newInstance(Bike bike)
 	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_signal);
+		SignalActivity fragment = new SignalActivity();
+		Bundle bundle = new Bundle();
+		bundle.putParcelable("bike", bike);
+		fragment.setArguments(bundle);
 
-		bike = getIntent().getExtras().getParcelable("bike");
-
-		txtID = (TextView) findViewById(R.id.bikeId);
-		
-		txtID.setText("ID: " + bike.getId());
+		return fragment;
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState)
 	{
+		View rootView = inflater.inflate(R.layout.activity_signal, container,
+				false);
+		View header = inflater.inflate(R.layout.activity_signal_header, null);
 
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.signal, menu);
-		return true;
+		txtID = (TextView) header.findViewById(R.id.txtId);
+		distance = (TextView) header.findViewById(R.id.distance);
+
+		bike = getArguments().getParcelable("bike");
+
+		txtID.setText("ID: " + bike.getId());
+		distance.setText(Tools.formatDistance(bike.getDistance()));
+		mList = (ListView) rootView.findViewById(R.id.signal);
+		mList.addHeaderView(header, null, false);
+
+		distance.setText(Tools.formatDistance(bike.getDistance()));
+		final ReportsAdapter ra = new ReportsAdapter(getActivity(), 0,
+				bike.getReports());
+		
+		mList.setAdapter(new ReportsAdapter(getActivity(), 0, bike
+				.getReports()));
+
+		distance.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View v)
+			{
+				Intent i = new Intent(Intent.ACTION_VIEW, Uri
+						.parse("http://maps.google.com/maps?daddr="
+								+ bike.getLatitudeDegree() + ","
+								+ bike.getLongitudeDegree()));
+				startActivity(i);
+			}
+		});
+		mLocationManager = (LocationManager) getActivity().getSystemService(
+				getActivity().LOCATION_SERVICE);
+
+		setHasOptionsMenu(true);
+		return rootView;
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+	{
+		inflater.inflate(R.menu.signal, menu);
+		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings)
+		switch (id)
 		{
-			return true;
+		case R.id.action_add_report:
+			addReport();
+			break;
+		case R.id.action_settings:
+			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-	public static class PlaceholderFragment extends Fragment
+	private void addReport()
 	{
+		View dialogContent = getActivity().getLayoutInflater().inflate(
+				R.layout.report_dialog, null);
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-		public PlaceholderFragment()
-		{
-		}
+		builder.setTitle(getString(R.string.report_in) + " " + bike.getId());
+		builder.setPositiveButton(R.string.report,
+				new DialogInterface.OnClickListener()
+				{
+					public void onClick(DialogInterface dialog, int id)
+					{
+						// TODO: implement report
+					}
+				});
+		builder.setNegativeButton(android.R.string.cancel,
+				new DialogInterface.OnClickListener()
+				{
+					public void onClick(DialogInterface dialog, int id)
+					{
+					}
+				});
+		builder.setView(dialogContent);
+		AlertDialog dialog = builder.create();
 
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState)
-		{
-			View rootView = inflater.inflate(R.layout.fragment_signal,
-					container, false);
-			return rootView;
-		}
+		dialog.show();
+
 	}
 
 }

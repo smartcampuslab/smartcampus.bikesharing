@@ -78,6 +78,7 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 				"PIAZZA ROSMINI - via boh", 6));
 
 		bikes.add(new Bike(new GeoPoint(45.924255, 11.064859), "0"));
+		bikes.get(0).addReport("test");
 		stations.get(0).setUsedSlots(11);
 		stations.get(0).addReport("segnalazione 1");
 		stations.get(0).addReport("segnalazione 2");

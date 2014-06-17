@@ -14,10 +14,18 @@ public class Bike implements Parcelable
 
 	private String id;
 
+	private int nReports;
+	private ArrayList<String> reports;
+	public static final int DISTANCE_NOT_VALID = -1;
+	private int distance = DISTANCE_NOT_VALID; // >=0 only when distance is
+												// initialized
+
 	public Bike(GeoPoint position, String id)
 	{
 		this.position = position;
 		this.id = id;
+		this.nReports = 0;
+		reports = new ArrayList<String>();
 	}
 
 	// parcelable stuff
@@ -25,6 +33,8 @@ public class Bike implements Parcelable
 	{
 		position = new GeoPoint(source.readInt(), source.readInt());
 		id = source.readString();
+		nReports = source.readInt();
+		reports = source.createStringArrayList();
 	}
 
 	public static final Parcelable.Creator<Bike> CREATOR = new Creator<Bike>()
@@ -53,10 +63,11 @@ public class Bike implements Parcelable
 	public void writeToParcel(Parcel dest, int flags)
 	{
 
-
 		dest.writeInt(position.getLatitudeE6());
 		dest.writeInt(position.getLongitudeE6());
 		dest.writeString(id);
+		dest.writeInt(nReports);
+		dest.writeStringList(reports);
 	}
 
 	// getters and setters
@@ -69,7 +80,7 @@ public class Bike implements Parcelable
 	{
 		return id;
 	}
-	
+
 	public static BoundingBoxE6 getBoundingBox(ArrayList<Bike> bikes)
 	{
 		// the four edges of the bounding box
@@ -102,4 +113,44 @@ public class Bike implements Parcelable
 		return new BoundingBoxE6(north, east, south, west);
 	}
 
+	public void addReport(String report)
+	{
+		reports.add(report);
+		nReports++;
+	}
+
+	public String getReport(int position)
+	{
+		return reports.get(position);
+	}
+
+	public int getNReports()
+	{
+		return nReports;
+	}
+
+	public ArrayList<String> getReports()
+	{
+		return reports;
+	}
+
+	public int getDistance()
+	{
+		return distance;
+	}
+
+	public void setDistance(int distance)
+	{
+		this.distance = distance;
+	}
+
+	public double getLatitudeDegree()
+	{
+		return position.getLatitudeE6() / 1E6;
+	}
+
+	public double getLongitudeDegree()
+	{
+		return position.getLongitudeE6() / 1E6;
+	}
 }
