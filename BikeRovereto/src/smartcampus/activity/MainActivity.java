@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import smartcampus.activity.StationsActivity.OnStationSelectListener;
 import smartcampus.model.Bike;
 import smartcampus.model.Station;
+import smartcampus.util.NavigationDrawerAdapter;
 import smartcampus.util.Tools;
 import android.location.Location;
 import android.location.LocationListener;
@@ -29,6 +30,7 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 	
 	private CharSequence mTitle;
 	private String[] navTitles;
+	private int[] navIcons;
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
@@ -93,6 +95,7 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 		transaction.commit();
 			
 		navTitles= getResources().getStringArray(R.array.navTitles);
+		navIcons = new int[] {R.drawable.ic_map, R.drawable.ic_station};
 		
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -112,8 +115,7 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         // Set the adapter for the list view
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, navTitles));
+        mDrawerList.setAdapter(new NavigationDrawerAdapter(this, navTitles, navIcons));
         // Set the list's click listener
         mDrawerList.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
 
@@ -124,15 +126,15 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 				case 0:					
 					OsmMap mapFragment = OsmMap.newInstance(stations, bikes);
 					FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+					transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
 					transaction.replace(R.id.content_frame, mapFragment);
-					transaction.addToBackStack(null);
 					transaction.commit();
 					break;
 				default:
 					StationsActivity stationsFragment = StationsActivity.newInstance(stations);
 					FragmentTransaction transaction1 = getSupportFragmentManager().beginTransaction();
+					transaction1.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
 					transaction1.replace(R.id.content_frame, stationsFragment);
-					transaction1.addToBackStack(null);
 					transaction1.commit();
 					break;
 				}
@@ -168,6 +170,7 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 		Log.d("station selected", station.getName());
 		StationDetails detailsFragment = StationDetails.newInstance(station);
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+		transaction.setCustomAnimations(R.anim.slide_left, 0, 0, R.anim.slide_right);
 		transaction.replace(R.id.content_frame, detailsFragment);
 		transaction.addToBackStack(null);
 		transaction.commit();		
@@ -202,7 +205,8 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 	    public void onLocationChanged(final Location location) {
 	        myLocation=new GeoPoint(location);
 	        updateDistances();
-	        mCallback.onPositionAquired();
+	        if (mCallback!=null)
+	        	mCallback.onPositionAquired();
 	    }
 
 		@Override
