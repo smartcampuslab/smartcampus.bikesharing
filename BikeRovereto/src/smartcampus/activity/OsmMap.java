@@ -57,10 +57,6 @@ public class OsmMap extends Fragment
 
 	// marker for the bikes
 	MarkerOverlay<BikeOverlayItem> bikesMarkersOverlay;
-
-	// switch
-	ToggleButton mToggle;
-	
 	
 	public OsmMap(){}
 	
@@ -84,7 +80,6 @@ public class OsmMap extends Fragment
 		View rootView = inflater.inflate(R.layout.activity_osm_map, container,false);
 		// get the mapView and the controller
 		mapView = (MapView) rootView.findViewById(R.id.map_view);
-		//mToggle = (ToggleButton) findViewById(R.id.togglebutton); TODO: implement
 		
 		mapController = mapView.getController();
 
@@ -110,16 +105,18 @@ public class OsmMap extends Fragment
 		
 
 		mapView.setScrollableAreaLimit(getBoundingBox());
+		
+		setHasOptionsMenu(true);
+		
 		return rootView;
 	}
 	
 	@Override
-	public void onStart() {
-		super.onStart();
-		Log.d("wtf!","ineedzoom!");
-		mapView.zoomToBoundingBox(getBoundingBox());
-		mapView.setMinZoomLevel(mapView.getZoomLevel());
+	public void onActivityCreated(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onActivityCreated(savedInstanceState);
 	}
+	
 	
 /* TODO: what?!?
 	@Override
@@ -141,7 +138,29 @@ public class OsmMap extends Fragment
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		super.onOptionsItemSelected(item);		
+		super.onOptionsItemSelected(item);	
+		switch (item.getItemId()) {
+		case R.id.myswitch:
+			item.setChecked(!item.isChecked());
+			if (item.isChecked())
+			{
+				// close the bubble relative to the bikesMarkers if opened
+				bikesMarkersOverlay.hideBubble();
+
+				// remove the anarchic bikes
+				mapView.getOverlays().remove(bikesMarkersOverlay);
+				mapView.invalidate();
+			}
+			else
+			{
+				mapView.getOverlays().add(bikesMarkersOverlay);
+				mapView.invalidate();
+			}
+			break;
+		default:
+			break;
+		}
+			
 		return true;
 	}
 
@@ -228,7 +247,7 @@ public class OsmMap extends Fragment
 						ViewGroup.LayoutParams.MATCH_PARENT));
 	}
 */
-	private void setOnClickSwitch()
+	/*private void setOnClickSwitch()
 	{
 		
 		mToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
@@ -276,7 +295,7 @@ public class OsmMap extends Fragment
 			}
 		});
 
-	}
+	}*/
 
 	private BoundingBoxE6 getBoundingBox()
 	{
