@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import smartcampus.activity.StationsActivity.OnStationSelectListener;
 import smartcampus.model.Bike;
 import smartcampus.model.Station;
+import smartcampus.util.NavigationDrawerAdapter;
 import smartcampus.util.Tools;
 import android.location.Location;
 import android.location.LocationListener;
@@ -24,11 +25,13 @@ import android.widget.ListView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 
-public class MainActivity extends ActionBarActivity implements OnStationSelectListener{
+public class MainActivity extends ActionBarActivity implements
+		OnStationSelectListener
+{
 
-	
 	private CharSequence mTitle;
 	private String[] navTitles;
+	private int[] navIcons;
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
@@ -37,20 +40,23 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 	private LocationManager mLocationManager;
 	private GeoPoint myLocation;
 	private OnPositionAquiredListener mCallback;
-	
-	public interface OnPositionAquiredListener{
-        public void onPositionAquired();
+
+	public interface OnPositionAquiredListener
+	{
+		public void onPositionAquired(GeoPoint myLocation);
 	}
-	
-	public void setOnPositionAquiredListener(OnPositionAquiredListener onPositionAquiredListener){
-		this.mCallback=onPositionAquiredListener;
+
+	public void setOnPositionAquiredListener(OnPositionAquiredListener onPositionAquiredListener)
+	{
+		this.mCallback = onPositionAquiredListener;
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		stations = new ArrayList<Station>();
 		bikes = new ArrayList<Bike>();
 
@@ -86,37 +92,80 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 		stations.get(1).setUsedSlots(12);
 		stations.get(2).setUsedSlots(6);
 		stations.get(3).setUsedSlots(5);
-		
+
 		OsmMap mainFragment = OsmMap.newInstance(stations, bikes);
-		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+		FragmentTransaction transaction = getSupportFragmentManager()
+				.beginTransaction();
 		transaction.replace(R.id.content_frame, mainFragment);
 		transaction.commit();
+
+		navTitles = getResources().getStringArray(R.array.navTitles);
+
 			
 		navTitles= getResources().getStringArray(R.array.navTitles);
+		navIcons = new int[] {R.drawable.ic_map, R.drawable.ic_station};
 		
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-        mDrawerToggle = new ActionBarDrawerToggle(
-        		this,                  /* host Activity */
-                mDrawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
-                R.string.drawer_open,  /* "open drawer" description */
-                R.string.drawer_close  /* "close drawer" description */
-                ) {
-        };
+		mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
+		mDrawerLayout, /* DrawerLayout object */
+		R.drawable.ic_drawer, /* nav drawer icon to replace 'Up' caret */
+		R.string.drawer_open, /* "open drawer" description */
+		R.string.drawer_close /* "close drawer" description */
+		)
+		{
+		};
 
-        // Set the drawer toggle as the DrawerListener
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+		// Set the drawer toggle as the DrawerListener
+		mDrawerLayout.setDrawerListener(mDrawerToggle);
 
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
+		// Set the adapter for the list view
+		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+				android.R.layout.simple_list_item_1, navTitles));
+		// Set the list's click listener
+		mDrawerList
+				.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener()
+				{
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         // Set the adapter for the list view
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, navTitles));
+        mDrawerList.setAdapter(new NavigationDrawerAdapter(this, navTitles, navIcons));
         // Set the list's click listener
         mDrawerList.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
 
+					@Override
+					public void onItemClick(AdapterView<?> arg0, View arg1,
+							int position, long arg3)
+					{
+						switch (position)
+						{
+						case 0:
+							OsmMap mapFragment = OsmMap.newInstance(stations,
+									bikes);
+							FragmentTransaction transaction = getSupportFragmentManager()
+									.beginTransaction();
+							transaction
+									.replace(R.id.content_frame, mapFragment);
+							transaction.addToBackStack(null);
+							transaction.commit();
+							break;
+						default:
+							StationsActivity stationsFragment = StationsActivity
+									.newInstance(stations);
+							FragmentTransaction transaction1 = getSupportFragmentManager()
+									.beginTransaction();
+							transaction1.replace(R.id.content_frame,
+									stationsFragment);
+							transaction1.addToBackStack(null);
+							transaction1.commit();
+							break;
+						}
+						mDrawerLayout.closeDrawers();
+					}
+				});
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 					long arg3) {
@@ -124,15 +173,15 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 				case 0:					
 					OsmMap mapFragment = OsmMap.newInstance(stations, bikes);
 					FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+					transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
 					transaction.replace(R.id.content_frame, mapFragment);
-					transaction.addToBackStack(null);
 					transaction.commit();
 					break;
 				default:
 					StationsActivity stationsFragment = StationsActivity.newInstance(stations);
 					FragmentTransaction transaction1 = getSupportFragmentManager().beginTransaction();
+					transaction1.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
 					transaction1.replace(R.id.content_frame, stationsFragment);
-					transaction1.addToBackStack(null);
 					transaction1.commit();
 					break;
 				}
@@ -141,84 +190,100 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 		});
 
 		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-		
+
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-	
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+
 		getMenuInflater().inflate(R.menu.main, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		if (mDrawerToggle.onOptionsItemSelected(item)) {
-		       return true;
-		   }
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		if (mDrawerToggle.onOptionsItemSelected(item))
+		{
+			return true;
+		}
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if (id == R.id.action_settings)
+		{
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
-	public void onStationSelected(Station station) {
+	public void onStationSelected(Station station)
+	{
 		Log.d("station selected", station.getName());
-		StationDetails detailsFragment = StationDetails.newInstance(station);
-		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+		StationDetails detailsFragment = StationDetails.newInstance(station, myLocation);
+		FragmentTransaction transaction = getSupportFragmentManager()
+				.beginTransaction();
+		transaction.setCustomAnimations(R.anim.slide_left, 0, 0, R.anim.slide_right);
 		transaction.replace(R.id.content_frame, detailsFragment);
 		transaction.addToBackStack(null);
-		transaction.commit();		
+		transaction.commit();
 	}
 
-	
 	@Override
-	protected void onStart() {
+	protected void onStart()
+	{
 		super.onStart();
-		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Tools.LOCATION_REFRESH_TIME,
-				Tools.LOCATION_REFRESH_DISTANCE, mLocationListener);
+		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+				Tools.LOCATION_REFRESH_TIME, Tools.LOCATION_REFRESH_DISTANCE,
+				mLocationListener);
 	}
-	
+
 	@Override
-	protected void onPause() {
+	protected void onPause()
+	{
 		super.onPause();
 		mLocationManager.removeUpdates(mLocationListener);
 	}
 
 	private void updateDistances()
 	{
-		for (Station station : stations){
-			station.setDistance(myLocation.distanceTo(station.getPosition()));			
+		for (Station station : stations)
+		{
+			station.setDistance(myLocation.distanceTo(station.getPosition()));
 		}
 	}
-	
-	
-	private final LocationListener mLocationListener = new LocationListener() {
-	    
+
+	private final LocationListener mLocationListener = new LocationListener()
+	{
 
 		@Override
+		public void onLocationChanged(final Location location)
+		{
+			myLocation = new GeoPoint(location);
+			updateDistances();
+			mCallback.onPositionAquired(myLocation);
+		}
 	    public void onLocationChanged(final Location location) {
 	        myLocation=new GeoPoint(location);
 	        updateDistances();
-	        mCallback.onPositionAquired();
+	        if (mCallback!=null)
+	        	mCallback.onPositionAquired();
 	    }
 
 		@Override
-		public void onProviderDisabled(String arg0) {			
+		public void onProviderDisabled(String arg0)
+		{
 		}
 
 		@Override
-		public void onProviderEnabled(String arg0) {			
+		public void onProviderEnabled(String arg0)
+		{
 		}
 
 		@Override
-		public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+		public void onStatusChanged(String arg0, int arg1, Bundle arg2)
+		{
 		}
 	};
-
-
-	
 
 }

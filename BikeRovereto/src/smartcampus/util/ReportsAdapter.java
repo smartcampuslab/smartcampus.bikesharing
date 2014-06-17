@@ -26,7 +26,6 @@ public class ReportsAdapter extends ArrayAdapter<String>
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
-		Log.d("debug", "qa");
 		ViewHolder viewHolder;
 
 		if (convertView == null)

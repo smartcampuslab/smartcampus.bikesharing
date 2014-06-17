@@ -15,12 +15,13 @@ public class Station implements Parcelable
 
 	private int nBikes;
 	private int maxSlots;
-	
+
 	private int nReports;
 	private ArrayList<String> reports;
 	public static final int DISTANCE_NOT_VALID = -1;
-	private int distance=DISTANCE_NOT_VALID; //>=0 only when distance is initialized
-	
+	private int distance = DISTANCE_NOT_VALID; // >=0 only when distance is
+												// initialized
+
 	public Station(GeoPoint position, String nameAndStreet, int maxSlots)
 	{
 		this.position = position;
@@ -122,11 +123,14 @@ public class Station implements Parcelable
 	{
 		return new GeoPoint(position.getLatitudeE6(), position.getLongitudeE6());
 	}
-	
-	public double getLatitudeDegree(){
+
+	public double getLatitudeDegree()
+	{
 		return position.getLatitudeE6() / 1E6;
 	}
-	public double getLongitudeDegree(){
+
+	public double getLongitudeDegree()
+	{
 		return position.getLongitudeE6() / 1E6;
 	}
 
@@ -149,8 +153,6 @@ public class Station implements Parcelable
 	{
 		return 0; // TODO: add unavailable slots
 	}
-	
-	
 
 	public double getBikesPresentPercentage()
 	{
@@ -173,34 +175,43 @@ public class Station implements Parcelable
 
 	public int getNSlotsUsed()
 	{
-		return nBikes; //Bici presenti nella stazione
+		return nBikes; // Bici presenti nella stazione
 	}
 
 	public int getNSlotsEmpty()
 	{
-		return maxSlots - nBikes;  //Bici mancanti nella stazione
+		return maxSlots - nBikes; // Bici mancanti nella stazione
 	}
-	
-	public void addReport(String report){
+
+	public void addReport(String report)
+	{
 		reports.add(report);
 		nReports++;
 	}
-	public String getReport(int position){
+
+	public String getReport(int position)
+	{
 		return reports.get(position);
 	}
-	public int getNReports(){
+
+	public int getNReports()
+	{
 		return nReports;
 	}
-	public ArrayList<String> getReports(){
+
+	public ArrayList<String> getReports()
+	{
 		return reports;
 	}
+
 	public int getDistance()
 	{
 		return distance;
 	}
+
 	public void setDistance(int distance)
 	{
-		this.distance=distance;
+		this.distance = distance;
 	}
-	
+
 }

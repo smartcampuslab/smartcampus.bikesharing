@@ -2,6 +2,7 @@ package smartcampus.activity;
 
 import java.util.ArrayList;
 
+import smartcampus.activity.MainActivity.OnPositionAquiredListener;
 import smartcampus.model.Bike;
 import smartcampus.model.Station;
 import smartcampus.util.BikeInfoWindow;
@@ -13,7 +14,6 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import eu.trentorise.smartcampus.bikerovereto.R;
 import eu.trentorise.smartcampus.osm.android.util.BoundingBoxE6;
+import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 import eu.trentorise.smartcampus.osm.android.views.MapController;
 import eu.trentorise.smartcampus.osm.android.views.MapView;
 import eu.trentorise.smartcampus.osm.android.views.overlay.MyLocationOverlay;
@@ -50,11 +51,8 @@ public class OsmMap extends Fragment
 
 	// marker for the bikes
 	MarkerOverlay<BikeOverlayItem> bikesMarkersOverlay;
-
-	public OsmMap()
-	{
-	}
-
+	
+	GeoPoint currentLocation;
 	public static OsmMap newInstance(ArrayList<Station> stations,
 			ArrayList<Bike> bikes)
 	{
@@ -71,6 +69,18 @@ public class OsmMap extends Fragment
 	{
 		stations = getArguments().getParcelableArrayList("stations");
 		bikes = getArguments().getParcelableArrayList("bikes");
+		
+		MainActivity a = (MainActivity) getActivity();
+		a.setOnPositionAquiredListener(new OnPositionAquiredListener()
+		{
+			
+			@Override
+			public void onPositionAquired(GeoPoint myLocation)
+			{
+				currentLocation = myLocation;
+			}
+		});
+		
 		super.onCreate(savedInstanceState);
 	}
 
@@ -106,7 +116,7 @@ public class OsmMap extends Fragment
 
 		mapView.setScrollableAreaLimit(getBoundingBox(true));
 		setHasOptionsMenu(true);
-
+		
 		return rootView;
 	}
 
@@ -164,7 +174,6 @@ public class OsmMap extends Fragment
 
 		return true;
 	}
-
 	private void addMarkers()
 	{
 		addBikesMarkers();
@@ -187,7 +196,7 @@ public class OsmMap extends Fragment
 			markers.get(i).setMarker(markerImage);
 		}
 
-		bikesMarkersOverlay = new MarkerOverlay<BikeOverlayItem>(getActivity(),
+		bikesMarkersOverlay= new MarkerOverlay<BikeOverlayItem>(getActivity(),
 				markers, mapView, new BikeInfoWindow(mapView, getFragmentManager()));
 
 		mapView.getOverlays().add(bikesMarkersOverlay);
@@ -225,7 +234,7 @@ public class OsmMap extends Fragment
 
 		stationsMarkersOverlay = new MarkerOverlay<StationOverlayItem>(
 				getActivity(), markers, mapView, new CustomInfoWindow(mapView,
-						getFragmentManager()));
+						getFragmentManager(), currentLocation));
 
 		mapView.getOverlays().add(stationsMarkersOverlay);
 	}
@@ -295,4 +304,5 @@ public class OsmMap extends Fragment
 						: bikesBoundingBox.getLonWestE6() - frame);
 		return toRtn;
 	}
+	
 }
