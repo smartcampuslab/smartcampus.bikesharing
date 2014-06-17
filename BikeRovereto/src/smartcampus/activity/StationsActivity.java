@@ -148,7 +148,6 @@ public class StationsActivity extends Fragment
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-
 		switch (item.getItemId())
 		{
 		case R.id.sort_distance:
