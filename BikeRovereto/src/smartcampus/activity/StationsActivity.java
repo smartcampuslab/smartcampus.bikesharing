@@ -95,7 +95,7 @@ public class StationsActivity extends Fragment
 				{
 
 					@Override
-					public void onPositionAquired(GeoPoint myLocation)
+					public void onPositionAquired()
 					{
 						stationsAdapter.notifyDataSetChanged();
 					}
@@ -110,7 +110,7 @@ public class StationsActivity extends Fragment
 		View rootView = inflater.inflate(R.layout.stations_main, container,
 				false);
 
-		stationsAdapter = new StationsAdapter(getActivity(), 0, mStations);
+		stationsAdapter = new StationsAdapter(getActivity(), 0, mStations, ((MainActivity)getActivity()).getCurrentLocation());
 
 		mList = (ListView) rootView.findViewById(R.id.stations_list);
 		mList.setDivider(new ColorDrawable(Color.TRANSPARENT));
@@ -148,6 +148,7 @@ public class StationsActivity extends Fragment
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
+		item.setChecked(!item.isChecked());
 		switch (item.getItemId())
 		{
 		case R.id.sort_distance:

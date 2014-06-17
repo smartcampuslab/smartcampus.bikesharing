@@ -2,7 +2,11 @@ package smartcampus.util;
 
 import smartcampus.model.Station;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 import android.util.TypedValue;
+import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 
 public class Tools
 {
@@ -24,6 +28,22 @@ public class Tools
 			return distance + " m";
 		else
 			return Math.round(distance / 100) / 10.0 + " KM";
+	}
+	
+	public static String getPathString(GeoPoint start, GeoPoint end)
+	{
+		String toRtn = "http://maps.google.com/maps?";
+
+		if(start != null)
+		{
+			toRtn += "saddr=" + start.getLatitudeE6() / 1E6 + "," + start.getLongitudeE6() / 1E6 ;  
+			toRtn += "&";
+		}
+		if(end != null)
+		{
+			toRtn += "daddr=" + end.getLatitudeE6() / 1E6 + "," + end.getLongitudeE6() / 1E6 ;  
+		}		
+		return toRtn;
 	}
 
 }

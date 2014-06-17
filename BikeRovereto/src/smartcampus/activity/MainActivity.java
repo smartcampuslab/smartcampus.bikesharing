@@ -42,10 +42,11 @@ public class MainActivity extends ActionBarActivity implements
 
 	public interface OnPositionAquiredListener
 	{
-		public void onPositionAquired(GeoPoint myLocation);
+		public void onPositionAquired();
 	}
 
-	public void setOnPositionAquiredListener(
+	public void setOnPositionAquiredListener
+	(
 			OnPositionAquiredListener onPositionAquiredListener)
 	{
 		this.mCallback = onPositionAquiredListener;
@@ -101,10 +102,10 @@ public class MainActivity extends ActionBarActivity implements
 
 		navTitles = getResources().getStringArray(R.array.navTitles);
 
-			
-		navTitles= getResources().getStringArray(R.array.navTitles);
-		navIcons = new int[] {R.drawable.ic_map, R.drawable.ic_station};
-		
+		navTitles = getResources().getStringArray(R.array.navTitles);
+		navIcons = new int[]
+		{ R.drawable.ic_map, R.drawable.ic_station };
+
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -121,32 +122,53 @@ public class MainActivity extends ActionBarActivity implements
 		// Set the drawer toggle as the DrawerListener
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        // Set the adapter for the list view
-        mDrawerList.setAdapter(new NavigationDrawerAdapter(this, navTitles, navIcons));
-        // Set the list's click listener
-        mDrawerList.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-				switch (position) {
-				case 0:					
-					OsmMap mapFragment = OsmMap.newInstance(stations, bikes);
-					FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-					transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
-					transaction.replace(R.id.content_frame, mapFragment);
-					transaction.commit();
-					break;
-				default:
-					StationsActivity stationsFragment = StationsActivity.newInstance(stations);
-					FragmentTransaction transaction1 = getSupportFragmentManager().beginTransaction();
-					transaction1.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
-					transaction1.replace(R.id.content_frame, stationsFragment);
-					transaction1.commit();
-					break;
-				}
-				mDrawerLayout.closeDrawers();
-			}
-		});
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
+		// Set the adapter for the list view
+		mDrawerList.setAdapter(new NavigationDrawerAdapter(this, navTitles,
+				navIcons));
+		// Set the list's click listener
+		mDrawerList
+				.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener()
+				{
+					@Override
+					public void onItemClick(AdapterView<?> arg0, View arg1,
+							int position, long arg3)
+					{
+						switch (position)
+						{
+						case 0:
+							OsmMap mapFragment = OsmMap.newInstance(stations,
+									bikes);
+							FragmentTransaction transaction = getSupportFragmentManager()
+									.beginTransaction();
+							transaction.setCustomAnimations(
+									android.R.anim.fade_in,
+									android.R.anim.fade_out,
+									android.R.anim.fade_in,
+									android.R.anim.fade_out);
+							transaction
+									.replace(R.id.content_frame, mapFragment);
+							transaction.commit();
+							break;
+						default:
+							StationsActivity stationsFragment = StationsActivity
+									.newInstance(stations);
+							FragmentTransaction transaction1 = getSupportFragmentManager()
+									.beginTransaction();
+							transaction1.setCustomAnimations(
+									android.R.anim.fade_in,
+									android.R.anim.fade_out,
+									android.R.anim.fade_in,
+									android.R.anim.fade_out);
+							transaction1.replace(R.id.content_frame,
+									stationsFragment);
+							transaction1.commit();
+							break;
+						}
+						mDrawerLayout.closeDrawers();
+					}
+				});
 		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 	}
 
@@ -197,6 +219,10 @@ public class MainActivity extends ActionBarActivity implements
 		{
 			station.setDistance(myLocation.distanceTo(station.getPosition()));
 		}
+		for (Bike bike : bikes)
+		{
+			bike.setDistance(myLocation.distanceTo(bike.getPosition()));
+		}
 	}
 
 	private final LocationListener mLocationListener = new LocationListener()
@@ -207,7 +233,7 @@ public class MainActivity extends ActionBarActivity implements
 			myLocation = new GeoPoint(location);
 			updateDistances();
 			if (mCallback != null)
-				mCallback.onPositionAquired(myLocation);
+				mCallback.onPositionAquired();
 		}
 
 		@Override
@@ -225,4 +251,9 @@ public class MainActivity extends ActionBarActivity implements
 		{
 		}
 	};
+	
+	public GeoPoint getCurrentLocation()
+	{
+		return myLocation;
+	}
 }

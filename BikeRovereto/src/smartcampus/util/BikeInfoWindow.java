@@ -6,7 +6,7 @@ package smartcampus.util;
 //import org.osmdroid.util.GeoPoint;
 //import org.osmdroid.views.MapView;
 
-import smartcampus.activity.SignalActivity;
+import smartcampus.activity.SignalView;
 import smartcampus.model.Bike;
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
@@ -42,7 +42,7 @@ public class BikeInfoWindow extends DefaultInfoWindow
 //
 //				mContext.startActivity(detailsIntent);
 				
-				SignalActivity detailsFragment = SignalActivity.newInstance(bike);
+				SignalView detailsFragment = SignalView.newInstance(bike);
 				FragmentTransaction transaction1 = fragmentManager.beginTransaction();
 				transaction1.replace(R.id.content_frame, detailsFragment);
 				transaction1.addToBackStack(null);

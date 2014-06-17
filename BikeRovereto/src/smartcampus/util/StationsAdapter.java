@@ -2,29 +2,34 @@ package smartcampus.util;
 
 import java.util.ArrayList;
 
+import smartcampus.activity.MainActivity;
+import smartcampus.activity.MainActivity.OnPositionAquiredListener;
 import smartcampus.model.Station;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikerovereto.R;
+import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 
 public class StationsAdapter extends ArrayAdapter<Station>
 {
 
 	ArrayList<Station> mStations;
-
+	GeoPoint currentLocation;
 	public StationsAdapter(Context context, int resource,
-			ArrayList<Station> stations)
+			ArrayList<Station> stations, GeoPoint currentLocation)
 	{
 		super(context, resource, stations);
 		mStations = stations;
+		this.currentLocation = currentLocation;
 	}
 
 	@Override
@@ -71,9 +76,7 @@ public class StationsAdapter extends ArrayAdapter<Station>
 			public void onClick(View v)
 			{
 				Intent i = new Intent(Intent.ACTION_VIEW, Uri
-						.parse("http://maps.google.com/maps?daddr="
-								+ thisStation.getLatitudeDegree() + ","
-								+ thisStation.getLongitudeDegree()));
+						.parse(Tools.getPathString(currentLocation, thisStation.getPosition())));
 				getContext().startActivity(i);
 			}
 		});
