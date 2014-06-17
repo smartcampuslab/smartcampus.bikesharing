@@ -127,6 +127,7 @@ public class StationsActivity extends Fragment
 			}
 		});
 		stationsAdapter.notifyDataSetChanged();
+		setHasOptionsMenu(true);
 		return rootView;
 	}
 

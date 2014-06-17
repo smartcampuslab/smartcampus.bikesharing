@@ -16,19 +16,15 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 
 public class MainActivity extends ActionBarActivity implements OnStationSelectListener{
 
-	
-	private CharSequence mTitle;
 	private String[] navTitles;
 	private int[] navIcons;
 	private DrawerLayout mDrawerLayout;
@@ -100,6 +96,9 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        
         mDrawerToggle = new ActionBarDrawerToggle(
         		this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
@@ -112,8 +111,6 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
         // Set the adapter for the list view
         mDrawerList.setAdapter(new NavigationDrawerAdapter(this, navTitles, navIcons));
         // Set the list's click listener
@@ -141,28 +138,8 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 				mDrawerLayout.closeDrawers();
 			}
 		});
-
 		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 		
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-	
-		getMenuInflater().inflate(R.menu.main, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		if (mDrawerToggle.onOptionsItemSelected(item)) {
-		       return true;
-		   }
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
@@ -174,6 +151,14 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 		transaction.replace(R.id.content_frame, detailsFragment);
 		transaction.addToBackStack(null);
 		transaction.commit();		
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (mDrawerToggle.onOptionsItemSelected(item)) {
+		      return true;
+		    }
+		return super.onOptionsItemSelected(item);
 	}
 
 	
