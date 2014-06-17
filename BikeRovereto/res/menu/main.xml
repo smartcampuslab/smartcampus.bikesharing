@@ -4,8 +4,8 @@
     tools:context="com.example.openstreetmap.MainActivity" >
 	
  	<item android:id="@+id/myswitch" 
-         android:titleCondensed="Persist"
-         android:title="Persist" 
+         android:titleCondensed="e-motion"
+         android:title="Solo e-motion" 
          android:icon="@android:drawable/ic_menu_preferences" 
          android:checkable="true" />
 </menu>
