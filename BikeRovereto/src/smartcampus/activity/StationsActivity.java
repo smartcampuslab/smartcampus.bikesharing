@@ -9,6 +9,7 @@ import smartcampus.model.Station;
 import smartcampus.util.StationsAdapter;
 import smartcampus.util.Tools;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
