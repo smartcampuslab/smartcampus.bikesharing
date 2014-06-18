@@ -25,15 +25,14 @@ public class CustomInfoWindow extends DefaultInfoWindow
 	//Context mContext;
 	MapView myMapView;
 	Station station;
-	GeoPoint currentLocation;
+	//GeoPoint currentLocation;
 
-	public CustomInfoWindow(MapView mapView, final FragmentManager fragmentManager, GeoPoint myLocation)
+	public CustomInfoWindow(MapView mapView, final FragmentManager fragmentManager)
 	{
 		super(R.layout.info_bubble, mapView);
 		//mContext = context;
 		myMapView = mapView;
 		Button btn = (Button) (mView.findViewById(R.id.btToDetails));
-		this.currentLocation = myLocation;
 		btn.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
@@ -45,7 +44,7 @@ public class CustomInfoWindow extends DefaultInfoWindow
 //
 //				mContext.startActivity(detailsIntent);
 				
-				StationDetails detailsFragment = StationDetails.newInstance(station, currentLocation);
+				StationDetails detailsFragment = StationDetails.newInstance(station);
 				FragmentTransaction transaction1 = fragmentManager.beginTransaction();
 				transaction1.replace(R.id.content_frame, detailsFragment);
 				transaction1.addToBackStack(null);

@@ -111,7 +111,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/button"
             android:text="@string/to_details"
-            android:layout_margin="5dp" />
+            android:layout_margin="5dp"
+            android:textColor="#ffffff" />
    
     </LinearLayout>
 

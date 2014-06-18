@@ -37,12 +37,11 @@ public class StationDetails extends Fragment
 	private TextView availableBike, availableSlots;
 	private TextView distance;
 
-	public static StationDetails newInstance(Station station, GeoPoint currentLocation)
+	public static StationDetails newInstance(Station station)
 	{
 		StationDetails fragment = new StationDetails();
 		Bundle bundle = new Bundle();
 		bundle.putParcelable("station", station);
-		bundle.putParcelable("position", currentLocation);
 		fragment.setArguments(bundle);
 
 		return fragment;

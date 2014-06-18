@@ -28,7 +28,6 @@ public class MainActivity extends ActionBarActivity implements
 		OnStationSelectListener
 {
 
-
 	private String[] navTitles;
 	private int[] navIcons;
 	private DrawerLayout mDrawerLayout;
@@ -45,8 +44,7 @@ public class MainActivity extends ActionBarActivity implements
 		public void onPositionAquired();
 	}
 
-	public void setOnPositionAquiredListener
-	(
+	public void setOnPositionAquiredListener(
 			OnPositionAquiredListener onPositionAquiredListener)
 	{
 		this.mCallback = onPositionAquiredListener;
@@ -109,15 +107,14 @@ public class MainActivity extends ActionBarActivity implements
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
 
 		mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
-			mDrawerLayout, /* DrawerLayout object */
-			R.drawable.ic_drawer, /* nav drawer icon to replace 'Up' caret */
-			R.string.drawer_open, /* "open drawer" description */
-			R.string.drawer_close /* "close drawer" description */
+		mDrawerLayout, /* DrawerLayout object */
+		R.drawable.ic_drawer, /* nav drawer icon to replace 'Up' caret */
+		R.string.drawer_open, /* "open drawer" description */
+		R.string.drawer_close /* "close drawer" description */
 		);
 		// Set the drawer toggle as the DrawerListener
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -186,8 +183,7 @@ public class MainActivity extends ActionBarActivity implements
 	public void onStationSelected(Station station)
 	{
 		Log.d("station selected", station.getName());
-		StationDetails detailsFragment = StationDetails.newInstance(station,
-				myLocation);
+		StationDetails detailsFragment = StationDetails.newInstance(station);
 		FragmentTransaction transaction = getSupportFragmentManager()
 				.beginTransaction();
 		transaction.setCustomAnimations(R.anim.slide_left, 0, 0,
@@ -230,6 +226,8 @@ public class MainActivity extends ActionBarActivity implements
 
 		public void onLocationChanged(final Location location)
 		{
+			Log.d("geoPoint", "setCurrentLocation");
+			Log.d("geoPoint", "setCurrentLocation NONULL");
 			myLocation = new GeoPoint(location);
 			updateDistances();
 			if (mCallback != null)
@@ -251,7 +249,7 @@ public class MainActivity extends ActionBarActivity implements
 		{
 		}
 	};
-	
+
 	public GeoPoint getCurrentLocation()
 	{
 		return myLocation;
