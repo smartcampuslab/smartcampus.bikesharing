@@ -6,11 +6,11 @@
     tools:context="smartcampus.activity.OsmMap"
     tools:ignore="MergeRootFrame" >
 
-    <eu.trentorise.smartcampus.osm.android.views.MapView
+    <org.osmdroid.views.MapView
         android:id="@+id/map_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
-    </eu.trentorise.smartcampus.osm.android.views.MapView>
+    </org.osmdroid.views.MapView>
 
     <Button
         android:id="@+id/bt_to_my_loc"

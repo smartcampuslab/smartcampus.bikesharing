@@ -5,9 +5,13 @@ package smartcampus.util;
 //import org.osmdroid.util.GeoPoint;
 //import org.osmdroid.views.MapView;
 
+import org.osmdroid.bonuspack.overlays.DefaultInfoWindow;
+import org.osmdroid.bonuspack.overlays.ExtendedOverlayItem;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+
 import smartcampus.activity.StationDetails;
 import smartcampus.model.Station;
-import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -15,10 +19,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikerovereto.R;
-import eu.trentorise.smartcampus.osm.android.bonuspack.overlays.DefaultInfoWindow;
-import eu.trentorise.smartcampus.osm.android.bonuspack.overlays.ExtendedOverlayItem;
-import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
-import eu.trentorise.smartcampus.osm.android.views.MapView;
 
 public class CustomInfoWindow extends DefaultInfoWindow
 {
@@ -54,15 +54,14 @@ public class CustomInfoWindow extends DefaultInfoWindow
 	}
 
 	@Override
-	public void open(ExtendedOverlayItem item, int offsetX, int offsetY)
+	public void open(Object object, GeoPoint position, int offsetX, int offsetY)
 	{
 		// TODO Auto-generated method stub
-		Log.d("debug2", "opened");
-		super.open(item, offsetX + 15, offsetY + 80);
+		super.open(object, position, offsetX + 15, offsetY + 80);
 	}
-
+	
 	@Override
-	public void onOpen(ExtendedOverlayItem item)
+	public void onOpen(Object item)
 	{
 		super.onOpen(item);
 
@@ -80,11 +79,11 @@ public class CustomInfoWindow extends DefaultInfoWindow
 		tEmpty.setVisibility(View.VISIBLE);
 
 	}
+	
 
 	@Override
 	public void close()
 	{
-		Log.d("debug2", "removed");
 		super.close();
 	}
 }

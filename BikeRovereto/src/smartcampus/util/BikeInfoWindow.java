@@ -6,6 +6,11 @@ package smartcampus.util;
 //import org.osmdroid.util.GeoPoint;
 //import org.osmdroid.views.MapView;
 
+import org.osmdroid.bonuspack.overlays.DefaultInfoWindow;
+import org.osmdroid.bonuspack.overlays.ExtendedOverlayItem;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+
 import smartcampus.activity.SignalView;
 import smartcampus.model.Bike;
 import android.content.Context;
@@ -14,9 +19,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.Button;
 import eu.trentorise.smartcampus.bikerovereto.R;
-import eu.trentorise.smartcampus.osm.android.bonuspack.overlays.DefaultInfoWindow;
-import eu.trentorise.smartcampus.osm.android.bonuspack.overlays.ExtendedOverlayItem;
-import eu.trentorise.smartcampus.osm.android.views.MapView;
 
 public class BikeInfoWindow extends DefaultInfoWindow
 {
@@ -51,19 +53,20 @@ public class BikeInfoWindow extends DefaultInfoWindow
 		});
 	}
 
-	@Override
-	public void open(ExtendedOverlayItem item, int offsetX, int offsetY)
-	{
-		super.open(item, offsetX + 15, offsetY + 80);
-	}
 
 	@Override
-	public void onOpen(ExtendedOverlayItem item)
+	public void open(Object object, GeoPoint position, int offsetX, int offsetY)
+	{
+		
+		super.open(object, position, offsetX + 15, offsetY + 80);
+	}
+	
+	@Override
+	public void onOpen(Object item)
 	{
 		super.onOpen(item);
 		BikeOverlayItem sItem = (BikeOverlayItem) item;
 		bike = sItem.getBike();
-
 	}
 
 	@Override

@@ -2,14 +2,13 @@ package smartcampus.util;
 
 import java.util.ArrayList;
 
-import smartcampus.activity.MainActivity;
-import smartcampus.activity.MainActivity.OnPositionAquiredListener;
+import org.osmdroid.util.GeoPoint;
+
 import smartcampus.model.Station;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikerovereto.R;
-import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 
 public class StationsAdapter extends ArrayAdapter<Station>
 {

@@ -1,33 +1,29 @@
 package smartcampus.activity;
 
+import org.osmdroid.util.GeoPoint;
+
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
 import smartcampus.model.Bike;
-import smartcampus.model.Station;
 import smartcampus.util.ReportsAdapter;
 import smartcampus.util.Tools;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.DataSetObserver;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.widget.ListAdapter;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikerovereto.R;
-import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 
 public class SignalView extends Fragment
 {

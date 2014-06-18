@@ -2,10 +2,11 @@ package smartcampus.model;
 
 import java.util.ArrayList;
 
+import org.osmdroid.util.BoundingBoxE6;
+import org.osmdroid.util.GeoPoint;
+
 import android.os.Parcel;
 import android.os.Parcelable;
-import eu.trentorise.smartcampus.osm.android.util.BoundingBoxE6;
-import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 
 public class Bike implements Parcelable
 {

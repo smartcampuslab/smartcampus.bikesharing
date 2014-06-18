@@ -2,27 +2,27 @@ package smartcampus.util;
 
 import java.util.List;
 
+import org.osmdroid.bonuspack.overlays.InfoWindow;
+import org.osmdroid.bonuspack.overlays.ItemizedOverlayWithBubble;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.OverlayItem;
+
 import android.content.Context;
 import android.view.MotionEvent;
-import eu.trentorise.smartcampus.osm.android.bonuspack.overlays.InfoWindow;
-import eu.trentorise.smartcampus.osm.android.bonuspack.overlays.ItemizedOverlayWithBubble;
-import eu.trentorise.smartcampus.osm.android.views.MapView;
-import eu.trentorise.smartcampus.osm.android.views.overlay.OverlayItem;
 
-public class MarkerOverlay<Item extends OverlayItem> extends ItemizedOverlayWithBubble<Item>
+public class MarkerOverlay<Item extends OverlayItem> extends
+		ItemizedOverlayWithBubble<Item>
 
 {
-	
+
 	float x, y;
 
-	public MarkerOverlay(Context applicationContext,
-			List<Item> markers, MapView mapView,
-			InfoWindow infoWindow)
+	public MarkerOverlay(Context applicationContext, List<Item> markers,
+			MapView mapView, InfoWindow infoWindow)
 	{
 		super(applicationContext, markers, mapView, infoWindow);
 	}
 
-	
 	@Override
 	public boolean onTouchEvent(MotionEvent event, MapView mapView)
 	{
@@ -37,7 +37,7 @@ public class MarkerOverlay<Item extends OverlayItem> extends ItemizedOverlayWith
 			if ((Math.abs(event.getX() - x) <= 10)
 					&& (Math.abs(event.getY() - y) <= 10))
 			{
-				if(getBubbledItemId() != -1)
+				if (getBubbledItemId() != -1)
 				{
 					closeOpenBubble();
 				}
@@ -45,13 +45,13 @@ public class MarkerOverlay<Item extends OverlayItem> extends ItemizedOverlayWith
 				{
 					toRtn = super.onTouchEvent(event, mapView);
 				}
-				
+
 				return toRtn;
 			}
 		}
 		return toRtn;
 	}
-	
+
 	private void closeOpenBubble()
 	{
 		hideBubble();
