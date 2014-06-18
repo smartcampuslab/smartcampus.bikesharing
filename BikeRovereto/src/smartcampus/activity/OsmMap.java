@@ -2,6 +2,15 @@ package smartcampus.activity;
 
 import java.util.ArrayList;
 
+import org.osmdroid.api.IMapController;
+import org.osmdroid.util.BoundingBoxE6;
+import org.osmdroid.views.MapController;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.compass.CompassOverlay;
+import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
+
 import smartcampus.model.Bike;
 import smartcampus.model.Station;
 import smartcampus.util.BikeInfoWindow;
@@ -22,13 +31,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import eu.trentorise.smartcampus.bikerovereto.R;
-import eu.trentorise.smartcampus.osm.android.util.BoundingBoxE6;
-import eu.trentorise.smartcampus.osm.android.views.MapController;
-import eu.trentorise.smartcampus.osm.android.views.MapView;
-import eu.trentorise.smartcampus.osm.android.views.overlay.compass.CompassOverlay;
-import eu.trentorise.smartcampus.osm.android.views.overlay.compass.InternalCompassOrientationProvider;
-import eu.trentorise.smartcampus.osm.android.views.overlay.mylocation.GpsMyLocationProvider;
-import eu.trentorise.smartcampus.osm.android.views.overlay.mylocation.MyLocationNewOverlay;
 
 public class OsmMap extends Fragment
 {
@@ -40,7 +42,7 @@ public class OsmMap extends Fragment
 	private MapView mapView;
 
 	// the tools to control the map
-	private MapController mapController;
+	private IMapController mapController;
 
 	private MyLocationNewOverlay myLoc;
 	// the stations to show in the map
@@ -138,13 +140,11 @@ public class OsmMap extends Fragment
 		super.onStart();
 		mapView.post(new Runnable()
 		{
-
 			@Override
 			public void run()
 			{
 				mapView.zoomToBoundingBox(getBoundingBox(false));
 				// mapView.setMinZoomLevel(mapView.getZoomLevel());
-
 			}
 		});
 	}

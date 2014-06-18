@@ -1,9 +1,9 @@
 package smartcampus.util;
 
+import org.osmdroid.bonuspack.overlays.ExtendedOverlayItem;
+import org.osmdroid.util.GeoPoint;
+
 import smartcampus.model.Bike;
-import smartcampus.model.Station;
-import eu.trentorise.smartcampus.osm.android.bonuspack.overlays.ExtendedOverlayItem;
-import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 
 public class BikeOverlayItem extends ExtendedOverlayItem
 {

@@ -1,5 +1,7 @@
 package smartcampus.activity;
 
+import org.osmdroid.util.GeoPoint;
+
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
 import smartcampus.model.Station;
 import smartcampus.util.ReportsAdapter;
@@ -12,7 +14,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,7 +24,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikerovereto.R;
-import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 
 public class StationDetails extends Fragment
 {

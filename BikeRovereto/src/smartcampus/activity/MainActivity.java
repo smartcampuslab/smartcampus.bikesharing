@@ -2,6 +2,8 @@ package smartcampus.activity;
 
 import java.util.ArrayList;
 
+import org.osmdroid.util.GeoPoint;
+
 import smartcampus.activity.StationsActivity.OnStationSelectListener;
 import smartcampus.model.Bike;
 import smartcampus.model.Station;
@@ -24,7 +26,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import eu.trentorise.smartcampus.bikerovereto.R;
-import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 
 public class MainActivity extends ActionBarActivity implements
 		OnStationSelectListener
