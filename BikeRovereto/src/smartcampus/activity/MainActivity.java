@@ -13,6 +13,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -40,6 +41,9 @@ public class MainActivity extends ActionBarActivity implements
 	private GeoPoint myLocation;
 	private OnPositionAquiredListener mCallback;
 
+	private static final String FRAGMENT_MAP = "map";
+	private static final String FRAGMENT_STATIONS= "stations";
+	
 	public interface OnPositionAquiredListener
 	{
 		public void onPositionAquired();
@@ -96,7 +100,7 @@ public class MainActivity extends ActionBarActivity implements
 		OsmMap mainFragment = OsmMap.newInstance(stations, bikes);
 		FragmentTransaction transaction = getSupportFragmentManager()
 				.beginTransaction();
-		transaction.replace(R.id.content_frame, mainFragment);
+		transaction.replace(R.id.content_frame, mainFragment, FRAGMENT_MAP);
 		transaction.commit();
 
 		navTitles = getResources().getStringArray(R.array.navTitles);
@@ -144,6 +148,7 @@ public class MainActivity extends ActionBarActivity implements
 					public void onItemClick(AdapterView<?> arg0, View arg1,
 							int position, long arg3)
 					{
+						Fragment currentFragment;
 						FragmentTransaction transaction = getSupportFragmentManager()
 								.beginTransaction();
 						transaction.setCustomAnimations(
@@ -154,22 +159,24 @@ public class MainActivity extends ActionBarActivity implements
 						switch (position)
 						{
 						case 0:
-							if (arg1.getTag()!=Tools.ITEM_SELECTED)
+							currentFragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_MAP);
+							if (currentFragment == null || !currentFragment.isVisible())
 							{
 								OsmMap mapFragment = OsmMap.newInstance(stations,
 										bikes);								
 								transaction
-										.replace(R.id.content_frame, mapFragment);
+										.replace(R.id.content_frame, mapFragment, FRAGMENT_MAP);
 								transaction.commit();
-							}							
+							}
 							break;
 						default:
-							if (arg1.getTag()!=Tools.ITEM_SELECTED)
+							currentFragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_STATIONS);
+							if (currentFragment == null || !currentFragment.isVisible())
 							{
 								StationsActivity stationsFragment = StationsActivity							
 									.newInstance(stations);							
 								transaction
-									.replace(R.id.content_frame, stationsFragment);
+									.replace(R.id.content_frame, stationsFragment, FRAGMENT_STATIONS);
 								transaction.commit();
 							}
 							break;
