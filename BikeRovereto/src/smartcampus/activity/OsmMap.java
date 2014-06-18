@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.util.BoundingBoxE6;
-import org.osmdroid.views.MapController;
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
@@ -18,16 +18,20 @@ import smartcampus.util.BikeOverlayItem;
 import smartcampus.util.CustomInfoWindow;
 import smartcampus.util.MarkerOverlay;
 import smartcampus.util.StationOverlayItem;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import eu.trentorise.smartcampus.bikerovereto.R;
@@ -44,7 +48,7 @@ public class OsmMap extends Fragment
 	// the tools to control the map
 	private IMapController mapController;
 
-	private MyLocationNewOverlay myLoc;
+	private MyLocationNewOverlay mLocationOverlay;
 	// the stations to show in the map
 	private ArrayList<Station> stations;
 
@@ -90,14 +94,25 @@ public class OsmMap extends Fragment
 		// mapView.setBuiltInZoomControls(true);
 		mapView.setMultiTouchControls(true);
 
-		// to keep the display on
-		// mapView.setKeepScreenOn(true);
+		// stuff for my
+		// Location********************************************************************************
+		// GpsMyLocationProvider gpsMLC = new
+		// GpsMyLocationProvider(getActivity()
+		// .getApplicationContext());
+		// mLocationOverlay = new
+		// MyLocationNewOverlay(getActivity().getApplicationContext(),
+		// gpsMLC, mapView);
+		// InternalCompassOrientationProvider iCOP = new
+		// InternalCompassOrientationProvider(
+		// getActivity().getApplicationContext());
+		// CompassOverlay compassOverlay = new CompassOverlay(getActivity()
+		// .getApplicationContext(), iCOP, mapView);
+		// compassOverlay.enableCompass(iCOP);
+		// END stuff for my
+		// Location********************************************************************************
 
-		// stuff for my Location
-		GpsMyLocationProvider gpsMLC = new GpsMyLocationProvider(getActivity()
-				.getApplicationContext());
-		myLoc = new MyLocationNewOverlay(getActivity().getApplicationContext(),
-				gpsMLC, mapView);
+		mLocationOverlay = new MyLocationNewOverlay(getActivity(),
+				new CustomLocationProvider(getActivity()), mapView);
 		InternalCompassOrientationProvider iCOP = new InternalCompassOrientationProvider(
 				getActivity().getApplicationContext());
 		CompassOverlay compassOverlay = new CompassOverlay(getActivity()
@@ -107,10 +122,9 @@ public class OsmMap extends Fragment
 		// add the markers on the mapView
 		addMarkers();
 
-		mapView.getOverlays().add(myLoc);
+		mapView.getOverlays().add(mLocationOverlay);
 
 		mapView.getOverlays().add(compassOverlay);
-
 		// mapView.setScrollableAreaLimit(getBoundingBox(true));
 
 		setHasOptionsMenu(true);
@@ -123,10 +137,10 @@ public class OsmMap extends Fragment
 			public void onClick(View arg0)
 			{
 				// myLoc.enableFollowLocation();
-				if (myLoc.getMyLocation() != null)
+				if (mLocationOverlay.getMyLocation() != null)
 				{
 					mapController.setZoom(18);
-					mapController.animateTo(myLoc.getMyLocation());
+					mapController.animateTo(mLocationOverlay.getMyLocation());
 				}
 			}
 		});
@@ -134,17 +148,21 @@ public class OsmMap extends Fragment
 	}
 
 	@Override
-	public void onStart()
+	public void onResume()
 	{
-		// TODO Auto-generated method stub
-		super.onStart();
+		super.onResume();
+		mLocationOverlay.enableMyLocation();
 		mapView.post(new Runnable()
 		{
+
 			@Override
 			public void run()
 			{
-				mapView.zoomToBoundingBox(getBoundingBox(false));
-				// mapView.setMinZoomLevel(mapView.getZoomLevel());
+				for (int i = 0; i < 3; i++)
+				{
+					mapView.zoomToBoundingBox(getBoundingBox(false));
+				}
+
 			}
 		});
 	}
@@ -153,8 +171,7 @@ public class OsmMap extends Fragment
 	public void onPause()
 	{
 		super.onPause();
-		myLoc.disableMyLocation();
-		myLoc.disableFollowLocation();
+		mLocationOverlay.disableMyLocation();
 	}
 
 	@Override
@@ -284,5 +301,22 @@ public class OsmMap extends Fragment
 						.getLonWestE6() ? stationsBoundingBox.getLonWestE6()
 						- frame : bikesBoundingBox.getLonWestE6() - frame);
 		return toRtn;
+	}
+
+	private class CustomLocationProvider extends GpsMyLocationProvider
+	{
+
+		public CustomLocationProvider(Context context)
+		{
+			super(context);
+		}
+
+		@Override
+		public void onLocationChanged(Location location)
+		{
+			super.onLocationChanged(location);
+			((MainActivity) getActivity()).setCurrentLocation(new GeoPoint(
+					location));
+		}
 	}
 }

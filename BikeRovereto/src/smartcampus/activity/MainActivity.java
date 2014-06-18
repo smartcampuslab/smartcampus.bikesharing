@@ -43,8 +43,8 @@ public class MainActivity extends ActionBarActivity implements
 	private OnPositionAquiredListener mCallback;
 
 	private static final String FRAGMENT_MAP = "map";
-	private static final String FRAGMENT_STATIONS= "stations";
-	
+	private static final String FRAGMENT_STATIONS = "stations";
+
 	public interface OnPositionAquiredListener
 	{
 		public void onPositionAquired();
@@ -112,26 +112,27 @@ public class MainActivity extends ActionBarActivity implements
 
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
 
 		mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
-			mDrawerLayout, /* DrawerLayout object */
-			R.drawable.ic_drawer, /* nav drawer icon to replace 'Up' caret */
-			R.string.drawer_open, /* "open drawer" description */
-			R.string.drawer_close /* "close drawer" description */
+		mDrawerLayout, /* DrawerLayout object */
+		R.drawable.ic_drawer, /* nav drawer icon to replace 'Up' caret */
+		R.string.drawer_open, /* "open drawer" description */
+		R.string.drawer_close /* "close drawer" description */
 		)
 		{
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                supportInvalidateOptionsMenu();
-            }
-            
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                supportInvalidateOptionsMenu();
-            }
+			public void onDrawerClosed(View view)
+			{
+				super.onDrawerClosed(view);
+				supportInvalidateOptionsMenu();
+			}
+
+			public void onDrawerOpened(View drawerView)
+			{
+				super.onDrawerOpened(drawerView);
+				supportInvalidateOptionsMenu();
+			}
 		};
 		// Set the drawer toggle as the DrawerListener
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -139,8 +140,8 @@ public class MainActivity extends ActionBarActivity implements
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
 		// Set the adapter for the list view
-		mDrawerList.setAdapter(new NavigationDrawerAdapter(this.getBaseContext(), navTitles,
-				navIcons));
+		mDrawerList.setAdapter(new NavigationDrawerAdapter(this
+				.getBaseContext(), navTitles, navIcons));
 		// Set the list's click listener
 		mDrawerList
 				.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener()
@@ -152,43 +153,48 @@ public class MainActivity extends ActionBarActivity implements
 						Fragment currentFragment;
 						FragmentTransaction transaction = getSupportFragmentManager()
 								.beginTransaction();
-						transaction.setCustomAnimations(
-								android.R.anim.fade_in,
-								android.R.anim.fade_out,
-								android.R.anim.fade_in,
-								android.R.anim.fade_out);
+						transaction
+								.setCustomAnimations(android.R.anim.fade_in,
+										android.R.anim.fade_out,
+										android.R.anim.fade_in,
+										android.R.anim.fade_out);
 						switch (position)
 						{
 						case 0:
-							currentFragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_MAP);
-							if (currentFragment == null || !currentFragment.isVisible())
+							currentFragment = getSupportFragmentManager()
+									.findFragmentByTag(FRAGMENT_MAP);
+							if (currentFragment == null
+									|| !currentFragment.isVisible())
 							{
-								OsmMap mapFragment = OsmMap.newInstance(stations,
-										bikes);								
-								transaction
-										.replace(R.id.content_frame, mapFragment, FRAGMENT_MAP);
+								OsmMap mapFragment = OsmMap.newInstance(
+										stations, bikes);
+								transaction.replace(R.id.content_frame,
+										mapFragment, FRAGMENT_MAP);
 								transaction.commit();
 							}
 							break;
 						default:
-							currentFragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_STATIONS);
-							if (currentFragment == null || !currentFragment.isVisible())
+							currentFragment = getSupportFragmentManager()
+									.findFragmentByTag(FRAGMENT_STATIONS);
+							if (currentFragment == null
+									|| !currentFragment.isVisible())
 							{
-								StationsActivity stationsFragment = StationsActivity							
-									.newInstance(stations);							
-								transaction
-									.replace(R.id.content_frame, stationsFragment, FRAGMENT_STATIONS);
+								StationsActivity stationsFragment = StationsActivity
+										.newInstance(stations);
+								transaction.replace(R.id.content_frame,
+										stationsFragment, FRAGMENT_STATIONS);
 								transaction.commit();
 							}
 							break;
-						}						
-						Tools.setNavDrawerItemNormal(mDrawerList, getResources());
-						Tools.setNavDrawerItemSelected(mDrawerList, position, getResources());
+						}
+						Tools.setNavDrawerItemNormal(mDrawerList,
+								getResources());
+						Tools.setNavDrawerItemSelected(mDrawerList, position,
+								getResources());
 						mDrawerLayout.closeDrawers();
 					}
 				});
 
-		
 		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 	}
 
@@ -234,8 +240,8 @@ public class MainActivity extends ActionBarActivity implements
 		StationDetails detailsFragment = StationDetails.newInstance(station);
 		FragmentTransaction transaction = getSupportFragmentManager()
 				.beginTransaction();
-		transaction.setCustomAnimations(R.anim.slide_left, R.anim.alpha_out, R.anim.alpha_in,
-				R.anim.slide_right);
+		transaction.setCustomAnimations(R.anim.slide_left, R.anim.alpha_out,
+				R.anim.alpha_in, R.anim.slide_right);
 		transaction.replace(R.id.content_frame, detailsFragment);
 		transaction.addToBackStack(null);
 		transaction.commit();
@@ -253,9 +259,10 @@ public class MainActivity extends ActionBarActivity implements
 				Tools.LOCATION_REFRESH_TIME, Tools.LOCATION_REFRESH_DISTANCE,
 				mLocationListener);
 	}
-	
+
 	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
+	public void onConfigurationChanged(Configuration newConfig)
+	{
 		// TODO Auto-generated method stub
 		super.onConfigurationChanged(newConfig);
 	}
@@ -284,8 +291,6 @@ public class MainActivity extends ActionBarActivity implements
 
 		public void onLocationChanged(final Location location)
 		{
-			Log.d("geoPoint", "setCurrentLocation");
-			Log.d("geoPoint", "setCurrentLocation NONULL");
 			myLocation = new GeoPoint(location);
 			updateDistances();
 			if (mCallback != null)
@@ -311,5 +316,13 @@ public class MainActivity extends ActionBarActivity implements
 	public GeoPoint getCurrentLocation()
 	{
 		return myLocation;
+	}
+
+	public void setCurrentLocation(GeoPoint newPositon)
+	{
+		myLocation = newPositon;
+		updateDistances();
+		if (mCallback != null)
+			mCallback.onPositionAquired();
 	}
 }
