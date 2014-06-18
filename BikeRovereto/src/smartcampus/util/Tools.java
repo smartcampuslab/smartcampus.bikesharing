@@ -3,9 +3,13 @@ package smartcampus.util;
 import smartcampus.model.Station;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.View;
+import android.widget.ListView;
+import eu.trentorise.smartcampus.bikerovereto.R;
 import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
 
 public class Tools
@@ -13,6 +17,7 @@ public class Tools
 
 	public static final long LOCATION_REFRESH_TIME = 60000;
 	public static final float LOCATION_REFRESH_DISTANCE = 100;
+	public static final String ITEM_SELECTED = "selected";
 
 	public static int convertDpToPixel(Context context, int dp)
 	{
@@ -42,8 +47,26 @@ public class Tools
 		if(end != null)
 		{
 			toRtn += "daddr=" + end.getLatitudeE6() / 1E6 + "," + end.getLongitudeE6() / 1E6 ;  
-		}		
+		}
+		toRtn += "&dirflg=w";
 		return toRtn;
+	}	
+	
+	public static void setNavDrawerItemNormal(ListView mDrawerListView, Resources resources)
+	{
+	    for (int i=0; i< mDrawerListView.getChildCount(); i++)
+	    {
+	        View v = mDrawerListView.getChildAt(i);
+	        v.setBackgroundColor(resources.getColor(R.color.nav_backcolor_normal));
+	        v.setTag(null);
+	    }
+	}
+	
+	public static void setNavDrawerItemSelected(ListView mDrawerListView, int position, Resources resources)
+	{	    
+        View v = mDrawerListView.getChildAt(position);
+        v.setBackgroundColor(resources.getColor(R.color.nav_backcolor_selected));
+        v.setTag(ITEM_SELECTED);
 	}
 
 }

@@ -23,7 +23,7 @@ public class NavigationDrawerAdapter extends ArrayAdapter<String> {
 		ViewHolder viewHolder;
 		
 		if (convertView == null){
-			LayoutInflater inflater = ((Activity) getContext()).getLayoutInflater();
+			LayoutInflater inflater = LayoutInflater.from(getContext());
 			convertView = inflater.inflate(R.layout.navigation_drawer_model, parent, false);
 			
 			viewHolder=new ViewHolder();

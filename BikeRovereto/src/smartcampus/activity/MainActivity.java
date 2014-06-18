@@ -7,6 +7,7 @@ import smartcampus.model.Bike;
 import smartcampus.model.Station;
 import smartcampus.util.NavigationDrawerAdapter;
 import smartcampus.util.Tools;
+import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -108,7 +109,8 @@ public class MainActivity extends ActionBarActivity implements
 
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
-
+		
+		
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         
@@ -125,7 +127,7 @@ public class MainActivity extends ActionBarActivity implements
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
 		// Set the adapter for the list view
-		mDrawerList.setAdapter(new NavigationDrawerAdapter(this, navTitles,
+		mDrawerList.setAdapter(new NavigationDrawerAdapter(this.getBaseContext(), navTitles,
 				navIcons));
 		// Set the list's click listener
 		mDrawerList
@@ -135,42 +137,55 @@ public class MainActivity extends ActionBarActivity implements
 					public void onItemClick(AdapterView<?> arg0, View arg1,
 							int position, long arg3)
 					{
+						FragmentTransaction transaction = getSupportFragmentManager()
+								.beginTransaction();
+						transaction.setCustomAnimations(
+								android.R.anim.fade_in,
+								android.R.anim.fade_out,
+								android.R.anim.fade_in,
+								android.R.anim.fade_out);
 						switch (position)
 						{
 						case 0:
-							OsmMap mapFragment = OsmMap.newInstance(stations,
-									bikes);
-							FragmentTransaction transaction = getSupportFragmentManager()
-									.beginTransaction();
-							transaction.setCustomAnimations(
-									android.R.anim.fade_in,
-									android.R.anim.fade_out,
-									android.R.anim.fade_in,
-									android.R.anim.fade_out);
-							transaction
-									.replace(R.id.content_frame, mapFragment);
-							transaction.commit();
+							if (arg1.getTag()!=Tools.ITEM_SELECTED)
+							{
+								OsmMap mapFragment = OsmMap.newInstance(stations,
+										bikes);								
+								transaction
+										.replace(R.id.content_frame, mapFragment);
+								transaction.commit();
+							}							
 							break;
 						default:
-							StationsActivity stationsFragment = StationsActivity
-									.newInstance(stations);
-							FragmentTransaction transaction1 = getSupportFragmentManager()
-									.beginTransaction();
-							transaction1.setCustomAnimations(
-									android.R.anim.fade_in,
-									android.R.anim.fade_out,
-									android.R.anim.fade_in,
-									android.R.anim.fade_out);
-							transaction1.replace(R.id.content_frame,
-									stationsFragment);
-							transaction1.commit();
+							if (arg1.getTag()!=Tools.ITEM_SELECTED)
+							{
+								StationsActivity stationsFragment = StationsActivity							
+									.newInstance(stations);							
+								transaction
+									.replace(R.id.content_frame, stationsFragment);
+								transaction.commit();
+							}
 							break;
-						}
+						}						
+						Tools.setNavDrawerItemNormal(mDrawerList, getResources());
+						Tools.setNavDrawerItemSelected(mDrawerList, position, getResources());
 						mDrawerLayout.closeDrawers();
 					}
 				});
+
+		
 		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 	}
+	
+
+	
+	
+	@Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+	
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
@@ -201,6 +216,9 @@ public class MainActivity extends ActionBarActivity implements
 	protected void onStart()
 	{
 		super.onStart();
+		//Set the first item selected (Map)
+		//Tools.setNavDrawerItemSelected(mDrawerList, 0, getResources());
+		//TODO: find where the listview of the navigation drawer is initialized... null pointer exception!
 		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
 				Tools.LOCATION_REFRESH_TIME, Tools.LOCATION_REFRESH_DISTANCE,
 				mLocationListener);
