@@ -33,6 +33,8 @@ public class Tools
 			return Math.round(distance / 100) / 10.0 + " KM";
 	}
 	
+	
+	
 	public static String getPathString(GeoPoint start, GeoPoint end)
 	{
 		String toRtn = "http://maps.google.com/maps?";
