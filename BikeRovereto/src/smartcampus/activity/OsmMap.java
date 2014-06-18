@@ -2,7 +2,6 @@ package smartcampus.activity;
 
 import java.util.ArrayList;
 
-import smartcampus.activity.MainActivity.OnPositionAquiredListener;
 import smartcampus.model.Bike;
 import smartcampus.model.Station;
 import smartcampus.util.BikeInfoWindow;
@@ -19,7 +18,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import eu.trentorise.smartcampus.bikerovereto.R;
 import eu.trentorise.smartcampus.osm.android.util.BoundingBoxE6;
 import eu.trentorise.smartcampus.osm.android.util.GeoPoint;
@@ -95,7 +96,7 @@ public class OsmMap extends Fragment
 		// stuff for my Location
 		myLoc = new MyLocationOverlay(getActivity(), mapView);
 		myLoc.enableCompass();
-
+		myLoc.enableMyLocation();
 		// add the markers on the mapView
 		addMarkers();
 
@@ -105,9 +106,19 @@ public class OsmMap extends Fragment
 
 		mapView.getOverlays().add(myLoc);
 
-		mapView.setScrollableAreaLimit(getBoundingBox(true));
+		// mapView.setScrollableAreaLimit(getBoundingBox(true));
 		setHasOptionsMenu(true);
-		
+		Button toMyLoc = (Button) rootView.findViewById(R.id.bt_to_my_loc);
+		toMyLoc.setOnClickListener(new OnClickListener()
+		{
+			
+			@Override
+			public void onClick(View arg0)
+			{
+				//mapController.animateTo(currentLocation);
+				myLoc.enableFollowLocation();
+			}
+		});
 		return rootView;
 	}
 
@@ -123,7 +134,7 @@ public class OsmMap extends Fragment
 			public void run()
 			{
 				mapView.zoomToBoundingBox(getBoundingBox(false));
-				mapView.setMinZoomLevel(mapView.getZoomLevel());
+				//mapView.setMinZoomLevel(mapView.getZoomLevel());
 
 			}
 		});
@@ -230,45 +241,6 @@ public class OsmMap extends Fragment
 		mapView.getOverlays().add(stationsMarkersOverlay);
 	}
 
-	/*
-	 * TODO: implement this! private void setActionBar() { LayoutInflater
-	 * inflater = (LayoutInflater) getSupportActionBar()
-	 * .getThemedContext().getSystemService(LAYOUT_INFLATER_SERVICE); View
-	 * customActionBarView = inflater.inflate(R.layout.actionbar_custom, null);
-	 * 
-	 * ActionBar actionBar = getSupportActionBar();
-	 * actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
-	 * ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME |
-	 * ActionBar.DISPLAY_SHOW_TITLE);
-	 * actionBar.setCustomView(customActionBarView, new
-	 * ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-	 * ViewGroup.LayoutParams.MATCH_PARENT)); }
-	 */
-	/*
-	 * private void setOnClickSwitch() {
-	 * 
-	 * mToggle.setOnCheckedChangeListener(new
-	 * CompoundButton.OnCheckedChangeListener() { public void
-	 * onCheckedChanged(CompoundButton buttonView, boolean isChecked) { if
-	 * (isChecked) { Log.d("debug", "pressed"); } else { Log.d("debug",
-	 * "Notpressed"); } } }); }
-	 * 
-	 * private void setSwitch() {
-	 * 
-	 * 
-	 * mToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-	 * 
-	 * @Override public void onCheckedChanged(CompoundButton buttonView, boolean
-	 * isChecked) { if (isChecked) { // close the bubble relative to the
-	 * bikesMarkers if opened bikesMarkersOverlay.hideBubble();
-	 * 
-	 * // remove the anarchic bikes
-	 * mapView.getOverlays().remove(bikesMarkersOverlay); mapView.invalidate();
-	 * } else { mapView.getOverlays().add(bikesMarkersOverlay);
-	 * mapView.invalidate(); } } });
-	 * 
-	 * }
-	 */
 
 	private BoundingBoxE6 getBoundingBox(boolean addFrame)
 	{
@@ -295,5 +267,4 @@ public class OsmMap extends Fragment
 						: bikesBoundingBox.getLonWestE6() - frame);
 		return toRtn;
 	}
-	
 }

@@ -5,12 +5,21 @@
     android:layout_height="match_parent"
     tools:context="smartcampus.activity.OsmMap"
     tools:ignore="MergeRootFrame" >
-    
-  
+
     <eu.trentorise.smartcampus.osm.android.views.MapView
         android:id="@+id/map_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
     </eu.trentorise.smartcampus.osm.android.views.MapView>
+
+    <Button
+        android:id="@+id/bt_to_my_loc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:background="@drawable/to_my_loc"
+        android:minHeight="50dp"
+        android:layout_margin="10dp"
+        android:minWidth="50dp" />
 
 </FrameLayout>
