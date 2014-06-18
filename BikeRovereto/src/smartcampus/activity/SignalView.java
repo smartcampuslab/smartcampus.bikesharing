@@ -13,6 +13,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -98,6 +99,8 @@ public class SignalView extends Fragment
 								.getDistance()));
 					}
 				});
+		((MainActivity)getActivity()).mDrawerToggle.setDrawerIndicatorEnabled(false);
+		((MainActivity)getActivity()).mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 		return rootView;
 	}
 
@@ -114,6 +117,9 @@ public class SignalView extends Fragment
 		int id = item.getItemId();
 		switch (id)
 		{
+		case android.R.id.home:
+			getFragmentManager().popBackStack();
+			break;
 		case R.id.action_add_report:
 			addReport();
 			break;
@@ -123,6 +129,13 @@ public class SignalView extends Fragment
 		return super.onOptionsItemSelected(item);
 	}
 
+	@Override
+	public void onDetach() {
+		((MainActivity)getActivity()).mDrawerToggle.setDrawerIndicatorEnabled(true);
+		((MainActivity)getActivity()).mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+		super.onDetach();
+	}
+	
 	private void addReport()
 	{
 		View dialogContent = getActivity().getLayoutInflater().inflate(

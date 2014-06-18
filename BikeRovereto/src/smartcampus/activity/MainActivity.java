@@ -7,7 +7,7 @@ import smartcampus.model.Bike;
 import smartcampus.model.Station;
 import smartcampus.util.NavigationDrawerAdapter;
 import smartcampus.util.Tools;
-import android.content.res.Resources;
+import android.content.res.Configuration;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -31,9 +31,9 @@ public class MainActivity extends ActionBarActivity implements
 
 	private String[] navTitles;
 	private int[] navIcons;
-	private DrawerLayout mDrawerLayout;
+	public DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
-	private ActionBarDrawerToggle mDrawerToggle;
+	public ActionBarDrawerToggle mDrawerToggle;
 	private ArrayList<Station> stations;
 	private ArrayList<Bike> bikes;
 	private LocationManager mLocationManager;
@@ -226,7 +226,7 @@ public class MainActivity extends ActionBarActivity implements
 		StationDetails detailsFragment = StationDetails.newInstance(station);
 		FragmentTransaction transaction = getSupportFragmentManager()
 				.beginTransaction();
-		transaction.setCustomAnimations(R.anim.slide_left, 0, 0,
+		transaction.setCustomAnimations(R.anim.slide_left, R.anim.alpha_out, R.anim.alpha_in,
 				R.anim.slide_right);
 		transaction.replace(R.id.content_frame, detailsFragment);
 		transaction.addToBackStack(null);
@@ -244,6 +244,12 @@ public class MainActivity extends ActionBarActivity implements
 		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
 				Tools.LOCATION_REFRESH_TIME, Tools.LOCATION_REFRESH_DISTANCE,
 				mLocationListener);
+	}
+	
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		// TODO Auto-generated method stub
+		super.onConfigurationChanged(newConfig);
 	}
 
 	@Override

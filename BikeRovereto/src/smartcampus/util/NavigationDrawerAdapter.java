@@ -32,8 +32,8 @@ public class NavigationDrawerAdapter extends ArrayAdapter<String> {
 			convertView.setTag(viewHolder);
 		}
 		else {
-			viewHolder=(ViewHolder)convertView.getTag();			
-		}		
+			viewHolder=(ViewHolder)convertView.getTag();
+		}
 		viewHolder.title.setText(getItem(position));
 		viewHolder.icon.setImageDrawable(getContext().getResources().getDrawable(images[position]));
 		return convertView;		

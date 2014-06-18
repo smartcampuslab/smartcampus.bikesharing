@@ -2,10 +2,7 @@ package smartcampus.util;
 
 import smartcampus.model.Station;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
-import android.net.Uri;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ListView;
@@ -58,7 +55,6 @@ public class Tools
 	    {
 	        View v = mDrawerListView.getChildAt(i);
 	        v.setBackgroundColor(resources.getColor(R.color.nav_backcolor_normal));
-	        v.setTag(null);
 	    }
 	}
 	
@@ -66,7 +62,6 @@ public class Tools
 	{	    
         View v = mDrawerListView.getChildAt(position);
         v.setBackgroundColor(resources.getColor(R.color.nav_backcolor_selected));
-        v.setTag(ITEM_SELECTED);
 	}
 
 }

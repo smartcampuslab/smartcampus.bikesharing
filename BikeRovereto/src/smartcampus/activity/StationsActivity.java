@@ -45,7 +45,6 @@ public class StationsActivity extends Fragment
 	String[] navTitles;
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
-	private ActionBarDrawerToggle mDrawerToggle;
 
 	OnStationSelectListener mCallback;
 
@@ -129,13 +128,6 @@ public class StationsActivity extends Fragment
 		stationsAdapter.notifyDataSetChanged();
 		setHasOptionsMenu(true);
 		return rootView;
-	}
-
-	@Override
-	public void onConfigurationChanged(Configuration newConfig)
-	{
-		super.onConfigurationChanged(newConfig);
-		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
 	@Override
