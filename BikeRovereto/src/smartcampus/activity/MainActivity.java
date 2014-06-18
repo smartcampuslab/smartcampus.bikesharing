@@ -120,7 +120,18 @@ public class MainActivity extends ActionBarActivity implements
 			R.drawable.ic_drawer, /* nav drawer icon to replace 'Up' caret */
 			R.string.drawer_open, /* "open drawer" description */
 			R.string.drawer_close /* "close drawer" description */
-		);
+		)
+		{
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                supportInvalidateOptionsMenu();
+            }
+            
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                supportInvalidateOptionsMenu();
+            }
+		};
 		// Set the drawer toggle as the DrawerListener
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 
@@ -177,16 +188,27 @@ public class MainActivity extends ActionBarActivity implements
 		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 	}
 	
-
-	
-	
 	@Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
     }
 	
-
+	@Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // If the nav drawer is open, hide action items related to the content view
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        hideMenuItems(menu, !drawerOpen);
+        return super.onPrepareOptionsMenu(menu);
+    }
+	
+	private void hideMenuItems(Menu menu, boolean visible)
+	{
+	    for(int i = 0; i < menu.size(); i++){
+	        menu.getItem(i).setVisible(visible);
+	    }
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
