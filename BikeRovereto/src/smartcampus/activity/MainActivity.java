@@ -41,6 +41,7 @@ public class MainActivity extends ActionBarActivity implements
 	private LocationManager mLocationManager;
 	private GeoPoint myLocation;
 	private OnPositionAquiredListener mCallback;
+	private NavigationDrawerAdapter navAdapter;
 
 	private static final String FRAGMENT_MAP = "map";
 	private static final String FRAGMENT_STATIONS = "stations";
@@ -140,8 +141,8 @@ public class MainActivity extends ActionBarActivity implements
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
 		// Set the adapter for the list view
-		mDrawerList.setAdapter(new NavigationDrawerAdapter(this
-				.getBaseContext(), navTitles, navIcons));
+		navAdapter = new NavigationDrawerAdapter(this, navTitles, navIcons);
+		mDrawerList.setAdapter(navAdapter);
 		// Set the list's click listener
 		mDrawerList
 				.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener()
@@ -187,14 +188,13 @@ public class MainActivity extends ActionBarActivity implements
 							}
 							break;
 						}
-						Tools.setNavDrawerItemNormal(mDrawerList,
-								getResources());
-						Tools.setNavDrawerItemSelected(mDrawerList, position,
-								getResources());
+					    // Highlight the selected item, update the title, and close the drawer
+						navAdapter.setItemChecked(position);		
+						navAdapter.notifyDataSetChanged();
 						mDrawerLayout.closeDrawers();
 					}
 				});
-
+		navAdapter.setItemChecked(0);
 		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 	}
 
@@ -203,12 +203,6 @@ public class MainActivity extends ActionBarActivity implements
 	{
 		super.onPostCreate(savedInstanceState);
 		mDrawerToggle.syncState();
-		// Set the first item selected (Map)
-		Log.d("ss",mDrawerList.getChildCount()+"");
-		Tools.setNavDrawerItemSelected(mDrawerList, 0, getResources());
-		// TODO: find where the listview of the navigation drawer is
-		// initialized... null pointer exception!
-		//Tools.setNavDrawerItemSelected(mDrawerList, 0, getResources());
 	}
 
 	@Override
@@ -260,8 +254,15 @@ public class MainActivity extends ActionBarActivity implements
 		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
 				Tools.LOCATION_REFRESH_TIME, Tools.LOCATION_REFRESH_DISTANCE,
 				mLocationListener);
+
+		
 	}
 
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();	}
+	
 	@Override
 	public void onConfigurationChanged(Configuration newConfig)
 	{

@@ -32,9 +32,7 @@ public class Tools
 			return distance + " m";
 		else
 			return Math.round(distance / 100) / 10.0 + " KM";
-	}
-	
-	
+	}	
 	
 	public static String getPathString(GeoPoint start, GeoPoint end)
 	{
@@ -64,6 +62,7 @@ public class Tools
 	
 	public static void setNavDrawerItemSelected(ListView mDrawerListView, int position, Resources resources)
 	{
+		Log.d("position", position+"");
         View v = mDrawerListView.getChildAt(position);
         v.setBackgroundColor(resources.getColor(R.color.nav_backcolor_selected));
 	}
