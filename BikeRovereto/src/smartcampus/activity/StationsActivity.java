@@ -143,11 +143,6 @@ public class StationsActivity extends Fragment
 		case R.id.sort_name:
 			sortByName();
 			break;
-		case R.id.action_settings:
-			Intent i = new Intent(getActivity(), SettingsActivity.class);
-			i.putParcelableArrayListExtra("stations", mStations);
-			startActivity(i);
-			break;
 		}
 		return true;
 	}

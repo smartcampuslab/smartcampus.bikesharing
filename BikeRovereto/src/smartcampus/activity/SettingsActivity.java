@@ -3,6 +3,7 @@ package smartcampus.activity;
 import java.util.ArrayList;
 
 import smartcampus.model.Station;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -35,7 +36,13 @@ public class SettingsActivity extends PreferenceActivity {
 			}
 		});
 		
+		//TODO:  gingerbread crash!
+		
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setHomeButtonEnabled(true);
+		
 	}
+	
 	/*
 	@Override
 	protected Dialog onCreateDialog(int id) {

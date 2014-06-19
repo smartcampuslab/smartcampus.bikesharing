@@ -9,6 +9,7 @@ import smartcampus.model.Bike;
 import smartcampus.model.Station;
 import smartcampus.util.NavigationDrawerAdapter;
 import smartcampus.util.Tools;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.location.LocationListener;
@@ -33,6 +34,8 @@ public class MainActivity extends ActionBarActivity implements
 
 	private String[] navTitles;
 	private int[] navIcons;
+	private String[] navExtraTitles;
+	private int[] navExtraIcons;
 	public DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	public ActionBarDrawerToggle mDrawerToggle;
@@ -106,10 +109,11 @@ public class MainActivity extends ActionBarActivity implements
 		transaction.commit();
 
 		navTitles = getResources().getStringArray(R.array.navTitles);
-
-		navTitles = getResources().getStringArray(R.array.navTitles);
 		navIcons = new int[]
-		{ R.drawable.ic_map, R.drawable.ic_station };
+		{ R.drawable.ic_map, R.drawable.ic_station };		
+		navExtraTitles = getResources().getStringArray(R.array.navExtraTitles);
+		navExtraIcons = new int[]
+		{ R.drawable.nav_settings };		
 
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -141,7 +145,7 @@ public class MainActivity extends ActionBarActivity implements
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
 		// Set the adapter for the list view
-		navAdapter = new NavigationDrawerAdapter(this, navTitles, navIcons);
+		navAdapter = new NavigationDrawerAdapter(this, navTitles, navIcons, navExtraTitles, navExtraIcons);
 		mDrawerList.setAdapter(navAdapter);
 		// Set the list's click listener
 		mDrawerList
@@ -174,7 +178,7 @@ public class MainActivity extends ActionBarActivity implements
 								transaction.commit();
 							}
 							break;
-						default:
+						case 1:
 							currentFragment = getSupportFragmentManager()
 									.findFragmentByTag(FRAGMENT_STATIONS);
 							if (currentFragment == null
@@ -186,6 +190,11 @@ public class MainActivity extends ActionBarActivity implements
 										stationsFragment, FRAGMENT_STATIONS);
 								transaction.commit();
 							}
+							break;
+						case 2: 
+							Intent i = new Intent(getBaseContext(), SettingsActivity.class);
+							i.putParcelableArrayListExtra("stations", stations);
+							startActivity(i);
 							break;
 						}
 					    // Highlight the selected item, update the title, and close the drawer

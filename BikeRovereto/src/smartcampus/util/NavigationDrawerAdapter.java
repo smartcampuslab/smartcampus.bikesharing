@@ -13,9 +13,16 @@ import eu.trentorise.smartcampus.bikerovereto.R;
 public class NavigationDrawerAdapter extends ArrayAdapter<String> {
 	private int[] images;
 	private int selectedItem;
-	public NavigationDrawerAdapter(Context context, String[] titles, int[] images) {
+	private String[] extraTitles;
+	private int[] extraImages;
+	private int itemLenght;
+	public NavigationDrawerAdapter(Context context, String[] titles, int[] images,
+									String[] extraTitles, int[] extraImages) {
 		super(context, 0, titles);
+		this.itemLenght=titles.length;
 		this.images=images;
+		this.extraTitles=extraTitles;
+		this.extraImages=extraImages;
 	}
 	
 
@@ -25,9 +32,11 @@ public class NavigationDrawerAdapter extends ArrayAdapter<String> {
 		
 		if (convertView == null){
 			LayoutInflater inflater = LayoutInflater.from(getContext());
-			convertView = inflater.inflate(R.layout.navigation_drawer_model, parent, false);
-			
-			viewHolder=new ViewHolder();
+			if (getItemViewType(position)==0)
+				convertView = inflater.inflate(R.layout.navigation_drawer_model, parent, false);
+			else
+				convertView = inflater.inflate(R.layout.navigation_drawer_model_extra, parent, false);
+			viewHolder = new ViewHolder();
 			viewHolder.title=(TextView)convertView.findViewById(R.id.text);
 			viewHolder.icon=(ImageView)convertView.findViewById(R.id.icon);
 			convertView.setTag(viewHolder);
@@ -35,18 +44,42 @@ public class NavigationDrawerAdapter extends ArrayAdapter<String> {
 		else {
 			viewHolder=(ViewHolder)convertView.getTag();
 		}
-		viewHolder.title.setText(getItem(position));
-		viewHolder.icon.setImageDrawable(getContext().getResources().getDrawable(images[position]));
-		Log.d("pos","position: "+position+" selected: "+selectedItem);
-		if (position==selectedItem)
-		{
-			convertView.setBackgroundColor(getContext().getResources().getColor(R.color.nav_backcolor_selected));
+		Log.d("pos",position+"");
+		if (getItemViewType(position)==0){
+			viewHolder.title.setText(getItem(position));
+			viewHolder.icon.setImageDrawable(getContext().getResources().getDrawable(images[position]));
+			if (position==selectedItem)
+			{
+				convertView.setBackgroundColor(getContext().getResources().getColor(R.color.nav_backcolor_selected));
+			}
+			else
+			{
+				convertView.setBackgroundColor(getContext().getResources().getColor(R.color.nav_backcolor_normal));			
+			}
 		}
 		else
 		{
-			convertView.setBackgroundColor(getContext().getResources().getColor(R.color.nav_backcolor_normal));			
+			viewHolder.title.setText(extraTitles[position-itemLenght]);
+			viewHolder.icon.setImageDrawable(getContext().getResources().getDrawable(extraImages[position-itemLenght]));
 		}
+		
+		
 		return convertView;		
+	}
+	
+	@Override
+	public int getCount() {
+		return itemLenght + extraTitles.length;
+	}
+	
+	@Override
+	public int getViewTypeCount() {
+		return 2;
+	}
+	
+	@Override
+	public int getItemViewType(int position) {
+		return position < itemLenght ? 0 : 1;
 	}
 	
 	private static class ViewHolder {
