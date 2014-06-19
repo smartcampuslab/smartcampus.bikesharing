@@ -40,15 +40,9 @@ import eu.trentorise.smartcampus.bikerovereto.R;
 
 public class OsmMap extends Fragment
 {
-
-	// menu
-	private static final int MENU_ON_STATION_ID = 0;
-
 	// the view where the map is showed
 	private MapView mapView;
 
-	// the tools to control the map
-	private IMapController mapController;
 
 	private MyLocationNewOverlay mLocationOverlay;
 	// the stations to show in the map
@@ -62,6 +56,7 @@ public class OsmMap extends Fragment
 	// marker for the bikes
 	private MarkerOverlay<BikeOverlayItem> bikesMarkersOverlay;
 
+	private RotationGestureOverlay rotationGestureOverlay;
 	private Button toMyLoc;
 
 	public static OsmMap newInstance(ArrayList<Station> stations, ArrayList<Bike> bikes)
@@ -90,11 +85,10 @@ public class OsmMap extends Fragment
 		// get the mapView and the controller
 		mapView = (MapView) rootView.findViewById(R.id.map_view);
 
-		mapController = mapView.getController();
 
 		// mapView.setBuiltInZoomControls(true);
 		mapView.setMultiTouchControls(true);
-
+		
 		// stuff for my
 		// Location********************************************************************************
 		// GpsMyLocationProvider gpsMLC = new
@@ -128,8 +122,11 @@ public class OsmMap extends Fragment
 		setHasOptionsMenu(true);
 		toMyLoc = (Button) rootView.findViewById(R.id.bt_to_my_loc);
 		setBtToMyLoc();
+
 		// rotation gesture
-		mapView.getOverlays().add(new RotationGestureOverlay(getActivity(), mapView));
+		rotationGestureOverlay = new RotationGestureOverlay(getActivity().getApplicationContext(), mapView);
+		rotationGestureOverlay.setEnabled(false);
+		mapView.getOverlays().add(rotationGestureOverlay);
 		return rootView;
 	}
 
@@ -173,7 +170,7 @@ public class OsmMap extends Fragment
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId())
 		{
-		case R.id.myswitch:
+		case R.id.switch_bikes_tipe:
 			item.setChecked(!item.isChecked());
 			if (item.isChecked())
 			{
@@ -188,6 +185,18 @@ public class OsmMap extends Fragment
 			{
 				mapView.getOverlays().add(bikesMarkersOverlay);
 				mapView.invalidate();
+			}
+			break;
+		case R.id.switch_rotation:
+			item.setChecked(!item.isChecked());
+			if (item.isChecked())
+			{
+				rotationGestureOverlay.setEnabled(true);
+			}
+			else
+			{
+				mapView.setMapOrientation(0);
+				rotationGestureOverlay.setEnabled(false);
 			}
 			break;
 		default:
@@ -330,37 +339,32 @@ public class OsmMap extends Fragment
 				{
 					// mapController.animateTo(getBoundingBox(true).getCenter());
 					mapView.zoomToBoundingBox(getBoundingBox(true));
+					mapView.setMapOrientation(0);
 				}
 			}
 		});
 		toMyLoc.setOnTouchListener(new OnTouchListener()
 		{
-
-			// float startX, startY;
-
 			@Override
 			public boolean onTouch(View v, MotionEvent event)
 			{
 				if (event.getAction() == MotionEvent.ACTION_DOWN)
 				{
 					toMyLoc.setBackgroundDrawable(getResources().getDrawable(R.drawable.to_my_loc_clicked));
-					// startX = event.getX();
-					// startY = event.getY();
 				}
 				if (event.getAction() == MotionEvent.ACTION_UP)
 				{
 					toMyLoc.setBackgroundDrawable(getResources().getDrawable(R.drawable.to_my_loc));
 				}
-				// if(event.getAction() == MotionEvent.ACTION_MOVE)
-				// {
-				// Log.d("debugXDIFF", Float.toString(startX - toMyLoc.getX()));
-				// Log.d("debugYDIFF", Float.toString(startY - toMyLoc.getY()));
-				// if((Math.abs(startX - toMyLoc.getX()) > 200) ||
-				// Math.abs(startY - toMyLoc.getY()) > 200)
-				// {
-				// toMyLoc.setBackgroundDrawable(getResources().getDrawable(R.drawable.to_my_loc));
-				// }
-				// }
+				if (event.getAction() == MotionEvent.ACTION_MOVE)
+				{
+					Log.d("debugXDIFF", Float.toString(Math.abs(event.getX() - toMyLoc.getX())));
+					//Log.d("debugYDIFF", Float.toString(Math.abs(event.getY() - toMyLoc.getY())));
+					if ((Math.abs(event.getX() - toMyLoc.getX()) > 410F) || Math.abs(event.getY() - toMyLoc.getY()) > 84F)
+					{
+						toMyLoc.setBackgroundDrawable(getResources().getDrawable(R.drawable.to_my_loc));
+					}
+				}
 				return false;
 			}
 		});

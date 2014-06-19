@@ -4,6 +4,7 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.IOverlayMenuProvider;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -19,6 +20,8 @@ public class RotationGestureOverlay extends SafeDrawOverlay implements RotationG
 	private final RotationGestureDetector mRotationDetector;
 	private MapView mMapView;
 	private boolean mOptionsMenuEnabled = true;
+
+	private final static float maxDegreesChange = 5;
 
 	public RotationGestureOverlay(Context context, MapView mapView)
 	{
@@ -46,8 +49,12 @@ public class RotationGestureOverlay extends SafeDrawOverlay implements RotationG
 	@Override
 	public void onRotate(float deltaAngle)
 	{
-		//divide deltaAngle by 1.2F to remove rotationLag
-		mMapView.setMapOrientation(mMapView.getMapOrientation() + deltaAngle/1.2F);
+		// divide deltaAngle by 1.2F to remove rotationLag
+		deltaAngle /= 1.5F;
+		deltaAngle =  Math.abs(deltaAngle) > maxDegreesChange ?  deltaAngle > 0 ? maxDegreesChange : - maxDegreesChange : deltaAngle;
+		
+		Log.d("Debug", Float.toString(deltaAngle));
+		mMapView.setMapOrientation(mMapView.getMapOrientation() + deltaAngle);
 	}
 
 	@Override
