@@ -46,6 +46,8 @@ public class BikeInfoWindow extends DefaultInfoWindow
 				
 				SignalView detailsFragment = SignalView.newInstance(bike);
 				FragmentTransaction transaction1 = fragmentManager.beginTransaction();
+				transaction1.setCustomAnimations(R.anim.slide_left, R.anim.alpha_out,
+						R.anim.alpha_in, R.anim.slide_right);
 				transaction1.replace(R.id.content_frame, detailsFragment);
 				transaction1.addToBackStack(null);
 				transaction1.commit();

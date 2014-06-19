@@ -58,6 +58,9 @@ public class OsmMap extends Fragment
 
 	private RotationGestureOverlay rotationGestureOverlay;
 	private Button toMyLoc;
+	
+	private BoundingBoxE6 currentBoundingBox;
+	private float currentMapOrientation;
 
 	public static OsmMap newInstance(ArrayList<Station> stations, ArrayList<Bike> bikes)
 	{
@@ -129,25 +132,40 @@ public class OsmMap extends Fragment
 		mapView.getOverlays().add(rotationGestureOverlay);
 		return rootView;
 	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		mapView.post(new Runnable()
+		{
+
+			@Override
+			public void run()
+			{				
+				//cycle because the zoomToBoundingBox must be called 3 times to take effect (osm bug?)
+				if (currentBoundingBox==null){
+					for (int i = 0; i < 3; i++)
+					{
+						mapView.zoomToBoundingBox(getBoundingBox(true));
+					}
+				}
+				else{
+					for (int i = 0; i < 3; i++)
+					{
+						mapView.zoomToBoundingBox(currentBoundingBox);
+					}
+				}
+				mapView.setMapOrientation(currentMapOrientation);
+				
+			}
+		});
+	}
 
 	@Override
 	public void onResume()
 	{
 		super.onResume();
 		mLocationOverlay.enableMyLocation();
-		mapView.post(new Runnable()
-		{
-
-			@Override
-			public void run()
-			{
-				for (int i = 0; i < 3; i++)
-				{
-					mapView.zoomToBoundingBox(getBoundingBox(true));
-				}
-
-			}
-		});
 	}
 
 	@Override
@@ -155,6 +173,9 @@ public class OsmMap extends Fragment
 	{
 		super.onPause();
 		mLocationOverlay.disableMyLocation();
+		currentBoundingBox = mapView.getBoundingBox();
+		currentMapOrientation = mapView.getMapOrientation();
+		mapView.getMapOrientation();
 	}
 
 	@Override
