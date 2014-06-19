@@ -40,15 +40,9 @@ import eu.trentorise.smartcampus.bikerovereto.R;
 
 public class OsmMap extends Fragment
 {
-
-	// menu
-	private static final int MENU_ON_STATION_ID = 0;
-
 	// the view where the map is showed
 	private MapView mapView;
 
-	// the tools to control the map
-	private IMapController mapController;
 
 	private MyLocationNewOverlay mLocationOverlay;
 	// the stations to show in the map
@@ -91,7 +85,6 @@ public class OsmMap extends Fragment
 		// get the mapView and the controller
 		mapView = (MapView) rootView.findViewById(R.id.map_view);
 
-		mapController = mapView.getController();
 
 		// mapView.setBuiltInZoomControls(true);
 		mapView.setMultiTouchControls(true);
@@ -352,32 +345,26 @@ public class OsmMap extends Fragment
 		});
 		toMyLoc.setOnTouchListener(new OnTouchListener()
 		{
-
-			// float startX, startY;
-
 			@Override
 			public boolean onTouch(View v, MotionEvent event)
 			{
 				if (event.getAction() == MotionEvent.ACTION_DOWN)
 				{
 					toMyLoc.setBackgroundDrawable(getResources().getDrawable(R.drawable.to_my_loc_clicked));
-					// startX = event.getX();
-					// startY = event.getY();
 				}
 				if (event.getAction() == MotionEvent.ACTION_UP)
 				{
 					toMyLoc.setBackgroundDrawable(getResources().getDrawable(R.drawable.to_my_loc));
 				}
-				// if(event.getAction() == MotionEvent.ACTION_MOVE)
-				// {
-				// Log.d("debugXDIFF", Float.toString(startX - toMyLoc.getX()));
-				// Log.d("debugYDIFF", Float.toString(startY - toMyLoc.getY()));
-				// if((Math.abs(startX - toMyLoc.getX()) > 200) ||
-				// Math.abs(startY - toMyLoc.getY()) > 200)
-				// {
-				// toMyLoc.setBackgroundDrawable(getResources().getDrawable(R.drawable.to_my_loc));
-				// }
-				// }
+				if (event.getAction() == MotionEvent.ACTION_MOVE)
+				{
+					Log.d("debugXDIFF", Float.toString(Math.abs(event.getX() - toMyLoc.getX())));
+					//Log.d("debugYDIFF", Float.toString(Math.abs(event.getY() - toMyLoc.getY())));
+					if ((Math.abs(event.getX() - toMyLoc.getX()) > 410F) || Math.abs(event.getY() - toMyLoc.getY()) > 84F)
+					{
+						toMyLoc.setBackgroundDrawable(getResources().getDrawable(R.drawable.to_my_loc));
+					}
+				}
 				return false;
 			}
 		});
