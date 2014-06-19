@@ -5,6 +5,7 @@ import org.osmdroid.util.GeoPoint;
 import smartcampus.model.Station;
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ListView;
@@ -60,7 +61,7 @@ public class Tools
 	}
 	
 	public static void setNavDrawerItemSelected(ListView mDrawerListView, int position, Resources resources)
-	{	    
+	{
         View v = mDrawerListView.getChildAt(position);
         v.setBackgroundColor(resources.getColor(R.color.nav_backcolor_selected));
 	}

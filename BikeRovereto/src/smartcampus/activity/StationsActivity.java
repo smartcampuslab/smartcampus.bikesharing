@@ -33,8 +33,6 @@ public class StationsActivity extends Fragment
 	ListView mList;
 	StationsAdapter stationsAdapter;
 	String[] navTitles;
-	private DrawerLayout mDrawerLayout;
-	private ListView mDrawerList;
 
 	OnStationSelectListener mCallback;
 

@@ -32,7 +32,6 @@ public class StationDetails extends Fragment
 	private Station station;
 
 	private ListView mList;
-	private LocationManager mLocationManager;
 	private TextView name;
 	private TextView street;
 	private TextView availableBike, availableSlots;
@@ -89,8 +88,6 @@ public class StationDetails extends Fragment
 				startActivity(i);
 			}
 		});
-		mLocationManager = (LocationManager) getActivity().getSystemService(
-				getActivity().LOCATION_SERVICE);
 		setHasOptionsMenu(true);
 		
 		((MainActivity) getActivity()).setOnPositionAquiredListener(new OnPositionAquiredListener()

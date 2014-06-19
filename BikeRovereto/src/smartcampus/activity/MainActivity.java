@@ -203,6 +203,12 @@ public class MainActivity extends ActionBarActivity implements
 	{
 		super.onPostCreate(savedInstanceState);
 		mDrawerToggle.syncState();
+		// Set the first item selected (Map)
+		Log.d("ss",mDrawerList.getChildCount()+"");
+		Tools.setNavDrawerItemSelected(mDrawerList, 0, getResources());
+		// TODO: find where the listview of the navigation drawer is
+		// initialized... null pointer exception!
+		//Tools.setNavDrawerItemSelected(mDrawerList, 0, getResources());
 	}
 
 	@Override
@@ -251,10 +257,6 @@ public class MainActivity extends ActionBarActivity implements
 	protected void onStart()
 	{
 		super.onStart();
-		// Set the first item selected (Map)
-		// Tools.setNavDrawerItemSelected(mDrawerList, 0, getResources());
-		// TODO: find where the listview of the navigation drawer is
-		// initialized... null pointer exception!
 		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
 				Tools.LOCATION_REFRESH_TIME, Tools.LOCATION_REFRESH_DISTANCE,
 				mLocationListener);
