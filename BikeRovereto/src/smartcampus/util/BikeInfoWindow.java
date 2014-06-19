@@ -57,8 +57,7 @@ public class BikeInfoWindow extends DefaultInfoWindow
 	@Override
 	public void open(Object object, GeoPoint position, int offsetX, int offsetY)
 	{
-		
-		super.open(object, position, offsetX + 15, offsetY + 80);
+		super.open(object, position, offsetX, offsetY);
 	}
 	
 	@Override

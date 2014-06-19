@@ -139,8 +139,8 @@ public class OsmMap extends Fragment
 				// myLoc.enableFollowLocation();
 				if (mLocationOverlay.getMyLocation() != null)
 				{
-					mapController.setZoom(18);
-					mapController.animateTo(mLocationOverlay.getMyLocation());
+					//mapController.animateTo(getBoundingBox(true).getCenter());
+					mapView.zoomToBoundingBox(getBoundingBox(true));
 				}
 			}
 		});
@@ -160,7 +160,7 @@ public class OsmMap extends Fragment
 			{
 				for (int i = 0; i < 3; i++)
 				{
-					mapView.zoomToBoundingBox(getBoundingBox(false));
+					mapView.zoomToBoundingBox(getBoundingBox(true));
 				}
 
 			}
@@ -277,29 +277,58 @@ public class OsmMap extends Fragment
 		mapView.getOverlays().add(stationsMarkersOverlay);
 	}
 
-	private BoundingBoxE6 getBoundingBox(boolean addFrame)
+	private BoundingBoxE6 getBoundingBox(boolean addCurrentPosition)
 	{
-
-		final int frame = addFrame ? 40000 : 0;
 		BoundingBoxE6 toRtn;
 		BoundingBoxE6 stationsBoundingBox = Station.getBoundingBox(stations);
 		BoundingBoxE6 bikesBoundingBox = Bike.getBoundingBox(bikes);
-		toRtn = new BoundingBoxE6(
-				stationsBoundingBox.getLatNorthE6() > bikesBoundingBox.getLatNorthE6() ? stationsBoundingBox.getLatNorthE6()
-						+ frame
-						: bikesBoundingBox.getLatNorthE6() + frame,
 
-				stationsBoundingBox.getLonEastE6() > bikesBoundingBox
-						.getLonEastE6() ? stationsBoundingBox.getLonEastE6()
-						+ frame : bikesBoundingBox.getLonEastE6() + frame,
+		int north = Integer.MIN_VALUE;
+		int south = Integer.MAX_VALUE;
+		int west = Integer.MAX_VALUE;
+		int east = Integer.MIN_VALUE;
 
-				stationsBoundingBox.getLatSouthE6() < bikesBoundingBox
-						.getLatSouthE6() ? stationsBoundingBox.getLatSouthE6()
-						- frame : bikesBoundingBox.getLatSouthE6() - frame,
+		north = stationsBoundingBox.getLatNorthE6() > bikesBoundingBox
+				.getLatNorthE6() ? stationsBoundingBox.getLatNorthE6()
+				: bikesBoundingBox.getLatNorthE6();
+				
+		east = stationsBoundingBox.getLonEastE6() > bikesBoundingBox
+				.getLonEastE6() ? stationsBoundingBox.getLonEastE6()
+				: bikesBoundingBox.getLonEastE6();
+				
+		south = stationsBoundingBox.getLatSouthE6() < bikesBoundingBox
+				.getLatSouthE6() ? stationsBoundingBox.getLatSouthE6()
+				: bikesBoundingBox.getLatSouthE6();
 
-				stationsBoundingBox.getLonWestE6() < bikesBoundingBox
-						.getLonWestE6() ? stationsBoundingBox.getLonWestE6()
-						- frame : bikesBoundingBox.getLonWestE6() - frame);
+		west = stationsBoundingBox.getLonWestE6() < bikesBoundingBox
+				.getLonWestE6() ? stationsBoundingBox.getLonWestE6()
+				: bikesBoundingBox.getLonWestE6();
+		
+		
+		if (addCurrentPosition && mLocationOverlay.getMyLocation() != null)
+		{
+			GeoPoint mPosition = new GeoPoint(mLocationOverlay.getMyLocation()
+					.getLatitudeE6(), mLocationOverlay.getMyLocation()
+					.getLongitudeE6());
+			if(mPosition.getLatitudeE6() > north)
+			{
+				north = mPosition.getLatitudeE6(); 
+			}
+			if(mPosition.getLatitudeE6() > east)
+			{
+				east = mPosition.getLongitudeE6(); 
+			}
+			if(mPosition.getLatitudeE6() < west)
+			{
+				west = mPosition.getLongitudeE6(); 
+			}
+			if(mPosition.getLatitudeE6() < south)
+			{
+				south = mPosition.getLatitudeE6(); 
+			}
+		}
+		
+		toRtn = new BoundingBoxE6(north, east, south, west);
 		return toRtn;
 	}
 
