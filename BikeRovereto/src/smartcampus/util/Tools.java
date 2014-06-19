@@ -51,20 +51,8 @@ public class Tools
 		return toRtn;
 	}	
 	
-	public static void setNavDrawerItemNormal(ListView mDrawerListView, Resources resources)
-	{
-	    for (int i=0; i< mDrawerListView.getChildCount(); i++)
-	    {
-	        View v = mDrawerListView.getChildAt(i);
-	        v.setBackgroundColor(resources.getColor(R.color.nav_backcolor_normal));
-	    }
-	}
-	
-	public static void setNavDrawerItemSelected(ListView mDrawerListView, int position, Resources resources)
-	{
-		Log.d("position", position+"");
-        View v = mDrawerListView.getChildAt(position);
-        v.setBackgroundColor(resources.getColor(R.color.nav_backcolor_selected));
+	public static boolean isRuntimeAfterHoneycomb(){
+		return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB;
 	}
 
 }

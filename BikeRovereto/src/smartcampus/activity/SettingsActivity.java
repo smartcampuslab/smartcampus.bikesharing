@@ -3,14 +3,12 @@ package smartcampus.activity;
 import java.util.ArrayList;
 
 import smartcampus.model.Station;
-import android.annotation.TargetApi;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
+import smartcampus.util.Tools;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
+import android.view.MenuItem;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
 public class SettingsActivity extends PreferenceActivity {
@@ -36,11 +34,21 @@ public class SettingsActivity extends PreferenceActivity {
 			}
 		});
 		
-		//TODO:  gingerbread crash!
+		if (Tools.isRuntimeAfterHoneycomb()){		
+			getActionBar().setDisplayHomeAsUpEnabled(true);
+			getActionBar().setHomeButtonEnabled(true);	
+		}
 		
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setHomeButtonEnabled(true);
-		
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			break;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 	
 	/*

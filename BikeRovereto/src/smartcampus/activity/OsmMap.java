@@ -358,6 +358,8 @@ public class OsmMap extends Fragment
 				}
 				if (event.getAction() == MotionEvent.ACTION_MOVE)
 				{
+					
+					//TODO: Button.getX() on gingerbread not compatible!
 					Log.d("debugXDIFF", Float.toString(Math.abs(event.getX() - toMyLoc.getX())));
 					//Log.d("debugYDIFF", Float.toString(Math.abs(event.getY() - toMyLoc.getY())));
 					if ((Math.abs(event.getX() - toMyLoc.getX()) > 410F) || Math.abs(event.getY() - toMyLoc.getY()) > 84F)

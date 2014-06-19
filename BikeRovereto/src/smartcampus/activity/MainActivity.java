@@ -177,6 +177,9 @@ public class MainActivity extends ActionBarActivity implements
 										mapFragment, FRAGMENT_MAP);
 								transaction.commit();
 							}
+						    // Highlight the selected item, update the title, and close the drawer
+							navAdapter.setItemChecked(position);		
+							navAdapter.notifyDataSetChanged();
 							break;
 						case 1:
 							currentFragment = getSupportFragmentManager()
@@ -190,6 +193,9 @@ public class MainActivity extends ActionBarActivity implements
 										stationsFragment, FRAGMENT_STATIONS);
 								transaction.commit();
 							}
+						    // Highlight the selected item, update the title, and close the drawer
+							navAdapter.setItemChecked(position);		
+							navAdapter.notifyDataSetChanged();
 							break;
 						case 2: 
 							Intent i = new Intent(getBaseContext(), SettingsActivity.class);
@@ -197,9 +203,6 @@ public class MainActivity extends ActionBarActivity implements
 							startActivity(i);
 							break;
 						}
-					    // Highlight the selected item, update the title, and close the drawer
-						navAdapter.setItemChecked(position);		
-						navAdapter.notifyDataSetChanged();
 						mDrawerLayout.closeDrawers();
 					}
 				});
