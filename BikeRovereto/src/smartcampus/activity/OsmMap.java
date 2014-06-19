@@ -25,15 +25,12 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import eu.trentorise.smartcampus.bikerovereto.R;
@@ -132,6 +129,8 @@ public class OsmMap extends Fragment
 		mapView.getOverlays().add(rotationGestureOverlay);
 		return rootView;
 	}
+	
+	//TODO: when the map orientation is not 0, bubbles are not clickable in the right position!
 	
 	@Override
 	public void onStart() {
@@ -349,6 +348,7 @@ public class OsmMap extends Fragment
 
 	private void setBtToMyLoc()
 	{
+		toMyLoc.setBackgroundDrawable(getResources().getDrawable(R.drawable.to_my_loc_image));
 		toMyLoc.setOnClickListener(new OnClickListener()
 		{
 
@@ -362,33 +362,6 @@ public class OsmMap extends Fragment
 					mapView.zoomToBoundingBox(getBoundingBox(true));
 					mapView.setMapOrientation(0);
 				}
-			}
-		});
-		toMyLoc.setOnTouchListener(new OnTouchListener()
-		{
-			@Override
-			public boolean onTouch(View v, MotionEvent event)
-			{
-				if (event.getAction() == MotionEvent.ACTION_DOWN)
-				{
-					toMyLoc.setBackgroundDrawable(getResources().getDrawable(R.drawable.to_my_loc_clicked));
-				}
-				if (event.getAction() == MotionEvent.ACTION_UP)
-				{
-					toMyLoc.setBackgroundDrawable(getResources().getDrawable(R.drawable.to_my_loc));
-				}
-				if (event.getAction() == MotionEvent.ACTION_MOVE)
-				{
-					
-					//TODO: Button.getX() on gingerbread not compatible!
-					Log.d("debugXDIFF", Float.toString(Math.abs(event.getX() - toMyLoc.getX())));
-					//Log.d("debugYDIFF", Float.toString(Math.abs(event.getY() - toMyLoc.getY())));
-					if ((Math.abs(event.getX() - toMyLoc.getX()) > 410F) || Math.abs(event.getY() - toMyLoc.getY()) > 84F)
-					{
-						toMyLoc.setBackgroundDrawable(getResources().getDrawable(R.drawable.to_my_loc));
-					}
-				}
-				return false;
 			}
 		});
 	}

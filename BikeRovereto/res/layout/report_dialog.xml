@@ -5,22 +5,32 @@
     android:orientation="vertical" >
     
     <CheckBox 
+        android:id="@+id/choose1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Scelta 1"/>
     <CheckBox 
+        android:id="@+id/choose2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Scelta 2"/>
     <CheckBox 
+        android:id="@+id/choose3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Scelta 3"/>
     
     <EditText 
+        android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/report_other"/>
+    
+    <Button 
+        android:id="@+id/add_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_photo"/>
     
 
 </LinearLayout>

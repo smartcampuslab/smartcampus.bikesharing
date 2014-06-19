@@ -32,4 +32,5 @@
     <string name="pref_keep_update">Tienimi aggiornato</string>
     <string name="pref_keep_update_summary">Tienimi aggiornato sulle bici disponibili delle mie stazioni abituali</string>
     <string name="pref_keep_list">Scegli stazioni</string>
+    <string name="add_photo">Aggiungi foto</string>
 </resources>

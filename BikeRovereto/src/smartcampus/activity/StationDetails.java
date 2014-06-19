@@ -1,19 +1,23 @@
 package smartcampus.activity;
 
+import java.util.ArrayList;
+
 import org.osmdroid.util.GeoPoint;
 
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
 import smartcampus.model.Station;
 import smartcampus.util.ReportsAdapter;
 import smartcampus.util.Tools;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +25,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikerovereto.R;
@@ -36,6 +43,9 @@ public class StationDetails extends Fragment
 	private TextView street;
 	private TextView availableBike, availableSlots;
 	private TextView distance;
+
+	private static final int REQUEST_IMAGE_CAPTURE = 1;
+
 
 	public static StationDetails newInstance(Station station)
 	{
@@ -135,21 +145,55 @@ public class StationDetails extends Fragment
 		((MainActivity)getActivity()).mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 		super.onDetach();
 	}
+	private void dispatchTakePictureIntent() {
+	    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+	    if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+	        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+	    }
+	}
 	
 	private void addReport()
 	{
+		//TODO: add imageview to display the image captured
+		
 		View dialogContent = getActivity().getLayoutInflater().inflate(
 				R.layout.report_dialog, null);
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
+		final CheckBox choose1;
+		final CheckBox choose2;
+		final CheckBox choose3;
+		final EditText descriptionEditText;
+		final Button addPhoto;						
+		choose1 = (CheckBox)dialogContent.findViewById(R.id.choose1);
+		choose2 = (CheckBox)dialogContent.findViewById(R.id.choose2);
+		choose3 = (CheckBox)dialogContent.findViewById(R.id.choose3);
+		descriptionEditText = (EditText)dialogContent.findViewById(R.id.description);
+		addPhoto = (Button)dialogContent.findViewById(R.id.add_photo);
+		
+		addPhoto.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				dispatchTakePictureIntent();				
+			}
+		});
+		
+		final ArrayList<String> choosesAndDescription = new ArrayList<String>();
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());		
 		builder.setTitle(getString(R.string.report_in) + " "
 				+ station.getName());
 		builder.setPositiveButton(R.string.report,
 				new DialogInterface.OnClickListener()
 				{
-					public void onClick(DialogInterface dialog, int id)
-					{
-						// TODO: implement report
+					public void onClick(DialogInterface dialogI, int id)
+					{						
+						if (choose1.isChecked())
+							choosesAndDescription.add(choose1.getText().toString());
+						if (choose2.isChecked())
+							choosesAndDescription.add(choose2.getText().toString());
+						if (choose3.isChecked())
+							choosesAndDescription.add(choose3.getText().toString());
+						choosesAndDescription.add(descriptionEditText.getText().toString());
 					}
 				});
 		builder.setNegativeButton(android.R.string.cancel,
@@ -160,10 +204,19 @@ public class StationDetails extends Fragment
 					}
 				});
 		builder.setView(dialogContent);
-		AlertDialog dialog = builder.create();
 
-		dialog.show();
+		builder.show();
 
+	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.d("station details", "onActivityResult");
+	    if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+	        Bundle extras = data.getExtras();
+	        //Bitmap imageBitmap = (Bitmap) extras.get("data");
+	        //mImageView.setImageBitmap(imageBitmap);
+	    }
 	}
 
 }
