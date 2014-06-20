@@ -8,6 +8,8 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.OverlayItem;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.MotionEvent;
 
 public class MarkerOverlay<Item extends OverlayItem> extends
@@ -26,7 +28,6 @@ public class MarkerOverlay<Item extends OverlayItem> extends
 	@Override
 	public boolean onTouchEvent(MotionEvent event, MapView mapView)
 	{
-		boolean toRtn = false;
 		if (event.getAction() == event.ACTION_DOWN)
 		{
 			x = event.getX();
@@ -40,20 +41,24 @@ public class MarkerOverlay<Item extends OverlayItem> extends
 				if (getBubbledItemId() != -1)
 				{
 					closeOpenBubble();
+					return true;
 				}
-				else
-				{
-					toRtn = super.onTouchEvent(event, mapView);
-				}
-
-				return toRtn;
 			}
 		}
-		return toRtn;
+		return false;
+	}
+
+	@Override
+	protected boolean onSingleTapUpHelper(int index, Item item, MapView mapView)
+	{
+		Log.d("debug", "tap");
+		return super.onSingleTapUpHelper(index, item, mapView);
 	}
 
 	private void closeOpenBubble()
 	{
 		hideBubble();
 	}
+
+	
 }
