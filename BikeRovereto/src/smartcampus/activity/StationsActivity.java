@@ -176,7 +176,7 @@ public class StationsActivity extends Fragment
 	 private void onRefreshComplete(ArrayList<Station> result) {
         Log.i("STR", "onRefreshComplete");
  
-        stationsAdapter.notifyDataSetChanged(); 
+        stationsAdapter.notifyDataSetChanged();
         // Stop the refreshing indicator
         mSwipeRefreshLayout.setRefreshing(false);
     }

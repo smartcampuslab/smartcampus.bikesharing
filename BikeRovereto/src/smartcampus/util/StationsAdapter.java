@@ -93,8 +93,8 @@ public class StationsAdapter extends ArrayAdapter<Station>
 			public void onClick(View arg0) {
 				thisStation.setFavourite(!thisStation.getFavourite());
 				SharedPreferences.Editor editor = pref.edit();
-			   editor.putBoolean("sta"+thisStation.getId(), thisStation.getFavourite());
-			   editor.commit();
+			   editor.putBoolean(Tools.STATION_PREFIX+thisStation.getId(), thisStation.getFavourite());
+			   editor.apply();
 			}
 		});
 		return convertView;

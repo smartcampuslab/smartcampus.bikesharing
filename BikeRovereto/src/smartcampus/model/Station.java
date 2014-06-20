@@ -23,7 +23,7 @@ public class Station implements Parcelable
 	private int distance = DISTANCE_NOT_VALID; // >=0 only when distance is
 												// initialized
 
-	//TODO: 
+	//TODO: implement brokenSlots
 	
 	public Station(GeoPoint position, String name, String street, int maxSlots, int nBikes, int brokenSlots, int id)
 	{

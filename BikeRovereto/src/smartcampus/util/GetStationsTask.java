@@ -15,6 +15,8 @@ import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
 import smartcampus.model.Station;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> THIS IS NOT TESTED!! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -30,6 +32,12 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 	private static final String MAX_SLOTS = "slots";
 	private static final String BROKEN_SLOTS = "brokenslots";
 	private static final String STATION_ID = "id";	
+	
+	private Context context;
+	
+	public GetStationsTask(Context context){
+		this.context=context;
+	}
 	
 	@Override
 	protected ArrayList<Station> doInBackground(String... data) {
@@ -48,6 +56,7 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 		} 
 		ArrayList<Station> stations = new ArrayList<Station>();
 		try {
+			SharedPreferences pref = context.getSharedPreferences("favStations", Context.MODE_PRIVATE);
 			JSONArray stationsArrayJSON = new JSONArray(responseJSON);
 			for (int i = 0; i < stationsArrayJSON.length(); i++) { 
 				 JSONObject stationJSON = stationsArrayJSON.getJSONObject(i); 
@@ -60,7 +69,8 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 				 int brokenSlots = stationJSON.getInt(BROKEN_SLOTS);
 				 int id = stationJSON.getInt(STATION_ID);
 				 Station station = new Station(new GeoPoint(latitude, longitude), name, street, maxSlots, availableBikes, brokenSlots, id);
-				 station.setUsedSlots(availableBikes);
+				 station.setUsedSlots(availableBikes);				 
+				 station.setFavourite(pref.getBoolean(Tools.STATION_PREFIX + id, false));
 				 stations.add(station);
 			}
 		} catch (JSONException e) {
