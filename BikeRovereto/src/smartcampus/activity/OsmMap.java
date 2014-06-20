@@ -3,6 +3,7 @@ package smartcampus.activity;
 import java.util.ArrayList;
 
 import org.osmdroid.bonuspack.clustering.GridMarkerClusterer;
+import org.osmdroid.bonuspack.overlays.InfoWindow;
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -22,8 +23,6 @@ import smartcampus.util.StationInfoWindow;
 import smartcampus.util.StationMarker;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
@@ -59,7 +58,7 @@ public class OsmMap extends Fragment
 	// marker for the bikes
 	private GridMarkerClusterer bikesMarkersOverlay;
 
-	private RotationGestureOverlay rotationGestureOverlay;
+	//private RotationGestureOverlay rotationGestureOverlay;
 	private Button toMyLoc;
 
 	private BoundingBoxE6 currentBoundingBox;
@@ -128,9 +127,11 @@ public class OsmMap extends Fragment
 		setBtToMyLoc();
 
 		// rotation gesture
-		rotationGestureOverlay = new RotationGestureOverlay(getActivity().getApplicationContext(), mapView);
-		rotationGestureOverlay.setEnabled(false);
-		mapView.getOverlays().add(rotationGestureOverlay);
+//		rotationGestureOverlay = new RotationGestureOverlay(getActivity().getApplicationContext(), mapView);
+//		rotationGestureOverlay.setEnabled(false);
+		
+		//mapView.getOverlays().add(rotationGestureOverlay);
+
 		setMapListener();
 		return rootView;
 	}
@@ -221,20 +222,20 @@ public class OsmMap extends Fragment
 				mapView.invalidate();
 			}
 			break;
-		case R.id.switch_rotation:
-			item.setChecked(!item.isChecked());
-			if (item.isChecked())
-			{
-				rotationGestureOverlay.setEnabled(true);
-			}
-			else
-			{
-				mapView.setMapOrientation(0);
-				rotationGestureOverlay.setEnabled(false);
-			}
-			break;
-		default:
-			break;
+//		case R.id.switch_rotation:
+//			item.setChecked(!item.isChecked());
+//			if (item.isChecked())
+//			{
+//				rotationGestureOverlay.setEnabled(true);
+//			}
+//			else
+//			{
+//				mapView.setMapOrientation(0);
+//				rotationGestureOverlay.setEnabled(false);
+//			}
+//			break;
+//		default:
+//			break;
 		}
 
 		return true;
@@ -244,9 +245,7 @@ public class OsmMap extends Fragment
 	{
 		addBikesMarkers();
 		addStationsMarkers();
-		
-		Drawable clusterIconD = getResources().getDrawable(R.drawable.marker_0);
-		Bitmap clusterIcon = ((BitmapDrawable)clusterIconD).getBitmap();
+
 		stationsMarkersOverlay.setGridSize(100);
 		bikesMarkersOverlay.setGridSize(100);
 	}
@@ -435,30 +434,13 @@ public class OsmMap extends Fragment
 				{
 					if ((Math.abs(event.getX() - x) <= 10) && (Math.abs(event.getY() - y) <= 10))
 					{
-						Log.d("debug", "touc");
-						boolean someThingIsOpened = false;
-						for (Overlay o : bikesMarkersOverlay.getItems())
+						boolean toRtn = false;
+						for (InfoWindow i : InfoWindow.getOpenedInfoWindowsOn(mapView))
 						{
-							if (((BikeMarker) o).isInfoWindowShown())
-							{
-								someThingIsOpened = true;
-								((BikeMarker) o).hideInfoWindow();
-								break;
-							}
+							i.close();
+							toRtn = true;
 						}
-						if (!someThingIsOpened)
-						{
-							for (Overlay o : stationsMarkersOverlay.getItems())
-							{
-								if (((StationMarker) o).isInfoWindowShown())
-								{
-									someThingIsOpened = true;
-									((StationMarker) o).hideInfoWindow();
-									break;
-								}
-							}
-						}
-						return someThingIsOpened;
+						return toRtn;
 					}
 				}
 				return false;

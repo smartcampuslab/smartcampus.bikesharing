@@ -30,4 +30,5 @@
     <string name="add_photo">Aggiungi foto</string>
     <string name="refresh">Aggiorna</string>
     <string name="refresh_hint">Trascina verso il basso per aggiornare</string>
+    <string name="only_e_motion">Solo e-motion</string>
 </resources>

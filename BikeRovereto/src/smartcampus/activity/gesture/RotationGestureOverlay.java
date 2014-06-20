@@ -3,6 +3,7 @@ package smartcampus.activity.gesture;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.IOverlayMenuProvider;
 
+import smartcampus.activity.MainActivity.OnPositionAquiredListener;
 import android.content.Context;
 import android.util.Log;
 import android.view.Menu;
@@ -22,7 +23,8 @@ public class RotationGestureOverlay extends SafeDrawOverlay implements RotationG
 	private boolean mOptionsMenuEnabled = true;
 
 	private final static float maxDegreesChange = 5;
-
+	private OnRotateListener mCallback;
+	
 	public RotationGestureOverlay(Context context, MapView mapView)
 	{
 		super(context);
@@ -55,6 +57,7 @@ public class RotationGestureOverlay extends SafeDrawOverlay implements RotationG
 		
 		Log.d("Debug", Float.toString(deltaAngle));
 		mMapView.setMapOrientation(mMapView.getMapOrientation() + deltaAngle);
+		//mCallback.onRotateListener();
 	}
 
 	@Override
@@ -114,5 +117,16 @@ public class RotationGestureOverlay extends SafeDrawOverlay implements RotationG
 	public void setOptionsMenuEnabled(boolean enabled)
 	{
 		mOptionsMenuEnabled = enabled;
+	}
+	
+	public interface OnRotateListener
+	{
+		public void onRotateListener();
+	}
+
+	public void setOnRotateListener(
+			OnRotateListener onRotateListener)
+	{
+		this.mCallback = onRotateListener;
 	}
 }

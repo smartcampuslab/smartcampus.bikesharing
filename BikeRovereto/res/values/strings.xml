@@ -30,4 +30,5 @@
     <string name="add_photo">Add photo</string>
     <string name="refresh">Refresh</string>
     <string name="refresh_hint">Pull down to refresh</string>
+    <string name="only_e_motion">Only e-motion</string>
 </resources>
