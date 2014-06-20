@@ -8,6 +8,7 @@ import smartcampus.model.Station;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,14 +24,17 @@ import eu.trentorise.smartcampus.bikerovereto.R;
 public class StationsAdapter extends ArrayAdapter<Station>
 {
 
-	ArrayList<Station> mStations;
-	GeoPoint currentLocation;
+	private ArrayList<Station> mStations;
+	private GeoPoint currentLocation;
+	private SharedPreferences pref;
+	
 	public StationsAdapter(Context context, int resource,
 			ArrayList<Station> stations, GeoPoint currentLocation)
 	{
 		super(context, resource, stations);
 		mStations = stations;
 		this.currentLocation = currentLocation;
+		pref = context.getSharedPreferences("favStations", Context.MODE_PRIVATE);
 	}
 
 	@Override
@@ -88,6 +92,9 @@ public class StationsAdapter extends ArrayAdapter<Station>
 			@Override
 			public void onClick(View arg0) {
 				thisStation.setFavourite(!thisStation.getFavourite());
+				SharedPreferences.Editor editor = pref.edit();
+			   editor.putBoolean("sta"+thisStation.getId(), thisStation.getFavourite());
+			   editor.commit();
 			}
 		});
 		return convertView;

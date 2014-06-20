@@ -29,6 +29,7 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 	private static final String AVAILABLE_BIKES = "bikes";
 	private static final String MAX_SLOTS = "slots";
 	private static final String BROKEN_SLOTS = "brokenslots";
+	private static final String STATION_ID = "id";	
 	
 	@Override
 	protected ArrayList<Station> doInBackground(String... data) {
@@ -57,7 +58,8 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 				 int availableBikes = stationJSON.getInt(AVAILABLE_BIKES);
 				 int maxSlots = stationJSON.getInt(MAX_SLOTS);
 				 int brokenSlots = stationJSON.getInt(BROKEN_SLOTS);
-				 Station station = new Station(new GeoPoint(latitude, longitude), name+"-"+street, maxSlots);
+				 int id = stationJSON.getInt(STATION_ID);
+				 Station station = new Station(new GeoPoint(latitude, longitude), name, street, maxSlots, availableBikes, brokenSlots, id);
 				 station.setUsedSlots(availableBikes);
 				 stations.add(station);
 			}

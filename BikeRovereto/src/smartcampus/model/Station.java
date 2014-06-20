@@ -12,6 +12,9 @@ public class Station implements Parcelable
 {
 	private GeoPoint position;
 	private String name, street;
+
+	private String id;
+
 	
 	private int nBikes;
 	private int maxSlots;
@@ -22,13 +25,16 @@ public class Station implements Parcelable
 	private int distance = DISTANCE_NOT_VALID; // >=0 only when distance is
 												// initialized
 
-	public Station(GeoPoint position, String nameAndStreet, int maxSlots)
+	//TODO: 
+	
+	public Station(GeoPoint position, String name, String street, int maxSlots, int nBikes, int brokenSlots, String id)
 	{
 		this.position = position;
-		this.name = nameAndStreet.split("-")[0].trim();
-		this.street = nameAndStreet.split("-")[1].trim();
+		this.name = name;
+		this.street = street;
 		this.maxSlots = maxSlots;
 		this.nBikes = 0;
+		this.id = id;
 		reports = new ArrayList<String>();
 	}
 
@@ -218,6 +224,10 @@ public class Station implements Parcelable
 	public boolean getFavourite()
 	{
 		return favourite;
+	}
+	public String getId()
+	{
+		return id;
 	}
 
 }
