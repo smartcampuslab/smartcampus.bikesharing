@@ -5,4 +5,9 @@
     <color name="actionbar_text">#f0ffffff</color>
     <color name="nav_backcolor_normal">#00000000</color>
     <color name="nav_backcolor_selected">#ff3498db</color>
+    
+    <color name="swipe_color_1">#2980b9</color>
+    <color name="swipe_color_2">#e74c3c</color>
+    <color name="swipe_color_3">#8e44ad</color>
+    <color name="swipe_color_4">#f1c40f</color>
 </resources>

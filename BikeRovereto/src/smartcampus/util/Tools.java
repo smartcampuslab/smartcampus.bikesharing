@@ -16,7 +16,6 @@ public class Tools
 
 	public static final long LOCATION_REFRESH_TIME = 60000;
 	public static final float LOCATION_REFRESH_DISTANCE = 100;
-	public static final String ITEM_SELECTED = "selected";
 
 	public static int convertDpToPixel(Context context, int dp)
 	{
