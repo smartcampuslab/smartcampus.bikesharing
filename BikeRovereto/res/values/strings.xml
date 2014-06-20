@@ -6,7 +6,7 @@
     <string name="title_activity_osm_map">OsmMap</string>
     <string name="toMap">OSM</string>
     <string name="title_activity_stations">Stations</string>
-    <string name="to_details">Show details</string>
+    <string name="to_details">Details</string>
     <string name="sort">Sort by...</string>
     <string name="sort_distance">Distance</string>
     <string name="sort_available_bikes">Available bikes</string>
@@ -30,4 +30,5 @@
     <string name="add_photo">Add photo</string>
     <string name="refresh">Refresh</string>
     <string name="refresh_hint">Pull down to refresh</string>
+    <string name="only_e_motion">Only e-motion</string>
 </resources>

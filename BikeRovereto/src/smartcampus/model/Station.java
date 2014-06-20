@@ -13,7 +13,9 @@ public class Station implements Parcelable
 	private GeoPoint position;
 	private String name, street;
 
-	private int id;
+	private String id;
+
+	
 	private int nBikes;
 	private int maxSlots;
 	private boolean favourite;
@@ -25,7 +27,7 @@ public class Station implements Parcelable
 
 	//TODO: implement brokenSlots
 	
-	public Station(GeoPoint position, String name, String street, int maxSlots, int nBikes, int brokenSlots, int id)
+	public Station(GeoPoint position, String name, String street, int maxSlots, int nBikes, int brokenSlots, String id)
 	{
 		this.position = position;
 		this.name = name;
@@ -223,7 +225,7 @@ public class Station implements Parcelable
 	{
 		return favourite;
 	}
-	public int getId()
+	public String getId()
 	{
 		return id;
 	}

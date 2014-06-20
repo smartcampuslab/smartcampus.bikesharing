@@ -5,15 +5,9 @@
 	
  	<item android:id="@+id/switch_bikes_tipe" 
          android:titleCondensed="e-motion"
-         android:title="Solo e-motion" 
+         android:title="@string/only_e_motion" 
          android:icon="@android:drawable/ic_menu_preferences" 
          android:checkable="true" />
  	
- 	<item android:id="@+id/switch_rotation" 
-         android:titleCondensed="rotazione"
-         android:title="rotazione mappa" 
-         android:icon="@android:drawable/ic_menu_preferences" 
-         android:checkable="true"
-         android:checked="false"/>
  	    
  	</menu>

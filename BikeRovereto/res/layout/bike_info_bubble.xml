@@ -27,7 +27,6 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="0"
             android:maxEms="17"
-            android:text="Title"
             android:textColor="#666666" />
 
         <TextView
@@ -37,9 +36,8 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="0"
             android:maxEms="17"
-            android:text="Description"
             android:textColor="#ff9200"
-            android:textSize="12dp"
+            android:textSize="12sp"
             android:visibility="invisible" />
 
         <TextView
@@ -48,20 +46,21 @@
             android:layout_height="0dp"
             android:layout_weight="0"
             android:maxEms="17"
-            android:text="Address"
             android:textColor="#000000"
-            android:textSize="10dp"
+            android:textSize="11sp"
             android:visibility="invisible" />
 
-        <Button
+        <TextView
             android:id="@+id/btToSignal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/button"
+            android:background= "#4f3333"
             android:text="@string/signal"
-            android:textColor="#ffffff" />
+            android:layout_margin="5dp"
+            android:gravity="center"
+            android:padding="4dp"
+            android:textColor="#ffffff"
+            android:textSize="15sp" />
     </LinearLayout>
 
 </LinearLayout>
