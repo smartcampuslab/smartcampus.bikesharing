@@ -16,7 +16,7 @@ import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
 public class BikeInfoWindow extends MarkerInfoWindow
@@ -30,7 +30,7 @@ public class BikeInfoWindow extends MarkerInfoWindow
 		super(R.layout.bike_info_bubble, mapView);
 		myMapView = mapView;
 		
-		Button btn = (Button) (mView.findViewById(R.id.btToSignal));
+		TextView btn = (TextView) (mView.findViewById(R.id.btToSignal));
 		btn.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)

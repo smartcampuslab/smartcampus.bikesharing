@@ -5,7 +5,6 @@ package smartcampus.util;
 //import org.osmdroid.util.GeoPoint;
 //import org.osmdroid.views.MapView;
 
-import org.osmdroid.bonuspack.overlays.Marker;
 import org.osmdroid.bonuspack.overlays.MarkerInfoWindow;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -15,7 +14,6 @@ import smartcampus.model.Station;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
@@ -31,7 +29,7 @@ public class StationInfoWindow extends MarkerInfoWindow
 		super(R.layout.info_bubble, mapView);
 		//mContext = context;
 		myMapView = mapView;
-		Button btn = (Button) (mView.findViewById(R.id.btToDetails));
+		TextView btn = (TextView) (mView.findViewById(R.id.btToDetails));
 		btn.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)

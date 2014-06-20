@@ -12,7 +12,7 @@ public class Station implements Parcelable
 {
 	private GeoPoint position;
 	private String name, street;
-
+	
 	private int nBikes;
 	private int maxSlots;
 	private boolean favourite;
