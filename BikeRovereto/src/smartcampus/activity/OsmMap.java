@@ -2,7 +2,7 @@ package smartcampus.activity;
 
 import java.util.ArrayList;
 
-import org.osmdroid.bonuspack.overlays.FolderOverlay;
+import org.osmdroid.bonuspack.clustering.GridMarkerClusterer;
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -12,6 +12,7 @@ import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import smartcampus.activity.cluster.GridMarkerClustererCustom;
 import smartcampus.activity.gesture.RotationGestureOverlay;
 import smartcampus.model.Bike;
 import smartcampus.model.Station;
@@ -21,6 +22,8 @@ import smartcampus.util.StationInfoWindow;
 import smartcampus.util.StationMarker;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
@@ -52,9 +55,9 @@ public class OsmMap extends Fragment
 	// marker for the stations
 
 	// private MarkerOverlay<StationOverlayItem> stationsMarkersOverlay;
-	private FolderOverlay stationsMarkersOverlay;
+	private GridMarkerClustererCustom stationsMarkersOverlay;
 	// marker for the bikes
-	private FolderOverlay bikesMarkersOverlay;
+	private GridMarkerClusterer bikesMarkersOverlay;
 
 	private RotationGestureOverlay rotationGestureOverlay;
 	private Button toMyLoc;
@@ -241,12 +244,17 @@ public class OsmMap extends Fragment
 	{
 		addBikesMarkers();
 		addStationsMarkers();
+		
+		Drawable clusterIconD = getResources().getDrawable(R.drawable.marker_0);
+		Bitmap clusterIcon = ((BitmapDrawable)clusterIconD).getBitmap();
+		stationsMarkersOverlay.setGridSize(100);
+		bikesMarkersOverlay.setGridSize(100);
 	}
 
 	private void addBikesMarkers()
 	{
 		Resources res = getResources();
-		bikesMarkersOverlay = new FolderOverlay(getActivity());
+		bikesMarkersOverlay = new GridMarkerClusterer(getActivity());
 		mapView.getOverlays().add(bikesMarkersOverlay);
 
 		Drawable markerImage = res.getDrawable(R.drawable.anarchich_bike);
@@ -271,7 +279,7 @@ public class OsmMap extends Fragment
 		// markers at:
 		// http://openclipart.org/detail/184847/map-marker-vector-by-rfvectors.com-184847
 		Resources res = getResources();
-		stationsMarkersOverlay = new FolderOverlay(getActivity());
+		stationsMarkersOverlay = new GridMarkerClustererCustom(getActivity());
 		mapView.getOverlays().add(stationsMarkersOverlay);
 
 		Drawable markerImage = null;
@@ -324,6 +332,7 @@ public class OsmMap extends Fragment
 
 			marker.setIcon(markerImage);
 			marker.setInfoWindow(customInfoWindow);
+			marker.setAnchor(0, 1);
 			stationsMarkersOverlay.add(marker);
 		}
 	}
@@ -390,7 +399,7 @@ public class OsmMap extends Fragment
 
 	private void setBtToMyLoc()
 	{
-		toMyLoc.setBackgroundDrawable(getResources().getDrawable(R.drawable.to_my_loc_image));
+		toMyLoc.setBackgroundResource(R.drawable.to_my_loc_image);
 		toMyLoc.setOnClickListener(new OnClickListener()
 		{
 
