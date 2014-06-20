@@ -1,36 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Bike
-        Rovereto</string>
+    <string name="app_name">Bike Rovereto</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_osm_map">OsmMap</string>
     <string name="toMap">OSM</string>
-    <string name="toggle_turn_on">e-motion</string>
-    <string name="toggle_turn_off">tutte le bici</string>
-    <string name="title_activity_stations">Stazioni</string>
-    <string name="station_used_slots">Posti occupati: </string>
-    <string name="station_max_slots">massimo posti: </string>
-    <string name="to_details">vedi dettagli</string>
-    <string name="sort">Ordina per...</string>
-    <string name="sort_distance">Distanza</string>
-    <string name="sort_available_bikes">Bici disponibili</string>
-    <string name="sort_available_slots">Slot disponibili</string>
-    <string name="sort_name">Nome</string>
-    <string name="title_activity_station_details">Dettagli stazione</string>
-    <string name="reports">Segnalazioni</string>
-    <string name="no_reports">Nessuna segnalazione</string>
-    <string name="title_activity_signal">Guasti</string>
-    <string name="signal">Segnala guasto</string>
-    <string name="action_add_report">Crea segnalazione</string>
-    <string name="report_other">Descrizione aggiuntiva</string>
-    <string name="report_in">Segnala in</string>
-    <string name="report">Segnala</string>
-    <string name="drawer_open">Apri</string>
-    <string name="drawer_close">Chiudi</string>
-    <string name="title_activity_settings">Impostazioni</string>
-    <string name="pref_keep_update">Tienimi aggiornato</string>
-    <string name="pref_keep_update_summary">Tienimi aggiornato sulle bici disponibili delle mie stazioni abituali</string>
-    <string name="pref_keep_list">Scegli stazioni</string>
-    <string name="add_photo">Aggiungi foto</string>
+    <string name="title_activity_stations">Stations</string>
+    <string name="to_details">Show details</string>
+    <string name="sort">Sort by...</string>
+    <string name="sort_distance">Distance</string>
+    <string name="sort_available_bikes">Available bikes</string>
+    <string name="sort_available_slots">Available slots</string>
+    <string name="sort_name">Name</string>
+    <string name="title_activity_station_details">Station details</string>
+    <string name="reports">Reports</string>
+    <string name="no_reports">No reports</string>
+    <string name="title_activity_signal">Damages</string>
+    <string name="signal">Signal damage</string>
+    <string name="action_add_report">New report</string>
+    <string name="report_other">Additional description</string>
+    <string name="report_in">Report in</string>
+    <string name="report">Report</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="pref_keep_update">Keep me updated</string>
+    <string name="pref_keep_update_summary">Keep me updated about available bikes from my usual stations</string>
+    <string name="pref_keep_list">Choose stations</string>
+    <string name="add_photo">Add photo</string>
+    <string name="refresh">Refresh</string>
+    <string name="refresh_hint">Pull down to refresh</string>
 </resources>

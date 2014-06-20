@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import eu.trentorise.smartcampus.bikerovereto.R;
@@ -138,7 +139,7 @@ public class StationsActivity extends Fragment
             @Override
             public void onRefresh() {
                 Log.i("STR", "onRefresh called from SwipeRefreshLayout");
-                new GetStationsTask().execute();
+                new GetStationsTaskTest().execute();
             }
         });
 		
@@ -148,7 +149,7 @@ public class StationsActivity extends Fragment
 
 	
 	
-	private class GetStationsTask extends AsyncTask<Void, Void, ArrayList<Station>> {
+	private class GetStationsTaskTest extends AsyncTask<Void, Void, ArrayList<Station>> {
 		 
         static final int TASK_DURATION = 3 * 1000; // 3 seconds
  
@@ -160,15 +161,12 @@ public class StationsActivity extends Fragment
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
- 
-            // Return a new random list of cheeses
             return mStations;
         }
  
         @Override
         protected void onPostExecute(ArrayList<Station> result) {
             super.onPostExecute(result);
- 
             // Tell the Fragment that the refresh has completed
             onRefreshComplete(result);
         }
@@ -222,6 +220,13 @@ public class StationsActivity extends Fragment
 			break;
 		case R.id.sort_name:
 			sortByName(true);
+			break;
+		case R.id.refresh:
+			if (!mSwipeRefreshLayout.isRefreshing()) {
+                mSwipeRefreshLayout.setRefreshing(true);
+				new GetStationsTaskTest().execute();
+            }
+            Toast.makeText(getActivity(), getString(R.string.refresh_hint), Toast.LENGTH_SHORT).show();
 			break;
 		}
 		return true;

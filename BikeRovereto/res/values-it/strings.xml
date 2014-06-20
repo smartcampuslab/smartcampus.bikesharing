@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Bike Rovereto</string>
+    <string name="action_settings">Impostazioni</string>
+    <string name="title_activity_osm_map">OsmMap</string>
+    <string name="toMap">OSM</string>
+    <string name="title_activity_stations">Stazioni</string>
+    <string name="to_details">Vedi dettagli</string>
+    <string name="sort">Ordina per...</string>
+    <string name="sort_distance">Distanza</string>
+    <string name="sort_available_bikes">Bici disponibili</string>
+    <string name="sort_available_slots">Slot disponibili</string>
+    <string name="sort_name">Nome</string>
+    <string name="title_activity_station_details">Dettagli stazione</string>
+    <string name="reports">Segnalazioni</string>
+    <string name="no_reports">Nessuna segnalazione</string>
+    <string name="title_activity_signal">Guasti</string>
+    <string name="signal">Segnala guasto</string>
+    <string name="action_add_report">Crea segnalazione</string>
+    <string name="report_other">Descrizione aggiuntiva</string>
+    <string name="report_in">Segnala in</string>
+    <string name="report">Segnala</string>
+    <string name="drawer_open">Apri</string>
+    <string name="drawer_close">Chiudi</string>
+    <string name="title_activity_settings">Impostazioni</string>
+    <string name="pref_keep_update">Tienimi aggiornato</string>
+    <string name="pref_keep_update_summary">Tienimi aggiornato sulle bici disponibili delle mie stazioni abituali</string>
+    <string name="pref_keep_list">Scegli stazioni</string>
+    <string name="add_photo">Aggiungi foto</string>
+    <string name="refresh">Aggiorna</string>
+    <string name="refresh_hint">Trascina verso il basso per aggiornare</string>
+</resources>

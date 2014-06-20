@@ -16,7 +16,6 @@ public class Station implements Parcelable
 	private int nBikes;
 	private int maxSlots;
 
-	private int nReports;
 	private ArrayList<String> reports;
 	public static final int DISTANCE_NOT_VALID = -1;
 	private int distance = DISTANCE_NOT_VALID; // >=0 only when distance is
@@ -29,7 +28,6 @@ public class Station implements Parcelable
 		this.street = nameAndStreet.split("-")[1].trim();
 		this.maxSlots = maxSlots;
 		this.nBikes = 0;
-		this.nReports = 0;
 		reports = new ArrayList<String>();
 	}
 
@@ -74,7 +72,6 @@ public class Station implements Parcelable
 		street = source.readString();
 		nBikes = source.readInt();
 		maxSlots = source.readInt();
-		nReports = source.readInt();
 		reports = source.createStringArrayList();
 	}
 
@@ -114,7 +111,6 @@ public class Station implements Parcelable
 		dest.writeString(street);
 		dest.writeInt(nBikes);
 		dest.writeInt(maxSlots);
-		dest.writeInt(nReports);
 		dest.writeStringList(reports);
 	}
 
@@ -186,7 +182,6 @@ public class Station implements Parcelable
 	public void addReport(String report)
 	{
 		reports.add(report);
-		nReports++;
 	}
 
 	public String getReport(int position)
@@ -196,7 +191,7 @@ public class Station implements Parcelable
 
 	public int getNReports()
 	{
-		return nReports;
+		return reports.size();
 	}
 
 	public ArrayList<String> getReports()
