@@ -14,6 +14,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
@@ -52,6 +55,8 @@ public class StationsAdapter extends ArrayAdapter<Station>
 					.findViewById(R.id.available_slots);
 			viewHolder.distance = (TextView) convertView
 					.findViewById(R.id.distance);
+			viewHolder.favouriteBtn = (CheckBox) convertView
+					.findViewById(R.id.favourites_btn);
 			convertView.setTag(viewHolder);
 		}
 		else
@@ -66,7 +71,7 @@ public class StationsAdapter extends ArrayAdapter<Station>
 		viewHolder.availableSlots.setText(thisStation.getNSlotsEmpty() + "");
 		viewHolder.distance.setText(Tools.formatDistance(thisStation
 				.getDistance()));
-
+		viewHolder.favouriteBtn.setChecked(thisStation.getFavourite());
 		viewHolder.distance.setOnClickListener(new OnClickListener()
 		{
 
@@ -78,7 +83,13 @@ public class StationsAdapter extends ArrayAdapter<Station>
 				getContext().startActivity(i);
 			}
 		});
-
+		viewHolder.favouriteBtn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				thisStation.setFavourite(!thisStation.getFavourite());
+			}
+		});
 		return convertView;
 
 	}
@@ -89,6 +100,7 @@ public class StationsAdapter extends ArrayAdapter<Station>
 		TextView street;
 		TextView availableBike, availableSlots;
 		TextView distance;
+		CheckBox favouriteBtn;
 
 	}
 
