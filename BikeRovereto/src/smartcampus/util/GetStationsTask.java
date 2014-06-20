@@ -20,53 +20,62 @@ import android.os.AsyncTask;
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> THIS IS NOT TESTED!! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 //TODO: edit JSON key, edit Station class to introduce all the information passed by server
 
-public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>> {
+public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
+{
 
 	private static final String STATION_NAME = "name";
 	private static final String STATION_STREET = "street";
-	private static final String STATION_LATITUDE = "latitude";	
-	private static final String STATION_LONGITUDE = "longitude";	
+	private static final String STATION_LATITUDE = "latitude";
+	private static final String STATION_LONGITUDE = "longitude";
 	private static final String AVAILABLE_BIKES = "bikes";
 	private static final String MAX_SLOTS = "slots";
 	private static final String BROKEN_SLOTS = "brokenslots";
-	private static final String STATION_ID = "id";	
-	
+	private static final String STATION_ID = "id";
+
 	@Override
-	protected ArrayList<Station> doInBackground(String... data) {
-		HttpClient httpclient = new DefaultHttpClient(); 
-		HttpGet httpg = new HttpGet("http://www.yoursite.com/"+data); 
+	protected ArrayList<Station> doInBackground(String... data)
+	{
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpGet httpg = new HttpGet("http://www.yoursite.com/" + data);
 		String responseJSON;
-		try { 
-			HttpResponse response = httpclient.execute(httpg); 
-			responseJSON = EntityUtils.toString(response.getEntity()); 
-		} 
-		catch (ClientProtocolException e) {
+		try
+		{
+			HttpResponse response = httpclient.execute(httpg);
+			responseJSON = EntityUtils.toString(response.getEntity());
+		}
+		catch (ClientProtocolException e)
+		{
 			return null;
-		} 
-		catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			return null;
-		} 
+		}
 		ArrayList<Station> stations = new ArrayList<Station>();
-		try {
+		try
+		{
 			JSONArray stationsArrayJSON = new JSONArray(responseJSON);
-			for (int i = 0; i < stationsArrayJSON.length(); i++) { 
-				 JSONObject stationJSON = stationsArrayJSON.getJSONObject(i); 
-				 String name = stationJSON.getString(STATION_NAME);
-				 String street = stationJSON.getString(STATION_STREET);
-				 Double latitude = stationJSON.getDouble(STATION_LATITUDE);
-				 Double longitude = stationJSON.getDouble(STATION_LONGITUDE);
-				 int availableBikes = stationJSON.getInt(AVAILABLE_BIKES);
-				 int maxSlots = stationJSON.getInt(MAX_SLOTS);
-				 int brokenSlots = stationJSON.getInt(BROKEN_SLOTS);
-				 int id = stationJSON.getInt(STATION_ID);
-				 Station station = new Station(new GeoPoint(latitude, longitude), name, street, maxSlots, availableBikes, brokenSlots, id);
-				 station.setUsedSlots(availableBikes);
-				 stations.add(station);
+			for (int i = 0; i < stationsArrayJSON.length(); i++)
+			{
+				JSONObject stationJSON = stationsArrayJSON.getJSONObject(i);
+				String name = stationJSON.getString(STATION_NAME);
+				String street = stationJSON.getString(STATION_STREET);
+				Double latitude = stationJSON.getDouble(STATION_LATITUDE);
+				Double longitude = stationJSON.getDouble(STATION_LONGITUDE);
+				int availableBikes = stationJSON.getInt(AVAILABLE_BIKES);
+				int maxSlots = stationJSON.getInt(MAX_SLOTS);
+				int brokenSlots = stationJSON.getInt(BROKEN_SLOTS);
+				String id = stationJSON.getString(STATION_ID);
+				Station station = new Station(new GeoPoint(latitude, longitude), name, street, maxSlots, availableBikes, brokenSlots, id);
+				station.setUsedSlots(availableBikes);
+				stations.add(station);
 			}
-		} catch (JSONException e) {
+		}
+		catch (JSONException e)
+		{
 			e.printStackTrace();
 			return null;
-		}			
+		}
 		return stations;
 	}
 

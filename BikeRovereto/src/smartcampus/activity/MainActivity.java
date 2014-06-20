@@ -326,25 +326,17 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 
 		stations = new ArrayList<Station>();
 
-		stations.add(new Station(new GeoPoint(45.890189, 11.034275), "STAZIONE FF.SS.", "Piazzale Orsi", 12));
-		stations.add(new Station(new GeoPoint(45.882221, 11.040483), "OSPEDALE", "Corso Verona", 12));
-		stations.add(new Station(new GeoPoint(45.886525, 11.044749), "MUNICIPIO", "Piazzetta Sichardt", 6));
-		stations.add(new Station(new GeoPoint(45.893571, 11.043891), "MART", "Corso Bettini", 6));
-		stations.add(new Station(new GeoPoint(45.866352, 11.019310), "ZONA INDUSTRIALE", "Viale Caproni", 6));
-		stations.add(new Station(new GeoPoint(45.892256, 11.039370), "VIA PAOLI", "Via Manzoni/Via Paoli", 12));
-		stations.add(new Station(new GeoPoint(45.840603, 11.009298), "SACCO", "Viale della Vittoria/Via Udine", 6));
-		stations.add(new Station(new GeoPoint(45.893120, 11.038846), "SACCO", "Viale della Vittoria/Via Udine", 12));
-		stations.add(new Station(new GeoPoint(45.883409, 11.072827), "NORIGLIO", "Via Chiesa San Martino", 6));
-		stations.add(new Station(new GeoPoint(45.904255, 11.044859), "BRIONE", "Piazza della Pace", 6));
-		stations.add(new Station(new GeoPoint(45.891021, 11.038729), "PIAZZA ROSMINI", "via boh", 6));
-
-		stations.get(0).setUsedSlots(11);
-		stations.get(0).addReport("segnalazione 1");
-		stations.get(0).addReport("segnalazione 2");
-		stations.get(0).addReport("segnalazione 3");
-		stations.get(1).setUsedSlots(12);
-		stations.get(2).setUsedSlots(6);
-		stations.get(3).setUsedSlots(5);
+		stations.add(new Station(new GeoPoint(45.890189, 11.034275), "STAZIONE FF.SS.", "Piazzale Orsi", 12,5,1 ,"01"));
+		stations.add(new Station(new GeoPoint(45.882221, 11.040483), "OSPEDALE", "Corso Verona",  12,5,1 ,"02"));
+		stations.add(new Station(new GeoPoint(45.886525, 11.044749), "MUNICIPIO", "Piazzetta Sichardt",  6,5,1 ,"03"));
+		stations.add(new Station(new GeoPoint(45.893571, 11.043891), "MART", "Corso Bettini", 6,5,1 ,"04"));
+		stations.add(new Station(new GeoPoint(45.866352, 11.019310), "ZONA INDUSTRIALE", "Viale Caproni", 6,5,1 ,"05"));
+		stations.add(new Station(new GeoPoint(45.892256, 11.039370), "VIA PAOLI", "Via Manzoni/Via Paoli",  12,5,1 ,"06"));
+		stations.add(new Station(new GeoPoint(45.840603, 11.009298), "SACCO", "Viale della Vittoria/Via Udine", 6,5,1 ,"07"));
+		stations.add(new Station(new GeoPoint(45.893120, 11.038846), "SACCO", "Viale della Vittoria/Via Udine",  12,5,1 ,"08"));
+		stations.add(new Station(new GeoPoint(45.883409, 11.072827), "NORIGLIO", "Via Chiesa San Martino", 6,5,1 ,"09"));
+		stations.add(new Station(new GeoPoint(45.904255, 11.044859), "BRIONE", "Piazza della Pace", 6,5,1 ,"10"));
+		stations.add(new Station(new GeoPoint(45.891021, 11.038729), "PIAZZA ROSMINI", "via boh", 6,5,1 ,"11"));
 	}
 
 	private void getBikes()
