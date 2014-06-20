@@ -5,8 +5,8 @@ package smartcampus.util;
 //import org.osmdroid.util.GeoPoint;
 //import org.osmdroid.views.MapView;
 
-import org.osmdroid.bonuspack.overlays.DefaultInfoWindow;
-import org.osmdroid.bonuspack.overlays.ExtendedOverlayItem;
+import org.osmdroid.bonuspack.overlays.Marker;
+import org.osmdroid.bonuspack.overlays.MarkerInfoWindow;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
@@ -14,20 +14,19 @@ import smartcampus.activity.StationDetails;
 import smartcampus.model.Station;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
-public class CustomInfoWindow extends DefaultInfoWindow
+public class StationInfoWindow extends MarkerInfoWindow
 {
 	//Context mContext;
 	MapView myMapView;
 	Station station;
 	//GeoPoint currentLocation;
 
-	public CustomInfoWindow(MapView mapView, final FragmentManager fragmentManager)
+	public StationInfoWindow(MapView mapView, final FragmentManager fragmentManager)
 	{
 		super(R.layout.info_bubble, mapView);
 		//mContext = context;
@@ -68,7 +67,7 @@ public class CustomInfoWindow extends DefaultInfoWindow
 	{
 		super.onOpen(item);
 
-		StationOverlayItem sItem = (StationOverlayItem) item;
+		StationMarker sItem = (StationMarker) item;
 
 		station = sItem.getStation();
 		mView.findViewById(R.id.green_bike).setVisibility(View.VISIBLE);

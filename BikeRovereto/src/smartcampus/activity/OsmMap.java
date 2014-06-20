@@ -2,10 +2,11 @@ package smartcampus.activity;
 
 import java.util.ArrayList;
 
-import org.osmdroid.api.IMapController;
+import org.osmdroid.bonuspack.overlays.FolderOverlay;
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
@@ -15,22 +16,24 @@ import smartcampus.activity.gesture.RotationGestureOverlay;
 import smartcampus.model.Bike;
 import smartcampus.model.Station;
 import smartcampus.util.BikeInfoWindow;
-import smartcampus.util.BikeOverlayItem;
-import smartcampus.util.CustomInfoWindow;
-import smartcampus.util.MarkerOverlay;
-import smartcampus.util.StationOverlayItem;
+import smartcampus.util.BikeMarker;
+import smartcampus.util.StationInfoWindow;
+import smartcampus.util.StationMarker;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import eu.trentorise.smartcampus.bikerovereto.R;
@@ -40,7 +43,6 @@ public class OsmMap extends Fragment
 	// the view where the map is showed
 	private MapView mapView;
 
-
 	private MyLocationNewOverlay mLocationOverlay;
 	// the stations to show in the map
 	private ArrayList<Station> stations;
@@ -48,14 +50,15 @@ public class OsmMap extends Fragment
 	private ArrayList<Bike> bikes;
 
 	// marker for the stations
-	private MarkerOverlay<StationOverlayItem> stationsMarkersOverlay;
 
+	// private MarkerOverlay<StationOverlayItem> stationsMarkersOverlay;
+	private FolderOverlay stationsMarkersOverlay;
 	// marker for the bikes
-	private MarkerOverlay<BikeOverlayItem> bikesMarkersOverlay;
+	private FolderOverlay bikesMarkersOverlay;
 
 	private RotationGestureOverlay rotationGestureOverlay;
 	private Button toMyLoc;
-	
+
 	private BoundingBoxE6 currentBoundingBox;
 	private float currentMapOrientation;
 
@@ -74,7 +77,6 @@ public class OsmMap extends Fragment
 	{
 		stations = getArguments().getParcelableArrayList("stations");
 		bikes = getArguments().getParcelableArrayList("bikes");
-
 		super.onCreate(savedInstanceState);
 	}
 
@@ -85,10 +87,9 @@ public class OsmMap extends Fragment
 		// get the mapView and the controller
 		mapView = (MapView) rootView.findViewById(R.id.map_view);
 
-
 		// mapView.setBuiltInZoomControls(true);
 		mapView.setMultiTouchControls(true);
-		
+
 		// stuff for my
 		// Location********************************************************************************
 		// GpsMyLocationProvider gpsMLC = new
@@ -127,35 +128,41 @@ public class OsmMap extends Fragment
 		rotationGestureOverlay = new RotationGestureOverlay(getActivity().getApplicationContext(), mapView);
 		rotationGestureOverlay.setEnabled(false);
 		mapView.getOverlays().add(rotationGestureOverlay);
+		setMapListener();
 		return rootView;
 	}
-	
-	//TODO: when the map orientation is not 0, bubbles are not clickable in the right position!
-	
+
+	// TODO: when the map orientation is not 0, bubbles are not clickable in the
+	// right position!
+
 	@Override
-	public void onStart() {
+	public void onStart()
+	{
 		super.onStart();
 		mapView.post(new Runnable()
 		{
 
 			@Override
 			public void run()
-			{				
-				//cycle because the zoomToBoundingBox must be called 3 times to take effect (osm bug?)
-				if (currentBoundingBox==null){
+			{
+				// cycle because the zoomToBoundingBox must be called 3 times to
+				// take effect (osm bug?)
+				if (currentBoundingBox == null)
+				{
 					for (int i = 0; i < 3; i++)
 					{
 						mapView.zoomToBoundingBox(getBoundingBox(true));
 					}
 				}
-				else{
+				else
+				{
 					for (int i = 0; i < 3; i++)
 					{
 						mapView.zoomToBoundingBox(currentBoundingBox);
 					}
 				}
 				mapView.setMapOrientation(currentMapOrientation);
-				
+
 			}
 		});
 	}
@@ -195,7 +202,11 @@ public class OsmMap extends Fragment
 			if (item.isChecked())
 			{
 				// close the bubble relative to the bikesMarkers if opened
-				bikesMarkersOverlay.hideBubble();
+				// TODO bikesMarkersOverlay.hideBubble();
+				for (Overlay o : bikesMarkersOverlay.getItems())
+				{
+					((BikeMarker) o).hideInfoWindow();
+				}
 
 				// remove the anarchic bikes
 				mapView.getOverlays().remove(bikesMarkersOverlay);
@@ -235,21 +246,24 @@ public class OsmMap extends Fragment
 	private void addBikesMarkers()
 	{
 		Resources res = getResources();
-
-		ArrayList<BikeOverlayItem> markers = new ArrayList<BikeOverlayItem>();
-		for (int i = 0; i < bikes.size(); i++)
-		{
-			markers.add(new BikeOverlayItem(bikes.get(i).getId(), "bike", bikes.get(i).getPosition(), bikes.get(i)));
-
-			Drawable markerImage = null;
-			markerImage = res.getDrawable(R.drawable.anarchich_bike);
-
-			markers.get(i).setMarker(markerImage);
-		}
-
-		bikesMarkersOverlay = new MarkerOverlay<BikeOverlayItem>(getActivity(), markers, mapView, new BikeInfoWindow(mapView, getFragmentManager()));
-
+		bikesMarkersOverlay = new FolderOverlay(getActivity());
 		mapView.getOverlays().add(bikesMarkersOverlay);
+
+		Drawable markerImage = res.getDrawable(R.drawable.anarchich_bike);
+
+		BikeInfoWindow customInfoWindow = new BikeInfoWindow(mapView, getFragmentManager());
+		for (Bike b : bikes)
+		{
+			BikeMarker marker = new BikeMarker(mapView, b);
+
+			marker.setPosition(b.getPosition());
+
+			marker.setIcon(markerImage);
+
+			marker.setInfoWindow(customInfoWindow);
+
+			bikesMarkersOverlay.add(marker);
+		}
 	}
 
 	private void addStationsMarkers()
@@ -257,33 +271,61 @@ public class OsmMap extends Fragment
 		// markers at:
 		// http://openclipart.org/detail/184847/map-marker-vector-by-rfvectors.com-184847
 		Resources res = getResources();
-
-		ArrayList<StationOverlayItem> markers = new ArrayList<StationOverlayItem>();
-
-		for (int i = 0; i < stations.size(); i++)
-		{
-			markers.add(new StationOverlayItem(stations.get(i).getName(), "station", stations.get(i).getPosition(), stations.get(i)));
-
-			Drawable markerImage = null;
-			if (stations.get(i).getBikesPresentPercentage() > 0.5)
-			{
-				markerImage = res.getDrawable(R.drawable.marker_green);
-			}
-			else if (stations.get(i).getBikesPresentPercentage() > 0.2)
-			{
-				markerImage = res.getDrawable(R.drawable.marker_yellow);
-			}
-			else
-			{
-				markerImage = res.getDrawable(R.drawable.marker_red);
-			}
-
-			markers.get(i).setMarker(markerImage);
-		}
-
-		stationsMarkersOverlay = new MarkerOverlay<StationOverlayItem>(getActivity(), markers, mapView, new CustomInfoWindow(mapView, getFragmentManager()));
-
+		stationsMarkersOverlay = new FolderOverlay(getActivity());
 		mapView.getOverlays().add(stationsMarkersOverlay);
+
+		Drawable markerImage = null;
+		StationInfoWindow customInfoWindow = new StationInfoWindow(mapView, getFragmentManager());
+		for (Station s : stations)
+		{
+			StationMarker marker = new StationMarker(mapView, s);
+			marker.setTitle(s.getName());
+			marker.setSnippet(s.getStreet());
+			marker.setPosition(s.getPosition());
+
+			switch ((int) (s.getBikesPresentPercentage() * 10))
+			{
+			case 0:
+				markerImage = res.getDrawable(R.drawable.marker_0);
+				break;
+			case 1:
+				markerImage = res.getDrawable(R.drawable.marker_10);
+				break;
+			case 2:
+				markerImage = res.getDrawable(R.drawable.marker_20);
+				break;
+			case 3:
+				markerImage = res.getDrawable(R.drawable.marker_30);
+				break;
+			case 4:
+				markerImage = res.getDrawable(R.drawable.marker_40);
+				break;
+			case 5:
+				markerImage = res.getDrawable(R.drawable.marker_50);
+				break;
+			case 6:
+				markerImage = res.getDrawable(R.drawable.marker_60);
+				break;
+			case 7:
+				markerImage = res.getDrawable(R.drawable.marker_70);
+				break;
+			case 8:
+				markerImage = res.getDrawable(R.drawable.marker_80);
+				break;
+			case 9:
+				markerImage = res.getDrawable(R.drawable.marker_90);
+				break;
+			case 10:
+				markerImage = res.getDrawable(R.drawable.marker_100);
+				break;
+			default:
+				break;
+			}
+
+			marker.setIcon(markerImage);
+			marker.setInfoWindow(customInfoWindow);
+			stationsMarkersOverlay.add(marker);
+		}
 	}
 
 	private BoundingBoxE6 getBoundingBox(boolean addCurrentPosition)
@@ -362,6 +404,55 @@ public class OsmMap extends Fragment
 					mapView.zoomToBoundingBox(getBoundingBox(true));
 					mapView.setMapOrientation(0);
 				}
+			}
+		});
+	}
+
+	private void setMapListener()
+	{
+		mapView.setOnTouchListener(new OnTouchListener()
+		{
+			float x, y;
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event)
+			{
+				if (event.getAction() == event.ACTION_DOWN)
+				{
+					x = event.getX();
+					y = event.getY();
+				}
+				else if (event.getAction() == event.ACTION_UP)
+				{
+					if ((Math.abs(event.getX() - x) <= 10) && (Math.abs(event.getY() - y) <= 10))
+					{
+						Log.d("debug", "touc");
+						boolean someThingIsOpened = false;
+						for (Overlay o : bikesMarkersOverlay.getItems())
+						{
+							if (((BikeMarker) o).isInfoWindowShown())
+							{
+								someThingIsOpened = true;
+								((BikeMarker) o).hideInfoWindow();
+								break;
+							}
+						}
+						if (!someThingIsOpened)
+						{
+							for (Overlay o : stationsMarkersOverlay.getItems())
+							{
+								if (((StationMarker) o).isInfoWindowShown())
+								{
+									someThingIsOpened = true;
+									((StationMarker) o).hideInfoWindow();
+									break;
+								}
+							}
+						}
+						return someThingIsOpened;
+					}
+				}
+				return false;
 			}
 		});
 	}

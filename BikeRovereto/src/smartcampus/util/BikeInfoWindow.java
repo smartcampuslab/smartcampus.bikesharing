@@ -6,8 +6,7 @@ package smartcampus.util;
 //import org.osmdroid.util.GeoPoint;
 //import org.osmdroid.views.MapView;
 
-import org.osmdroid.bonuspack.overlays.DefaultInfoWindow;
-import org.osmdroid.bonuspack.overlays.ExtendedOverlayItem;
+import org.osmdroid.bonuspack.overlays.MarkerInfoWindow;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
@@ -20,7 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
-public class BikeInfoWindow extends DefaultInfoWindow
+public class BikeInfoWindow extends MarkerInfoWindow
 {
 	Context mContext;
 	MapView myMapView;
@@ -66,7 +65,7 @@ public class BikeInfoWindow extends DefaultInfoWindow
 	public void onOpen(Object item)
 	{
 		super.onOpen(item);
-		BikeOverlayItem sItem = (BikeOverlayItem) item;
+		BikeMarker sItem = (BikeMarker) item;
 		bike = sItem.getBike();
 	}
 
