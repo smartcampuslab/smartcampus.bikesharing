@@ -5,9 +5,20 @@
 	android:background="@drawable/card_background"
 	android:gravity="center_vertical"
 	android:layout_marginBottom="5dp">
+	
+	<CheckBox android:id="@+id/favourites_btn"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+   	    android:layout_centerVertical="true"
+   	    android:layout_marginRight="5dp"
+	    android:button="@drawable/star"
+	    android:focusable="false"
+  		android:focusableInTouchMode="false" />
+	
 	<LinearLayout android:orientation="vertical"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
+	    android:layout_toRightOf="@+id/favourites_btn"
 	    android:layout_toLeftOf="@+id/distance">
 	    <TextView 
    	    android:id="@+id/name"
@@ -53,5 +64,6 @@
    	    android:layout_alignParentRight="true"
    	    android:drawableTop="@drawable/direction"
    	    android:text="5 Km" />
+   	
 
 </RelativeLayout>

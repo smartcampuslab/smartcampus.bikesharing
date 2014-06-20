@@ -15,6 +15,7 @@ public class Station implements Parcelable
 
 	private int nBikes;
 	private int maxSlots;
+	private boolean favourite;
 
 	private ArrayList<String> reports;
 	public static final int DISTANCE_NOT_VALID = -1;
@@ -207,6 +208,16 @@ public class Station implements Parcelable
 	public void setDistance(int distance)
 	{
 		this.distance = distance;
+	}
+	
+	public void setFavourite(boolean fav)
+	{
+		this.favourite=fav;
+	}
+	
+	public boolean getFavourite()
+	{
+		return favourite;
 	}
 
 }
