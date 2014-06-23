@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.osmdroid.util.GeoPoint;
 
+import smartcampus.activity.MainActivity;
 import smartcampus.model.Station;
 import android.app.Activity;
 import android.content.Context;
@@ -16,8 +17,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
@@ -27,6 +26,7 @@ public class StationsAdapter extends ArrayAdapter<Station>
 	private ArrayList<Station> mStations;
 	private GeoPoint currentLocation;
 	private SharedPreferences pref;
+	private boolean isFavouriteAdapter = false;
 	
 	public StationsAdapter(Context context, int resource,
 			ArrayList<Station> stations, GeoPoint currentLocation)
@@ -93,8 +93,14 @@ public class StationsAdapter extends ArrayAdapter<Station>
 			public void onClick(View arg0) {
 				thisStation.setFavourite(!thisStation.getFavourite());
 				SharedPreferences.Editor editor = pref.edit();
-			   editor.putBoolean(Tools.STATION_PREFIX+thisStation.getId(), thisStation.getFavourite());
-			   editor.apply();
+				editor.putBoolean(Tools.STATION_PREFIX+thisStation.getId(), thisStation.getFavourite());
+				editor.apply();
+				if (thisStation.getFavourite())
+					((MainActivity)getContext()).addFavouriteStation(thisStation);
+				else
+					((MainActivity)getContext()).removeFavouriteStation(thisStation);
+				if (isFavouriteAdapter)
+					notifyDataSetChanged();
 			}
 		});
 		return convertView;
@@ -109,6 +115,11 @@ public class StationsAdapter extends ArrayAdapter<Station>
 		TextView distance;
 		CheckBox favouriteBtn;
 
+	}
+	
+	public void setIsFavouriteAdapter(boolean isFavAdapter)
+	{
+		isFavouriteAdapter = isFavAdapter;
 	}
 
 }

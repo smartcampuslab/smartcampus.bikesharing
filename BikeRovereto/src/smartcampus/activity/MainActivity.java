@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.osmdroid.util.GeoPoint;
 
-import smartcampus.activity.StationsActivity.OnStationSelectListener;
 import smartcampus.model.Bike;
 import smartcampus.model.Station;
 import smartcampus.util.NavigationDrawerAdapter;
@@ -13,7 +12,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -34,7 +32,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
-public class MainActivity extends ActionBarActivity implements OnStationSelectListener
+public class MainActivity extends ActionBarActivity implements StationsActivity.OnStationSelectListener,
+															   FavouriteFragment.OnStationSelectListener
 {
 
 	private String[] navTitles;
@@ -45,6 +44,7 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 	private ListView mDrawerList;
 	public ActionBarDrawerToggle mDrawerToggle;
 	private ArrayList<Station> stations;
+	private ArrayList<Station> favStations;
 	private ArrayList<Bike> bikes;
 	private LocationManager mLocationManager;
 	private GeoPoint myLocation;
@@ -53,6 +53,7 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 
 	private static final String FRAGMENT_MAP = "map";
 	private static final String FRAGMENT_STATIONS = "stations";
+	private static final String FRAGMENT_FAVOURITE = "favourite";
 
 	public interface OnPositionAquiredListener
 	{
@@ -81,7 +82,7 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 
 		navTitles = getResources().getStringArray(R.array.navTitles);
 		navIcons = new int[]
-		{ R.drawable.ic_map, R.drawable.ic_station };
+		{ R.drawable.ic_map, R.drawable.ic_station, R.drawable.nav_favourite };
 		navExtraTitles = getResources().getStringArray(R.array.navExtraTitles);
 		navExtraIcons = new int[]
 		{ R.drawable.nav_settings };
@@ -156,6 +157,19 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 					navAdapter.notifyDataSetChanged();
 					break;
 				case 2:
+					currentFragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_FAVOURITE);
+					if (currentFragment == null || !currentFragment.isVisible())
+					{
+						FavouriteFragment stationsFragment = FavouriteFragment.newInstance(favStations);
+						transaction.replace(R.id.content_frame, stationsFragment, FRAGMENT_FAVOURITE);
+						transaction.commit();
+					}
+					// Highlight the selected item, update the title, and close
+					// the drawer
+					navAdapter.setItemChecked(position);
+					navAdapter.notifyDataSetChanged();
+					break;
+				case 3:
 					Intent i = new Intent(getBaseContext(), SettingsActivity.class);
 					i.putParcelableArrayListExtra("stations", stations);
 					startActivity(i);
@@ -222,20 +236,6 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 		super.onStart();
 		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Tools.LOCATION_REFRESH_TIME, Tools.LOCATION_REFRESH_DISTANCE, mLocationListener);
 
-	}
-
-	@Override
-	protected void onResume()
-	{
-		// TODO Auto-generated method stub
-		super.onResume();
-	}
-
-	@Override
-	public void onConfigurationChanged(Configuration newConfig)
-	{
-		// TODO Auto-generated method stub
-		super.onConfigurationChanged(newConfig);
 	}
 
 	@Override
@@ -337,6 +337,13 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 		stations.add(new Station(new GeoPoint(45.883409, 11.072827), "NORIGLIO", "Via Chiesa San Martino", 6,5,1 ,"09"));
 		stations.add(new Station(new GeoPoint(45.904255, 11.044859), "BRIONE", "Piazza della Pace", 6,5,1 ,"10"));
 		stations.add(new Station(new GeoPoint(45.891021, 11.038729), "PIAZZA ROSMINI", "via boh", 6,5,1 ,"11"));
+		
+		favStations = new ArrayList<Station>();
+		for (Station station : stations)
+		{
+			if (station.getFavourite())
+				favStations.add(station);
+		}
 	}
 
 	private void getBikes()
@@ -345,6 +352,14 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 
 		bikes.add(new Bike(new GeoPoint(45.924255, 11.064859), "0"));
 		bikes.get(0).addReport("test");
-
+	}
+	
+	public void addFavouriteStation(Station station)
+	{
+		favStations.add(station);
+	}
+	public void removeFavouriteStation(Station station)
+	{
+		favStations.remove(station);
 	}
 }
