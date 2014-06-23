@@ -2,6 +2,7 @@ package smartcampus.activity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import org.osmdroid.util.GeoPoint;
 
@@ -294,21 +295,18 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 			mCallback.onPositionAquired();
 	}
 
+
 	private void setNotification()
 	{
 		final String fileName = "notificationBlockDB";
-		Calendar c1 = Calendar.getInstance();
-		c1.setTimeInMillis(System.currentTimeMillis());
-		c1.set(Calendar.HOUR_OF_DAY, 12);
-		c1.set(Calendar.MINUTE, 04);
-		c1.set(Calendar.SECOND, 0);
+		GregorianCalendar c1 = new GregorianCalendar(2014, 5, 23, 16, 11, 0);
 
-//		notificationBlock = new ArrayList<NotificationBlock>();
-//		notificationBlock.add(new NotificationBlock(c1, "0"));
-//		
-//		NotificationBlock.saveArrayListToFile(notificationBlock, fileName, getApplicationContext());
+		notificationBlock = new ArrayList<NotificationBlock>();
+		notificationBlock.add(new NotificationBlock(c1, "0"));
+		
+		NotificationBlock.saveArrayListToFile(notificationBlock, fileName, getApplicationContext());
 
-		notificationBlock = NotificationBlock.readArrayListFromFile(fileName, getApplicationContext());
+		//notificationBlock = NotificationBlock.readArrayListFromFile(fileName, getApplicationContext());
 		if (notificationBlock != null)
 		{
 			for (NotificationBlock nb : notificationBlock)
