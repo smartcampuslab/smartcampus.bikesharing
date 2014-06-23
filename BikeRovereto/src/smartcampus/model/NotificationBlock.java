@@ -2,7 +2,6 @@ package smartcampus.model;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import android.content.Context;
-import android.util.Log;
 
 public class NotificationBlock implements Serializable
 {
@@ -112,5 +110,23 @@ public class NotificationBlock implements Serializable
 	public Calendar getCalendar()
 	{
 		return calendar;
+	}
+	public String getID()
+	{
+		return stationID;
+	}
+
+	public static ArrayList<Calendar> getReminderForID(String id, Context context) {
+		ArrayList<NotificationBlock> list = readArrayListFromFile("notificationBlockDB", context);
+		if (list==null) return new ArrayList<Calendar>();
+		ArrayList<Calendar> timesList = new ArrayList<Calendar>();
+		for (NotificationBlock nb : list)
+		{
+			if (nb.getID().equals(id))
+			{
+				timesList.add(nb.getCalendar());
+			}
+		}
+		return timesList;
 	}
 }

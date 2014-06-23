@@ -2,8 +2,7 @@ package smartcampus.activity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
-
+import smartcampus.model.NotificationBlock;
 import smartcampus.model.Station;
 import smartcampus.util.RemindersAdapter;
 import android.os.Bundle;
@@ -25,10 +24,7 @@ public class ReminderEdit extends ActionBarActivity {
 		if (getIntent().getExtras().containsKey("station"))
 			this.station = (Station) getIntent().getExtras().getParcelable("station");
 		listView = (ListView) findViewById(R.id.list);
-		ArrayList<Calendar> reminders = new ArrayList<Calendar>();
-		reminders.add(new GregorianCalendar(2014,6,23,12,20));
-		reminders.add(new GregorianCalendar(2014,6,23,18,0));
-		reminders.add(new GregorianCalendar(2014,6,23,8,0));
+		ArrayList<Calendar> reminders = NotificationBlock.getReminderForID(station.getId(), this);
 		listView.setAdapter(new RemindersAdapter(this, reminders));
 		
 		TextView textView = new TextView(this);

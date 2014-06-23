@@ -1,12 +1,5 @@
 package smartcampus.activity;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -18,7 +11,6 @@ import smartcampus.model.Station;
 import smartcampus.notifications.MyReceiver;
 import smartcampus.util.NavigationDrawerAdapter;
 import smartcampus.util.Tools;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -369,4 +361,9 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 	{
 		favStations.remove(station);
 	}
+	public void addReminderForStation(NotificationBlock nb)
+	{
+		notificationBlock.add(nb);
+	}
+	
 }
