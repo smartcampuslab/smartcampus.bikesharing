@@ -6,7 +6,10 @@ import eu.trentorise.smartcampus.bikerovereto.R;
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
 import smartcampus.model.Station;
 import smartcampus.util.StationsAdapter;
+import smartcampus.util.Tools;
 import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -108,6 +111,8 @@ public class FavouriteFragment extends ListFragment{
 	@Override
 	public void onStart() {
 		super.onStart();
+		getListView().setDivider(new ColorDrawable(Color.TRANSPARENT));
+		getListView().setDividerHeight(Tools.convertDpToPixel(getActivity(), 5));
 		getListView().setEmptyView(empty);
 		getListView().setOnItemClickListener(new OnItemClickListener() {
 
