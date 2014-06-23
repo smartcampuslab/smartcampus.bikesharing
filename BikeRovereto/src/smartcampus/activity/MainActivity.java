@@ -82,7 +82,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 
 		navTitles = getResources().getStringArray(R.array.navTitles);
 		navIcons = new int[]
-		{ R.drawable.ic_map, R.drawable.ic_station, R.drawable.nav_favourite };
+		{ R.drawable.nav_map, R.drawable.nav_station, R.drawable.nav_favourite };
 		navExtraTitles = getResources().getStringArray(R.array.navExtraTitles);
 		navExtraIcons = new int[]
 		{ R.drawable.nav_settings };
