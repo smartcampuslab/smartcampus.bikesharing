@@ -27,15 +27,16 @@ public class MyReceiver extends BroadcastReceiver
 		alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(context, MyReceiver.class);
 		alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-
 		// wait 10 seconds and notify
 		// alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
 		// SystemClock.elapsedRealtime() + 1000 * 10, alarmIntent);
 
 		// notify at the exact time
-		// alarmMgr.set(AlarmManager.RTC_WAKEUP, when.getTimeInMillis(),
-		// alarmIntent);
+		//alarmMgr.set(AlarmManager.RTC_WAKEUP, when.getTimeInMillis(),
+		//alarmIntent);
 		alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, when.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
+		Log.d("prova", when.getTime().toString()
+				);
 	}
 
 	@Override
@@ -48,8 +49,7 @@ public class MyReceiver extends BroadcastReceiver
 		// in the addAction method, if you don't want any icon, just set the
 		// first param to 0
 		Notification mNotification = new Notification.Builder(arg0)
-
-		.setContentTitle(arg0.getResources().getText(R.string.app_name)).setContentText(arg0.getResources().getText(R.string.sort_available_bikes)).setSmallIcon(R.drawable.ic_launcher)
+		.setContentTitle(arg0.getResources().getText(R.string.app_name)).setContentText("data").setSmallIcon(R.drawable.ic_launcher)
 				.setContentIntent(alarmIntent).setSound(soundUri)
 
 				.addAction(R.drawable.ic_launcher, "View", alarmIntent).addAction(0, "Remind", alarmIntent)
@@ -60,8 +60,7 @@ public class MyReceiver extends BroadcastReceiver
 
 		// If you want to hide the notification after it was selected, do the
 		// code below
-		// mNotification.flags |= Notification.FLAG_AUTO_CANCEL;
-
+		mNotification.flags |= Notification.FLAG_AUTO_CANCEL;
 		notificationManager.notify(0, mNotification);
 
 	}
