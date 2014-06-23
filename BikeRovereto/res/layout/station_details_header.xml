@@ -3,6 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/add_reminder"
+        android:text="@string/add_reminder"
+        android:drawableLeft="@drawable/ic_add_reminder"
+        android:drawablePadding="3dp"
+        android:background="@drawable/add_reminder_background"
+        android:padding="5dp"
+        android:gravity="center_vertical"/>
     <RelativeLayout
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"

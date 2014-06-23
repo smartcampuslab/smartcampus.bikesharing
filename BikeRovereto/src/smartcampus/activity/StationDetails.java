@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,6 +31,8 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
 public class StationDetails extends Fragment
@@ -43,6 +46,7 @@ public class StationDetails extends Fragment
 	private TextView street;
 	private TextView availableBike, availableSlots;
 	private TextView distance;
+	private TextView addReminder;
 
 	private static final int REQUEST_IMAGE_CAPTURE = 1;
 
@@ -70,6 +74,7 @@ public class StationDetails extends Fragment
 		availableBike = (TextView) header.findViewById(R.id.available_bikes);
 		availableSlots = (TextView) header.findViewById(R.id.available_slots);
 		distance = (TextView) header.findViewById(R.id.distance);
+		addReminder = (TextView) header.findViewById(R.id.add_reminder);
 
 		// get the station from the parcels
 		station = getArguments().getParcelable("station");
@@ -98,6 +103,15 @@ public class StationDetails extends Fragment
 				startActivity(i);
 			}
 		});
+		addReminder.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				addReminder();
+			}
+		});
+		
+		
 		setHasOptionsMenu(true);
 		
 		((MainActivity) getActivity()).setOnPositionAquiredListener(new OnPositionAquiredListener()
@@ -208,6 +222,33 @@ public class StationDetails extends Fragment
 		builder.show();
 
 	}
+	
+	private void addReminder() {		
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());	
+		final TimePicker picker = new TimePicker(getActivity());	
+		builder.setTitle(getString(R.string.add_reminder));
+		builder.setPositiveButton(android.R.string.ok,
+				new DialogInterface.OnClickListener()
+				{
+					public void onClick(DialogInterface dialogI, int id)
+					{						
+						Log.d("picker", picker.getCurrentHour()+":"+picker.getCurrentMinute());
+						Toast.makeText(getActivity(), "selected "+picker.getCurrentHour()+":"+picker.getCurrentMinute(), Toast.LENGTH_SHORT).show();
+					}
+				});
+		builder.setNegativeButton(android.R.string.cancel,
+				new DialogInterface.OnClickListener()
+				{
+					public void onClick(DialogInterface dialog, int id)
+					{
+					}
+				});
+		picker.setIs24HourView(DateFormat.is24HourFormat(getActivity()));
+		builder.setView(picker);
+
+		builder.show();
+	}
+	
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {

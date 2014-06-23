@@ -12,7 +12,6 @@ import java.util.Calendar;
 
 import org.osmdroid.util.GeoPoint;
 
-import smartcampus.activity.StationsActivity.OnStationSelectListener;
 import smartcampus.model.Bike;
 import smartcampus.model.NotificationBlock;
 import smartcampus.model.Station;
@@ -21,7 +20,6 @@ import smartcampus.util.NavigationDrawerAdapter;
 import smartcampus.util.Tools;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -39,7 +37,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
-public class MainActivity extends ActionBarActivity implements OnStationSelectListener
+public class MainActivity extends ActionBarActivity implements StationsActivity.OnStationSelectListener,
+															   FavouriteFragment.OnStationSelectListener
 {
 
 	private String[] navTitles;
@@ -50,6 +49,7 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 	private ListView mDrawerList;
 	public ActionBarDrawerToggle mDrawerToggle;
 	private ArrayList<Station> stations;
+	private ArrayList<Station> favStations;
 	private ArrayList<Bike> bikes;
 	private ArrayList<NotificationBlock> notificationBlock;
 	private LocationManager mLocationManager;
@@ -59,6 +59,7 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 
 	private static final String FRAGMENT_MAP = "map";
 	private static final String FRAGMENT_STATIONS = "stations";
+	private static final String FRAGMENT_FAVOURITE = "favourite";
 
 	public interface OnPositionAquiredListener
 	{
@@ -86,7 +87,7 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 
 		navTitles = getResources().getStringArray(R.array.navTitles);
 		navIcons = new int[]
-		{ R.drawable.ic_map, R.drawable.ic_station };
+		{ R.drawable.nav_map, R.drawable.nav_station, R.drawable.nav_favourite };
 		navExtraTitles = getResources().getStringArray(R.array.navExtraTitles);
 		navExtraIcons = new int[]
 		{ R.drawable.nav_settings };
@@ -161,6 +162,19 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 					navAdapter.notifyDataSetChanged();
 					break;
 				case 2:
+					currentFragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_FAVOURITE);
+					if (currentFragment == null || !currentFragment.isVisible())
+					{
+						FavouriteFragment stationsFragment = FavouriteFragment.newInstance(favStations);
+						transaction.replace(R.id.content_frame, stationsFragment, FRAGMENT_FAVOURITE);
+						transaction.commit();
+					}
+					// Highlight the selected item, update the title, and close
+					// the drawer
+					navAdapter.setItemChecked(position);
+					navAdapter.notifyDataSetChanged();
+					break;
+				case 3:
 					Intent i = new Intent(getBaseContext(), SettingsActivity.class);
 					i.putParcelableArrayListExtra("stations", stations);
 					startActivity(i);
@@ -227,20 +241,6 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 		super.onStart();
 		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Tools.LOCATION_REFRESH_TIME, Tools.LOCATION_REFRESH_DISTANCE, mLocationListener);
 
-	}
-
-	@Override
-	protected void onResume()
-	{
-		// TODO Auto-generated method stub
-		super.onResume();
-	}
-
-	@Override
-	public void onConfigurationChanged(Configuration newConfig)
-	{
-		// TODO Auto-generated method stub
-		super.onConfigurationChanged(newConfig);
 	}
 
 	@Override
@@ -333,17 +333,24 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 		
 		stations = new ArrayList<Station>();
 
-		stations.add(new Station(new GeoPoint(45.890189, 11.034275), "STAZIONE FF.SS.", "Piazzale Orsi", 12, 5, 1, "01"));
-		stations.add(new Station(new GeoPoint(45.882221, 11.040483), "OSPEDALE", "Corso Verona", 12, 5, 1, "02"));
-		stations.add(new Station(new GeoPoint(45.886525, 11.044749), "MUNICIPIO", "Piazzetta Sichardt", 6, 5, 1, "03"));
-		stations.add(new Station(new GeoPoint(45.893571, 11.043891), "MART", "Corso Bettini", 6, 5, 1, "04"));
-		stations.add(new Station(new GeoPoint(45.866352, 11.019310), "ZONA INDUSTRIALE", "Viale Caproni", 6, 5, 1, "05"));
-		stations.add(new Station(new GeoPoint(45.892256, 11.039370), "VIA PAOLI", "Via Manzoni/Via Paoli", 12, 5, 1, "06"));
-		stations.add(new Station(new GeoPoint(45.840603, 11.009298), "SACCO", "Viale della Vittoria/Via Udine", 6, 5, 1, "07"));
-		stations.add(new Station(new GeoPoint(45.893120, 11.038846), "SACCO", "Viale della Vittoria/Via Udine", 12, 5, 1, "08"));
-		stations.add(new Station(new GeoPoint(45.883409, 11.072827), "NORIGLIO", "Via Chiesa San Martino", 6, 5, 1, "09"));
-		stations.add(new Station(new GeoPoint(45.904255, 11.044859), "BRIONE", "Piazza della Pace", 6, 5, 1, "10"));
-		stations.add(new Station(new GeoPoint(45.891021, 11.038729), "PIAZZA ROSMINI", "via boh", 6, 5, 1, "11"));
+		stations.add(new Station(new GeoPoint(45.890189, 11.034275), "STAZIONE FF.SS.", "Piazzale Orsi", 12,5,1 ,"01"));
+		stations.add(new Station(new GeoPoint(45.882221, 11.040483), "OSPEDALE", "Corso Verona",  12,5,1 ,"02"));
+		stations.add(new Station(new GeoPoint(45.886525, 11.044749), "MUNICIPIO", "Piazzetta Sichardt",  6,5,1 ,"03"));
+		stations.add(new Station(new GeoPoint(45.893571, 11.043891), "MART", "Corso Bettini", 6,5,1 ,"04"));
+		stations.add(new Station(new GeoPoint(45.866352, 11.019310), "ZONA INDUSTRIALE", "Viale Caproni", 6,5,1 ,"05"));
+		stations.add(new Station(new GeoPoint(45.892256, 11.039370), "VIA PAOLI", "Via Manzoni/Via Paoli",  12,5,1 ,"06"));
+		stations.add(new Station(new GeoPoint(45.840603, 11.009298), "SACCO", "Viale della Vittoria/Via Udine", 6,5,1 ,"07"));
+		stations.add(new Station(new GeoPoint(45.893120, 11.038846), "SACCO", "Viale della Vittoria/Via Udine",  12,5,1 ,"08"));
+		stations.add(new Station(new GeoPoint(45.883409, 11.072827), "NORIGLIO", "Via Chiesa San Martino", 6,5,1 ,"09"));
+		stations.add(new Station(new GeoPoint(45.904255, 11.044859), "BRIONE", "Piazza della Pace", 6,5,1 ,"10"));
+		stations.add(new Station(new GeoPoint(45.891021, 11.038729), "PIAZZA ROSMINI", "via boh", 6,5,1 ,"11"));
+		
+		favStations = new ArrayList<Station>();
+		for (Station station : stations)
+		{
+			if (station.getFavourite())
+				favStations.add(station);
+		}
 	}
 
 	private void getBikes()
@@ -352,6 +359,14 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 
 		bikes.add(new Bike(new GeoPoint(45.924255, 11.064859), "0"));
 		bikes.get(0).addReport("test");
-
+	}
+	
+	public void addFavouriteStation(Station station)
+	{
+		favStations.add(station);
+	}
+	public void removeFavouriteStation(Station station)
+	{
+		favStations.remove(station);
 	}
 }
