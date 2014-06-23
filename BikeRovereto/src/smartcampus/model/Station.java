@@ -18,6 +18,7 @@ public class Station implements Parcelable
 	
 	private int nBikes;
 	private int maxSlots;
+	private int brokenSlots;
 	private boolean favourite;
 
 	private ArrayList<String> reports;
@@ -33,7 +34,8 @@ public class Station implements Parcelable
 		this.name = name;
 		this.street = street;
 		this.maxSlots = maxSlots;
-		this.nBikes = 0;
+		this.nBikes = nBikes;
+		this.brokenSlots = brokenSlots;
 		this.id = id;
 		reports = new ArrayList<String>();
 	}
@@ -79,6 +81,7 @@ public class Station implements Parcelable
 		street = source.readString();
 		nBikes = source.readInt();
 		maxSlots = source.readInt();
+		brokenSlots = source.readInt();
 		reports = source.createStringArrayList();
 	}
 
@@ -118,6 +121,7 @@ public class Station implements Parcelable
 		dest.writeString(street);
 		dest.writeInt(nBikes);
 		dest.writeInt(maxSlots);
+		dest.writeInt(brokenSlots);
 		dest.writeStringList(reports);
 	}
 
@@ -154,7 +158,7 @@ public class Station implements Parcelable
 
 	public int getUnavailableSlots()
 	{
-		return 0; // TODO: add unavailable slots
+		return brokenSlots; 
 	}
 
 	public double getBikesPresentPercentage()
@@ -163,7 +167,7 @@ public class Station implements Parcelable
 		{
 			return 0;
 		}
-		return (double) nBikes / maxSlots;
+		return (double) nBikes / (maxSlots - brokenSlots);
 	}
 
 	public void setUsedSlots(int usedSlots)
@@ -174,6 +178,11 @@ public class Station implements Parcelable
 			throw new RuntimeException("slots out of bounds");
 		}
 		this.nBikes = usedSlots;
+	}
+	
+	public void setBrokenSlots(int brokenSlots)
+	{
+		this.brokenSlots = brokenSlots;
 	}
 
 	public int getNSlotsUsed()

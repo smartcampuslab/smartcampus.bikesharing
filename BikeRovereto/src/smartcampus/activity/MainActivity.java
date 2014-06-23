@@ -1,29 +1,25 @@
 package smartcampus.activity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import org.osmdroid.util.GeoPoint;
 
 import smartcampus.activity.StationsActivity.OnStationSelectListener;
 import smartcampus.model.Bike;
 import smartcampus.model.Station;
+import smartcampus.notifications.MyReceiver;
 import smartcampus.util.NavigationDrawerAdapter;
 import smartcampus.util.Tools;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -72,8 +68,7 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 
 		getStation();
 		getBikes();
-		
-		
+
 		OsmMap mainFragment = OsmMap.newInstance(stations, bikes);
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 		transaction.replace(R.id.content_frame, mainFragment, FRAGMENT_MAP);
@@ -166,7 +161,7 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 		});
 		navAdapter.setItemChecked(0);
 		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-		// createNotification();
+		setNotification();
 	}
 
 	@Override
@@ -297,28 +292,18 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 			mCallback.onPositionAquired();
 	}
 
-	private void createNotification()
+	private void setNotification()
 	{
-		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.bike_available).setContentTitle("Bike Rovereto").setContentText("Hello World!").setSound(
-				RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-		// Creates an explicit intent for an Activity in your app
-		Intent resultIntent = new Intent(this, MainActivity.class);
-
-		// The stack builder object will contain an artificial back stack for
-		// the
-		// started Activity.
-		// This ensures that navigating backward from the Activity leads out of
-		// your application to the Home screen.
-		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-		// Adds the back stack for the Intent (but not the Intent itself)
-		stackBuilder.addParentStack(MainActivity.class);
-		// Adds the Intent that starts the Activity to the top of the stack
-		stackBuilder.addNextIntent(resultIntent);
-		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-		mBuilder.setContentIntent(resultPendingIntent);
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		// mId allows you to update the notification later on.
-		mNotificationManager.notify(BIND_AUTO_CREATE, mBuilder.build());
+		MyReceiver mr = new MyReceiver();
+		
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(System.currentTimeMillis());
+		calendar.set(Calendar.MINUTE, 42);
+		calendar.set(Calendar.SECOND, 0);
+		
+		
+		mr.registerAlarm(getApplicationContext(), calendar);
 	}
 
 	private void getStation()
@@ -326,17 +311,17 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 
 		stations = new ArrayList<Station>();
 
-		stations.add(new Station(new GeoPoint(45.890189, 11.034275), "STAZIONE FF.SS.", "Piazzale Orsi", 12,5,1 ,"01"));
-		stations.add(new Station(new GeoPoint(45.882221, 11.040483), "OSPEDALE", "Corso Verona",  12,5,1 ,"02"));
-		stations.add(new Station(new GeoPoint(45.886525, 11.044749), "MUNICIPIO", "Piazzetta Sichardt",  6,5,1 ,"03"));
-		stations.add(new Station(new GeoPoint(45.893571, 11.043891), "MART", "Corso Bettini", 6,5,1 ,"04"));
-		stations.add(new Station(new GeoPoint(45.866352, 11.019310), "ZONA INDUSTRIALE", "Viale Caproni", 6,5,1 ,"05"));
-		stations.add(new Station(new GeoPoint(45.892256, 11.039370), "VIA PAOLI", "Via Manzoni/Via Paoli",  12,5,1 ,"06"));
-		stations.add(new Station(new GeoPoint(45.840603, 11.009298), "SACCO", "Viale della Vittoria/Via Udine", 6,5,1 ,"07"));
-		stations.add(new Station(new GeoPoint(45.893120, 11.038846), "SACCO", "Viale della Vittoria/Via Udine",  12,5,1 ,"08"));
-		stations.add(new Station(new GeoPoint(45.883409, 11.072827), "NORIGLIO", "Via Chiesa San Martino", 6,5,1 ,"09"));
-		stations.add(new Station(new GeoPoint(45.904255, 11.044859), "BRIONE", "Piazza della Pace", 6,5,1 ,"10"));
-		stations.add(new Station(new GeoPoint(45.891021, 11.038729), "PIAZZA ROSMINI", "via boh", 6,5,1 ,"11"));
+		stations.add(new Station(new GeoPoint(45.890189, 11.034275), "STAZIONE FF.SS.", "Piazzale Orsi", 12, 5, 1, "01"));
+		stations.add(new Station(new GeoPoint(45.882221, 11.040483), "OSPEDALE", "Corso Verona", 12, 5, 1, "02"));
+		stations.add(new Station(new GeoPoint(45.886525, 11.044749), "MUNICIPIO", "Piazzetta Sichardt", 6, 5, 1, "03"));
+		stations.add(new Station(new GeoPoint(45.893571, 11.043891), "MART", "Corso Bettini", 6, 5, 1, "04"));
+		stations.add(new Station(new GeoPoint(45.866352, 11.019310), "ZONA INDUSTRIALE", "Viale Caproni", 6, 5, 1, "05"));
+		stations.add(new Station(new GeoPoint(45.892256, 11.039370), "VIA PAOLI", "Via Manzoni/Via Paoli", 12, 5, 1, "06"));
+		stations.add(new Station(new GeoPoint(45.840603, 11.009298), "SACCO", "Viale della Vittoria/Via Udine", 6, 5, 1, "07"));
+		stations.add(new Station(new GeoPoint(45.893120, 11.038846), "SACCO", "Viale della Vittoria/Via Udine", 12, 5, 1, "08"));
+		stations.add(new Station(new GeoPoint(45.883409, 11.072827), "NORIGLIO", "Via Chiesa San Martino", 6, 5, 1, "09"));
+		stations.add(new Station(new GeoPoint(45.904255, 11.044859), "BRIONE", "Piazza della Pace", 6, 5, 1, "10"));
+		stations.add(new Station(new GeoPoint(45.891021, 11.038729), "PIAZZA ROSMINI", "via boh", 6, 5, 1, "11"));
 	}
 
 	private void getBikes()
