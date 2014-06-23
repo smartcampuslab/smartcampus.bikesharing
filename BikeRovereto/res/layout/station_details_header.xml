@@ -3,16 +3,34 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-    <TextView 
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/add_reminder"
-        android:text="@string/add_reminder"
-        android:drawableLeft="@drawable/ic_add_reminder"
-        android:drawablePadding="3dp"
-        android:background="@drawable/add_reminder_background"
-        android:padding="5dp"
-        android:gravity="center_vertical"/>
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >  
+        
+        <TextView 
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:id="@+id/add_reminder"
+	        android:text="@string/add_reminder"
+	        android:drawableLeft="@drawable/ic_add_reminder"
+	        android:drawablePadding="3dp"
+	        android:background="@drawable/add_reminder_background"
+	        android:padding="5dp"
+	        android:gravity="center_vertical"
+	        android:layout_gravity="left" />
+        
+        <ImageView
+            android:id="@+id/edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:src="@drawable/ic_edit" />
+        
+    </LinearLayout>
+    
     <RelativeLayout
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"

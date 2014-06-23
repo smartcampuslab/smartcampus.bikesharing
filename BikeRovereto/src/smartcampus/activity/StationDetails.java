@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -46,7 +47,9 @@ public class StationDetails extends Fragment
 	private TextView street;
 	private TextView availableBike, availableSlots;
 	private TextView distance;
-	private TextView addReminder;
+	private View addReminder;
+
+	private ImageView editReminder;
 
 	private static final int REQUEST_IMAGE_CAPTURE = 1;
 
@@ -74,7 +77,8 @@ public class StationDetails extends Fragment
 		availableBike = (TextView) header.findViewById(R.id.available_bikes);
 		availableSlots = (TextView) header.findViewById(R.id.available_slots);
 		distance = (TextView) header.findViewById(R.id.distance);
-		addReminder = (TextView) header.findViewById(R.id.add_reminder);
+		addReminder = header.findViewById(R.id.add_reminder);
+		editReminder = (ImageView) header.findViewById(R.id.edit);
 
 		// get the station from the parcels
 		station = getArguments().getParcelable("station");
@@ -111,6 +115,15 @@ public class StationDetails extends Fragment
 			}
 		});
 		
+		editReminder.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent reminderEditIntent = new Intent(getActivity(), ReminderEdit.class);
+				reminderEditIntent.putExtra("station", station);
+				startActivity(reminderEditIntent);
+			}
+		});
 		
 		setHasOptionsMenu(true);
 		
