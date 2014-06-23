@@ -290,7 +290,7 @@ public class OsmMap extends Fragment
 			marker.setSnippet(s.getStreet());
 			marker.setPosition(s.getPosition());
 
-			switch ((int) (s.getBikesPresentPercentage() * 10))
+			switch ((int) Math.round(s.getBikesPresentPercentage() * 10))
 			{
 			case 0:
 				markerImage = res.getDrawable(R.drawable.marker_0);

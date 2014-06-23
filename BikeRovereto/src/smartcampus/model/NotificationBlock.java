@@ -2,7 +2,6 @@ package smartcampus.model;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,9 +14,9 @@ import java.io.Serializable;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import android.content.Context;
-import android.util.Log;
 
 public class NotificationBlock implements Serializable
 {
@@ -26,10 +25,10 @@ public class NotificationBlock implements Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	Calendar calendar;
+	GregorianCalendar calendar;
 	String stationID;
 
-	public NotificationBlock(Calendar calendar, String stationID)
+	public NotificationBlock(GregorianCalendar calendar, String stationID)
 	{
 		this.calendar = calendar;
 		this.stationID = stationID;
@@ -109,7 +108,7 @@ public class NotificationBlock implements Serializable
 		return recoveredNotificationBlocks;
 	}
 
-	public Calendar getCalendar()
+	public GregorianCalendar getCalendar()
 	{
 		return calendar;
 	}

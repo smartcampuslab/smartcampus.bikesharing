@@ -34,9 +34,8 @@ public class MyReceiver extends BroadcastReceiver
 		// notify at the exact time
 		//alarmMgr.set(AlarmManager.RTC_WAKEUP, when.getTimeInMillis(),
 		//alarmIntent);
-		alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, when.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
-		Log.d("prova", when.getTime().toString()
-				);
+		alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, when.getTimeInMillis(), 1000 *30, alarmIntent);
+		Log.d("prova", when.getTime().toString());
 	}
 
 	@Override
