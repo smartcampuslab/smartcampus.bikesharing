@@ -2,25 +2,28 @@ package smartcampus.activity;
 
 import java.util.ArrayList;
 
+import eu.trentorise.smartcampus.bikerovereto.R;
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
 import smartcampus.model.Station;
 import smartcampus.util.StationsAdapter;
-import smartcampus.util.Tools;
 import android.app.Activity;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TextView;
 
 public class FavouriteFragment extends ListFragment{
 	private ArrayList<Station> favStations;
 	private StationsAdapter adapter;
+	private TextView empty;
+	
 	private OnStationSelectListener mCallback;
+	private SwipeRefreshLayout mSwipeRefreshLayout;
 	// Container Activity must implement this interface
 	public interface OnStationSelectListener
 	{
@@ -60,8 +63,22 @@ public class FavouriteFragment extends ListFragment{
 			Bundle savedInstanceState) {
 		adapter = new StationsAdapter(getActivity(), 0, favStations, ((MainActivity)getActivity()).getCurrentLocation());
 		adapter.setIsFavouriteAdapter(true);
-		setListAdapter(adapter);
-		return super.onCreateView(inflater, container, savedInstanceState);
+		setListAdapter(adapter);		
+		View rootView = inflater.inflate(R.layout.fav_stations, null);
+		empty = (TextView)rootView.findViewById(R.id.empty);
+		// Retrieve the SwipeRefreshLayout and ListView instances
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh);
+ 
+        // Set the color scheme of the SwipeRefreshLayout by providing 4 color resource ids
+        mSwipeRefreshLayout.setColorScheme(
+                R.color.swipe_color_1, R.color.swipe_color_2,
+                R.color.swipe_color_3, R.color.swipe_color_4);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+            }
+        });
+		return rootView;
 	}
 	
 	@Override
@@ -91,15 +108,7 @@ public class FavouriteFragment extends ListFragment{
 	@Override
 	public void onStart() {
 		super.onStart();
-		int padding = Tools.convertDpToPixel(getActivity(), 10);
-		getListView().setPadding(padding, padding, padding, padding);
-		getListView().setFadingEdgeLength(0);
-		getListView().setCacheColorHint(Color.TRANSPARENT);
-		getListView().setClipToPadding(false);
-		getListView().setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
-		getListView().setDivider(new ColorDrawable(Color.TRANSPARENT));
-		getListView().setDividerHeight(Tools.convertDpToPixel(getActivity(), 5));
-		
+		getListView().setEmptyView(empty);
 		getListView().setOnItemClickListener(new OnItemClickListener() {
 
 			@Override

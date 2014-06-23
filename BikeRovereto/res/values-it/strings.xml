@@ -32,4 +32,5 @@
     <string name="refresh_hint">Trascina verso il basso per aggiornare</string>
     <string name="only_e_motion">Solo e-motion</string>
     <string name="add_reminder">Aggiungi promemoria</string>
+    <string name="no_favourites">Nessuna stazione prefererita</string>
 </resources>
