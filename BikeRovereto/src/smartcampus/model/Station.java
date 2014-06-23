@@ -21,8 +21,6 @@ public class Station implements Parcelable
 	private int maxSlots;
 	private int brokenSlots;
 	private boolean favourite;
-	
-	private ArrayList<Calendar> notifications;
 
 	private ArrayList<String> reports;
 	public static final int DISTANCE_NOT_VALID = -1;
@@ -41,7 +39,6 @@ public class Station implements Parcelable
 		this.brokenSlots = brokenSlots;
 		this.id = id;
 		reports = new ArrayList<String>();
-		notifications = new ArrayList<Calendar>();
 	}
 
 	public static BoundingBoxE6 getBoundingBox(ArrayList<Station> stations)
@@ -241,23 +238,5 @@ public class Station implements Parcelable
 	public String getId()
 	{
 		return id;
-	}
-
-	public void addNotification(Calendar calendar)
-	{
-		
-		for(Calendar c : notifications)
-		{
-			if(c.equals(calendar))
-			{
-				return;
-			}
-		}
-		notifications.add(calendar);
-	}
-	
-	public ArrayList<Calendar> getNotifications()
-	{
-		return notifications;
 	}
 }

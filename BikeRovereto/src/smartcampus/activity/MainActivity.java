@@ -1,5 +1,12 @@
 package smartcampus.activity;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -7,10 +14,12 @@ import org.osmdroid.util.GeoPoint;
 
 import smartcampus.activity.StationsActivity.OnStationSelectListener;
 import smartcampus.model.Bike;
+import smartcampus.model.NotificationBlock;
 import smartcampus.model.Station;
 import smartcampus.notifications.MyReceiver;
 import smartcampus.util.NavigationDrawerAdapter;
 import smartcampus.util.Tools;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.location.Location;
@@ -42,6 +51,7 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 	public ActionBarDrawerToggle mDrawerToggle;
 	private ArrayList<Station> stations;
 	private ArrayList<Bike> bikes;
+	private ArrayList<NotificationBlock> notificationBlock;
 	private LocationManager mLocationManager;
 	private GeoPoint myLocation;
 	private OnPositionAquiredListener mCallback;
@@ -294,26 +304,33 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 
 	private void setNotification()
 	{
+		final String fileName = "notificationBlockDB";
 		Calendar c1 = Calendar.getInstance();
 		c1.setTimeInMillis(System.currentTimeMillis());
 		c1.set(Calendar.HOUR_OF_DAY, 12);
 		c1.set(Calendar.MINUTE, 04);
 		c1.set(Calendar.SECOND, 0);
-		stations.get(0).addNotification(c1);
-		
-		for (Station s : stations)
+
+//		notificationBlock = new ArrayList<NotificationBlock>();
+//		notificationBlock.add(new NotificationBlock(c1, "0"));
+//		
+//		NotificationBlock.saveArrayListToFile(notificationBlock, fileName, getApplicationContext());
+
+		notificationBlock = NotificationBlock.readArrayListFromFile(fileName, getApplicationContext());
+		if (notificationBlock != null)
 		{
-			for (Calendar c : s.getNotifications())
+			for (NotificationBlock nb : notificationBlock)
 			{
 				MyReceiver mr = new MyReceiver();
-				mr.registerAlarm(getApplicationContext(), c);
+				mr.registerAlarm(getApplicationContext(), nb.getCalendar());
 			}
 		}
+
 	}
 
 	private void getStation()
 	{
-
+		
 		stations = new ArrayList<Station>();
 
 		stations.add(new Station(new GeoPoint(45.890189, 11.034275), "STAZIONE FF.SS.", "Piazzale Orsi", 12, 5, 1, "01"));
