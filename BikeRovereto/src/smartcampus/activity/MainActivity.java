@@ -1,27 +1,32 @@
 package smartcampus.activity;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.StreamCorruptedException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import org.osmdroid.util.GeoPoint;
 
 import smartcampus.model.Bike;
+import smartcampus.model.NotificationBlock;
 import smartcampus.model.Station;
+import smartcampus.notifications.MyReceiver;
 import smartcampus.util.NavigationDrawerAdapter;
 import smartcampus.util.Tools;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -46,6 +51,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 	private ArrayList<Station> stations;
 	private ArrayList<Station> favStations;
 	private ArrayList<Bike> bikes;
+	private ArrayList<NotificationBlock> notificationBlock;
 	private LocationManager mLocationManager;
 	private GeoPoint myLocation;
 	private OnPositionAquiredListener mCallback;
@@ -73,8 +79,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 
 		getStation();
 		getBikes();
-		
-		
+
 		OsmMap mainFragment = OsmMap.newInstance(stations, bikes);
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 		transaction.replace(R.id.content_frame, mainFragment, FRAGMENT_MAP);
@@ -180,7 +185,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 		});
 		navAdapter.setItemChecked(0);
 		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-		// createNotification();
+		setNotification();
 	}
 
 	@Override
@@ -297,33 +302,35 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 			mCallback.onPositionAquired();
 	}
 
-	private void createNotification()
+	private void setNotification()
 	{
-		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.bike_available).setContentTitle("Bike Rovereto").setContentText("Hello World!").setSound(
-				RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-		// Creates an explicit intent for an Activity in your app
-		Intent resultIntent = new Intent(this, MainActivity.class);
+		final String fileName = "notificationBlockDB";
+		Calendar c1 = Calendar.getInstance();
+		c1.setTimeInMillis(System.currentTimeMillis());
+		c1.set(Calendar.HOUR_OF_DAY, 12);
+		c1.set(Calendar.MINUTE, 04);
+		c1.set(Calendar.SECOND, 0);
 
-		// The stack builder object will contain an artificial back stack for
-		// the
-		// started Activity.
-		// This ensures that navigating backward from the Activity leads out of
-		// your application to the Home screen.
-		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-		// Adds the back stack for the Intent (but not the Intent itself)
-		stackBuilder.addParentStack(MainActivity.class);
-		// Adds the Intent that starts the Activity to the top of the stack
-		stackBuilder.addNextIntent(resultIntent);
-		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-		mBuilder.setContentIntent(resultPendingIntent);
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		// mId allows you to update the notification later on.
-		mNotificationManager.notify(BIND_AUTO_CREATE, mBuilder.build());
+//		notificationBlock = new ArrayList<NotificationBlock>();
+//		notificationBlock.add(new NotificationBlock(c1, "0"));
+//		
+//		NotificationBlock.saveArrayListToFile(notificationBlock, fileName, getApplicationContext());
+
+		notificationBlock = NotificationBlock.readArrayListFromFile(fileName, getApplicationContext());
+		if (notificationBlock != null)
+		{
+			for (NotificationBlock nb : notificationBlock)
+			{
+				MyReceiver mr = new MyReceiver();
+				mr.registerAlarm(getApplicationContext(), nb.getCalendar());
+			}
+		}
+
 	}
 
 	private void getStation()
 	{
-
+		
 		stations = new ArrayList<Station>();
 
 		stations.add(new Station(new GeoPoint(45.890189, 11.034275), "STAZIONE FF.SS.", "Piazzale Orsi", 12,5,1 ,"01"));
