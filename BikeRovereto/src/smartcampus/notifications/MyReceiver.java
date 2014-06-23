@@ -2,7 +2,6 @@ package smartcampus.notifications;
 
 import java.util.Calendar;
 
-import smartcampus.activity.MainActivity;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -12,8 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.SystemClock;
-import android.widget.Toast;
+import android.util.Log;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
 public class MyReceiver extends BroadcastReceiver
@@ -25,6 +23,7 @@ public class MyReceiver extends BroadcastReceiver
 	public void registerAlarm(Context context, Calendar when)
 	{
 
+		Log.d("prova", when.toString());
 		alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(context, MyReceiver.class);
 		alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);

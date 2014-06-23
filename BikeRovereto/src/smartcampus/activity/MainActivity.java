@@ -294,16 +294,21 @@ public class MainActivity extends ActionBarActivity implements OnStationSelectLi
 
 	private void setNotification()
 	{
-		MyReceiver mr = new MyReceiver();
+		Calendar c1 = Calendar.getInstance();
+		c1.setTimeInMillis(System.currentTimeMillis());
+		c1.set(Calendar.HOUR_OF_DAY, 12);
+		c1.set(Calendar.MINUTE, 04);
+		c1.set(Calendar.SECOND, 0);
+		stations.get(0).addNotification(c1);
 		
-		
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(System.currentTimeMillis());
-		calendar.set(Calendar.MINUTE, 42);
-		calendar.set(Calendar.SECOND, 0);
-		
-		
-		mr.registerAlarm(getApplicationContext(), calendar);
+		for (Station s : stations)
+		{
+			for (Calendar c : s.getNotifications())
+			{
+				MyReceiver mr = new MyReceiver();
+				mr.registerAlarm(getApplicationContext(), c);
+			}
+		}
 	}
 
 	private void getStation()
