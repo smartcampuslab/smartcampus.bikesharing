@@ -11,7 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.util.Log;
+import android.os.Bundle;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
 public class NotificationReceiver extends BroadcastReceiver
@@ -20,12 +20,12 @@ public class NotificationReceiver extends BroadcastReceiver
 	private AlarmManager alarmMgr;
 	private PendingIntent alarmIntent;
 
-	public void registerAlarm(Context context, Calendar when)
+	public void registerAlarm(Context context, Calendar when, String stationID)
 	{
-		Log.d("prova", when.toString());
 		alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(context, NotificationReceiver.class);
-		alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+		intent.putExtra("stationID", stationID);
+		alarmIntent = PendingIntent.getBroadcast(context, 0, intent,PendingIntent.FLAG_CANCEL_CURRENT);
 		
 		
 		// wait 10 seconds and notify
@@ -37,12 +37,12 @@ public class NotificationReceiver extends BroadcastReceiver
 		//alarmIntent);
 		
 		alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, when.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
-		Log.d("prova", when.getTime().toString());
 	}
 
 	@Override
 	public void onReceive(Context arg0, Intent arg1)
 	{
+		Bundle extras = arg1.getExtras();
 		// define sound URI, the sound to be played when there's a notification
 		Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
@@ -50,7 +50,7 @@ public class NotificationReceiver extends BroadcastReceiver
 		// in the addAction method, if you don't want any icon, just set the
 		// first param to 0
 		Notification mNotification = new Notification.Builder(arg0)
-		.setContentTitle(arg0.getResources().getText(R.string.app_name)).setContentText("data").setSmallIcon(R.drawable.ic_launcher)
+		.setContentTitle(arg0.getResources().getText(R.string.app_name)).setContentText(extras.getString("stationID")).setSmallIcon(R.drawable.ic_launcher)
 				.setContentIntent(alarmIntent).setSound(soundUri)
 
 				.addAction(R.drawable.ic_launcher, "View", alarmIntent).addAction(0, "Remind", alarmIntent)

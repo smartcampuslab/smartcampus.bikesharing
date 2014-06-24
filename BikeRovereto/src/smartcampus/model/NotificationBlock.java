@@ -36,7 +36,7 @@ public class NotificationBlock implements Serializable
 		upDateCalendar();
 		this.stationID = stationID;
 		NotificationReceiver mr = new NotificationReceiver();
-		mr.registerAlarm(context, calendar);
+		mr.registerAlarm(context, calendar, stationID);
 	}
 
 	public static void saveArrayListToFile(ArrayList<NotificationBlock> arrayList, String fileName, Context context)
