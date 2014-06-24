@@ -8,6 +8,7 @@ import smartcampus.model.Station;
 import smartcampus.util.RemindersAdapter;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,6 +30,7 @@ public class ReminderEdit extends ActionBarActivity {
 			this.station = (Station) getIntent().getExtras().getParcelable("station");
 		listView = (ListView) findViewById(R.id.list);
 		ArrayList<GregorianCalendar> reminders = NotificationBlock.getReminderForID(station.getId(), this);
+		Log.d("reminderEdit", reminders.size()+"");
 		listView.setAdapter(new RemindersAdapter(this, reminders));
 		
 		TextView textView = new TextView(this);

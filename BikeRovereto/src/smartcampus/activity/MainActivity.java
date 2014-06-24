@@ -1,15 +1,10 @@
 package smartcampus.activity;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
 import org.osmdroid.util.GeoPoint;
-
 import smartcampus.model.Bike;
 import smartcampus.model.NotificationBlock;
 import smartcampus.model.Station;
-import smartcampus.notifications.MyReceiver;
 import smartcampus.util.NavigationDrawerAdapter;
 import smartcampus.util.Tools;
 import android.content.Intent;
@@ -176,9 +171,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 			}
 		});
 		navAdapter.setItemChecked(0);
-		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-		
-		notificationBlock = new ArrayList<NotificationBlock>();
+		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);		
 	}
 
 	@Override
@@ -340,6 +333,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 	}
 	public void addReminderForStation(NotificationBlock nb)
 	{
+		notificationBlock = NotificationBlock.readArrayListFromFile(FILENOTIFICATIONDB, this);
 		notificationBlock.add(nb);
 		NotificationBlock.saveArrayListToFile(notificationBlock, FILENOTIFICATIONDB, getApplicationContext());
 	}

@@ -71,7 +71,7 @@ public class NotificationBlock implements Serializable
 	public static ArrayList<NotificationBlock> readArrayListFromFile(String fileName, Context context)
 	{
 
-		ArrayList<NotificationBlock> recoveredNotificationBlocks = null;
+		ArrayList<NotificationBlock> recoveredNotificationBlocks = new ArrayList<NotificationBlock>();
 		// use buffering
 		try
 		{
@@ -125,6 +125,7 @@ public class NotificationBlock implements Serializable
 	public static ArrayList<GregorianCalendar> getReminderForID(String id, Context context)
 	{
 		ArrayList<NotificationBlock> list = readArrayListFromFile("notificationBlockDB", context);
+		Log.d("remindersListSize", list.size()+"");
 		if (list == null)
 			return new ArrayList<GregorianCalendar>();
 		ArrayList<GregorianCalendar> timesList = new ArrayList<GregorianCalendar>();

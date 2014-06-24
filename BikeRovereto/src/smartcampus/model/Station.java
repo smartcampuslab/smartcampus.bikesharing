@@ -84,6 +84,7 @@ public class Station implements Parcelable
 		maxSlots = source.readInt();
 		brokenSlots = source.readInt();
 		reports = source.createStringArrayList();
+		id = source.readString();
 	}
 
 	public static final Parcelable.Creator<Station> CREATOR = new Creator<Station>()
@@ -124,6 +125,9 @@ public class Station implements Parcelable
 		dest.writeInt(maxSlots);
 		dest.writeInt(brokenSlots);
 		dest.writeStringList(reports);
+		dest.writeString(id);
+		
+		
 	}
 
 	// getters and setters
