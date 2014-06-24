@@ -17,6 +17,7 @@ import java.util.GregorianCalendar;
 
 import smartcampus.notifications.MyReceiver;
 import android.content.Context;
+import android.util.Log;
 
 public class NotificationBlock implements Serializable
 {
@@ -34,6 +35,7 @@ public class NotificationBlock implements Serializable
 		this.stationID = stationID;
 		MyReceiver mr = new MyReceiver();
 		mr.registerAlarm(context, calendar);
+		Log.d("registerdCalendar", calendar.toString());
 	}
 
 	public static void saveArrayListToFile(ArrayList<NotificationBlock> arrayList, String fileName, Context context)
@@ -114,15 +116,18 @@ public class NotificationBlock implements Serializable
 	{
 		return calendar;
 	}
+
 	public String getID()
 	{
 		return stationID;
 	}
 
-	public static ArrayList<Calendar> getReminderForID(String id, Context context) {
+	public static ArrayList<GregorianCalendar> getReminderForID(String id, Context context)
+	{
 		ArrayList<NotificationBlock> list = readArrayListFromFile("notificationBlockDB", context);
-		if (list==null) return new ArrayList<Calendar>();
-		ArrayList<Calendar> timesList = new ArrayList<Calendar>();
+		if (list == null)
+			return new ArrayList<GregorianCalendar>();
+		ArrayList<GregorianCalendar> timesList = new ArrayList<GregorianCalendar>();
 		for (NotificationBlock nb : list)
 		{
 			if (nb.getID().equals(id))

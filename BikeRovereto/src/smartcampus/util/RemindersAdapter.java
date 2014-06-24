@@ -1,7 +1,7 @@
 package smartcampus.util;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,12 +11,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class RemindersAdapter extends ArrayAdapter<Calendar>
+public class RemindersAdapter extends ArrayAdapter<GregorianCalendar>
 {
 
-	ArrayList<Calendar> mReminders;
+	ArrayList<GregorianCalendar> mReminders;
 
-	public RemindersAdapter(Context context, ArrayList<Calendar> reminders)
+	public RemindersAdapter(Context context, ArrayList<GregorianCalendar> reminders)
 	{
 		super(context, 0, reminders);
 		mReminders = reminders;
