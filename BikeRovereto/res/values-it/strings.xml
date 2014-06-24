@@ -33,4 +33,5 @@
     <string name="only_e_motion">Solo e-motion</string>
     <string name="add_reminder">Aggiungi promemoria</string>
     <string name="no_favourites">Nessuna stazione prefererita</string>
+    <string name="no_reminders">Nessun promemoria impostato</string>
 </resources>

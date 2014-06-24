@@ -364,6 +364,8 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 	public void addReminderForStation(NotificationBlock nb)
 	{
 		notificationBlock.add(nb);
+		Log.d("uhiush","aaaa");
+		NotificationBlock.saveArrayListToFile(notificationBlock, "notificationBlockDB", this);
 	}
 	
 }

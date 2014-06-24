@@ -1,10 +1,12 @@
 package smartcampus.activity;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 
 import org.osmdroid.util.GeoPoint;
 
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
+import smartcampus.model.NotificationBlock;
 import smartcampus.model.Station;
 import smartcampus.util.ReportsAdapter;
 import smartcampus.util.Tools;
@@ -245,8 +247,12 @@ public class StationDetails extends Fragment
 				{
 					public void onClick(DialogInterface dialogI, int id)
 					{						
-						Log.d("picker", picker.getCurrentHour()+":"+picker.getCurrentMinute());
-						Toast.makeText(getActivity(), "selected "+picker.getCurrentHour()+":"+picker.getCurrentMinute(), Toast.LENGTH_SHORT).show();
+						((MainActivity)getActivity()).addReminderForStation(
+								new NotificationBlock(
+										new GregorianCalendar(2014,5,23,picker.getCurrentHour(),picker.getCurrentMinute()), station.getId()
+								)
+								
+						);
 						
 					}
 				});
