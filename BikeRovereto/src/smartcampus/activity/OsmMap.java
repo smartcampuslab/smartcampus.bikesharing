@@ -14,7 +14,6 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import smartcampus.activity.cluster.GridMarkerClustererCustom;
-import smartcampus.activity.gesture.RotationGestureOverlay;
 import smartcampus.model.Bike;
 import smartcampus.model.Station;
 import smartcampus.util.BikeInfoWindow;
@@ -27,7 +26,6 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -88,7 +86,8 @@ public class OsmMap extends Fragment
 		View rootView = inflater.inflate(R.layout.activity_osm_map, container, false);
 		// get the mapView and the controller
 		mapView = (MapView) rootView.findViewById(R.id.map_view);
-
+		
+//		mapView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 		// mapView.setBuiltInZoomControls(true);
 		mapView.setMultiTouchControls(true);
 
@@ -280,7 +279,6 @@ public class OsmMap extends Fragment
 		Resources res = getResources();
 		stationsMarkersOverlay = new GridMarkerClustererCustom(getActivity());
 		mapView.getOverlays().add(stationsMarkersOverlay);
-
 		Drawable markerImage = null;
 		StationInfoWindow customInfoWindow = new StationInfoWindow(mapView, getFragmentManager());
 		for (Station s : stations)
@@ -330,7 +328,6 @@ public class OsmMap extends Fragment
 			}
 
 			marker.setIcon(markerImage);
-			marker.setInfoWindow(customInfoWindow);
 			marker.setAnchor(0, 1);
 			stationsMarkersOverlay.add(marker);
 		}

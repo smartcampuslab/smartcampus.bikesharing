@@ -35,7 +35,7 @@ public class NotificationBlock implements Serializable
 		this.stationID = stationID;
 		MyReceiver mr = new MyReceiver();
 		mr.registerAlarm(context, calendar);
-		Log.d("registerdCalendar", calendar.toString());
+		Log.d("prova", calendar.toString());
 	}
 
 	public static void saveArrayListToFile(ArrayList<NotificationBlock> arrayList, String fileName, Context context)
