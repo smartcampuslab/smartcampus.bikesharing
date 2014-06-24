@@ -177,6 +177,8 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 		});
 		navAdapter.setItemChecked(0);
 		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+		
+		notificationBlock = new ArrayList<NotificationBlock>();
 	}
 
 	@Override
