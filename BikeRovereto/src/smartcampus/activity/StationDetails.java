@@ -1,6 +1,7 @@
 package smartcampus.activity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import org.osmdroid.util.GeoPoint;
@@ -55,7 +56,6 @@ public class StationDetails extends Fragment
 
 	private static final int REQUEST_IMAGE_CAPTURE = 1;
 
-
 	public static StationDetails newInstance(Station station)
 	{
 		StationDetails fragment = new StationDetails();
@@ -67,11 +67,9 @@ public class StationDetails extends Fragment
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState)
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		View rootView = inflater.inflate(R.layout.activity_station_details,
-				container, false);
+		View rootView = inflater.inflate(R.layout.activity_station_details, container, false);
 		View header = inflater.inflate(R.layout.station_details_header, null);
 
 		name = (TextView) header.findViewById(R.id.name);
@@ -84,7 +82,7 @@ public class StationDetails extends Fragment
 
 		// get the station from the parcels
 		station = getArguments().getParcelable("station");
-		
+
 		mList = (ListView) rootView.findViewById(R.id.details);
 		mList.addHeaderView(header, null, false);
 
@@ -94,8 +92,7 @@ public class StationDetails extends Fragment
 		availableSlots.setText(station.getNSlotsEmpty() + "");
 		distance.setText(Tools.formatDistance(station.getDistance()));
 
-		mList.setAdapter(new ReportsAdapter(getActivity(), 0, station
-				.getReports()));
+		mList.setAdapter(new ReportsAdapter(getActivity(), 0, station.getReports()));
 
 		distance.setOnClickListener(new OnClickListener()
 		{
@@ -103,32 +100,35 @@ public class StationDetails extends Fragment
 			@Override
 			public void onClick(View v)
 			{
-				GeoPoint startPoint = ((MainActivity)getActivity()).getCurrentLocation();
-				Intent i = new Intent(Intent.ACTION_VIEW, Uri
-						.parse(Tools.getPathString(startPoint, station.getPosition())));
+				GeoPoint startPoint = ((MainActivity) getActivity()).getCurrentLocation();
+				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(Tools.getPathString(startPoint, station.getPosition())));
 				startActivity(i);
 			}
 		});
-		addReminder.setOnClickListener(new OnClickListener() {
-			
+		addReminder.setOnClickListener(new OnClickListener()
+		{
+
 			@Override
-			public void onClick(View v) {
+			public void onClick(View v)
+			{
 				addReminder();
 			}
 		});
-		
-		editReminder.setOnClickListener(new OnClickListener() {
-			
+
+		editReminder.setOnClickListener(new OnClickListener()
+		{
+
 			@Override
-			public void onClick(View v) {
+			public void onClick(View v)
+			{
 				Intent reminderEditIntent = new Intent(getActivity(), ReminderEdit.class);
 				reminderEditIntent.putExtra("station", station);
 				startActivity(reminderEditIntent);
 			}
 		});
-		
+
 		setHasOptionsMenu(true);
-		
+
 		((MainActivity) getActivity()).setOnPositionAquiredListener(new OnPositionAquiredListener()
 		{
 
@@ -138,11 +138,11 @@ public class StationDetails extends Fragment
 				distance.setText(Tools.formatDistance(station.getDistance()));
 			}
 		});
-		((MainActivity)getActivity()).mDrawerToggle.setDrawerIndicatorEnabled(false);
-		((MainActivity)getActivity()).mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+		((MainActivity) getActivity()).mDrawerToggle.setDrawerIndicatorEnabled(false);
+		((MainActivity) getActivity()).mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 		return rootView;
 	}
-	
+
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
 	{
@@ -169,115 +169,116 @@ public class StationDetails extends Fragment
 	}
 
 	@Override
-	public void onDetach() {
-		((MainActivity)getActivity()).mDrawerToggle.setDrawerIndicatorEnabled(true);
-		((MainActivity)getActivity()).mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+	public void onDetach()
+	{
+		((MainActivity) getActivity()).mDrawerToggle.setDrawerIndicatorEnabled(true);
+		((MainActivity) getActivity()).mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 		super.onDetach();
 	}
-	private void dispatchTakePictureIntent() {
-	    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-	    if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-	        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-	    }
+
+	private void dispatchTakePictureIntent()
+	{
+		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null)
+		{
+			startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+		}
 	}
-	
+
 	private void addReport()
 	{
-		//TODO: add imageview to display the image captured
-		
-		View dialogContent = getActivity().getLayoutInflater().inflate(
-				R.layout.report_dialog, null);
+		// TODO: add imageview to display the image captured
+
+		View dialogContent = getActivity().getLayoutInflater().inflate(R.layout.report_dialog, null);
 		final CheckBox choose1;
 		final CheckBox choose2;
 		final CheckBox choose3;
 		final EditText descriptionEditText;
-		final Button addPhoto;						
-		choose1 = (CheckBox)dialogContent.findViewById(R.id.choose1);
-		choose2 = (CheckBox)dialogContent.findViewById(R.id.choose2);
-		choose3 = (CheckBox)dialogContent.findViewById(R.id.choose3);
-		descriptionEditText = (EditText)dialogContent.findViewById(R.id.description);
-		addPhoto = (Button)dialogContent.findViewById(R.id.add_photo);
-		
-		addPhoto.setOnClickListener(new OnClickListener() {
-			
+		final Button addPhoto;
+		choose1 = (CheckBox) dialogContent.findViewById(R.id.choose1);
+		choose2 = (CheckBox) dialogContent.findViewById(R.id.choose2);
+		choose3 = (CheckBox) dialogContent.findViewById(R.id.choose3);
+		descriptionEditText = (EditText) dialogContent.findViewById(R.id.description);
+		addPhoto = (Button) dialogContent.findViewById(R.id.add_photo);
+
+		addPhoto.setOnClickListener(new OnClickListener()
+		{
+
 			@Override
-			public void onClick(View arg0) {
-				dispatchTakePictureIntent();				
+			public void onClick(View arg0)
+			{
+				dispatchTakePictureIntent();
 			}
 		});
-		
+
 		final ArrayList<String> choosesAndDescription = new ArrayList<String>();
-		
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());		
-		builder.setTitle(getString(R.string.report_in) + " "
-				+ station.getName());
-		builder.setPositiveButton(R.string.report,
-				new DialogInterface.OnClickListener()
-				{
-					public void onClick(DialogInterface dialogI, int id)
-					{						
-						if (choose1.isChecked())
-							choosesAndDescription.add(choose1.getText().toString());
-						if (choose2.isChecked())
-							choosesAndDescription.add(choose2.getText().toString());
-						if (choose3.isChecked())
-							choosesAndDescription.add(choose3.getText().toString());
-						choosesAndDescription.add(descriptionEditText.getText().toString());
-					}
-				});
-		builder.setNegativeButton(android.R.string.cancel,
-				new DialogInterface.OnClickListener()
-				{
-					public void onClick(DialogInterface dialog, int id)
-					{
-					}
-				});
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setTitle(getString(R.string.report_in) + " " + station.getName());
+		builder.setPositiveButton(R.string.report, new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialogI, int id)
+			{
+				if (choose1.isChecked())
+					choosesAndDescription.add(choose1.getText().toString());
+				if (choose2.isChecked())
+					choosesAndDescription.add(choose2.getText().toString());
+				if (choose3.isChecked())
+					choosesAndDescription.add(choose3.getText().toString());
+				choosesAndDescription.add(descriptionEditText.getText().toString());
+			}
+		});
+		builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int id)
+			{
+			}
+		});
 		builder.setView(dialogContent);
 
 		builder.show();
 
 	}
-	
-	private void addReminder() {		
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());	
-		final TimePicker picker = new TimePicker(getActivity());	
+
+	private void addReminder()
+	{
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		final TimePicker picker = new TimePicker(getActivity());
 		builder.setTitle(getString(R.string.add_reminder));
-		builder.setPositiveButton(android.R.string.ok,
-				new DialogInterface.OnClickListener()
-				{
-					public void onClick(DialogInterface dialogI, int id)
-					{						
-						((MainActivity)getActivity()).addReminderForStation(
-								new NotificationBlock(
-										new GregorianCalendar(2014,5,23,picker.getCurrentHour(),picker.getCurrentMinute()), station.getId(), getActivity()
-								)
-								
-						);
-						
-					}
-				});
-		builder.setNegativeButton(android.R.string.cancel,
-				new DialogInterface.OnClickListener()
-				{
-					public void onClick(DialogInterface dialog, int id)
-					{
-					}
-				});
+		builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialogI, int id)
+			{
+				Calendar c = Calendar.getInstance();
+				((MainActivity) getActivity()).addReminderForStation(new NotificationBlock(new GregorianCalendar(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), picker
+						.getCurrentHour(), picker.getCurrentMinute(),0), station.getId(), getActivity())
+
+				);
+
+			}
+		});
+		builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int id)
+			{
+			}
+		});
 		picker.setIs24HourView(DateFormat.is24HourFormat(getActivity()));
 		builder.setView(picker);
 
 		builder.show();
 	}
-	
-	
+
 	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+	public void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
 		Log.d("station details", "onActivityResult");
-	    if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-	        Bundle extras = data.getExtras();
-	        //Bitmap imageBitmap = (Bitmap) extras.get("data");
-	        //mImageView.setImageBitmap(imageBitmap);
-	    }
+		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK)
+		{
+			Bundle extras = data.getExtras();
+			// Bitmap imageBitmap = (Bitmap) extras.get("data");
+			// mImageView.setImageBitmap(imageBitmap);
+		}
 	}
 
 }

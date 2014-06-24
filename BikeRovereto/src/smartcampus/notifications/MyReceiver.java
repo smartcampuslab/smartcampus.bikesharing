@@ -27,6 +27,8 @@ public class MyReceiver extends BroadcastReceiver
 		alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(context, MyReceiver.class);
 		alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+		
+		
 		// wait 10 seconds and notify
 		// alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
 		// SystemClock.elapsedRealtime() + 1000 * 10, alarmIntent);
@@ -34,7 +36,8 @@ public class MyReceiver extends BroadcastReceiver
 		// notify at the exact time
 		//alarmMgr.set(AlarmManager.RTC_WAKEUP, when.getTimeInMillis(),
 		//alarmIntent);
-		alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, when.getTimeInMillis(), 1000 *30, alarmIntent);
+		
+		alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, when.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
 		Log.d("prova", when.getTime().toString());
 	}
 
