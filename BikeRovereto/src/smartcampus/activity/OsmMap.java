@@ -84,6 +84,10 @@ public class OsmMap extends Fragment
 			public void stationsAquired(ArrayList<Station> sta) {
 				stations=sta;
 				addMarkers();
+				for (int i = 0; i < 3; i++)
+				{
+					mapView.zoomToBoundingBox(getBoundingBox(true));
+				}			
 			}
 		});
 		super.onCreate(savedInstanceState);

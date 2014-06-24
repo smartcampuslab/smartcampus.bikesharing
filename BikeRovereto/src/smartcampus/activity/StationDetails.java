@@ -247,17 +247,18 @@ public class StationDetails extends Fragment
 	{
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		final TimePicker picker = new TimePicker(getActivity());
+		final Calendar c = Calendar.getInstance();
+		picker.setCurrentHour(c.getTime().getHours());
+		picker.setCurrentMinute(c.getTime().getMinutes());
 		builder.setTitle(getString(R.string.add_reminder));
 		builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
 		{
 			public void onClick(DialogInterface dialogI, int id)
 			{
-				Calendar c = Calendar.getInstance();
 				((MainActivity) getActivity()).addReminderForStation(new NotificationBlock(new GregorianCalendar(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), picker
 						.getCurrentHour(), picker.getCurrentMinute(),0), station.getId(), getActivity())
 
 				);
-
 			}
 		});
 		builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
