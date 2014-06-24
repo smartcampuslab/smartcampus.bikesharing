@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import android.content.Context;
 
@@ -24,10 +25,10 @@ public class NotificationBlock implements Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	Calendar calendar;
+	GregorianCalendar calendar;
 	String stationID;
 
-	public NotificationBlock(Calendar calendar, String stationID)
+	public NotificationBlock(GregorianCalendar calendar, String stationID)
 	{
 		this.calendar = calendar;
 		this.stationID = stationID;
@@ -107,7 +108,7 @@ public class NotificationBlock implements Serializable
 		return recoveredNotificationBlocks;
 	}
 
-	public Calendar getCalendar()
+	public GregorianCalendar getCalendar()
 	{
 		return calendar;
 	}

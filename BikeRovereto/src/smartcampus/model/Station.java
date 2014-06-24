@@ -193,7 +193,7 @@ public class Station implements Parcelable
 
 	public int getNSlotsEmpty()
 	{
-		return maxSlots - nBikes; // Bici mancanti nella stazione
+		return maxSlots - nBikes - brokenSlots; // Bici mancanti nella stazione
 	}
 
 	public void addReport(String report)
