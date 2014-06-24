@@ -299,22 +299,15 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 		final String fileName = "notificationBlockDB";
 		GregorianCalendar c1 = new GregorianCalendar(2014, 5, 23, 16, 37, 30);
 		notificationBlock = new ArrayList<NotificationBlock>();
-		notificationBlock.add(new NotificationBlock(c1, "0"));
+		notificationBlock.add(new NotificationBlock(c1, "0", getApplicationContext()));
 
-		NotificationBlock.saveArrayListToFile(notificationBlock, fileName, getApplicationContext());
+		
 
 		// notificationBlock = NotificationBlock.readArrayListFromFile(fileName,
 		// getApplicationContext());
 		if (notificationBlock != null)
 		{
-			for (NotificationBlock nb : notificationBlock)
-			{
-				if (Calendar.getInstance().getTimeInMillis() - nb.getCalendar().getTimeInMillis() < 0)
-				{
-					MyReceiver mr = new MyReceiver();
-					mr.registerAlarm(getApplicationContext(), nb.getCalendar());
-				}
-			}
+			
 		}
 
 	}

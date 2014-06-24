@@ -13,9 +13,9 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import smartcampus.notifications.MyReceiver;
 import android.content.Context;
 
 public class NotificationBlock implements Serializable
@@ -28,10 +28,12 @@ public class NotificationBlock implements Serializable
 	GregorianCalendar calendar;
 	String stationID;
 
-	public NotificationBlock(GregorianCalendar calendar, String stationID)
+	public NotificationBlock(GregorianCalendar calendar, String stationID, Context context)
 	{
 		this.calendar = calendar;
 		this.stationID = stationID;
+		MyReceiver mr = new MyReceiver();
+		mr.registerAlarm(context, calendar);
 	}
 
 	public static void saveArrayListToFile(ArrayList<NotificationBlock> arrayList, String fileName, Context context)
