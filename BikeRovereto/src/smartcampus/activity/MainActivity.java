@@ -1,12 +1,17 @@
 package smartcampus.activity;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
 import org.osmdroid.util.GeoPoint;
+
 import smartcampus.model.Bike;
 import smartcampus.model.NotificationBlock;
 import smartcampus.model.Station;
+import smartcampus.util.GetStationsTask;
 import smartcampus.util.NavigationDrawerAdapter;
 import smartcampus.util.Tools;
+import smartcampus.util.GetStationsTask.AsyncResponse;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -25,7 +30,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
-public class MainActivity extends ActionBarActivity implements StationsActivity.OnStationSelectListener, FavouriteFragment.OnStationSelectListener
+public class MainActivity extends ActionBarActivity implements StationsActivity.OnStationSelectListener, FavouriteFragment.OnStationSelectListener, AsyncResponse
 {
 
 	private String[] navTitles;
@@ -291,7 +296,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 
 	private void getStation()
 	{
-
+/*
 		stations = new ArrayList<Station>();
 
 		stations.add(new Station(new GeoPoint(45.890189, 11.034275), "STAZIONE FF.SS.", "Piazzale Orsi", 12, 5, 1, "01"));
@@ -311,7 +316,20 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 		{
 			if (station.getFavourite())
 				favStations.add(station);
+		}*/
+		long currentTime = System.currentTimeMillis();
+		GetStationsTask getStationsTask = new GetStationsTask(this);
+		try {
+			stations = getStationsTask.execute("").get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		Log.d("wow", (System.currentTimeMillis()-currentTime)+"");
+		
 	}
 
 	private void getBikes()
@@ -342,5 +360,10 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 		if (notificationBlock == null)
 			notificationBlock = NotificationBlock.readArrayListFromFile(FILENOTIFICATIONDB, this);
 		NotificationBlock.saveArrayListToFile(notificationBlock, FILENOTIFICATIONDB, getApplicationContext());
+	}
+
+	@Override
+	public void processFinish(ArrayList<Station> stations) {
+		
 	}
 }

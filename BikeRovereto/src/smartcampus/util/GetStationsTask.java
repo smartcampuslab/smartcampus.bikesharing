@@ -23,15 +23,17 @@ import android.os.AsyncTask;
 
 public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 {
+	
 
 	private static final String STATION_NAME = "name";
 	private static final String STATION_STREET = "street";
 	private static final String STATION_LATITUDE = "latitude";
 	private static final String STATION_LONGITUDE = "longitude";
-	private static final String AVAILABLE_BIKES = "bikes";
-	private static final String MAX_SLOTS = "slots";
-	private static final String BROKEN_SLOTS = "brokenslots";
-	private static final String STATION_ID = "id";
+	private static final String AVAILABLE_BIKES = "nBikes";
+	private static final String MAX_SLOTS = "maxSlots";
+	private static final String BROKEN_SLOTS = "nBrokenBikes";
+	private static final String STATION_ID = "id";	
+	
 
 	private Context context;
 
@@ -39,12 +41,18 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 	{
 		this.context = context;
 	}
+	
+	public interface AsyncResponse {
+	    void processFinish(ArrayList<Station> stations);
+	}
+	public AsyncResponse delegate=null;
+
 
 	@Override
 	protected ArrayList<Station> doInBackground(String... data)
 	{
 		HttpClient httpclient = new DefaultHttpClient();
-		HttpGet httpg = new HttpGet("http://www.yoursite.com/" + data);
+		HttpGet httpg = new HttpGet("http://192.168.41.157:8080/bikesharing-web/stations/5061/"+data[0]);
 		String responseJSON;
 		try
 		{
@@ -63,7 +71,9 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 		try
 		{
 			SharedPreferences pref = context.getSharedPreferences("favStations", Context.MODE_PRIVATE);
-			JSONArray stationsArrayJSON = new JSONArray(responseJSON);
+			JSONObject container = new JSONObject(responseJSON);
+			JSONArray stationsArrayJSON = container.getJSONArray("data");
+			
 			for (int i = 0; i < stationsArrayJSON.length(); i++)
 			{
 				JSONObject stationJSON = stationsArrayJSON.getJSONObject(i);
@@ -89,4 +99,8 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 		return stations;
 	}
 
+	@Override
+	protected void onPostExecute(ArrayList<Station> result) {
+	}
+	
 }
