@@ -19,6 +19,7 @@ import smartcampus.model.Station;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Log;
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> THIS IS NOT TESTED!! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
@@ -54,6 +55,7 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 	{
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpGet httpg = new HttpGet("http://192.168.41.157:8080/bikesharing-web/stations/5061/"+data[0]);
+		Log.d("prova", httpg.getURI().toString());
 		String responseJSON;
 		try
 		{
@@ -73,11 +75,34 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 		{
 			SharedPreferences pref = context.getSharedPreferences("favStations", Context.MODE_PRIVATE);
 			JSONObject container = new JSONObject(responseJSON);
-			JSONArray stationsArrayJSON = container.getJSONArray("data");
 			
-			for (int i = 0; i < stationsArrayJSON.length(); i++)
+			if(data[0] == "")
 			{
-				JSONObject stationJSON = stationsArrayJSON.getJSONObject(i);
+				JSONArray stationsArrayJSON = container.getJSONArray("data");
+				
+				for (int i = 0; i < stationsArrayJSON.length(); i++)
+				{
+					JSONObject stationJSON = stationsArrayJSON.getJSONObject(i);
+					String name = stationJSON.getString(STATION_NAME);
+					String street = stationJSON.getString(STATION_STREET);
+					Double latitude = stationJSON.getDouble(STATION_LATITUDE);
+					Double longitude = stationJSON.getDouble(STATION_LONGITUDE);
+					int availableBikes = stationJSON.getInt(AVAILABLE_BIKES);
+					int maxSlots = stationJSON.getInt(MAX_SLOTS);
+					int brokenSlots = stationJSON.getInt(BROKEN_SLOTS);
+					String id = stationJSON.getString(STATION_ID);
+					Station station = new Station(new GeoPoint(latitude, longitude), name, street, maxSlots, availableBikes, brokenSlots, id);
+					boolean fav = pref.getBoolean(Tools.STATION_PREFIX + id, false);
+					station.setFavourite(fav);
+					station.setUsedSlots(availableBikes);
+					stations.add(station);
+					if (fav)
+						((MainActivity)context).addFavouriteStation(station);
+				}
+			}
+			else
+			{
+				JSONObject stationJSON = container.getJSONObject("data");
 				String name = stationJSON.getString(STATION_NAME);
 				String street = stationJSON.getString(STATION_STREET);
 				Double latitude = stationJSON.getDouble(STATION_LATITUDE);
@@ -91,9 +116,8 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 				station.setFavourite(fav);
 				station.setUsedSlots(availableBikes);
 				stations.add(station);
-				if (fav)
-					((MainActivity)context).addFavouriteStation(station);
 			}
+			
 		}
 		catch (JSONException e)
 		{

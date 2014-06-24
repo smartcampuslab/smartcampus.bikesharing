@@ -1,8 +1,9 @@
 package smartcampus.notifications;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import smartcampus.model.Station;
 import smartcampus.util.GetStationsTask;
@@ -13,9 +14,10 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Bundle;
+import android.util.Log;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
 public class NotificationReceiver extends BroadcastReceiver
@@ -28,13 +30,9 @@ public class NotificationReceiver extends BroadcastReceiver
 	{
 		alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(context, NotificationReceiver.class);
-
+		intent.putExtra("stationID", stationID);
 		alarmIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-		Bundle extras = new Bundle();
-
-		extras.putString("stationID", stationID);
-		intent.putExtras(extras);
 		// wait 10 seconds and notify
 		// alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
 		// SystemClock.elapsedRealtime() + 1000 * 10, alarmIntent);
@@ -42,20 +40,18 @@ public class NotificationReceiver extends BroadcastReceiver
 		// notify at the exact time
 		// alarmMgr.set(AlarmManager.RTC_WAKEUP, when.getTimeInMillis(),
 		// alarmIntent);
-
+		Log.d("prova", stationID);
 		alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, when.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
 	}
 
 	@Override
 	public void onReceive(Context arg0, Intent arg1)
 	{
-		Bundle extras = arg1.getExtras();
 		Station station = null;
-
+		String stationID = arg1.getStringExtra("stationID");
 		try
 		{
-			station = new GetStationsTask(arg0).execute(extras.getString("stationID")).get().get(0);
-
+			station = new GetStationsTask(arg0).execute(stationID).get(10000, TimeUnit.MILLISECONDS).get(0);
 			// define sound URI, the sound to be played when there's a
 			// notification
 			Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -63,7 +59,9 @@ public class NotificationReceiver extends BroadcastReceiver
 			// this is it, we'll build the notification!
 			// in the addAction method, if you don't want any icon, just set the
 			// first param to 0
-			Notification mNotification = new Notification.Builder(arg0).setContentTitle(arg0.getResources().getText(R.string.app_name)).setContentText(station.getId() + " liberi" + station.getNSlotsEmpty()).setSmallIcon(
+			Resources res = arg0.getResources();
+			Notification mNotification = new Notification.Builder(arg0).setContentTitle(res.getText(R.string.station) + " " + station.getName().toUpperCase()).setContentText(
+					res.getText(R.string.sort_available_bikes) + ": " + station.getNSlotsUsed() + " - " + res.getText(R.string.sort_available_slots) + ": " + station.getNSlotsEmpty()).setSmallIcon(
 					R.drawable.ic_launcher).setContentIntent(alarmIntent).setSound(soundUri)
 
 			.addAction(R.drawable.ic_launcher, "View", alarmIntent).addAction(0, "Remind", alarmIntent)
@@ -77,8 +75,7 @@ public class NotificationReceiver extends BroadcastReceiver
 			// code below
 			mNotification.flags |= Notification.FLAG_AUTO_CANCEL;
 			notificationManager.notify(0, mNotification);
-			
-			
+
 		}
 		catch (InterruptedException e)
 		{
@@ -86,6 +83,11 @@ public class NotificationReceiver extends BroadcastReceiver
 			e.printStackTrace();
 		}
 		catch (ExecutionException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (TimeoutException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
