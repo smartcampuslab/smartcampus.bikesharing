@@ -311,12 +311,12 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 		stations.add(new Station(new GeoPoint(45.904255, 11.044859), "BRIONE", "Piazza della Pace", 6, 5, 1, "10"));
 		stations.add(new Station(new GeoPoint(45.891021, 11.038729), "PIAZZA ROSMINI", "via boh", 6, 5, 1, "11"));
 
-		favStations = new ArrayList<Station>();
 		for (Station station : stations)
 		{
 			if (station.getFavourite())
 				favStations.add(station);
 		}*/
+		favStations = new ArrayList<Station>();
 		long currentTime = System.currentTimeMillis();
 		GetStationsTask getStationsTask = new GetStationsTask(this);
 		try {
@@ -328,7 +328,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Log.d("wow", (System.currentTimeMillis()-currentTime)+"");
+		Log.d("server delay", (System.currentTimeMillis()-currentTime)+"");
 		
 	}
 

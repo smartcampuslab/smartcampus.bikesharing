@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
+import smartcampus.activity.MainActivity;
 import smartcampus.model.Station;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -81,9 +82,12 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 				int brokenSlots = stationJSON.getInt(BROKEN_SLOTS);
 				String id = stationJSON.getString(STATION_ID);
 				Station station = new Station(new GeoPoint(latitude, longitude), name, street, maxSlots, availableBikes, brokenSlots, id);
-				station.setFavourite(pref.getBoolean(Tools.STATION_PREFIX + id, false));
+				boolean fav = pref.getBoolean(Tools.STATION_PREFIX + id, false);
+				station.setFavourite(fav);
 				station.setUsedSlots(availableBikes);
 				stations.add(station);
+				if (fav)
+					((MainActivity)context).addFavouriteStation(station);
 			}
 		}
 		catch (JSONException e)

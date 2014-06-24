@@ -51,7 +51,7 @@ public class RemindersAdapter extends ArrayAdapter<NotificationBlock>
 		{
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
-		String format = "HH:MM";
+		String format = "HH:mm";
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.getDefault());
 		viewHolder.reminder.setText(simpleDateFormat.format(getItem(position).getCalendar().getTime()));
 		viewHolder.clearBtn.setOnClickListener(new OnClickListener() {

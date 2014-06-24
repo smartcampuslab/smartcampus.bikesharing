@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
 import smartcampus.model.Station;
+import smartcampus.util.GetStationsTask;
 import smartcampus.util.StationsAdapter;
 import smartcampus.util.Tools;
+import smartcampus.util.GetStationsTask.AsyncResponse;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -29,7 +32,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
-public class StationsActivity extends Fragment
+public class StationsActivity extends Fragment implements AsyncResponse
 {
 
 	private ArrayList<Station> mStations;
@@ -139,39 +142,13 @@ public class StationsActivity extends Fragment
             @Override
             public void onRefresh() {
                 Log.i("STR", "onRefresh called from SwipeRefreshLayout");
-                new GetStationsTaskTest().execute();
+                new GetStationsTask(getActivity()).execute("");
             }
         });
 		
 		setHasOptionsMenu(true);
 		return rootView;
 	}
-
-	
-	
-	private class GetStationsTaskTest extends AsyncTask<Void, Void, ArrayList<Station>> {
-		 
-        static final int TASK_DURATION = 3 * 1000; // 3 seconds
- 
-        @Override
-        protected ArrayList<Station> doInBackground(Void... params) {
-            // Sleep for a small amount of time to simulate a background-task
-            try {
-                Thread.sleep(TASK_DURATION);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return mStations;
-        }
- 
-        @Override
-        protected void onPostExecute(ArrayList<Station> result) {
-            super.onPostExecute(result);
-            // Tell the Fragment that the refresh has completed
-            onRefreshComplete(result);
-        }
-	 
-    }
 	 
 	 private void onRefreshComplete(ArrayList<Station> result) {
         Log.i("STR", "onRefreshComplete");
@@ -224,7 +201,7 @@ public class StationsActivity extends Fragment
 		case R.id.refresh:
 			if (!mSwipeRefreshLayout.isRefreshing()) {
                 mSwipeRefreshLayout.setRefreshing(true);
-				new GetStationsTaskTest().execute();
+                //TODO: sss
             }
             Toast.makeText(getActivity(), getString(R.string.refresh_hint), Toast.LENGTH_SHORT).show();
 			break;
@@ -310,6 +287,12 @@ public class StationsActivity extends Fragment
 			return station0.getName().compareToIgnoreCase(station1.getName());
 		}
 		
+	}
+
+	@Override
+	public void processFinish(ArrayList<Station> stations) {
+		this.mStations=stations;
+		onRefreshComplete(stations);
 	}
 		
 
