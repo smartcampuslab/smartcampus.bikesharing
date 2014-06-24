@@ -31,14 +31,15 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 	private static final String AVAILABLE_BIKES = "bikes";
 	private static final String MAX_SLOTS = "slots";
 	private static final String BROKEN_SLOTS = "brokenslots";
-	private static final String STATION_ID = "id";	
-	
+	private static final String STATION_ID = "id";
+
 	private Context context;
-	
-	public GetStationsTask(Context context){
-		this.context=context;
+
+	public GetStationsTask(Context context)
+	{
+		this.context = context;
 	}
-	
+
 	@Override
 	protected ArrayList<Station> doInBackground(String... data)
 	{
@@ -59,9 +60,10 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 			return null;
 		}
 		ArrayList<Station> stations = new ArrayList<Station>();
-		try {
+		try
+		{
 			SharedPreferences pref = context.getSharedPreferences("favStations", Context.MODE_PRIVATE);
-			JSONArray stationsArrayJSON = new JSONArray(responseJSON);			
+			JSONArray stationsArrayJSON = new JSONArray(responseJSON);
 			for (int i = 0; i < stationsArrayJSON.length(); i++)
 			{
 				JSONObject stationJSON = stationsArrayJSON.getJSONObject(i);

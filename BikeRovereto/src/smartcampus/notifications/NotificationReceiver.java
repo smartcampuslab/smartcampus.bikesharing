@@ -1,7 +1,11 @@
 package smartcampus.notifications;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.ExecutionException;
 
+import smartcampus.model.Station;
+import smartcampus.util.GetStationsTask;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -24,18 +28,21 @@ public class NotificationReceiver extends BroadcastReceiver
 	{
 		alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(context, NotificationReceiver.class);
-		intent.putExtra("stationID", stationID);
-		alarmIntent = PendingIntent.getBroadcast(context, 0, intent,PendingIntent.FLAG_CANCEL_CURRENT);
-		
-		
+
+		alarmIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+		Bundle extras = new Bundle();
+
+		extras.putString("stationID", stationID);
+		intent.putExtras(extras);
 		// wait 10 seconds and notify
 		// alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
 		// SystemClock.elapsedRealtime() + 1000 * 10, alarmIntent);
 
 		// notify at the exact time
-		//alarmMgr.set(AlarmManager.RTC_WAKEUP, when.getTimeInMillis(),
-		//alarmIntent);
-		
+		// alarmMgr.set(AlarmManager.RTC_WAKEUP, when.getTimeInMillis(),
+		// alarmIntent);
+
 		alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, when.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
 	}
 
@@ -43,25 +50,45 @@ public class NotificationReceiver extends BroadcastReceiver
 	public void onReceive(Context arg0, Intent arg1)
 	{
 		Bundle extras = arg1.getExtras();
-		// define sound URI, the sound to be played when there's a notification
-		Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+		Station station = null;
 
-		// this is it, we'll build the notification!
-		// in the addAction method, if you don't want any icon, just set the
-		// first param to 0
-		Notification mNotification = new Notification.Builder(arg0)
-		.setContentTitle(arg0.getResources().getText(R.string.app_name)).setContentText(extras.getString("stationID")).setSmallIcon(R.drawable.ic_launcher)
-				.setContentIntent(alarmIntent).setSound(soundUri)
+		try
+		{
+			station = new GetStationsTask(arg0).execute(extras.getString("stationID")).get().get(0);
 
-				.addAction(R.drawable.ic_launcher, "View", alarmIntent).addAction(0, "Remind", alarmIntent)
+			// define sound URI, the sound to be played when there's a
+			// notification
+			Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-				.build();
+			// this is it, we'll build the notification!
+			// in the addAction method, if you don't want any icon, just set the
+			// first param to 0
+			Notification mNotification = new Notification.Builder(arg0).setContentTitle(arg0.getResources().getText(R.string.app_name)).setContentText(station.getId() + " liberi" + station.getNSlotsEmpty()).setSmallIcon(
+					R.drawable.ic_launcher).setContentIntent(alarmIntent).setSound(soundUri)
 
-		NotificationManager notificationManager = (NotificationManager) arg0.getSystemService(arg0.NOTIFICATION_SERVICE);
+			.addAction(R.drawable.ic_launcher, "View", alarmIntent).addAction(0, "Remind", alarmIntent)
 
-		// If you want to hide the notification after it was selected, do the
-		// code below
-		mNotification.flags |= Notification.FLAG_AUTO_CANCEL;
-		notificationManager.notify(0, mNotification);
+			.build();
+
+			NotificationManager notificationManager = (NotificationManager) arg0.getSystemService(arg0.NOTIFICATION_SERVICE);
+
+			// If you want to hide the notification after it was selected, do
+			// the
+			// code below
+			mNotification.flags |= Notification.FLAG_AUTO_CANCEL;
+			notificationManager.notify(0, mNotification);
+			
+			
+		}
+		catch (InterruptedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (ExecutionException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
