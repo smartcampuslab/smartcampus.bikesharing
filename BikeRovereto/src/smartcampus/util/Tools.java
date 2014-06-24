@@ -4,12 +4,7 @@ import org.osmdroid.util.GeoPoint;
 
 import smartcampus.model.Station;
 import android.content.Context;
-import android.content.res.Resources;
-import android.util.Log;
 import android.util.TypedValue;
-import android.view.View;
-import android.widget.ListView;
-import eu.trentorise.smartcampus.bikerovereto.R;
 
 public class Tools
 {

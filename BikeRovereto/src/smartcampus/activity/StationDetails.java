@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -36,7 +37,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
 public class StationDetails extends Fragment
@@ -121,9 +121,12 @@ public class StationDetails extends Fragment
 			@Override
 			public void onClick(View v)
 			{
-				Intent reminderEditIntent = new Intent(getActivity(), ReminderEdit.class);
-				reminderEditIntent.putExtra("station", station);
-				startActivity(reminderEditIntent);
+				ReminderEdit reminderEdit = ReminderEdit.newInstance(station);
+				FragmentTransaction transaction = getFragmentManager().beginTransaction();
+				transaction.setCustomAnimations(R.anim.slide_left, R.anim.alpha_out, R.anim.alpha_in, R.anim.slide_right);
+				transaction.replace(R.id.content_frame, reminderEdit);
+				transaction.addToBackStack(null);
+				transaction.commit();
 			}
 		});
 

@@ -41,7 +41,7 @@ public class NotificationBlock implements Serializable
 
 	public static void saveArrayListToFile(ArrayList<NotificationBlock> arrayList, String fileName, Context context)
 	{
-
+		
 		try
 		{
 			OutputStream file = context.openFileOutput(fileName, Context.MODE_PRIVATE);
@@ -122,24 +122,27 @@ public class NotificationBlock implements Serializable
 	{
 		return calendar;
 	}
+	
+	public void setCalendar(GregorianCalendar calendar)
+	{
+		this.calendar = calendar;
+	}
 
 	public String getID()
 	{
 		return stationID;
 	}
 
-	public static ArrayList<GregorianCalendar> getReminderForID(String id, Context context)
+	public static ArrayList<NotificationBlock> getReminderForID(String id, Context context)
 	{
 		ArrayList<NotificationBlock> list = readArrayListFromFile("notificationBlockDB", context);
-		Log.d("remindersListSize", list.size() + "");
-		if (list == null)
-			return new ArrayList<GregorianCalendar>();
-		ArrayList<GregorianCalendar> timesList = new ArrayList<GregorianCalendar>();
+		Log.d("remindersListSize", list.size() + "");		
+		ArrayList<NotificationBlock> timesList = new ArrayList<NotificationBlock>();
 		for (NotificationBlock nb : list)
 		{
 			if (nb.getID().equals(id))
 			{
-				timesList.add(nb.getCalendar());
+				timesList.add(nb);
 			}
 		}
 		return timesList;

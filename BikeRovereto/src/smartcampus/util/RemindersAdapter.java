@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import smartcampus.model.NotificationBlock;
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,11 +14,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class RemindersAdapter extends ArrayAdapter<GregorianCalendar>
+public class RemindersAdapter extends ArrayAdapter<NotificationBlock>
 {
 
 
-	public RemindersAdapter(Context context, ArrayList<GregorianCalendar> reminders)
+	public RemindersAdapter(Context context, ArrayList<NotificationBlock> reminders)
 	{
 		super(context, 0, reminders);
 	}
@@ -45,7 +46,7 @@ public class RemindersAdapter extends ArrayAdapter<GregorianCalendar>
 		}
 		String format = "hh:mm aa";
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.getDefault());
-		viewHolder.reminder.setText(simpleDateFormat.format(getItem(position).getTime()));
+		viewHolder.reminder.setText(simpleDateFormat.format(getItem(position).getCalendar().getTime()));
 		return convertView;
 
 	}

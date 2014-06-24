@@ -40,11 +40,6 @@
             android:name="smartcampus.activity.SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
-        <activity
-            android:name="smartcampus.activity.ReminderEdit"
-            android:label="@string/title_activity_reminder_edit" >
-        </activity>
-
         <receiver
             android:name="smartcampus.notifications.NotificationReceiver"
             android:enabled="true" >
