@@ -2,6 +2,8 @@ package smartcampus.activity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 
 import smartcampus.model.NotificationBlock;
@@ -56,6 +58,12 @@ public class ReminderEdit extends Fragment {
 				reminders.add(nb);
 			}
 		}
+		Collections.sort(reminders, new Comparator<NotificationBlock>() {
+			@Override
+			public int compare(NotificationBlock lhs, NotificationBlock rhs) {				
+				return (int) (rhs.getCalendar().getTimeInMillis()-lhs.getCalendar().getTimeInMillis());
+			}
+		});
 		
 		TextView textView = new TextView(getActivity());
 		textView.setText("Modifica i promemoria");
