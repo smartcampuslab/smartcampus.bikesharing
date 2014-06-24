@@ -71,7 +71,7 @@ public class StationsAdapter extends ArrayAdapter<Station>
 
 		viewHolder.name.setText(thisStation.getName());
 		viewHolder.street.setText(thisStation.getStreet());
-		viewHolder.availableBike.setText(thisStation.getNSlotsUsed() + "");
+		viewHolder.availableBike.setText(thisStation.getNBikesPresent() + "");
 		viewHolder.availableSlots.setText(thisStation.getNSlotsEmpty() + "");
 		viewHolder.distance.setText(Tools.formatDistance(thisStation
 				.getDistance()));

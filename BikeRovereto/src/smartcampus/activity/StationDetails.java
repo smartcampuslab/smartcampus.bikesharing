@@ -88,7 +88,7 @@ public class StationDetails extends Fragment
 
 		name.setText(station.getName());
 		street.setText(station.getStreet());
-		availableBike.setText(station.getNSlotsUsed() + "");
+		availableBike.setText(station.getNBikesPresent() + "");
 		availableSlots.setText(station.getNSlotsEmpty() + "");
 		distance.setText(Tools.formatDistance(station.getDistance()));
 

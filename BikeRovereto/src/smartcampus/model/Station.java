@@ -19,7 +19,7 @@ public class Station implements Parcelable
 	
 	private int nBikes;
 	private int maxSlots;
-	private int brokenSlots;
+	private int brokenBikes;
 	private boolean favourite;
 
 	private ArrayList<String> reports;
@@ -29,14 +29,14 @@ public class Station implements Parcelable
 
 	//TODO: implement brokenSlots
 	
-	public Station(GeoPoint position, String name, String street, int maxSlots, int nBikes, int brokenSlots, String id)
+	public Station(GeoPoint position, String name, String street, int maxSlots, int nBikes, int brokenBikes, String id)
 	{
 		this.position = position;
 		this.name = name;
 		this.street = street;
 		this.maxSlots = maxSlots;
 		this.nBikes = nBikes;
-		this.brokenSlots = brokenSlots;
+		this.brokenBikes = brokenBikes;
 		this.id = id;
 		reports = new ArrayList<String>();
 	}
@@ -82,7 +82,7 @@ public class Station implements Parcelable
 		street = source.readString();
 		nBikes = source.readInt();
 		maxSlots = source.readInt();
-		brokenSlots = source.readInt();
+		brokenBikes = source.readInt();
 		reports = source.createStringArrayList();
 		id = source.readString();
 	}
@@ -123,7 +123,7 @@ public class Station implements Parcelable
 		dest.writeString(street);
 		dest.writeInt(nBikes);
 		dest.writeInt(maxSlots);
-		dest.writeInt(brokenSlots);
+		dest.writeInt(brokenBikes);
 		dest.writeStringList(reports);
 		dest.writeString(id);
 		
@@ -163,7 +163,7 @@ public class Station implements Parcelable
 
 	public int getUnavailableSlots()
 	{
-		return brokenSlots; 
+		return brokenBikes; 
 	}
 
 	public double getBikesPresentPercentage()
@@ -172,7 +172,7 @@ public class Station implements Parcelable
 		{
 			return 0;
 		}
-		return (double) nBikes / (maxSlots - brokenSlots);
+		return (double) (nBikes - brokenBikes) / maxSlots;
 	}
 
 	public void setUsedSlots(int usedSlots)
@@ -187,17 +187,17 @@ public class Station implements Parcelable
 	
 	public void setBrokenSlots(int brokenSlots)
 	{
-		this.brokenSlots = brokenSlots;
+		this.brokenBikes = brokenSlots;
 	}
 
-	public int getNSlotsUsed()
+	public int getNBikesPresent()
 	{
-		return nBikes; // Bici presenti nella stazione
+		return nBikes - brokenBikes; // Bici presenti nella stazione
 	}
 
 	public int getNSlotsEmpty()
 	{
-		return maxSlots - nBikes - brokenSlots; // Bici mancanti nella stazione
+		return maxSlots - (nBikes); // Bici mancanti nella stazione
 	}
 
 	public void addReport(String report)

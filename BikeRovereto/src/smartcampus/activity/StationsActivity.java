@@ -279,7 +279,7 @@ public class StationsActivity extends Fragment
 		@Override
 		public int compare(Station station0, Station station1)
 		{
-			return station1.getNSlotsUsed() - station0.getNSlotsUsed();
+			return station1.getNBikesPresent() - station0.getNBikesPresent();
 		}
 
 	}
