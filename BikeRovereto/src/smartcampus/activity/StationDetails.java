@@ -247,6 +247,7 @@ public class StationDetails extends Fragment
 					{						
 						Log.d("picker", picker.getCurrentHour()+":"+picker.getCurrentMinute());
 						Toast.makeText(getActivity(), "selected "+picker.getCurrentHour()+":"+picker.getCurrentMinute(), Toast.LENGTH_SHORT).show();
+						
 					}
 				});
 		builder.setNegativeButton(android.R.string.cancel,

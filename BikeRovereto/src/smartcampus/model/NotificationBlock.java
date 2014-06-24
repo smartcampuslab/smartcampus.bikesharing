@@ -114,4 +114,22 @@ public class NotificationBlock implements Serializable
 	{
 		return calendar;
 	}
+	public String getID()
+	{
+		return stationID;
+	}
+
+	public static ArrayList<Calendar> getReminderForID(String id, Context context) {
+		ArrayList<NotificationBlock> list = readArrayListFromFile("notificationBlockDB", context);
+		if (list==null) return new ArrayList<Calendar>();
+		ArrayList<Calendar> timesList = new ArrayList<Calendar>();
+		for (NotificationBlock nb : list)
+		{
+			if (nb.getID().equals(id))
+			{
+				timesList.add(nb.getCalendar());
+			}
+		}
+		return timesList;
+	}
 }

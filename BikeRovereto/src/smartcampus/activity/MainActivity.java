@@ -354,4 +354,9 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 	{
 		favStations.remove(station);
 	}
+	public void addReminderForStation(NotificationBlock nb)
+	{
+		notificationBlock.add(nb);
+	}
+	
 }
