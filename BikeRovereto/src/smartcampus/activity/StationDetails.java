@@ -249,7 +249,7 @@ public class StationDetails extends Fragment
 					{						
 						((MainActivity)getActivity()).addReminderForStation(
 								new NotificationBlock(
-										new GregorianCalendar(2014,5,23,picker.getCurrentHour(),picker.getCurrentMinute()), station.getId()
+										new GregorianCalendar(2014,5,23,picker.getCurrentHour(),picker.getCurrentMinute()), station.getId(), getActivity()
 								)
 								
 						);

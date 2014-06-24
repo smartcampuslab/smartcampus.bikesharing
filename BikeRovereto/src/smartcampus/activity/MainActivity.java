@@ -52,7 +52,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 	private static final String FRAGMENT_MAP = "map";
 	private static final String FRAGMENT_STATIONS = "stations";
 	private static final String FRAGMENT_FAVOURITE = "favourite";
-
+	private static final String FILENOTIFICATIONDB = "notificationBlockDB";
 	public interface OnPositionAquiredListener
 	{
 		public void onPositionAquired();
@@ -177,7 +177,6 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 		});
 		navAdapter.setItemChecked(0);
 		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-		setNotification();
 	}
 
 	@Override
@@ -294,23 +293,6 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 			mCallback.onPositionAquired();
 	}
 
-	private void setNotification()
-	{
-		final String fileName = "notificationBlockDB";
-		GregorianCalendar c1 = new GregorianCalendar(2014, 5, 23, 16, 37, 30);
-		notificationBlock = new ArrayList<NotificationBlock>();
-		notificationBlock.add(new NotificationBlock(c1, "0", getApplicationContext()));
-
-		
-
-		// notificationBlock = NotificationBlock.readArrayListFromFile(fileName,
-		// getApplicationContext());
-		if (notificationBlock != null)
-		{
-			
-		}
-
-	}
 
 	private void getStation()
 	{
@@ -357,8 +339,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 	public void addReminderForStation(NotificationBlock nb)
 	{
 		notificationBlock.add(nb);
-		Log.d("uhiush","aaaa");
-		NotificationBlock.saveArrayListToFile(notificationBlock, "notificationBlockDB", this);
+		NotificationBlock.saveArrayListToFile(notificationBlock, FILENOTIFICATIONDB, getApplicationContext());
 	}
 	
 }
