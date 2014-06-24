@@ -32,7 +32,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
-public class StationsActivity extends Fragment implements AsyncResponse
+public class StationsActivity extends Fragment
 {
 
 	private ArrayList<Station> mStations;
@@ -84,6 +84,7 @@ public class StationsActivity extends Fragment implements AsyncResponse
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
+		super.onCreate(savedInstanceState);
 		mStations = getArguments().getParcelableArrayList("stations");
 		((MainActivity) getActivity())
 				.setOnPositionAquiredListener(new OnPositionAquiredListener()
@@ -95,14 +96,20 @@ public class StationsActivity extends Fragment implements AsyncResponse
 						stationsAdapter.notifyDataSetChanged();
 					}
 				});
+		//If the app still waiting the server response, initiliaze the arraylist to prevent crash for nullpointer
+		
+		if (mStations == null){
+			mStations = new ArrayList<Station>();
+			return;
+		}
 		
 		//If the distance is already defined the list is sorted by distance, otherwise
 		//is sorted by available bikes
+		
 		if (mStations.get(0).getDistance()==Station.DISTANCE_NOT_VALID)
 			sortByAvailableBikes(false);
 		else
 			sortByDistance(false);
-		super.onCreate(savedInstanceState);
 	}
 
 	@Override
@@ -142,7 +149,17 @@ public class StationsActivity extends Fragment implements AsyncResponse
             @Override
             public void onRefresh() {
                 Log.i("STR", "onRefresh called from SwipeRefreshLayout");
-                new GetStationsTask(getActivity()).execute("");
+                GetStationsTask getStationsTask = new GetStationsTask(getActivity());
+                getStationsTask.delegate=new AsyncResponse() {
+					
+					@Override
+					public void processFinish(ArrayList<Station> stations) {
+						mStations=stations;
+						onRefreshComplete(stations);
+						Log.d("stationsActivity", "getFinish");
+					}
+				};
+				getStationsTask.execute("");
             }
         });
 		
@@ -289,11 +306,5 @@ public class StationsActivity extends Fragment implements AsyncResponse
 		
 	}
 
-	@Override
-	public void processFinish(ArrayList<Station> stations) {
-		this.mStations=stations;
-		onRefreshComplete(stations);
-	}
-		
 
 }

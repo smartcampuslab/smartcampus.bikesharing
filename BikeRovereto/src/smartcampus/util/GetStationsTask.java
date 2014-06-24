@@ -129,6 +129,8 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 
 	@Override
 	protected void onPostExecute(ArrayList<Station> result) {
+		if (delegate!=null)
+			delegate.processFinish(result);
 	}
 	
 }
