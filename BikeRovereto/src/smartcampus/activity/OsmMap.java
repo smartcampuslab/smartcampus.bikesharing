@@ -13,6 +13,7 @@ import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import smartcampus.activity.MainActivity.OnStationsAquired;
 import smartcampus.activity.cluster.GridMarkerClustererCustom;
 import smartcampus.model.Bike;
 import smartcampus.model.Station;
@@ -77,6 +78,14 @@ public class OsmMap extends Fragment
 	{
 		stations = getArguments().getParcelableArrayList("stations");
 		bikes = getArguments().getParcelableArrayList("bikes");
+		((MainActivity)getActivity()).setOnStationsAquiredListener(new OnStationsAquired() {
+			
+			@Override
+			public void stationsAquired(ArrayList<Station> sta) {
+				stations=sta;
+				addMarkers();
+			}
+		});
 		super.onCreate(savedInstanceState);
 	}
 
@@ -113,6 +122,8 @@ public class OsmMap extends Fragment
 		CompassOverlay compassOverlay = new CompassOverlay(getActivity().getApplicationContext(), iCOP, mapView);
 		compassOverlay.enableCompass(iCOP);
 
+		if (stations == null) stations = new ArrayList<Station>();
+		
 		// add the markers on the mapView
 		addMarkers();
 
@@ -242,6 +253,7 @@ public class OsmMap extends Fragment
 
 	private void addMarkers()
 	{
+		
 		addBikesMarkers();
 		addStationsMarkers();
 
@@ -337,21 +349,28 @@ public class OsmMap extends Fragment
 	private BoundingBoxE6 getBoundingBox(boolean addCurrentPosition)
 	{
 		BoundingBoxE6 toRtn;
-		BoundingBoxE6 stationsBoundingBox = Station.getBoundingBox(stations);
-		BoundingBoxE6 bikesBoundingBox = Bike.getBoundingBox(bikes);
+		BoundingBoxE6 stationsBoundingBox = null;
+		BoundingBoxE6 bikesBoundingBox = null;
+		if (stations != null)
+			stationsBoundingBox = Station.getBoundingBox(stations);
+		if (bikes != null)
+			bikesBoundingBox = Bike.getBoundingBox(bikes);
 
 		int north = Integer.MIN_VALUE;
 		int south = Integer.MAX_VALUE;
 		int west = Integer.MAX_VALUE;
 		int east = Integer.MIN_VALUE;
+		if (stationsBoundingBox != null && bikesBoundingBox != null)
+		{
+			north = stationsBoundingBox.getLatNorthE6() > bikesBoundingBox.getLatNorthE6() ? stationsBoundingBox.getLatNorthE6() : bikesBoundingBox.getLatNorthE6();
 
-		north = stationsBoundingBox.getLatNorthE6() > bikesBoundingBox.getLatNorthE6() ? stationsBoundingBox.getLatNorthE6() : bikesBoundingBox.getLatNorthE6();
+			east = stationsBoundingBox.getLonEastE6() > bikesBoundingBox.getLonEastE6() ? stationsBoundingBox.getLonEastE6() : bikesBoundingBox.getLonEastE6();
 
-		east = stationsBoundingBox.getLonEastE6() > bikesBoundingBox.getLonEastE6() ? stationsBoundingBox.getLonEastE6() : bikesBoundingBox.getLonEastE6();
+			south = stationsBoundingBox.getLatSouthE6() < bikesBoundingBox.getLatSouthE6() ? stationsBoundingBox.getLatSouthE6() : bikesBoundingBox.getLatSouthE6();
 
-		south = stationsBoundingBox.getLatSouthE6() < bikesBoundingBox.getLatSouthE6() ? stationsBoundingBox.getLatSouthE6() : bikesBoundingBox.getLatSouthE6();
-
-		west = stationsBoundingBox.getLonWestE6() < bikesBoundingBox.getLonWestE6() ? stationsBoundingBox.getLonWestE6() : bikesBoundingBox.getLonWestE6();
+			west = stationsBoundingBox.getLonWestE6() < bikesBoundingBox.getLonWestE6() ? stationsBoundingBox.getLonWestE6() : bikesBoundingBox.getLonWestE6();
+		}
+		
 
 		if (addCurrentPosition && mLocationOverlay.getMyLocation() != null)
 		{

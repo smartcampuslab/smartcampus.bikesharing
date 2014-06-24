@@ -30,7 +30,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
-public class MainActivity extends ActionBarActivity implements StationsActivity.OnStationSelectListener, FavouriteFragment.OnStationSelectListener, AsyncResponse
+public class MainActivity extends ActionBarActivity implements StationsActivity.OnStationSelectListener, FavouriteFragment.OnStationSelectListener
 {
 
 	private String[] navTitles;
@@ -47,22 +47,32 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 	private LocationManager mLocationManager;
 	private GeoPoint myLocation;
 	private OnPositionAquiredListener mCallback;
+	private OnStationsAquired mCallbackStationsAquired;
 	private NavigationDrawerAdapter navAdapter;
 
 	private static final String FRAGMENT_MAP = "map";
 	private static final String FRAGMENT_STATIONS = "stations";
 	private static final String FRAGMENT_FAVOURITE = "favourite";
 	public static final String FILENOTIFICATIONDB = "notificationBlockDB";
+	
 	public interface OnPositionAquiredListener
 	{
 		public void onPositionAquired();
 	}
-
+	public interface OnStationsAquired
+	{
+		public void stationsAquired(ArrayList<Station> stations);
+	}
+	
 	public void setOnPositionAquiredListener(OnPositionAquiredListener onPositionAquiredListener)
 	{
 		this.mCallback = onPositionAquiredListener;
 	}
-
+	public void setOnStationsAquiredListener(OnStationsAquired onStationsAquired)
+	{
+		this.mCallbackStationsAquired = onStationsAquired;
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -243,10 +253,11 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 
 	private void updateDistances()
 	{
-		for (Station station : stations)
-		{
-			station.setDistance(myLocation.distanceTo(station.getPosition()));
-		}
+		if (stations != null)
+			for (Station station : stations)
+			{
+				station.setDistance(myLocation.distanceTo(station.getPosition()));
+			}
 		for (Bike bike : bikes)
 		{
 			bike.setDistance(myLocation.distanceTo(bike.getPosition()));
@@ -317,18 +328,16 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 				favStations.add(station);
 		}*/
 		favStations = new ArrayList<Station>();
-		long currentTime = System.currentTimeMillis();
 		GetStationsTask getStationsTask = new GetStationsTask(this);
-		try {
-			stations = getStationsTask.execute("").get();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Log.d("server delay", (System.currentTimeMillis()-currentTime)+"");
+        getStationsTask.delegate=new AsyncResponse() {
+			
+			@Override
+			public void processFinish(ArrayList<Station> result) {
+				stations=result;
+				mCallbackStationsAquired.stationsAquired(stations);
+			}
+		};
+		getStationsTask.execute("");
 		
 	}
 
@@ -362,8 +371,4 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 		NotificationBlock.saveArrayListToFile(notificationBlock, FILENOTIFICATIONDB, getApplicationContext());
 	}
 
-	@Override
-	public void processFinish(ArrayList<Station> stations) {
-		
-	}
 }
