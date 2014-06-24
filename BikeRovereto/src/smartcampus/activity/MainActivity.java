@@ -343,5 +343,4 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 		notificationBlock.add(nb);
 		NotificationBlock.saveArrayListToFile(notificationBlock, FILENOTIFICATIONDB, getApplicationContext());
 	}
-	
 }

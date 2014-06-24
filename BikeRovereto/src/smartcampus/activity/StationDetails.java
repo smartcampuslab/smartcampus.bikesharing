@@ -1,6 +1,7 @@
 package smartcampus.activity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import org.osmdroid.util.GeoPoint;
@@ -247,9 +248,10 @@ public class StationDetails extends Fragment
 				{
 					public void onClick(DialogInterface dialogI, int id)
 					{						
+						Calendar c = Calendar.getInstance();
 						((MainActivity)getActivity()).addReminderForStation(
 								new NotificationBlock(
-										new GregorianCalendar(2014,5,23,picker.getCurrentHour(),picker.getCurrentMinute()), station.getId(), getActivity()
+										new GregorianCalendar(c.get(Calendar.YEAR),c.get(Calendar.MONTH),c.get(Calendar.DAY_OF_MONTH),picker.getCurrentHour(),picker.getCurrentMinute()), station.getId(), getActivity()
 								)
 								
 						);
