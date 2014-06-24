@@ -46,7 +46,7 @@ public class OsmMap extends Fragment
 
 	private MyLocationNewOverlay mLocationOverlay;
 	// the stations to show in the map
-	private ArrayList<Station> stations;
+	private ArrayList<Station> stations = new ArrayList<Station>();
 
 	private ArrayList<Bike> bikes;
 
@@ -77,6 +77,7 @@ public class OsmMap extends Fragment
 	public void onCreate(Bundle savedInstanceState)
 	{
 		stations = getArguments().getParcelableArrayList("stations");
+		if (stations == null) stations = new ArrayList<Station>();
 		bikes = getArguments().getParcelableArrayList("bikes");
 		((MainActivity)getActivity()).setOnStationsAquiredListener(new OnStationsAquired() {
 			
@@ -125,11 +126,8 @@ public class OsmMap extends Fragment
 		InternalCompassOrientationProvider iCOP = new InternalCompassOrientationProvider(getActivity().getApplicationContext());
 		CompassOverlay compassOverlay = new CompassOverlay(getActivity().getApplicationContext(), iCOP, mapView);
 		compassOverlay.enableCompass(iCOP);
-
-		if (stations == null) stations = new ArrayList<Station>();
 		
-		// add the markers on the mapView
-		addMarkers();
+		if (stations != null) addMarkers();
 
 		mapView.getOverlays().add(mLocationOverlay);
 
@@ -257,12 +255,14 @@ public class OsmMap extends Fragment
 
 	private void addMarkers()
 	{
-		
-		addBikesMarkers();
-		addStationsMarkers();
+		if (this.isAdded()){
+			addBikesMarkers();
+			addStationsMarkers();
 
-		stationsMarkersOverlay.setGridSize(100);
-		bikesMarkersOverlay.setGridSize(100);
+			stationsMarkersOverlay.setGridSize(100);
+			bikesMarkersOverlay.setGridSize(100);
+		}
+		
 	}
 
 	private void addBikesMarkers()

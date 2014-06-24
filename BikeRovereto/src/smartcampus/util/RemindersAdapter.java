@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import smartcampus.activity.MainActivity;
 import smartcampus.model.NotificationBlock;
 import android.app.Activity;
 import android.content.Context;
@@ -21,11 +22,12 @@ public class RemindersAdapter extends ArrayAdapter<NotificationBlock>
 {
 
 	private ArrayList<NotificationBlock> reminders;
+	private ArrayList<NotificationBlock> allReminders;
 
-	public RemindersAdapter(Context context, ArrayList<NotificationBlock> reminders)
+	public RemindersAdapter(Context context, ArrayList<NotificationBlock> reminders, ArrayList<NotificationBlock> allReminders)
 	{
 		super(context, 0, reminders);
-		this.reminders = reminders;
+		this.allReminders = allReminders;
 	}
 
 	@Override
@@ -61,6 +63,7 @@ public class RemindersAdapter extends ArrayAdapter<NotificationBlock>
 				Log.d("adapter",reminders.size()+"");
 				reminders.remove(position);
 				notifyDataSetChanged();
+				NotificationBlock.saveArrayListToFile(allReminders, MainActivity.FILENOTIFICATIONDB, getContext());
 			}
 		});
 		return convertView;

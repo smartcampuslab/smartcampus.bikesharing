@@ -71,7 +71,7 @@ public class ReminderEdit extends Fragment {
 
 		listView.addHeaderView(textView, null, false);
 		listView.setEmptyView(rootView.findViewById(R.id.no_reminders));
-		adapter = new RemindersAdapter(getActivity(), reminders);
+		adapter = new RemindersAdapter(getActivity(), reminders, allReminders);
 		listView.setAdapter(adapter);
 
 		((MainActivity) getActivity()).getSupportActionBar().setTitle(station.getName());
