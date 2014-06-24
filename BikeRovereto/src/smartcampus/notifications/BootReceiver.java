@@ -19,13 +19,7 @@ public class BootReceiver extends BroadcastReceiver
 		
 		for(NotificationBlock nb : notificationBlocks)
 		{
-			AlarmManager alarmMgr;
-			PendingIntent alarmIntent;
-			alarmMgr = (AlarmManager) arg0.getSystemService(Context.ALARM_SERVICE);
-			Intent intent = new Intent(arg0, NotificationReceiver.class);
-			alarmIntent = PendingIntent.getBroadcast(arg0, 0, intent, 0);
-			
-			alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, nb.getCalendar().getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
+			new NotificationReceiver().registerAlarm(arg0, nb.getCalendar(), nb.getID());
 		}
 		
 	}

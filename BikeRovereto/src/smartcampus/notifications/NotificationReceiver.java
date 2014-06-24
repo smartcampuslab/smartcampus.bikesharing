@@ -61,7 +61,7 @@ public class NotificationReceiver extends BroadcastReceiver
 			// first param to 0
 			Resources res = arg0.getResources();
 			Notification mNotification = new Notification.Builder(arg0).setContentTitle(res.getText(R.string.station) + " " + station.getName().toUpperCase()).setContentText(
-					res.getText(R.string.sort_available_bikes) + ": " + station.getNSlotsUsed() + " - " + res.getText(R.string.sort_available_slots) + ": " + station.getNSlotsEmpty()).setSmallIcon(
+					res.getText(R.string.sort_available_bikes) + ": " + station.getNBikesPresent() + " - " + res.getText(R.string.sort_available_slots) + ": " + station.getNSlotsEmpty()).setSmallIcon(
 					R.drawable.ic_launcher).setContentIntent(alarmIntent).setSound(soundUri)
 
 			.addAction(R.drawable.ic_launcher, "View", alarmIntent).addAction(0, "Remind", alarmIntent)

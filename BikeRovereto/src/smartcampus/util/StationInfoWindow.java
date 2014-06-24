@@ -73,7 +73,7 @@ public class StationInfoWindow extends MarkerInfoWindow
 		TextView tAvailable = (TextView) mView.findViewById(R.id.txt_available);
 		TextView tEmpty = (TextView) mView.findViewById(R.id.txt_empty);
 		tAvailable
-				.setText(Integer.toString(sItem.getStation().getNSlotsUsed()));
+				.setText(Integer.toString(sItem.getStation().getNBikesPresent()));
 		tEmpty.setText(Integer.toString(sItem.getStation().getNSlotsEmpty()));
 		tAvailable.setVisibility(View.VISIBLE);
 		tEmpty.setVisibility(View.VISIBLE);
