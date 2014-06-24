@@ -47,7 +47,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 	private static final String FRAGMENT_MAP = "map";
 	private static final String FRAGMENT_STATIONS = "stations";
 	private static final String FRAGMENT_FAVOURITE = "favourite";
-	private static final String FILENOTIFICATIONDB = "notificationBlockDB";
+	public static final String FILENOTIFICATIONDB = "notificationBlockDB";
 	public interface OnPositionAquiredListener
 	{
 		public void onPositionAquired();

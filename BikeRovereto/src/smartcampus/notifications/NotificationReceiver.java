@@ -14,7 +14,7 @@ import android.net.Uri;
 import android.util.Log;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
-public class MyReceiver extends BroadcastReceiver
+public class NotificationReceiver extends BroadcastReceiver
 {
 
 	private AlarmManager alarmMgr;
@@ -24,7 +24,7 @@ public class MyReceiver extends BroadcastReceiver
 	{
 		Log.d("prova", when.toString());
 		alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		Intent intent = new Intent(context, MyReceiver.class);
+		Intent intent = new Intent(context, NotificationReceiver.class);
 		alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 		
 		

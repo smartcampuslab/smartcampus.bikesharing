@@ -13,9 +13,10 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import smartcampus.notifications.MyReceiver;
+import smartcampus.notifications.NotificationReceiver;
 import android.content.Context;
 import android.util.Log;
 
@@ -32,10 +33,10 @@ public class NotificationBlock implements Serializable
 	public NotificationBlock(GregorianCalendar calendar, String stationID, Context context)
 	{
 		this.calendar = calendar;
+		upDateCalendar();
 		this.stationID = stationID;
-		MyReceiver mr = new MyReceiver();
+		NotificationReceiver mr = new NotificationReceiver();
 		mr.registerAlarm(context, calendar);
-		Log.d("prova", calendar.toString());
 	}
 
 	public static void saveArrayListToFile(ArrayList<NotificationBlock> arrayList, String fileName, Context context)
@@ -109,6 +110,11 @@ public class NotificationBlock implements Serializable
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		for(NotificationBlock nb : recoveredNotificationBlocks)
+		{
+			nb.upDateCalendar();
+		}
 		return recoveredNotificationBlocks;
 	}
 
@@ -125,7 +131,7 @@ public class NotificationBlock implements Serializable
 	public static ArrayList<GregorianCalendar> getReminderForID(String id, Context context)
 	{
 		ArrayList<NotificationBlock> list = readArrayListFromFile("notificationBlockDB", context);
-		Log.d("remindersListSize", list.size()+"");
+		Log.d("remindersListSize", list.size() + "");
 		if (list == null)
 			return new ArrayList<GregorianCalendar>();
 		ArrayList<GregorianCalendar> timesList = new ArrayList<GregorianCalendar>();
@@ -138,4 +144,14 @@ public class NotificationBlock implements Serializable
 		}
 		return timesList;
 	}
+	
+	private void upDateCalendar()
+	{
+		Calendar now = Calendar.getInstance();
+		if (this.calendar.before(now))
+		{// if its in the past increment
+			this.calendar.add(GregorianCalendar.DATE, 1);
+		}
+	}
+	
 }
