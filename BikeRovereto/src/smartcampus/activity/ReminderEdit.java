@@ -31,7 +31,6 @@ public class ReminderEdit extends ActionBarActivity {
 		listView = (ListView) findViewById(R.id.list);
 		ArrayList<GregorianCalendar> reminders = NotificationBlock.getReminderForID(station.getId(), this);
 		Log.d("reminderEdit", reminders.size()+"");
-		listView.setAdapter(new RemindersAdapter(this, reminders));
 		
 		TextView textView = new TextView(this);
 		textView.setText("Modifica i promemoria");
@@ -39,6 +38,7 @@ public class ReminderEdit extends ActionBarActivity {
 
 		listView.addHeaderView(textView, null, false);
 		listView.setEmptyView(findViewById(R.id.no_reminders));
+		listView.setAdapter(new RemindersAdapter(this, reminders));
 		
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
