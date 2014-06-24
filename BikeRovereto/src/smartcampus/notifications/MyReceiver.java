@@ -22,7 +22,6 @@ public class MyReceiver extends BroadcastReceiver
 
 	public void registerAlarm(Context context, Calendar when)
 	{
-
 		Log.d("prova", when.toString());
 		alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(context, MyReceiver.class);
@@ -64,6 +63,5 @@ public class MyReceiver extends BroadcastReceiver
 		// code below
 		mNotification.flags |= Notification.FLAG_AUTO_CANCEL;
 		notificationManager.notify(0, mNotification);
-
 	}
 }
