@@ -3,21 +3,18 @@ package smartcampus.activity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
 import smartcampus.model.Station;
 import smartcampus.util.GetStationsTask;
+import smartcampus.util.GetStationsTask.AsyncStationResponse;
 import smartcampus.util.StationsAdapter;
 import smartcampus.util.Tools;
-import smartcampus.util.GetStationsTask.AsyncStationResponse;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,17 +23,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
 import android.widget.AdapterView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
-public class StationsListFragment extends Fragment
+public class StationsListFragment extends ListFragment
 {
 
 	private ArrayList<Station> mStations;
-	private ListView mList;
+	private View emptyView;
 	private StationsAdapter stationsAdapter;
 	private int sortedBy;
 	private static final int SORTED_BY_DISTANCE = 1;
@@ -128,14 +126,22 @@ public class StationsListFragment extends Fragment
                 R.color.swipe_color_1, R.color.swipe_color_2,
                 R.color.swipe_color_3, R.color.swipe_color_4);
 		
-		
+		emptyView = rootView.findViewById(R.id.empty);
 		stationsAdapter = new StationsAdapter(getActivity(), 0, mStations, ((MainActivity)getActivity()).getCurrentLocation());
-
-		mList = (ListView) rootView.findViewById(R.id.stations_list);
-		mList.setDivider(new ColorDrawable(Color.TRANSPARENT));
-		mList.setDividerHeight(Tools.convertDpToPixel(getActivity(), 5));
-		mList.setAdapter(stationsAdapter);
-		mList.setOnItemClickListener(new OnItemClickListener()
+		setListAdapter(stationsAdapter);
+		
+		setHasOptionsMenu(true);
+		
+		return rootView;
+	}
+	
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		getListView().setDivider(new ColorDrawable(Color.TRANSPARENT));
+		getListView().setDividerHeight(Tools.convertDpToPixel(getActivity(), 5));
+		getListView().setEmptyView(emptyView);
+		getListView().setOnItemClickListener(new OnItemClickListener()
 		{
 
 			@Override
@@ -145,8 +151,6 @@ public class StationsListFragment extends Fragment
 				mCallback.onStationSelected(mStations.get(position));
 			}
 		});
-		stationsAdapter.notifyDataSetChanged();
-		
 		mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -155,9 +159,6 @@ public class StationsListFragment extends Fragment
             }
 
         });
-		
-		setHasOptionsMenu(true);
-		return rootView;
 	}
 
 	private void refreshDatas() {
@@ -165,9 +166,10 @@ public class StationsListFragment extends Fragment
         getStationsTask.delegate=new AsyncStationResponse() {
 			
 			@Override
-			public void processFinish(ArrayList<Station> stations, int status) {
+			public void processFinish(ArrayList<Station> stations, ArrayList<Station> favStations, int status) {
 				mStations.clear();
 				mStations.addAll(stations);
+				((MainActivity)getActivity()).addFavouritesStation(favStations);
 				if (((MainActivity)getActivity()).getCurrentLocation() != null)
 					((MainActivity)getActivity()).updateDistances();
 				onRefreshComplete();	

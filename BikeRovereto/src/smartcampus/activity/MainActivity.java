@@ -359,9 +359,10 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		{
 
 			@Override
-			public void processFinish(ArrayList<Station> result, int status)
+			public void processFinish(ArrayList<Station> result, ArrayList<Station> favs, int status)
 			{
 				stations = result;
+				favStations = favs;
 				if (status != GetStationsTask.NO_ERROR)
 				{
 					Toast.makeText(getApplicationContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
@@ -401,10 +402,17 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		};
 		getBikesTask.execute();
 	}
-
+	
 	public void addFavouriteStation(Station station)
 	{
 		favStations.add(station);
+	}
+	
+	public void addFavouritesStation(ArrayList<Station> favs)
+	{
+		favStations.clear();
+		favStations = new ArrayList<Station>();
+		favStations = favs;
 	}
 
 	public void removeFavouriteStation(Station station)
@@ -444,7 +452,10 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 								{
 									bikes = result;
 									Log.d("prova", "executed");
-									mCallbackBikesRefreshed.bikesRefreshed(bikes);
+									if (mCallbackBikesRefreshed != null)
+									{
+										mCallbackBikesRefreshed.bikesRefreshed(bikes);
+									}
 								}
 							};
 							getBikesTask.execute();
@@ -455,10 +466,14 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 							{
 
 								@Override
-								public void processFinish(ArrayList<Station> result, int status)
+								public void processFinish(ArrayList<Station> result, ArrayList<Station> favs, int status)
 								{
 									stations = result;
-									mCallbackStationRefreshed.stationsRefreshed(stations);
+									favStations = favs;
+									if (mCallbackStationRefreshed != null)
+									{
+										mCallbackStationRefreshed.stationsRefreshed(stations);
+									}
 								}
 							};
 							getStationsTask.execute("");

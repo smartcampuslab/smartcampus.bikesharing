@@ -49,10 +49,10 @@ public class OsmMap extends Fragment
 	private MapView mapView;
 	// overlya for current Location
 	private MyLocationNewOverlay mLocationOverlay;
-	
+
 	// the stations
 	private ArrayList<Station> stations;
-	//the bikes
+	// the bikes
 	private ArrayList<Bike> bikes;
 
 	// marker for stations
@@ -63,20 +63,19 @@ public class OsmMap extends Fragment
 	// button for animating to my position
 	private Button toMyLoc;
 
-	//current BoundingBoxE6 shown
+	// current BoundingBoxE6 shown
 	private BoundingBoxE6 currentBoundingBox;
-	
 
 	public static OsmMap newInstance(ArrayList<Station> stations, ArrayList<Bike> bikes)
 	{
 		OsmMap fragment = new OsmMap();
 		Bundle bundle = new Bundle();
-		
+
 		bundle.putParcelableArrayList("stations", stations);
 		bundle.putParcelableArrayList("bikes", bikes);
-		
+
 		fragment.setArguments(bundle);
-		
+
 		return fragment;
 	}
 
@@ -563,7 +562,7 @@ public class OsmMap extends Fragment
 		}
 		stationsMarkersOverlay.invalidate();
 	}
-	
+
 	private void setCallBackListeners()
 	{
 		((MainActivity) getActivity()).setOnStationsAquiredListener(new OnStationsAquired()
@@ -618,5 +617,14 @@ public class OsmMap extends Fragment
 				}
 			}
 		});
+	}
+
+	@Override
+	public void onDetach()
+	{
+		super.onDetach();
+		((MainActivity) getActivity()).setOnStationRefresh(null);
+		((MainActivity) getActivity()).setOnBikesRefresh(null);
+
 	}
 }
