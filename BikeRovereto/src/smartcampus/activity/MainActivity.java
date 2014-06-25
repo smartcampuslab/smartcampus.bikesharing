@@ -285,7 +285,6 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	{
 		super.onStart();
 		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Tools.LOCATION_REFRESH_TIME, Tools.LOCATION_REFRESH_DISTANCE, mLocationListener);
-		setUpdateBikesPositionTimer();
 
 	}
 
@@ -432,7 +431,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		NotificationBlock.saveArrayListToFile(notificationBlock, FILENOTIFICATIONDB, getApplicationContext());
 	}
 
-	private void setUpdateBikesPositionTimer()
+	private void setUpdateTimer()
 	{
 		final Handler handler = new Handler();
 		timer = new Timer();
@@ -446,6 +445,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 					@SuppressWarnings("unchecked")
 					public void run()
 					{
+						Log.d("prova", "tik");
 						try
 						{
 							GetAnarchicBikesTask getBikesTask = new GetAnarchicBikesTask();
@@ -456,7 +456,6 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 								public void processFinish(ArrayList<Bike> result, int status)
 								{
 									bikes = result;
-									Log.d("prova", "executed");
 									if (mCallbackBikesRefreshed != null)
 									{
 										mCallbackBikesRefreshed.bikesRefreshed(bikes);
@@ -494,9 +493,17 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 				});
 			}
 		};
-		timer.schedule(doAsynchronousTask, 0, 40000);
+		timer.schedule(doAsynchronousTask, 0, 4000);
 	}
 	
+	public void stopTimer()
+	{
+		timer.cancel();
+	}
 	
+	public void startTimer()
+	{
+		setUpdateTimer();
+	}
 
 }

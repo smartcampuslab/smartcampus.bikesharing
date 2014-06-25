@@ -144,6 +144,7 @@ public class OsmMap extends Fragment
 	public void onStart()
 	{
 		super.onStart();
+		((MainActivity)getActivity()).startTimer();
 	}
 
 	@Override
@@ -172,7 +173,7 @@ public class OsmMap extends Fragment
 		super.onPause();
 		mLocationOverlay.disableMyLocation();
 		currentBoundingBox = mapView.getBoundingBox();
-		mapView.getMapOrientation();
+		((MainActivity)getActivity()).stopTimer();
 	}
 
 	@Override
