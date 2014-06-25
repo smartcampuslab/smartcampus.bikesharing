@@ -8,6 +8,7 @@ import java.util.GregorianCalendar;
 
 import smartcampus.model.NotificationBlock;
 import smartcampus.model.Station;
+import smartcampus.notifications.NotificationReceiver;
 import smartcampus.util.RemindersAdapter;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -71,7 +72,7 @@ public class ReminderEdit extends Fragment {
 
 		listView.addHeaderView(textView, null, false);
 		listView.setEmptyView(rootView.findViewById(R.id.no_reminders));
-		adapter = new RemindersAdapter(getActivity(), reminders, allReminders);
+		adapter = new RemindersAdapter(getActivity(), reminders, allReminders, station.getId());
 		listView.setAdapter(adapter);
 
 		((MainActivity) getActivity()).getSupportActionBar().setTitle(station.getName());
@@ -113,6 +114,7 @@ public class ReminderEdit extends Fragment {
 				Calendar c = Calendar.getInstance();
 				noti.setCalendar(new GregorianCalendar(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), picker
 						.getCurrentHour(), picker.getCurrentMinute()));
+				new NotificationReceiver().updateAlarm(getActivity(), noti, station.getId());
 				NotificationBlock.saveArrayListToFile(allReminders, MainActivity.FILENOTIFICATIONDB, getActivity());
 				adapter.notifyDataSetChanged();
 			}

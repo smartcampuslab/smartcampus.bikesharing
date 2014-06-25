@@ -13,13 +13,13 @@ import android.content.Intent;
 public class BootReceiver extends BroadcastReceiver
 {	
 	@Override
-	public void onReceive(Context arg0, Intent arg1)
+	public void onReceive(Context context, Intent arg1)
 	{
-		ArrayList<NotificationBlock> notificationBlocks = NotificationBlock.readArrayListFromFile(MainActivity.FILENOTIFICATIONDB, arg0);
+		ArrayList<NotificationBlock> notificationBlocks = NotificationBlock.readArrayListFromFile(MainActivity.FILENOTIFICATIONDB, context);
 		
 		for(NotificationBlock nb : notificationBlocks)
 		{
-			new NotificationReceiver().registerAlarm(arg0, nb.getCalendar(), nb.getID());
+			new NotificationReceiver().registerAlarm(context, nb.getCalendar(), nb.getUniqueID(), nb.getID());
 		}
 		
 	}

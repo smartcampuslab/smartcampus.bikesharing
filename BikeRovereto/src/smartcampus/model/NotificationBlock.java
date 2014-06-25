@@ -27,8 +27,9 @@ public class NotificationBlock implements Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	GregorianCalendar calendar;
-	String stationID;
+	private GregorianCalendar calendar;
+	private String stationID;
+	private int uniqueID;
 
 	public NotificationBlock(GregorianCalendar calendar, String stationID, Context context)
 	{
@@ -36,7 +37,8 @@ public class NotificationBlock implements Serializable
 		upDateCalendar();
 		this.stationID = stationID;
 		NotificationReceiver mr = new NotificationReceiver();
-		mr.registerAlarm(context, calendar, stationID);
+		uniqueID = (int) (calendar.getTimeInMillis() & 0xfffffff);
+		mr.registerAlarm(context, calendar, uniqueID, stationID);
 	}
 
 	public static void saveArrayListToFile(ArrayList<NotificationBlock> arrayList, String fileName, Context context)
@@ -131,6 +133,11 @@ public class NotificationBlock implements Serializable
 	public String getID()
 	{
 		return stationID;
+	}
+	
+	public int getUniqueID()
+	{
+		return uniqueID;
 	}
 
 	public static ArrayList<NotificationBlock> getReminderForID(String id, Context context)
