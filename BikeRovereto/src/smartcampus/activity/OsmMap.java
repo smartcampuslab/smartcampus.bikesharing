@@ -279,42 +279,40 @@ public class OsmMap extends Fragment
 
 	private void addMarkers()
 	{
-		if (this.isAdded())
-		{
-			addBikesMarkers();
-			addStationsMarkers();
-
-			stationsMarkersOverlay.setGridSize(100);
-			bikesMarkersOverlay.setGridSize(100);
-		}
-
+		addBikesMarkers();
+		addStationsMarkers();
 	}
 
 	private void addBikesMarkers()
 	{
-		Resources res = getResources();
-		bikesMarkersOverlay = new GridMarkerClusterer(getActivity());
-		mapView.getOverlays().add(bikesMarkersOverlay);
-
-		Drawable markerImage = res.getDrawable(R.drawable.marker_bike);
-
-		BikeInfoWindow customInfoWindow = new BikeInfoWindow(mapView, getFragmentManager());
-		for (Bike b : bikes)
-		{
-			BikeMarker marker = new BikeMarker(mapView, b);
-
-			marker.setPosition(b.getPosition());
-
-			marker.setIcon(markerImage);
-
-			marker.setInfoWindow(customInfoWindow);
-
-			bikesMarkersOverlay.add(marker);
-		}
+//		if (!this.isAdded())
+//			return;
+//		Resources res = getResources();
+//		bikesMarkersOverlay = new GridMarkerClusterer(getActivity());
+//		mapView.getOverlays().add(bikesMarkersOverlay);
+//
+//		Drawable markerImage = res.getDrawable(R.drawable.marker_bike);
+//
+//		BikeInfoWindow customInfoWindow = new BikeInfoWindow(mapView, getFragmentManager());
+//		for (Bike b : bikes)
+//		{
+//			BikeMarker marker = new BikeMarker(mapView, b);
+//
+//			marker.setPosition(b.getPosition());
+//
+//			marker.setIcon(markerImage);
+//
+//			marker.setInfoWindow(customInfoWindow);
+//
+//			bikesMarkersOverlay.add(marker);
+//		}
+		//bikesMarkersOverlay.setGridSize(100);
 	}
 
 	private void addStationsMarkers()
 	{
+		if (!this.isAdded())
+			return;
 		// markers at:
 		// http://openclipart.org/detail/184847/map-marker-vector-by-rfvectors.com-184847
 		Resources res = getResources();
@@ -373,6 +371,7 @@ public class OsmMap extends Fragment
 			marker.setAnchor(0, 1);
 			stationsMarkersOverlay.add(marker);
 		}
+		//stationsMarkersOverlay.setGridSize(100);
 	}
 
 	private BoundingBoxE6 getBoundingBox(boolean addCurrentPosition)
