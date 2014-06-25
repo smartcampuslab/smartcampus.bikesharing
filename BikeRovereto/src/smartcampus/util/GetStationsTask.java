@@ -57,6 +57,7 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 		HttpGet httpg = new HttpGet("http://192.168.41.157:8080/bikesharing-web/stations/5061/"+data[0]);
 		Log.d("prova", httpg.getURI().toString());
 		String responseJSON;
+		ArrayList<Station> stations = new ArrayList<Station>();
 		try
 		{
 			HttpResponse response = httpclient.execute(httpg);
@@ -64,13 +65,12 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 		}
 		catch (ClientProtocolException e)
 		{
-			return null;
+			return stations;
 		}
 		catch (IOException e)
 		{
-			return null;
+			return stations;
 		}
-		ArrayList<Station> stations = new ArrayList<Station>();
 		try
 		{
 			SharedPreferences pref = context.getSharedPreferences("favStations", Context.MODE_PRIVATE);
@@ -122,7 +122,7 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 		catch (JSONException e)
 		{
 			e.printStackTrace();
-			return null;
+			return stations;
 		}
 		return stations;
 	}

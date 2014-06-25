@@ -54,25 +54,27 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 	private static final String FRAGMENT_STATIONS = "stations";
 	private static final String FRAGMENT_FAVOURITE = "favourite";
 	public static final String FILENOTIFICATIONDB = "notificationBlockDB";
-	
+
 	public interface OnPositionAquiredListener
 	{
 		public void onPositionAquired();
 	}
+
 	public interface OnStationsAquired
 	{
 		public void stationsAquired(ArrayList<Station> stations);
 	}
-	
+
 	public void setOnPositionAquiredListener(OnPositionAquiredListener onPositionAquiredListener)
 	{
 		this.mCallback = onPositionAquiredListener;
 	}
+
 	public void setOnStationsAquiredListener(OnStationsAquired onStationsAquired)
 	{
 		this.mCallbackStationsAquired = onStationsAquired;
 	}
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -186,7 +188,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 			}
 		});
 		navAdapter.setItemChecked(0);
-		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);		
+		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 	}
 
 	@Override
@@ -304,41 +306,50 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 			mCallback.onPositionAquired();
 	}
 
-
 	private void getStation()
 	{
-/*
-		stations = new ArrayList<Station>();
-
-		stations.add(new Station(new GeoPoint(45.890189, 11.034275), "STAZIONE FF.SS.", "Piazzale Orsi", 12, 5, 1, "01"));
-		stations.add(new Station(new GeoPoint(45.882221, 11.040483), "OSPEDALE", "Corso Verona", 12, 5, 1, "02"));
-		stations.add(new Station(new GeoPoint(45.886525, 11.044749), "MUNICIPIO", "Piazzetta Sichardt", 6, 5, 1, "03"));
-		stations.add(new Station(new GeoPoint(45.893571, 11.043891), "MART", "Corso Bettini", 6, 5, 1, "04"));
-		stations.add(new Station(new GeoPoint(45.866352, 11.019310), "ZONA INDUSTRIALE", "Viale Caproni", 6, 5, 1, "05"));
-		stations.add(new Station(new GeoPoint(45.892256, 11.039370), "VIA PAOLI", "Via Manzoni/Via Paoli", 12, 5, 1, "06"));
-		stations.add(new Station(new GeoPoint(45.840603, 11.009298), "SACCO", "Viale della Vittoria/Via Udine", 6, 5, 1, "07"));
-		stations.add(new Station(new GeoPoint(45.893120, 11.038846), "SACCO", "Viale della Vittoria/Via Udine", 12, 5, 1, "08"));
-		stations.add(new Station(new GeoPoint(45.883409, 11.072827), "NORIGLIO", "Via Chiesa San Martino", 6, 5, 1, "09"));
-		stations.add(new Station(new GeoPoint(45.904255, 11.044859), "BRIONE", "Piazza della Pace", 6, 5, 1, "10"));
-		stations.add(new Station(new GeoPoint(45.891021, 11.038729), "PIAZZA ROSMINI", "via boh", 6, 5, 1, "11"));
-
-		for (Station station : stations)
-		{
-			if (station.getFavourite())
-				favStations.add(station);
-		}*/
+		/*
+		 * stations = new ArrayList<Station>();
+		 * 
+		 * stations.add(new Station(new GeoPoint(45.890189, 11.034275),
+		 * "STAZIONE FF.SS.", "Piazzale Orsi", 12, 5, 1, "01"));
+		 * stations.add(new Station(new GeoPoint(45.882221, 11.040483),
+		 * "OSPEDALE", "Corso Verona", 12, 5, 1, "02")); stations.add(new
+		 * Station(new GeoPoint(45.886525, 11.044749), "MUNICIPIO",
+		 * "Piazzetta Sichardt", 6, 5, 1, "03")); stations.add(new Station(new
+		 * GeoPoint(45.893571, 11.043891), "MART", "Corso Bettini", 6, 5, 1,
+		 * "04")); stations.add(new Station(new GeoPoint(45.866352, 11.019310),
+		 * "ZONA INDUSTRIALE", "Viale Caproni", 6, 5, 1, "05"));
+		 * stations.add(new Station(new GeoPoint(45.892256, 11.039370),
+		 * "VIA PAOLI", "Via Manzoni/Via Paoli", 12, 5, 1, "06"));
+		 * stations.add(new Station(new GeoPoint(45.840603, 11.009298), "SACCO",
+		 * "Viale della Vittoria/Via Udine", 6, 5, 1, "07")); stations.add(new
+		 * Station(new GeoPoint(45.893120, 11.038846), "SACCO",
+		 * "Viale della Vittoria/Via Udine", 12, 5, 1, "08")); stations.add(new
+		 * Station(new GeoPoint(45.883409, 11.072827), "NORIGLIO",
+		 * "Via Chiesa San Martino", 6, 5, 1, "09")); stations.add(new
+		 * Station(new GeoPoint(45.904255, 11.044859), "BRIONE",
+		 * "Piazza della Pace", 6, 5, 1, "10")); stations.add(new Station(new
+		 * GeoPoint(45.891021, 11.038729), "PIAZZA ROSMINI", "via boh", 6, 5, 1,
+		 * "11"));
+		 * 
+		 * for (Station station : stations) { if (station.getFavourite())
+		 * favStations.add(station); }
+		 */
 		favStations = new ArrayList<Station>();
 		GetStationsTask getStationsTask = new GetStationsTask(this);
-        getStationsTask.delegate=new AsyncResponse() {
-			
+		getStationsTask.delegate = new AsyncResponse()
+		{
+
 			@Override
-			public void processFinish(ArrayList<Station> result) {
-				stations=result;
+			public void processFinish(ArrayList<Station> result)
+			{
+				stations = result;
 				mCallbackStationsAquired.stationsAquired(stations);
 			}
 		};
 		getStationsTask.execute("");
-		
+
 	}
 
 	private void getBikes()
@@ -358,6 +369,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 	{
 		favStations.remove(station);
 	}
+
 	public void addReminderForStation(NotificationBlock nb)
 	{
 		notificationBlock = NotificationBlock.readArrayListFromFile(FILENOTIFICATIONDB, this);
@@ -365,7 +377,8 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 		NotificationBlock.saveArrayListToFile(notificationBlock, FILENOTIFICATIONDB, getApplicationContext());
 	}
 
-	public void updateRemindersListFile() {
+	public void updateRemindersListFile()
+	{
 		if (notificationBlock == null)
 			notificationBlock = NotificationBlock.readArrayListFromFile(FILENOTIFICATIONDB, this);
 		NotificationBlock.saveArrayListToFile(notificationBlock, FILENOTIFICATIONDB, getApplicationContext());
