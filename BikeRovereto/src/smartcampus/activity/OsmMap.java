@@ -2,7 +2,6 @@ package smartcampus.activity;
 
 import java.util.ArrayList;
 
-import org.osmdroid.bonuspack.clustering.GridMarkerClusterer;
 import org.osmdroid.bonuspack.overlays.InfoWindow;
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
@@ -14,6 +13,8 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import smartcampus.activity.MainActivity.OnBikesAquired;
+import smartcampus.activity.MainActivity.OnBikesRefresh;
+import smartcampus.activity.MainActivity.OnStationRefresh;
 import smartcampus.activity.MainActivity.OnStationsAquired;
 import smartcampus.activity.cluster.GridMarkerClustererBikes;
 import smartcampus.activity.cluster.GridMarkerClustererStation;
@@ -95,7 +96,7 @@ public class OsmMap extends Fragment
 				addStationsMarkers();
 				for (int i = 0; i < 3; i++)
 				{
-					mapView.zoomToBoundingBox(getBoundingBox(true));
+					mapView.zoomToBoundingBox(Station.getBoundingBox(stations));
 				}
 			}
 		});
@@ -107,6 +108,34 @@ public class OsmMap extends Fragment
 			{
 				bikes = b;
 				addBikesMarkers();
+			}
+		});
+
+		((MainActivity) getActivity()).setOnStationRefresh(new OnStationRefresh()
+		{
+
+			@Override
+			public void stationsRefreshed(ArrayList<Station> sta)
+			{
+				if (sta.size() > 0)
+				{
+					stations = sta;
+					refreshStationsMarkers();
+				}
+			}
+		});
+
+		((MainActivity) getActivity()).setOnBikesRefresh(new OnBikesRefresh()
+		{
+
+			@Override
+			public void bikesRefreshed(ArrayList<Bike> b)
+			{
+				if (b.size() > 0)
+				{
+					bikes = b;
+					refreshBikesMarkers();
+				}
 			}
 		});
 		super.onCreate(savedInstanceState);
@@ -189,7 +218,7 @@ public class OsmMap extends Fragment
 				{
 					for (int i = 0; i < 3; i++)
 					{
-						mapView.zoomToBoundingBox(getBoundingBox(true));
+						mapView.zoomToBoundingBox(Station.getBoundingBox(stations));
 					}
 				}
 				else
@@ -280,6 +309,7 @@ public class OsmMap extends Fragment
 		if (!this.isAdded())
 			return;
 		Resources res = getResources();
+
 		bikesMarkersOverlay = new GridMarkerClustererBikes(getActivity());
 		mapView.getOverlays().add(bikesMarkersOverlay);
 
@@ -371,7 +401,7 @@ public class OsmMap extends Fragment
 		BoundingBoxE6 toRtn;
 		BoundingBoxE6 stationsBoundingBox = null;
 		int north, south, west, east;
-		if (stations != null)
+		if (stations != null && stations.size() > 0)
 		{
 			stationsBoundingBox = Station.getBoundingBox(stations);
 			north = stationsBoundingBox.getLatNorthE6();
@@ -509,5 +539,90 @@ public class OsmMap extends Fragment
 				return false;
 			}
 		});
+	}
+
+	private void refreshBikesMarkers()
+	{
+		bikesMarkersOverlay.getItems().clear();
+
+		Resources res = getResources();
+
+		Drawable markerImage = res.getDrawable(R.drawable.marker_bike);
+
+		BikeInfoWindow customInfoWindow = new BikeInfoWindow(mapView, getFragmentManager());
+		for (Bike b : bikes)
+		{
+			BikeMarker marker = new BikeMarker(mapView, b);
+
+			marker.setPosition(b.getPosition());
+
+			marker.setIcon(markerImage);
+
+			marker.setInfoWindow(customInfoWindow);
+
+			bikesMarkersOverlay.add(marker);
+		}
+		bikesMarkersOverlay.invalidate();
+	}
+
+	private void refreshStationsMarkers()
+	{
+		stationsMarkersOverlay.getItems().clear();
+		Resources res = getResources();
+
+		Drawable markerImage = null;
+		StationInfoWindow customInfoWindow = new StationInfoWindow(mapView, getFragmentManager());
+		for (Station s : stations)
+		{
+			StationMarker marker = new StationMarker(mapView, s);
+			marker.setTitle(s.getName());
+			marker.setSnippet(s.getStreet());
+			marker.setPosition(s.getPosition());
+
+			switch ((int) Math.round(s.getBikesPresentPercentage() * 10))
+			{
+			case 0:
+				markerImage = res.getDrawable(R.drawable.marker_0);
+				break;
+			case 1:
+				markerImage = res.getDrawable(R.drawable.marker_10);
+				break;
+			case 2:
+				markerImage = res.getDrawable(R.drawable.marker_20);
+				break;
+			case 3:
+				markerImage = res.getDrawable(R.drawable.marker_30);
+				break;
+			case 4:
+				markerImage = res.getDrawable(R.drawable.marker_40);
+				break;
+			case 5:
+				markerImage = res.getDrawable(R.drawable.marker_50);
+				break;
+			case 6:
+				markerImage = res.getDrawable(R.drawable.marker_60);
+				break;
+			case 7:
+				markerImage = res.getDrawable(R.drawable.marker_70);
+				break;
+			case 8:
+				markerImage = res.getDrawable(R.drawable.marker_80);
+				break;
+			case 9:
+				markerImage = res.getDrawable(R.drawable.marker_90);
+				break;
+			case 10:
+				markerImage = res.getDrawable(R.drawable.marker_100);
+				break;
+			default:
+				break;
+			}
+
+			marker.setIcon(markerImage);
+			marker.setInfoWindow(customInfoWindow);
+			marker.setAnchor(0, 1);
+			stationsMarkersOverlay.add(marker);
+		}
+		stationsMarkersOverlay.invalidate();
 	}
 }

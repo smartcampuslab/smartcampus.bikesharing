@@ -53,9 +53,13 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	private GeoPoint myLocation;
 	private OnPositionAquiredListener mCallback;
 	private OnStationsAquired mCallbackStationsAquired;
+	private OnStationRefresh mCallbackStationRefreshed;
+
 	private OnBikesAquired mCallbackBikesAquired;
+	private OnBikesRefresh mCallbackBikesRefreshed;
 	private NavigationDrawerAdapter navAdapter;
 
+	private Timer timer;
 	private static final String FRAGMENT_MAP = "map";
 	private static final String FRAGMENT_STATIONS = "stations";
 	private static final String FRAGMENT_FAVOURITE = "favourite";
@@ -66,19 +70,36 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		public void onPositionAquired();
 	}
 
+	// stations
 	public interface OnStationsAquired
 	{
 		public void stationsAquired(ArrayList<Station> stations);
 	}
 
+	public interface OnStationRefresh
+	{
+		public void stationsRefreshed(ArrayList<Station> stations);
+	}
+
+	// bikes
 	public interface OnBikesAquired
 	{
 		public void bikesAquired(ArrayList<Bike> bikes);
 	}
 
+	public interface OnBikesRefresh
+	{
+		public void bikesRefreshed(ArrayList<Bike> bikes);
+	}
+
 	public void setOnPositionAquiredListener(OnPositionAquiredListener onPositionAquiredListener)
 	{
 		this.mCallback = onPositionAquiredListener;
+	}
+
+	public void setOnStationRefresh(OnStationRefresh onStationRefresh)
+	{
+		this.mCallbackStationRefreshed = onStationRefresh;
 	}
 
 	public void setOnStationsAquiredListener(OnStationsAquired onStationsAquired)
@@ -89,6 +110,11 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	public void setOnBikesAquiredListener(OnBikesAquired onBikesAquired)
 	{
 		this.mCallbackBikesAquired = onBikesAquired;
+	}
+
+	public void setOnBikesRefresh(OnBikesRefresh onBikesRefresh)
+	{
+		this.mCallbackBikesRefreshed = onBikesRefresh;
 	}
 
 	@Override
@@ -205,7 +231,6 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		});
 		navAdapter.setItemChecked(0);
 		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-		setUpdateBikesPositionTimer();
 	}
 
 	@Override
@@ -260,6 +285,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	{
 		super.onStart();
 		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Tools.LOCATION_REFRESH_TIME, Tools.LOCATION_REFRESH_DISTANCE, mLocationListener);
+		setUpdateBikesPositionTimer();
 
 	}
 
@@ -268,6 +294,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	{
 		super.onPause();
 		mLocationManager.removeUpdates(mLocationListener);
+		timer.cancel();
 	}
 
 	public void updateDistances()
@@ -325,7 +352,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	}
 
 	private void getStation()
-	{		
+	{
 		favStations = new ArrayList<Station>();
 		GetStationsTask getStationsTask = new GetStationsTask(this);
 		getStationsTask.delegate = new AsyncStationResponse()
@@ -339,10 +366,13 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 				{
 					Toast.makeText(getApplicationContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
 				}
+				else
+				{
+					if (myLocation != null)
+						updateDistances();
+					mCallbackStationsAquired.stationsAquired(stations);
+				}
 				Log.d("Server call to stations finished", "status code: " + status);
-				if (myLocation != null)
-					updateDistances();
-				mCallbackStationsAquired.stationsAquired(stations);
 			}
 		};
 		getStationsTask.execute("");
@@ -363,7 +393,10 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 				{
 					Toast.makeText(getApplicationContext(), getString(R.string.error_bikes), Toast.LENGTH_SHORT).show();
 				}
-				mCallbackBikesAquired.bikesAquired(bikes);
+				else
+				{
+					mCallbackBikesAquired.bikesAquired(bikes);
+				}
 			}
 		};
 		getBikesTask.execute();
@@ -386,11 +419,10 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		NotificationBlock.saveArrayListToFile(notificationBlock, FILENOTIFICATIONDB, getApplicationContext());
 	}
 
-
 	private void setUpdateBikesPositionTimer()
 	{
 		final Handler handler = new Handler();
-		Timer timer = new Timer();
+		timer = new Timer();
 		TimerTask doAsynchronousTask = new TimerTask()
 		{
 			@Override
@@ -412,10 +444,27 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 								{
 									bikes = result;
 									Log.d("prova", "executed");
-									mCallbackBikesAquired.bikesAquired(bikes);
+									mCallbackBikesRefreshed.bikesRefreshed(bikes);
 								}
 							};
 							getBikesTask.execute();
+
+							favStations = new ArrayList<Station>();
+							GetStationsTask getStationsTask = new GetStationsTask(getApplicationContext());
+							getStationsTask.delegate = new AsyncStationResponse()
+							{
+
+								@Override
+								public void processFinish(ArrayList<Station> result, int status)
+								{
+									stations = result;
+									mCallbackStationRefreshed.stationsRefreshed(stations);
+								}
+							};
+							getStationsTask.execute("");
+
+							updateDistances();
+
 						}
 						catch (Exception e)
 						{
