@@ -65,6 +65,7 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 		Log.d("prova", httpg.getURI().toString());
 		String responseJSON;
 		ArrayList<Station> stations = new ArrayList<Station>();
+		favStations = new ArrayList<Station>();
 		try
 		{
 			HttpParams httpParameters = new BasicHttpParams();
@@ -105,7 +106,6 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 			if(data[0] == "")
 			{
 				JSONArray stationsArrayJSON = container.getJSONArray("data");
-				favStations = new ArrayList<Station>();
 				for (int i = 0; i < stationsArrayJSON.length(); i++)
 				{
 					JSONObject stationJSON = stationsArrayJSON.getJSONObject(i);

@@ -68,7 +68,7 @@ public class FavouriteFragment extends ListFragment{
 		adapter.setIsFavouriteAdapter(true);
 		setListAdapter(adapter);		
 		View rootView = inflater.inflate(R.layout.fav_stations, null);
-		empty = (TextView)rootView.findViewById(R.id.empty);
+		empty = (TextView)rootView.findViewById(android.R.id.empty);
 		// Retrieve the SwipeRefreshLayout and ListView instances
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh);
  
