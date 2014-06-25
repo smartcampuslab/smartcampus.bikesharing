@@ -126,7 +126,7 @@ public class StationsListFragment extends ListFragment
                 R.color.swipe_color_1, R.color.swipe_color_2,
                 R.color.swipe_color_3, R.color.swipe_color_4);
 		
-		emptyView = rootView.findViewById(R.id.empty);
+		emptyView = rootView.findViewById(android.R.id.empty);
 		stationsAdapter = new StationsAdapter(getActivity(), 0, mStations, ((MainActivity)getActivity()).getCurrentLocation());
 		setListAdapter(stationsAdapter);
 		
