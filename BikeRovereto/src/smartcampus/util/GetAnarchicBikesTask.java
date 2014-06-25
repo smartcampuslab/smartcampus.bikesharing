@@ -8,6 +8,9 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,6 +18,7 @@ import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
 import smartcampus.model.Bike;
+import smartcampus.model.Station;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -25,32 +29,51 @@ public class GetAnarchicBikesTask extends AsyncTask<Void, Void, ArrayList<Bike>>
 	private static final String BIKE_LATITUDE = "latitude";
 	private static final String BIKE_LONGITUDE = "longitude";
 
+	public static final int NO_ERROR = 0;
+	public static final int ERROR_SERVER = 1;
+	public static final int ERROR_CLIENT = 2;
+	
+	private int currentStatus;
+	
 	public interface AsyncBikesResponse
 	{
-		void processFinish(ArrayList<Bike> result);
+		void processFinish(ArrayList<Bike> result, int status);
 	}
 
 	public AsyncBikesResponse delegate = null;
 
 	@Override
-	protected ArrayList<Bike> doInBackground(Void... arg0)
+	protected ArrayList<Bike> doInBackground(Void... data)
 	{
-		HttpClient httpclient = new DefaultHttpClient();
 		HttpGet httpg = new HttpGet("http://192.168.41.157:8080/bikesharing-web/stations/5061/");
 		Log.d("prova", httpg.getURI().toString());
 		String responseJSON;
 		ArrayList<Bike> bikes = new ArrayList<Bike>();
 		try
 		{
-			HttpResponse response = httpclient.execute(httpg);
+			HttpParams httpParameters = new BasicHttpParams();
+			// Set the timeout in milliseconds until a connection is established.
+			// The default value is zero, that means the timeout is not used. 
+			int timeoutConnection = 3000;
+			HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+			// Set the default socket timeout (SO_TIMEOUT) 
+			// in milliseconds which is the timeout for waiting for data.
+			int timeoutSocket = 5000;
+			HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+
+			DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
+			
+			HttpResponse response = httpClient.execute(httpg);
 			responseJSON = EntityUtils.toString(response.getEntity());
 		}
 		catch (ClientProtocolException e)
 		{
+			currentStatus = ERROR_CLIENT;
 			return bikes;
 		}
 		catch (IOException e)
 		{
+			currentStatus = ERROR_CLIENT;
 			return bikes;
 		}
 		try
@@ -83,6 +106,6 @@ public class GetAnarchicBikesTask extends AsyncTask<Void, Void, ArrayList<Bike>>
 	protected void onPostExecute(ArrayList<Bike> result)
 	{
 		if (delegate != null)
-			delegate.processFinish(result);
+			delegate.processFinish(result, currentStatus);
 	}
 }

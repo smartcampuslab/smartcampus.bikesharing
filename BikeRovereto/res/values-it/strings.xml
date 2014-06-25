@@ -37,4 +37,5 @@
     <string name="no_reminders">Nessun promemoria impostato</string>
     <string name="station">stazione</string>
     <string name="error">Qualcosa è andato storto, stazioni non disponibili</string>
+    <string name="error_bikes">Qualcosa è andato storto, bici non disponibili</string>
 </resources>
