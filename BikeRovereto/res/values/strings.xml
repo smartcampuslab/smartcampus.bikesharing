@@ -36,6 +36,6 @@
     <string name="no_favourites">No favourite stations</string>
     <string name="no_reminders">No reminder setted</string>
     <string name="station">station</string>
-    <string name="error">Something went wrong, stations aren\'t available</string>
-    <string name="error_bikes">Something went wrong, bikes aren\'t available</string>
+    <string name="error">Stations aren\'t available</string>
+    <string name="error_bikes">Bikes aren\'t available</string>
 </resources>
