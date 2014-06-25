@@ -11,7 +11,7 @@ import smartcampus.model.Station;
 import smartcampus.util.GetStationsTask;
 import smartcampus.util.StationsAdapter;
 import smartcampus.util.Tools;
-import smartcampus.util.GetStationsTask.AsyncResponse;
+import smartcampus.util.GetStationsTask.AsyncStationResponse;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -150,7 +150,7 @@ public class StationsActivity extends Fragment
             public void onRefresh() {
                 Log.i("STR", "onRefresh called from SwipeRefreshLayout");
                 GetStationsTask getStationsTask = new GetStationsTask(getActivity());
-                getStationsTask.delegate=new AsyncResponse() {
+                getStationsTask.delegate=new AsyncStationResponse() {
 					
 					@Override
 					public void processFinish(ArrayList<Station> stations) {

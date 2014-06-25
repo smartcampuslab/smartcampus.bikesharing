@@ -44,10 +44,10 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 		this.context = context;
 	}
 	
-	public interface AsyncResponse {
+	public interface AsyncStationResponse {
 	    void processFinish(ArrayList<Station> stations);
 	}
-	public AsyncResponse delegate=null;
+	public AsyncStationResponse delegate=null;
 
 
 	@Override

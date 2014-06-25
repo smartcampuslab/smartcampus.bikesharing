@@ -11,7 +11,8 @@ import smartcampus.model.Station;
 import smartcampus.util.GetStationsTask;
 import smartcampus.util.NavigationDrawerAdapter;
 import smartcampus.util.Tools;
-import smartcampus.util.GetStationsTask.AsyncResponse;
+import smartcampus.util.GetStationsTask.AsyncStationResponse;
+import smartcampus.util.GetAnarchicBikesTask;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -48,6 +49,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 	private GeoPoint myLocation;
 	private OnPositionAquiredListener mCallback;
 	private OnStationsAquired mCallbackStationsAquired;
+	private onBikesAquired mCallbackBikesAquired;
 	private NavigationDrawerAdapter navAdapter;
 
 	private static final String FRAGMENT_MAP = "map";
@@ -65,6 +67,10 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 		public void stationsAquired(ArrayList<Station> stations);
 	}
 
+	public interface onBikesAquired
+	{
+		public void bikesAquired(ArrayList<Bike> bikes);
+	}
 	public void setOnPositionAquiredListener(OnPositionAquiredListener onPositionAquiredListener)
 	{
 		this.mCallback = onPositionAquiredListener;
@@ -338,7 +344,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 		 */
 		favStations = new ArrayList<Station>();
 		GetStationsTask getStationsTask = new GetStationsTask(this);
-		getStationsTask.delegate = new AsyncResponse()
+		getStationsTask.delegate = new AsyncStationResponse()
 		{
 
 			@Override
@@ -354,10 +360,18 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 
 	private void getBikes()
 	{
-		bikes = new ArrayList<Bike>();
-
-		bikes.add(new Bike(new GeoPoint(45.924255, 11.064859), "0"));
-		bikes.get(0).addReport("test");
+		GetAnarchicBikesTask getBikesTask = new GetAnarchicBikesTask();
+		getBikesTask.delegate = new AsyncBikesResponse()
+		{
+			
+			@Override
+			public void processFinish(ArrayList<Bike> bikes)
+			{
+				// TODO Auto-generated method stub
+				
+			}
+		};
+		getBikesTask.execute();
 	}
 
 	public void addFavouriteStation(Station station)

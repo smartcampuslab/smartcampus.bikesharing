@@ -440,7 +440,8 @@ public class OsmMap extends Fragment
 			Log.d("provaAccuraty", Float.toString(location.getAccuracy()));
 			if (firstTime)
 			{
-				mapView.zoomToBoundingBox(getBoundingBox(new GeoPoint(location)));
+				if(stations == null || stations.size() == 0)
+					mapView.zoomToBoundingBox(getBoundingBox(new GeoPoint(location)));
 				firstTime = false;
 			}
 		}
