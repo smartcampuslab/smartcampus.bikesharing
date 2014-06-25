@@ -1,6 +1,8 @@
 package smartcampus.activity;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.osmdroid.util.GeoPoint;
 
@@ -18,6 +20,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -72,6 +75,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	{
 		public void bikesAquired(ArrayList<Bike> bikes);
 	}
+
 	public void setOnPositionAquiredListener(OnPositionAquiredListener onPositionAquiredListener)
 	{
 		this.mCallback = onPositionAquiredListener;
@@ -81,6 +85,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	{
 		this.mCallbackStationsAquired = onStationsAquired;
 	}
+
 	public void setOnBikesAquiredListener(OnBikesAquired onBikesAquired)
 	{
 		this.mCallbackBikesAquired = onBikesAquired;
@@ -200,6 +205,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		});
 		navAdapter.setItemChecked(0);
 		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+		setUpdateBikesPositionTimer();
 	}
 
 	@Override
@@ -272,10 +278,10 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 				station.setDistance(myLocation.distanceTo(station.getPosition()));
 			}
 		if (bikes != null)
-		for (Bike bike : bikes)
-		{
-			bike.setDistance(myLocation.distanceTo(bike.getPosition()));
-		}
+			for (Bike bike : bikes)
+			{
+				bike.setDistance(myLocation.distanceTo(bike.getPosition()));
+			}
 	}
 
 	private final LocationListener mLocationListener = new LocationListener()
@@ -374,7 +380,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		GetAnarchicBikesTask getBikesTask = new GetAnarchicBikesTask();
 		getBikesTask.delegate = new AsyncBikesResponse()
 		{
-			
+
 			@Override
 			public void processFinish(ArrayList<Bike> result, int status)
 			{
@@ -383,7 +389,6 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 				{
 					Toast.makeText(getApplicationContext(), getString(R.string.error_bikes), Toast.LENGTH_SHORT).show();
 				}
-				Log.d("Server call to bikes finished", "status code: " + status);
 				mCallbackBikesAquired.bikesAquired(bikes);
 			}
 		};
@@ -412,6 +417,47 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		if (notificationBlock == null)
 			notificationBlock = NotificationBlock.readArrayListFromFile(FILENOTIFICATIONDB, this);
 		NotificationBlock.saveArrayListToFile(notificationBlock, FILENOTIFICATIONDB, getApplicationContext());
+	}
+
+	private void setUpdateBikesPositionTimer()
+	{
+		final Handler handler = new Handler();
+		Timer timer = new Timer();
+		TimerTask doAsynchronousTask = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				handler.post(new Runnable()
+				{
+					@SuppressWarnings("unchecked")
+					public void run()
+					{
+						try
+						{
+							GetAnarchicBikesTask getBikesTask = new GetAnarchicBikesTask();
+							getBikesTask.delegate = new AsyncBikesResponse()
+							{
+
+								@Override
+								public void processFinish(ArrayList<Bike> result, int status)
+								{
+									bikes = result;
+									Log.d("prova", "executed");
+									mCallbackBikesAquired.bikesAquired(bikes);
+								}
+							};
+							getBikesTask.execute();
+						}
+						catch (Exception e)
+						{
+							// TODO Auto-generated catch block
+						}
+					}
+				});
+			}
+		};
+		timer.schedule(doAsynchronousTask, 0, 4000);
 	}
 
 }

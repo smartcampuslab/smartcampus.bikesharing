@@ -295,7 +295,7 @@ public class OsmMap extends Fragment
 			marker.setIcon(markerImage);
 
 			marker.setInfoWindow(customInfoWindow);
-			
+
 			bikesMarkersOverlay.add(marker);
 		}
 		bikesMarkersOverlay.setGridSize(100);
@@ -370,63 +370,66 @@ public class OsmMap extends Fragment
 	{
 		BoundingBoxE6 toRtn;
 		BoundingBoxE6 stationsBoundingBox = null;
-		BoundingBoxE6 bikesBoundingBox = null;
+		int north, south, west, east;
 		if (stations != null)
+		{
 			stationsBoundingBox = Station.getBoundingBox(stations);
-		if (bikes != null)
-			bikesBoundingBox = Bike.getBoundingBox(bikes);
-
-		int north = Integer.MIN_VALUE;
-		int south = Integer.MAX_VALUE;
-		int west = Integer.MAX_VALUE;
-		int east = Integer.MIN_VALUE;
-		if (stationsBoundingBox != null && bikesBoundingBox != null)
-		{
-			north = stationsBoundingBox.getLatNorthE6() > bikesBoundingBox.getLatNorthE6() ? stationsBoundingBox.getLatNorthE6() : bikesBoundingBox.getLatNorthE6();
-
-			east = stationsBoundingBox.getLonEastE6() > bikesBoundingBox.getLonEastE6() ? stationsBoundingBox.getLonEastE6() : bikesBoundingBox.getLonEastE6();
-
-			south = stationsBoundingBox.getLatSouthE6() < bikesBoundingBox.getLatSouthE6() ? stationsBoundingBox.getLatSouthE6() : bikesBoundingBox.getLatSouthE6();
-
-			west = stationsBoundingBox.getLonWestE6() < bikesBoundingBox.getLonWestE6() ? stationsBoundingBox.getLonWestE6() : bikesBoundingBox.getLonWestE6();
+			north = stationsBoundingBox.getLatNorthE6();
+			south = stationsBoundingBox.getLatSouthE6();
+			west = stationsBoundingBox.getLonWestE6();
+			east = stationsBoundingBox.getLonEastE6();
 		}
-
-		if (addCurrentPosition && mLocationOverlay.getMyLocation() != null)
-		{
-			GeoPoint mPosition = new GeoPoint(mLocationOverlay.getMyLocation().getLatitudeE6(), mLocationOverlay.getMyLocation().getLongitudeE6());
-			if (mPosition.getLatitudeE6() > north)
-			{
-				north = mPosition.getLatitudeE6();
-			}
-			if (mPosition.getLatitudeE6() > east)
-			{
-				east = mPosition.getLongitudeE6();
-			}
-			if (mPosition.getLatitudeE6() < west)
-			{
-				west = mPosition.getLongitudeE6();
-			}
-			if (mPosition.getLatitudeE6() < south)
-			{
-				south = mPosition.getLatitudeE6();
-			}
-		}
-		if (north == Integer.MIN_VALUE)
+		else
 		{
 			north = (int) (45.911087 * 1E6);
-		}
-		if (south == Integer.MAX_VALUE)
-		{
 			south = (int) (45.86311 * 1E6);
-		}
-		if (east == Integer.MIN_VALUE)
-		{
 			east = (int) (11.065997 * 1E6);
-		}
-		if (west == Integer.MAX_VALUE)
-		{
 			west = (int) (11.002632 * 1E6);
 		}
+
+		// if (stationsBoundingBox != null && bikesBoundingBox != null)
+		// {
+		// north = stationsBoundingBox.getLatNorthE6() >
+		// bikesBoundingBox.getLatNorthE6() ?
+		// stationsBoundingBox.getLatNorthE6() :
+		// bikesBoundingBox.getLatNorthE6();
+		//
+		// east = stationsBoundingBox.getLonEastE6() >
+		// bikesBoundingBox.getLonEastE6() ? stationsBoundingBox.getLonEastE6()
+		// : bikesBoundingBox.getLonEastE6();
+		//
+		// south = stationsBoundingBox.getLatSouthE6() <
+		// bikesBoundingBox.getLatSouthE6() ?
+		// stationsBoundingBox.getLatSouthE6() :
+		// bikesBoundingBox.getLatSouthE6();
+		//
+		// west = stationsBoundingBox.getLonWestE6() <
+		// bikesBoundingBox.getLonWestE6() ? stationsBoundingBox.getLonWestE6()
+		// : bikesBoundingBox.getLonWestE6();
+		// }
+		//
+		// if (addCurrentPosition && mLocationOverlay.getMyLocation() != null)
+		// {
+		// GeoPoint mPosition = new
+		// GeoPoint(mLocationOverlay.getMyLocation().getLatitudeE6(),
+		// mLocationOverlay.getMyLocation().getLongitudeE6());
+		// if (mPosition.getLatitudeE6() > north)
+		// {
+		// north = mPosition.getLatitudeE6();
+		// }
+		// if (mPosition.getLatitudeE6() > east)
+		// {
+		// east = mPosition.getLongitudeE6();
+		// }
+		// if (mPosition.getLatitudeE6() < west)
+		// {
+		// west = mPosition.getLongitudeE6();
+		// }
+		// if (mPosition.getLatitudeE6() < south)
+		// {
+		// south = mPosition.getLatitudeE6();
+		// }
+		// }
 
 		toRtn = new BoundingBoxE6(north, east, south, west);
 		return toRtn;
@@ -450,7 +453,7 @@ public class OsmMap extends Fragment
 			if (firstTime)
 			{
 				if (stations == null || stations.size() == 0)
-					mapView.zoomToBoundingBox(getBoundingBox(new GeoPoint(location)));
+					mapView.getController().animateTo(new GeoPoint(location));
 				firstTime = false;
 			}
 		}
@@ -468,9 +471,7 @@ public class OsmMap extends Fragment
 				// myLoc.enableFollowLocation();
 				if (mLocationOverlay.getMyLocation() != null)
 				{
-					// mapController.animateTo(getBoundingBox(true).getCenter());
-					mapView.zoomToBoundingBox(getBoundingBox(true));
-					mapView.setMapOrientation(0);
+					mapView.getController().animateTo(mLocationOverlay.getMyLocation());
 				}
 			}
 		});
@@ -508,52 +509,5 @@ public class OsmMap extends Fragment
 				return false;
 			}
 		});
-	}
-
-	private BoundingBoxE6 getBoundingBox(GeoPoint currentPosition)
-	{
-		BoundingBoxE6 toRtn;
-		BoundingBoxE6 stationsBoundingBox = null;
-		BoundingBoxE6 bikesBoundingBox = null;
-		if (stations != null)
-			stationsBoundingBox = Station.getBoundingBox(stations);
-		if (bikes != null)
-			bikesBoundingBox = Bike.getBoundingBox(bikes);
-
-		int north = Integer.MIN_VALUE;
-		int south = Integer.MAX_VALUE;
-		int west = Integer.MAX_VALUE;
-		int east = Integer.MIN_VALUE;
-		if (stationsBoundingBox != null && bikesBoundingBox != null)
-		{
-			north = stationsBoundingBox.getLatNorthE6() > bikesBoundingBox.getLatNorthE6() ? stationsBoundingBox.getLatNorthE6() : bikesBoundingBox.getLatNorthE6();
-
-			east = stationsBoundingBox.getLonEastE6() > bikesBoundingBox.getLonEastE6() ? stationsBoundingBox.getLonEastE6() : bikesBoundingBox.getLonEastE6();
-
-			south = stationsBoundingBox.getLatSouthE6() < bikesBoundingBox.getLatSouthE6() ? stationsBoundingBox.getLatSouthE6() : bikesBoundingBox.getLatSouthE6();
-
-			west = stationsBoundingBox.getLonWestE6() < bikesBoundingBox.getLonWestE6() ? stationsBoundingBox.getLonWestE6() : bikesBoundingBox.getLonWestE6();
-		}
-
-		GeoPoint mPosition = new GeoPoint(currentPosition.getLatitudeE6(), currentPosition.getLongitudeE6());
-		if (mPosition.getLatitudeE6() > north)
-		{
-			north = mPosition.getLatitudeE6();
-		}
-		if (mPosition.getLatitudeE6() > east)
-		{
-			east = mPosition.getLongitudeE6();
-		}
-		if (mPosition.getLatitudeE6() < west)
-		{
-			west = mPosition.getLongitudeE6();
-		}
-		if (mPosition.getLatitudeE6() < south)
-		{
-			south = mPosition.getLatitudeE6();
-		}
-
-		toRtn = new BoundingBoxE6(north, east, south, west);
-		return toRtn;
 	}
 }

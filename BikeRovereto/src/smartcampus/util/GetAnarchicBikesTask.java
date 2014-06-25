@@ -45,7 +45,7 @@ public class GetAnarchicBikesTask extends AsyncTask<Void, Void, ArrayList<Bike>>
 	@Override
 	protected ArrayList<Bike> doInBackground(Void... data)
 	{
-		HttpGet httpg = new HttpGet("http://192.168.41.157:8080/bikesharing-web/stations/5061/");
+		HttpGet httpg = new HttpGet("http://192.168.41.157:8080/bikesharing-web/bikes/5061/");
 		Log.d("prova", httpg.getURI().toString());
 		String responseJSON;
 		ArrayList<Bike> bikes = new ArrayList<Bike>();

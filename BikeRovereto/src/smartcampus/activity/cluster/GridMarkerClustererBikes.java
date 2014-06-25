@@ -5,11 +5,11 @@ import org.osmdroid.bonuspack.clustering.StaticCluster;
 import org.osmdroid.bonuspack.overlays.Marker;
 import org.osmdroid.views.MapView;
 
-import smartcampus.util.StationMarker;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import eu.trentorise.smartcampus.bikerovereto.R;
@@ -17,6 +17,7 @@ import eu.trentorise.smartcampus.bikerovereto.R;
 public class GridMarkerClustererBikes extends GridMarkerClusterer
 {
 	Context ctx;
+
 	public GridMarkerClustererBikes(Context ctx)
 	{
 		super(ctx);
@@ -38,15 +39,16 @@ public class GridMarkerClustererBikes extends GridMarkerClusterer
 		m.setPosition(cluster.getPosition());
 		m.setInfoWindow(null);
 		m.setAnchor(mAnchorU, mAnchorV);
-		
+
 		Resources res = ctx.getResources();
 		Drawable drawableImage = res.getDrawable(R.drawable.marker_bike);
-		
-		mClusterIcon = ((BitmapDrawable)drawableImage).getBitmap();
+
+		mClusterIcon = ((BitmapDrawable) drawableImage).getBitmap();
 		Bitmap finalIcon = Bitmap.createBitmap(mClusterIcon.getWidth(), mClusterIcon.getHeight(), mClusterIcon.getConfig());
 
 		Canvas iconCanvas = new Canvas(finalIcon);
 		iconCanvas.drawBitmap(mClusterIcon, 0, 0, null);
+		mTextPaint.setColor(Color.rgb(255, 192, 64));
 		String text = "" + cluster.getSize();
 		int textHeight = (int) (mTextPaint.descent() + mTextPaint.ascent());
 		iconCanvas.drawText(text, mTextAnchorU * mClusterIcon.getWidth(), mTextAnchorV * mClusterIcon.getHeight() - textHeight / 2, mTextPaint);
