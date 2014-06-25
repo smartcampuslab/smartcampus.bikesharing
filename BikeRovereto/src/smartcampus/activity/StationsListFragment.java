@@ -151,32 +151,53 @@ public class StationsListFragment extends Fragment
             @Override
             public void onRefresh() {
                 Log.i("STR", "onRefresh called from SwipeRefreshLayout");
-                GetStationsTask getStationsTask = new GetStationsTask(getActivity());
-                getStationsTask.delegate=new AsyncStationResponse() {
-					
-					@Override
-					public void processFinish(ArrayList<Station> stations, int status) {
-						mStations=stations;
-						onRefreshComplete(stations);	
-						if (status != GetStationsTask.NO_ERROR)
-						{
-							Toast.makeText(getActivity(), getString(R.string.error), Toast.LENGTH_SHORT).show();
-						}
-						Log.d("Server call finished", "status code: " + status);
-					}
-				};
-				getStationsTask.execute("");
+                refreshDatas();
             }
+
         });
 		
 		setHasOptionsMenu(true);
 		return rootView;
 	}
-	 
-	 private void onRefreshComplete(ArrayList<Station> result) {
+
+	private void refreshDatas() {
+		GetStationsTask getStationsTask = new GetStationsTask(getActivity());
+        getStationsTask.delegate=new AsyncStationResponse() {
+			
+			@Override
+			public void processFinish(ArrayList<Station> stations, int status) {
+				mStations.clear();
+				mStations.addAll(stations);
+				if (((MainActivity)getActivity()).getCurrentLocation() != null)
+					((MainActivity)getActivity()).updateDistances();
+				onRefreshComplete();	
+				if (status != GetStationsTask.NO_ERROR)
+				{
+					Toast.makeText(getActivity(), getString(R.string.error), Toast.LENGTH_SHORT).show();
+				}
+				Log.d("Server call finished", "status code: " + status);
+			}
+		};
+		getStationsTask.execute("");
+	}
+	
+	private void onRefreshComplete() {
         Log.i("STR", "onRefreshComplete");
- 
-        stationsAdapter.notifyDataSetChanged();
+        //Reorder the arraylist in the previous order
+        switch (sortedBy) {
+		case SORTED_BY_DISTANCE:
+			sortByDistance(true);
+			break;
+		case SORTED_BY_NAME:
+			sortByName(true);
+			break;
+		case SORTED_BY_AVAILABLE_BIKES:
+			sortByAvailableBikes(true);
+			break;
+		case SORTED_BY_AVAILABLE_SLOTS:
+			sortByAvailableSlots(true);
+			break;
+		}
         // Stop the refreshing indicator
         mSwipeRefreshLayout.setRefreshing(false);
     }
@@ -224,7 +245,7 @@ public class StationsListFragment extends Fragment
 		case R.id.refresh:
 			if (!mSwipeRefreshLayout.isRefreshing()) {
                 mSwipeRefreshLayout.setRefreshing(true);
-                //TODO: sss
+                refreshDatas();
             }
             Toast.makeText(getActivity(), getString(R.string.refresh_hint), Toast.LENGTH_SHORT).show();
 			break;
