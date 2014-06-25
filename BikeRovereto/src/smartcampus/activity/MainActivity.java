@@ -32,7 +32,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
-public class MainActivity extends ActionBarActivity implements StationsActivity.OnStationSelectListener, FavouriteFragment.OnStationSelectListener
+public class MainActivity extends ActionBarActivity implements StationsListFragment.OnStationSelectListener, FavouriteFragment.OnStationSelectListener
 {
 
 	private String[] navTitles;
@@ -167,7 +167,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 					currentFragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_STATIONS);
 					if (currentFragment == null || !currentFragment.isVisible())
 					{
-						StationsActivity stationsFragment = StationsActivity.newInstance(stations);
+						StationsListFragment stationsFragment = StationsListFragment.newInstance(stations);
 						transaction.replace(R.id.content_frame, stationsFragment, FRAGMENT_STATIONS);
 						transaction.commit();
 					}
@@ -361,7 +361,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 				{
 					Toast.makeText(getApplicationContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
 				}
-				Log.d("Server call finished", "status code: " + status);
+				Log.d("Server call to stations finished", "status code: " + status);
 				mCallbackStationsAquired.stationsAquired(stations);
 			}
 		};
@@ -376,9 +376,14 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 		{
 			
 			@Override
-			public void processFinish(ArrayList<Bike> result)
+			public void processFinish(ArrayList<Bike> result, int status)
 			{
 				bikes = result;
+				if (status != GetAnarchicBikesTask.NO_ERROR)
+				{
+					Toast.makeText(getApplicationContext(), getString(R.string.error_bikes), Toast.LENGTH_SHORT).show();
+				}
+				Log.d("Server call to bikes finished", "status code: " + status);
 				mCallbackBikesAquired.bikesAquired(bikes);
 			}
 		};
