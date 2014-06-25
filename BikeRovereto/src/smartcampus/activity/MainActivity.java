@@ -372,7 +372,6 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 						updateDistances();
 					mCallbackStationsAquired.stationsAquired(stations);
 				}
-				Log.d("Server call to stations finished", "status code: " + status);
 			}
 		};
 		getStationsTask.execute("");
@@ -388,6 +387,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 			@Override
 			public void processFinish(ArrayList<Bike> result, int status)
 			{
+				
 				bikes = result;
 				if (status != GetAnarchicBikesTask.NO_ERROR)
 				{
