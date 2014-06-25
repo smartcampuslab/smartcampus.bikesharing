@@ -1,18 +1,18 @@
 package smartcampus.activity;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 import org.osmdroid.util.GeoPoint;
 
 import smartcampus.model.Bike;
 import smartcampus.model.NotificationBlock;
 import smartcampus.model.Station;
+import smartcampus.util.GetAnarchicBikesTask;
+import smartcampus.util.GetAnarchicBikesTask.AsyncBikesResponse;
 import smartcampus.util.GetStationsTask;
+import smartcampus.util.GetStationsTask.AsyncStationResponse;
 import smartcampus.util.NavigationDrawerAdapter;
 import smartcampus.util.Tools;
-import smartcampus.util.GetStationsTask.AsyncStationResponse;
-import smartcampus.util.GetAnarchicBikesTask;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -49,7 +49,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 	private GeoPoint myLocation;
 	private OnPositionAquiredListener mCallback;
 	private OnStationsAquired mCallbackStationsAquired;
-	private onBikesAquired mCallbackBikesAquired;
+	private OnBikesAquired mCallbackBikesAquired;
 	private NavigationDrawerAdapter navAdapter;
 
 	private static final String FRAGMENT_MAP = "map";
@@ -67,7 +67,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 		public void stationsAquired(ArrayList<Station> stations);
 	}
 
-	public interface onBikesAquired
+	public interface OnBikesAquired
 	{
 		public void bikesAquired(ArrayList<Bike> bikes);
 	}
@@ -79,6 +79,10 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 	public void setOnStationsAquiredListener(OnStationsAquired onStationsAquired)
 	{
 		this.mCallbackStationsAquired = onStationsAquired;
+	}
+	public void setOnBikesAquiredListener(OnBikesAquired onBikesAquired)
+	{
+		this.mCallbackBikesAquired = onBikesAquired;
 	}
 
 	@Override
@@ -266,6 +270,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 			{
 				station.setDistance(myLocation.distanceTo(station.getPosition()));
 			}
+		if (bikes != null)
 		for (Bike bike : bikes)
 		{
 			bike.setDistance(myLocation.distanceTo(bike.getPosition()));
@@ -365,10 +370,10 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 		{
 			
 			@Override
-			public void processFinish(ArrayList<Bike> bikes)
+			public void processFinish(ArrayList<Bike> result)
 			{
-				// TODO Auto-generated method stub
-				
+				bikes = result;
+				mCallbackBikesAquired.bikesAquired(bikes);
 			}
 		};
 		getBikesTask.execute();

@@ -13,6 +13,7 @@ import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import smartcampus.activity.MainActivity.OnBikesAquired;
 import smartcampus.activity.MainActivity.OnStationsAquired;
 import smartcampus.activity.cluster.GridMarkerClustererCustom;
 import smartcampus.model.Bike;
@@ -81,6 +82,8 @@ public class OsmMap extends Fragment
 		if (stations == null)
 			stations = new ArrayList<Station>();
 		bikes = getArguments().getParcelableArrayList("bikes");
+		if (bikes == null)
+			bikes = new ArrayList<Bike>();
 		((MainActivity) getActivity()).setOnStationsAquiredListener(new OnStationsAquired()
 		{
 
@@ -88,7 +91,21 @@ public class OsmMap extends Fragment
 			public void stationsAquired(ArrayList<Station> sta)
 			{
 				stations = sta;
-				addMarkers();
+				addStationsMarkers();
+				for (int i = 0; i < 3; i++)
+				{
+					mapView.zoomToBoundingBox(getBoundingBox(true));
+				}
+			}
+		});
+
+		((MainActivity) getActivity()).setOnBikesAquiredListener(new OnBikesAquired()
+		{
+			@Override
+			public void bikesAquired(ArrayList<Bike> b)
+			{
+				bikes = b;
+				addBikesMarkers();
 				for (int i = 0; i < 3; i++)
 				{
 					mapView.zoomToBoundingBox(getBoundingBox(true));
@@ -427,6 +444,7 @@ public class OsmMap extends Fragment
 	private class CustomLocationProvider extends GpsMyLocationProvider
 	{
 		private boolean firstTime = true;
+
 		public CustomLocationProvider(Context context)
 		{
 			super(context);
@@ -440,7 +458,7 @@ public class OsmMap extends Fragment
 			Log.d("provaAccuraty", Float.toString(location.getAccuracy()));
 			if (firstTime)
 			{
-				if(stations == null || stations.size() == 0)
+				if (stations == null || stations.size() == 0)
 					mapView.zoomToBoundingBox(getBoundingBox(new GeoPoint(location)));
 				firstTime = false;
 			}
@@ -478,7 +496,8 @@ public class OsmMap extends Fragment
 			{
 				if (event.getAction() == event.ACTION_DOWN)
 				{
-					x = event.getX();// InternalCompassOrientationProvider iCOP = new
+					x = event.getX();// InternalCompassOrientationProvider iCOP
+										// = new
 
 					y = event.getY();
 				}
@@ -499,8 +518,7 @@ public class OsmMap extends Fragment
 			}
 		});
 	}
-	
-	
+
 	private BoundingBoxE6 getBoundingBox(GeoPoint currentPosition)
 	{
 		BoundingBoxE6 toRtn;
@@ -526,23 +544,23 @@ public class OsmMap extends Fragment
 			west = stationsBoundingBox.getLonWestE6() < bikesBoundingBox.getLonWestE6() ? stationsBoundingBox.getLonWestE6() : bikesBoundingBox.getLonWestE6();
 		}
 
-			GeoPoint mPosition = new GeoPoint(currentPosition.getLatitudeE6(), currentPosition.getLongitudeE6());
-			if (mPosition.getLatitudeE6() > north)
-			{
-				north = mPosition.getLatitudeE6();
-			}
-			if (mPosition.getLatitudeE6() > east)
-			{
-				east = mPosition.getLongitudeE6();
-			}
-			if (mPosition.getLatitudeE6() < west)
-			{
-				west = mPosition.getLongitudeE6();
-			}
-			if (mPosition.getLatitudeE6() < south)
-			{
-				south = mPosition.getLatitudeE6();
-			}
+		GeoPoint mPosition = new GeoPoint(currentPosition.getLatitudeE6(), currentPosition.getLongitudeE6());
+		if (mPosition.getLatitudeE6() > north)
+		{
+			north = mPosition.getLatitudeE6();
+		}
+		if (mPosition.getLatitudeE6() > east)
+		{
+			east = mPosition.getLongitudeE6();
+		}
+		if (mPosition.getLatitudeE6() < west)
+		{
+			west = mPosition.getLongitudeE6();
+		}
+		if (mPosition.getLatitudeE6() < south)
+		{
+			south = mPosition.getLatitudeE6();
+		}
 
 		toRtn = new BoundingBoxE6(north, east, south, west);
 		return toRtn;

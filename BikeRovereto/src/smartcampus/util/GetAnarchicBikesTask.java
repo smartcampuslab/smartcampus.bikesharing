@@ -27,7 +27,7 @@ public class GetAnarchicBikesTask extends AsyncTask<Void, Void, ArrayList<Bike>>
 
 	public interface AsyncBikesResponse
 	{
-		void processFinish(ArrayList<Bike> bikes);
+		void processFinish(ArrayList<Bike> result);
 	}
 
 	public AsyncBikesResponse delegate = null;
