@@ -448,7 +448,8 @@ public class OsmMap extends Fragment
 			{
 				if (event.getAction() == event.ACTION_DOWN)
 				{
-					x = event.getX();
+					x = event.getX();// InternalCompassOrientationProvider iCOP = new
+
 					y = event.getY();
 				}
 				else if (event.getAction() == event.ACTION_UP)

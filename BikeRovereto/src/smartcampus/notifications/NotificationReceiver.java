@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import smartcampus.model.NotificationBlock;
 import smartcampus.model.Station;
 import smartcampus.util.GetStationsTask;
 import android.app.AlarmManager;
@@ -26,12 +27,12 @@ public class NotificationReceiver extends BroadcastReceiver
 	private AlarmManager alarmMgr;
 	private PendingIntent alarmIntent;
 
-	public void registerAlarm(Context context, Calendar when, String stationID)
+	public void registerAlarm(Context context, Calendar when, int uniqueID, String stationID)
 	{
 		alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(context, NotificationReceiver.class);
 		intent.putExtra("stationID", stationID);
-		alarmIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+		alarmIntent = PendingIntent.getBroadcast(context, uniqueID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
 		// wait 10 seconds and notify
 		// alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
@@ -42,6 +43,23 @@ public class NotificationReceiver extends BroadcastReceiver
 		// alarmIntent);
 		Log.d("prova", stationID);
 		alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, when.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
+	}
+	
+	public void updateAlarm(Context context, NotificationBlock notificationBlock, String stationID)
+	{
+		registerAlarm(context, notificationBlock.getCalendar(), notificationBlock.getUniqueID(), stationID);
+	}
+	
+	public void cancelAlarm(Context context, int uniqueID, String stationID)
+	{
+		Intent intent = new Intent(context, NotificationReceiver.class);
+		intent.putExtra("stationID", stationID);
+		alarmIntent = PendingIntent.getBroadcast(context, uniqueID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+		if (alarmMgr == null)
+		{
+			alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+		}
+		alarmMgr.cancel(alarmIntent);
 	}
 
 	@Override
