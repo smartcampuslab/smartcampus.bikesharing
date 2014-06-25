@@ -403,17 +403,22 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		getBikesTask.execute();
 	}
 	
+	public void setStations(ArrayList<Station> stations)
+	{
+		this.stations.clear();
+		this.stations.addAll(stations); 
+	}
+	
+	public void setFavStations(ArrayList<Station> favStations)
+	{
+		this.favStations.clear();
+		this.favStations.addAll(favStations);
+	}
+	
 	public void addFavouriteStation(Station station)
 	{
 		favStations.add(station);
-	}
-	
-	public void addFavouritesStation(ArrayList<Station> favs)
-	{
-		favStations.clear();
-		favStations = new ArrayList<Station>();
-		favStations = favs;
-	}
+	}	
 
 	public void removeFavouriteStation(Station station)
 	{
@@ -491,5 +496,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		};
 		timer.schedule(doAsynchronousTask, 0, 40000);
 	}
+	
+	
 
 }
