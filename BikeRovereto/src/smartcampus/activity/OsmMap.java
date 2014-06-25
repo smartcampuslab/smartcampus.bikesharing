@@ -144,6 +144,13 @@ public class OsmMap extends Fragment
 	public void onStart()
 	{
 		super.onStart();
+	}
+
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		mLocationOverlay.enableMyLocation();
 		mapView.post(new Runnable()
 		{
 			@Override
@@ -157,13 +164,6 @@ public class OsmMap extends Fragment
 				}
 			}
 		});
-	}
-
-	@Override
-	public void onResume()
-	{
-		super.onResume();
-		mLocationOverlay.enableMyLocation();
 	}
 
 	@Override

@@ -16,7 +16,7 @@
     <string name="reports">Reports</string>
     <string name="no_reports">No reports</string>
     <string name="title_activity_signal">Damages</string>
-    <string name="signal">Signal damage</string>
+    <string name="signal">Warnings</string>
     <string name="action_add_report">New report</string>
     <string name="report_other">Additional description</string>
     <string name="report_in">Report in</string>

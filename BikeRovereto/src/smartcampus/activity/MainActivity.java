@@ -489,7 +489,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 				});
 			}
 		};
-		timer.schedule(doAsynchronousTask, 0, 4000);
+		timer.schedule(doAsynchronousTask, 0, 40000);
 	}
 
 }
