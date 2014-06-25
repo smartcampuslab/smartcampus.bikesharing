@@ -36,4 +36,5 @@
     <string name="no_favourites">Nessuna stazione prefererita</string>
     <string name="no_reminders">Nessun promemoria impostato</string>
     <string name="station">stazione</string>
+    <string name="error">Qualcosa è andato storto, stazioni non disponibili</string>
 </resources>

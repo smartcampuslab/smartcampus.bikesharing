@@ -29,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
 public class MainActivity extends ActionBarActivity implements StationsActivity.OnStationSelectListener, FavouriteFragment.OnStationSelectListener
@@ -353,9 +354,14 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 		{
 
 			@Override
-			public void processFinish(ArrayList<Station> result)
+			public void processFinish(ArrayList<Station> result, int status)
 			{
 				stations = result;
+				if (status != GetStationsTask.NO_ERROR)
+				{
+					Toast.makeText(getApplicationContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
+				}
+				Log.d("Server call finished", "status code: " + status);
 				mCallbackStationsAquired.stationsAquired(stations);
 			}
 		};
