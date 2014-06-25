@@ -32,7 +32,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
-public class MainActivity extends ActionBarActivity implements StationsActivity.OnStationSelectListener, FavouriteFragment.OnStationSelectListener
+public class MainActivity extends ActionBarActivity implements StationsListFragment.OnStationSelectListener, FavouriteFragment.OnStationSelectListener
 {
 
 	private String[] navTitles;
@@ -167,7 +167,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 					currentFragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_STATIONS);
 					if (currentFragment == null || !currentFragment.isVisible())
 					{
-						StationsActivity stationsFragment = StationsActivity.newInstance(stations);
+						StationsListFragment stationsFragment = StationsListFragment.newInstance(stations);
 						transaction.replace(R.id.content_frame, stationsFragment, FRAGMENT_STATIONS);
 						transaction.commit();
 					}

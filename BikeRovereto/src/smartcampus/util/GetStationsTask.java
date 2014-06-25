@@ -24,8 +24,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> THIS IS NOT TESTED!! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
 public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 {
 	

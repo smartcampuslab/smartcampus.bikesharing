@@ -32,7 +32,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
-public class StationsActivity extends Fragment
+public class StationsListFragment extends Fragment
 {
 
 	private ArrayList<Station> mStations;
@@ -53,9 +53,9 @@ public class StationsActivity extends Fragment
 		public void onStationSelected(Station station);
 	}
 
-	public static StationsActivity newInstance(ArrayList<Station> stations)
+	public static StationsListFragment newInstance(ArrayList<Station> stations)
 	{
-		StationsActivity fragment = new StationsActivity();
+		StationsListFragment fragment = new StationsListFragment();
 		Bundle bundle = new Bundle();
 		bundle.putParcelableArrayList("stations", stations);
 		fragment.setArguments(bundle);
