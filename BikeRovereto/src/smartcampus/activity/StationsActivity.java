@@ -97,19 +97,21 @@ public class StationsActivity extends Fragment
 					}
 				});
 		//If the app still waiting the server response, initiliaze the arraylist to prevent crash for nullpointer
-		
+
 		if (mStations == null){
 			mStations = new ArrayList<Station>();
 			return;
 		}
-		
+				
 		//If the distance is already defined the list is sorted by distance, otherwise
 		//is sorted by available bikes
-		
-		if (mStations.get(0).getDistance()==Station.DISTANCE_NOT_VALID)
-			sortByAvailableBikes(false);
-		else
-			sortByDistance(false);
+		if (mStations.size() >= 1)
+		{
+			if (mStations.get(0).getDistance()==Station.DISTANCE_NOT_VALID)
+				sortByAvailableBikes(false);
+			else
+				sortByDistance(false);
+		}		
 	}
 
 	@Override
@@ -153,10 +155,14 @@ public class StationsActivity extends Fragment
                 getStationsTask.delegate=new AsyncResponse() {
 					
 					@Override
-					public void processFinish(ArrayList<Station> stations) {
+					public void processFinish(ArrayList<Station> stations, int status) {
 						mStations=stations;
-						onRefreshComplete(stations);
-						Log.d("stationsActivity", "getFinish");
+						onRefreshComplete(stations);	
+						if (status != GetStationsTask.NO_ERROR)
+						{
+							Toast.makeText(getActivity(), getString(R.string.error), Toast.LENGTH_SHORT).show();
+						}
+						Log.d("Server call finished", "status code: " + status);
 					}
 				};
 				getStationsTask.execute("");

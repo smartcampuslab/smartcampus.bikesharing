@@ -8,6 +8,9 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,6 +39,12 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 	private static final String BROKEN_SLOTS = "nBrokenBikes";
 	private static final String STATION_ID = "id";	
 	
+	public static final int NO_ERROR = 0;
+	public static final int ERROR_SERVER = 1;
+	public static final int ERROR_CLIENT = 2;
+	
+	private int currentStatus;
+	
 
 	private Context context;
 
@@ -45,7 +54,7 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 	}
 	
 	public interface AsyncResponse {
-	    void processFinish(ArrayList<Station> stations);
+	    void processFinish(ArrayList<Station> stations, int status);
 	}
 	public AsyncResponse delegate=null;
 
@@ -53,29 +62,47 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 	@Override
 	protected ArrayList<Station> doInBackground(String... data)
 	{
-		HttpClient httpclient = new DefaultHttpClient();
 		HttpGet httpg = new HttpGet("http://192.168.41.157:8080/bikesharing-web/stations/5061/"+data[0]);
 		Log.d("prova", httpg.getURI().toString());
 		String responseJSON;
 		ArrayList<Station> stations = new ArrayList<Station>();
 		try
 		{
-			HttpResponse response = httpclient.execute(httpg);
+			HttpParams httpParameters = new BasicHttpParams();
+			// Set the timeout in milliseconds until a connection is established.
+			// The default value is zero, that means the timeout is not used. 
+			int timeoutConnection = 3000;
+			HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+			// Set the default socket timeout (SO_TIMEOUT) 
+			// in milliseconds which is the timeout for waiting for data.
+			int timeoutSocket = 5000;
+			HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+
+			DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
+			
+			HttpResponse response = httpClient.execute(httpg);
 			responseJSON = EntityUtils.toString(response.getEntity());
 		}
 		catch (ClientProtocolException e)
 		{
+			currentStatus = ERROR_CLIENT;
 			return stations;
 		}
 		catch (IOException e)
 		{
+			currentStatus = ERROR_CLIENT;
 			return stations;
 		}
 		try
 		{
 			SharedPreferences pref = context.getSharedPreferences("favStations", Context.MODE_PRIVATE);
 			JSONObject container = new JSONObject(responseJSON);
-			
+			int httpStatus = container.getInt("httpStatus");
+			if (httpStatus == 200)
+				currentStatus = NO_ERROR;
+			else
+				currentStatus = ERROR_SERVER;
+			String errorString = container.getString("errorString");
 			if(data[0] == "")
 			{
 				JSONArray stationsArrayJSON = container.getJSONArray("data");
@@ -130,7 +157,7 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 	@Override
 	protected void onPostExecute(ArrayList<Station> result) {
 		if (delegate!=null)
-			delegate.processFinish(result);
+			delegate.processFinish(result, currentStatus);
 	}
 	
 }
