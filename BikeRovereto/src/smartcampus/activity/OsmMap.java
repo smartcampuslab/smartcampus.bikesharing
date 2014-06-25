@@ -15,7 +15,8 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import smartcampus.activity.MainActivity.OnBikesAquired;
 import smartcampus.activity.MainActivity.OnStationsAquired;
-import smartcampus.activity.cluster.GridMarkerClustererCustom;
+import smartcampus.activity.cluster.GridMarkerClustererBikes;
+import smartcampus.activity.cluster.GridMarkerClustererStation;
 import smartcampus.model.Bike;
 import smartcampus.model.Station;
 import smartcampus.util.BikeInfoWindow;
@@ -50,14 +51,14 @@ public class OsmMap extends Fragment
 	// the stations to show in the map
 	private ArrayList<Station> stations = new ArrayList<Station>();
 
-	private ArrayList<Bike> bikes;
+	private ArrayList<Bike> bikes = new ArrayList<Bike>();
 
 	// marker for the stations
 
 	// private MarkerOverlay<StationOverlayItem> stationsMarkersOverlay;
-	private GridMarkerClustererCustom stationsMarkersOverlay;
+	private GridMarkerClustererStation stationsMarkersOverlay;
 	// marker for the bikes
-	private GridMarkerClusterer bikesMarkersOverlay;
+	private GridMarkerClustererBikes bikesMarkersOverlay;
 
 	// private RotationGestureOverlay rotationGestureOverlay;
 	private Button toMyLoc;
@@ -106,10 +107,6 @@ public class OsmMap extends Fragment
 			{
 				bikes = b;
 				addBikesMarkers();
-				for (int i = 0; i < 3; i++)
-				{
-					mapView.zoomToBoundingBox(getBoundingBox(true));
-				}
 			}
 		});
 		super.onCreate(savedInstanceState);
@@ -149,8 +146,9 @@ public class OsmMap extends Fragment
 		compassOverlay.enableCompass(iCOP);
 
 		if (stations != null)
-			addMarkers();
-
+			addStationsMarkers();
+		if (bikes != null)
+			addBikesMarkers();
 		mapView.getOverlays().add(mLocationOverlay);
 
 		mapView.getOverlays().add(compassOverlay);
@@ -277,36 +275,30 @@ public class OsmMap extends Fragment
 		return true;
 	}
 
-	private void addMarkers()
-	{
-		addBikesMarkers();
-		addStationsMarkers();
-	}
-
 	private void addBikesMarkers()
 	{
-//		if (!this.isAdded())
-//			return;
-//		Resources res = getResources();
-//		bikesMarkersOverlay = new GridMarkerClusterer(getActivity());
-//		mapView.getOverlays().add(bikesMarkersOverlay);
-//
-//		Drawable markerImage = res.getDrawable(R.drawable.marker_bike);
-//
-//		BikeInfoWindow customInfoWindow = new BikeInfoWindow(mapView, getFragmentManager());
-//		for (Bike b : bikes)
-//		{
-//			BikeMarker marker = new BikeMarker(mapView, b);
-//
-//			marker.setPosition(b.getPosition());
-//
-//			marker.setIcon(markerImage);
-//
-//			marker.setInfoWindow(customInfoWindow);
-//
-//			bikesMarkersOverlay.add(marker);
-//		}
-		//bikesMarkersOverlay.setGridSize(100);
+		if (!this.isAdded())
+			return;
+		Resources res = getResources();
+		bikesMarkersOverlay = new GridMarkerClustererBikes(getActivity());
+		mapView.getOverlays().add(bikesMarkersOverlay);
+
+		Drawable markerImage = res.getDrawable(R.drawable.marker_bike);
+
+		BikeInfoWindow customInfoWindow = new BikeInfoWindow(mapView, getFragmentManager());
+		for (Bike b : bikes)
+		{
+			BikeMarker marker = new BikeMarker(mapView, b);
+
+			marker.setPosition(b.getPosition());
+
+			marker.setIcon(markerImage);
+
+			marker.setInfoWindow(customInfoWindow);
+			
+			bikesMarkersOverlay.add(marker);
+		}
+		bikesMarkersOverlay.setGridSize(100);
 	}
 
 	private void addStationsMarkers()
@@ -316,7 +308,7 @@ public class OsmMap extends Fragment
 		// markers at:
 		// http://openclipart.org/detail/184847/map-marker-vector-by-rfvectors.com-184847
 		Resources res = getResources();
-		stationsMarkersOverlay = new GridMarkerClustererCustom(getActivity());
+		stationsMarkersOverlay = new GridMarkerClustererStation(getActivity());
 		mapView.getOverlays().add(stationsMarkersOverlay);
 		Drawable markerImage = null;
 		StationInfoWindow customInfoWindow = new StationInfoWindow(mapView, getFragmentManager());
@@ -371,7 +363,7 @@ public class OsmMap extends Fragment
 			marker.setAnchor(0, 1);
 			stationsMarkersOverlay.add(marker);
 		}
-		//stationsMarkersOverlay.setGridSize(100);
+		stationsMarkersOverlay.setGridSize(100);
 	}
 
 	private BoundingBoxE6 getBoundingBox(boolean addCurrentPosition)
