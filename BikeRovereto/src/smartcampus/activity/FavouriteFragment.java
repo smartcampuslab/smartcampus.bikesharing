@@ -5,18 +5,22 @@ import java.util.ArrayList;
 import eu.trentorise.smartcampus.bikerovereto.R;
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
 import smartcampus.model.Station;
+import smartcampus.util.GetStationsTask;
 import smartcampus.util.StationsAdapter;
 import smartcampus.util.Tools;
+import smartcampus.util.GetStationsTask.AsyncStationResponse;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 
@@ -79,10 +83,42 @@ public class FavouriteFragment extends ListFragment{
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+            	refreshDatas();
             }
         });
 		return rootView;
 	}
+	
+	private void refreshDatas() {
+		GetStationsTask getStationsTask = new GetStationsTask(getActivity());
+        getStationsTask.delegate=new AsyncStationResponse() {
+			
+			@Override
+			public void processFinish(ArrayList<Station> stations, ArrayList<Station> fav, int status) {
+				((MainActivity)getActivity()).setStations(stations);
+				((MainActivity)getActivity()).setFavStations(fav);
+				favStations.clear();
+				favStations.addAll(fav);
+				adapter.notifyDataSetChanged();
+				if (((MainActivity)getActivity()).getCurrentLocation() != null)
+					((MainActivity)getActivity()).updateDistances();
+				onRefreshComplete();	
+				if (status != GetStationsTask.NO_ERROR)
+				{
+					Toast.makeText(getActivity(), getString(R.string.error), Toast.LENGTH_SHORT).show();
+				}
+				Log.d("Server call finished", "status code: " + status);
+			}
+		};
+		getStationsTask.execute("");
+	}
+	
+	private void onRefreshComplete() {
+        Log.i("STR", "onRefreshComplete");
+        adapter.notifyDataSetChanged();
+        // Stop the refreshing indicator
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState)

@@ -169,7 +169,8 @@ public class StationsListFragment extends ListFragment
 			public void processFinish(ArrayList<Station> stations, ArrayList<Station> favStations, int status) {
 				mStations.clear();
 				mStations.addAll(stations);
-				((MainActivity)getActivity()).addFavouritesStation(favStations);
+				((MainActivity)getActivity()).setStations(stations);
+				((MainActivity)getActivity()).setFavStations(favStations);
 				if (((MainActivity)getActivity()).getCurrentLocation() != null)
 					((MainActivity)getActivity()).updateDistances();
 				onRefreshComplete();	
