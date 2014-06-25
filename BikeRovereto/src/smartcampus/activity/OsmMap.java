@@ -47,33 +47,35 @@ public class OsmMap extends Fragment
 {
 	// the view where the map is showed
 	private MapView mapView;
-
+	// overlya for current Location
 	private MyLocationNewOverlay mLocationOverlay;
-	// the stations to show in the map
-	private ArrayList<Station> stations = new ArrayList<Station>();
 
-	private ArrayList<Bike> bikes = new ArrayList<Bike>();
+	// the stations
+	private ArrayList<Station> stations;
+	// the bikes
+	private ArrayList<Bike> bikes;
 
-	// marker for the stations
-
-	// private MarkerOverlay<StationOverlayItem> stationsMarkersOverlay;
+	// marker for stations
 	private GridMarkerClustererStation stationsMarkersOverlay;
 	// marker for the bikes
 	private GridMarkerClustererBikes bikesMarkersOverlay;
 
-	// private RotationGestureOverlay rotationGestureOverlay;
+	// button for animating to my position
 	private Button toMyLoc;
 
+	// current BoundingBoxE6 shown
 	private BoundingBoxE6 currentBoundingBox;
-	private float currentMapOrientation;
 
 	public static OsmMap newInstance(ArrayList<Station> stations, ArrayList<Bike> bikes)
 	{
 		OsmMap fragment = new OsmMap();
 		Bundle bundle = new Bundle();
+
 		bundle.putParcelableArrayList("stations", stations);
 		bundle.putParcelableArrayList("bikes", bikes);
+
 		fragment.setArguments(bundle);
+
 		return fragment;
 	}
 
@@ -81,63 +83,8 @@ public class OsmMap extends Fragment
 	public void onCreate(Bundle savedInstanceState)
 	{
 		stations = getArguments().getParcelableArrayList("stations");
-		if (stations == null)
-			stations = new ArrayList<Station>();
 		bikes = getArguments().getParcelableArrayList("bikes");
-		if (bikes == null)
-			bikes = new ArrayList<Bike>();
-		((MainActivity) getActivity()).setOnStationsAquiredListener(new OnStationsAquired()
-		{
-
-			@Override
-			public void stationsAquired(ArrayList<Station> sta)
-			{
-				stations = sta;
-				addStationsMarkers();
-				for (int i = 0; i < 3; i++)
-				{
-					mapView.zoomToBoundingBox(Station.getBoundingBox(stations));
-				}
-			}
-		});
-
-		((MainActivity) getActivity()).setOnBikesAquiredListener(new OnBikesAquired()
-		{
-			@Override
-			public void bikesAquired(ArrayList<Bike> b)
-			{
-				bikes = b;
-				addBikesMarkers();
-			}
-		});
-
-		((MainActivity) getActivity()).setOnStationRefresh(new OnStationRefresh()
-		{
-
-			@Override
-			public void stationsRefreshed(ArrayList<Station> sta)
-			{
-				if (sta.size() > 0)
-				{
-					stations = sta;
-					refreshStationsMarkers();
-				}
-			}
-		});
-
-		((MainActivity) getActivity()).setOnBikesRefresh(new OnBikesRefresh()
-		{
-
-			@Override
-			public void bikesRefreshed(ArrayList<Bike> b)
-			{
-				if (b.size() > 0)
-				{
-					bikes = b;
-					refreshBikesMarkers();
-				}
-			}
-		});
+		setCallBackListeners();
 		super.onCreate(savedInstanceState);
 	}
 
@@ -214,22 +161,13 @@ public class OsmMap extends Fragment
 			{
 				// cycle because the zoomToBoundingBox must be called 3 times to
 				// take effect (osm bug?)
-				if (currentBoundingBox == null)
-				{
-					for (int i = 0; i < 3; i++)
-					{
-						mapView.zoomToBoundingBox(Station.getBoundingBox(stations));
-					}
-				}
-				else
+				if (currentBoundingBox != null)
 				{
 					for (int i = 0; i < 3; i++)
 					{
 						mapView.zoomToBoundingBox(currentBoundingBox);
 					}
 				}
-				mapView.setMapOrientation(currentMapOrientation);
-
 			}
 		});
 	}
@@ -247,7 +185,6 @@ public class OsmMap extends Fragment
 		super.onPause();
 		mLocationOverlay.disableMyLocation();
 		currentBoundingBox = mapView.getBoundingBox();
-		currentMapOrientation = mapView.getMapOrientation();
 		mapView.getMapOrientation();
 	}
 
@@ -625,11 +562,69 @@ public class OsmMap extends Fragment
 		}
 		stationsMarkersOverlay.invalidate();
 	}
-	
+
+	private void setCallBackListeners()
+	{
+		((MainActivity) getActivity()).setOnStationsAquiredListener(new OnStationsAquired()
+		{
+
+			@Override
+			public void stationsAquired(ArrayList<Station> sta)
+			{
+				stations = sta;
+				addStationsMarkers();
+				for (int i = 0; i < 3; i++)
+				{
+					mapView.zoomToBoundingBox(Station.getBoundingBox(stations));
+				}
+			}
+		});
+
+		((MainActivity) getActivity()).setOnBikesAquiredListener(new OnBikesAquired()
+		{
+			@Override
+			public void bikesAquired(ArrayList<Bike> b)
+			{
+				bikes = b;
+				addBikesMarkers();
+			}
+		});
+
+		((MainActivity) getActivity()).setOnStationRefresh(new OnStationRefresh()
+		{
+
+			@Override
+			public void stationsRefreshed(ArrayList<Station> sta)
+			{
+				if (sta.size() > 0)
+				{
+					stations = sta;
+					refreshStationsMarkers();
+				}
+			}
+		});
+
+		((MainActivity) getActivity()).setOnBikesRefresh(new OnBikesRefresh()
+		{
+
+			@Override
+			public void bikesRefreshed(ArrayList<Bike> b)
+			{
+				if (b.size() > 0)
+				{
+					bikes = b;
+					refreshBikesMarkers();
+				}
+			}
+		});
+	}
+
 	@Override
-	public void onDetach() {
+	public void onDetach()
+	{
 		super.onDetach();
 		((MainActivity) getActivity()).setOnStationRefresh(null);
-		((MainActivity) getActivity()).setOnBikesRefresh(null);		
+		((MainActivity) getActivity()).setOnBikesRefresh(null);
+
 	}
 }
