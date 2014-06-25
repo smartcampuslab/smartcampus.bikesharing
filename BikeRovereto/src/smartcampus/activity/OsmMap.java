@@ -27,6 +27,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -57,7 +58,7 @@ public class OsmMap extends Fragment
 	// marker for the bikes
 	private GridMarkerClusterer bikesMarkersOverlay;
 
-	//private RotationGestureOverlay rotationGestureOverlay;
+	// private RotationGestureOverlay rotationGestureOverlay;
 	private Button toMyLoc;
 
 	private BoundingBoxE6 currentBoundingBox;
@@ -77,18 +78,21 @@ public class OsmMap extends Fragment
 	public void onCreate(Bundle savedInstanceState)
 	{
 		stations = getArguments().getParcelableArrayList("stations");
-		if (stations == null) stations = new ArrayList<Station>();
+		if (stations == null)
+			stations = new ArrayList<Station>();
 		bikes = getArguments().getParcelableArrayList("bikes");
-		((MainActivity)getActivity()).setOnStationsAquiredListener(new OnStationsAquired() {
-			
+		((MainActivity) getActivity()).setOnStationsAquiredListener(new OnStationsAquired()
+		{
+
 			@Override
-			public void stationsAquired(ArrayList<Station> sta) {
-				stations=sta;
+			public void stationsAquired(ArrayList<Station> sta)
+			{
+				stations = sta;
 				addMarkers();
 				for (int i = 0; i < 3; i++)
 				{
 					mapView.zoomToBoundingBox(getBoundingBox(true));
-				}			
+				}
 			}
 		});
 		super.onCreate(savedInstanceState);
@@ -100,8 +104,8 @@ public class OsmMap extends Fragment
 		View rootView = inflater.inflate(R.layout.activity_osm_map, container, false);
 		// get the mapView and the controller
 		mapView = (MapView) rootView.findViewById(R.id.map_view);
-		
-//		mapView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
+		// mapView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 		// mapView.setBuiltInZoomControls(true);
 		mapView.setMultiTouchControls(true);
 
@@ -126,8 +130,9 @@ public class OsmMap extends Fragment
 		InternalCompassOrientationProvider iCOP = new InternalCompassOrientationProvider(getActivity().getApplicationContext());
 		CompassOverlay compassOverlay = new CompassOverlay(getActivity().getApplicationContext(), iCOP, mapView);
 		compassOverlay.enableCompass(iCOP);
-		
-		if (stations != null) addMarkers();
+
+		if (stations != null)
+			addMarkers();
 
 		mapView.getOverlays().add(mLocationOverlay);
 
@@ -139,10 +144,12 @@ public class OsmMap extends Fragment
 		setBtToMyLoc();
 
 		// rotation gesture
-//		rotationGestureOverlay = new RotationGestureOverlay(getActivity().getApplicationContext(), mapView);
-//		rotationGestureOverlay.setEnabled(false);
-		
-		//mapView.getOverlays().add(rotationGestureOverlay);
+		// rotationGestureOverlay = new
+		// RotationGestureOverlay(getActivity().getApplicationContext(),
+		// mapView);
+		// rotationGestureOverlay.setEnabled(false);
+
+		// mapView.getOverlays().add(rotationGestureOverlay);
 
 		setMapListener();
 		return rootView;
@@ -234,20 +241,20 @@ public class OsmMap extends Fragment
 				mapView.invalidate();
 			}
 			break;
-//		case R.id.switch_rotation:
-//			item.setChecked(!item.isChecked());
-//			if (item.isChecked())
-//			{
-//				rotationGestureOverlay.setEnabled(true);
-//			}
-//			else
-//			{
-//				mapView.setMapOrientation(0);
-//				rotationGestureOverlay.setEnabled(false);
-//			}
-//			break;
-//		default:
-//			break;
+		// case R.id.switch_rotation:
+		// item.setChecked(!item.isChecked());
+		// if (item.isChecked())
+		// {
+		// rotationGestureOverlay.setEnabled(true);
+		// }
+		// else
+		// {
+		// mapView.setMapOrientation(0);
+		// rotationGestureOverlay.setEnabled(false);
+		// }
+		// break;
+		// default:
+		// break;
 		}
 
 		return true;
@@ -255,14 +262,15 @@ public class OsmMap extends Fragment
 
 	private void addMarkers()
 	{
-		if (this.isAdded()){
+		if (this.isAdded())
+		{
 			addBikesMarkers();
 			addStationsMarkers();
 
 			stationsMarkersOverlay.setGridSize(100);
 			bikesMarkersOverlay.setGridSize(100);
 		}
-		
+
 	}
 
 	private void addBikesMarkers()
@@ -271,7 +279,7 @@ public class OsmMap extends Fragment
 		bikesMarkersOverlay = new GridMarkerClusterer(getActivity());
 		mapView.getOverlays().add(bikesMarkersOverlay);
 
-		Drawable markerImage = res.getDrawable(R.drawable.anarchich_bike);
+		Drawable markerImage = res.getDrawable(R.drawable.marker_bike);
 
 		BikeInfoWindow customInfoWindow = new BikeInfoWindow(mapView, getFragmentManager());
 		for (Bike b : bikes)
@@ -374,7 +382,6 @@ public class OsmMap extends Fragment
 
 			west = stationsBoundingBox.getLonWestE6() < bikesBoundingBox.getLonWestE6() ? stationsBoundingBox.getLonWestE6() : bikesBoundingBox.getLonWestE6();
 		}
-		
 
 		if (addCurrentPosition && mLocationOverlay.getMyLocation() != null)
 		{
@@ -396,6 +403,22 @@ public class OsmMap extends Fragment
 				south = mPosition.getLatitudeE6();
 			}
 		}
+		if (north == Integer.MIN_VALUE)
+		{
+			north = (int) (45.911087 * 1E6);
+		}
+		if (south == Integer.MAX_VALUE)
+		{
+			south = (int) (45.86311 * 1E6);
+		}
+		if (east == Integer.MIN_VALUE)
+		{
+			east = (int) (11.065997 * 1E6);
+		}
+		if (west == Integer.MAX_VALUE)
+		{
+			west = (int) (11.002632 * 1E6);
+		}
 
 		toRtn = new BoundingBoxE6(north, east, south, west);
 		return toRtn;
@@ -403,7 +426,7 @@ public class OsmMap extends Fragment
 
 	private class CustomLocationProvider extends GpsMyLocationProvider
 	{
-
+		private boolean firstTime = true;
 		public CustomLocationProvider(Context context)
 		{
 			super(context);
@@ -414,6 +437,12 @@ public class OsmMap extends Fragment
 		{
 			super.onLocationChanged(location);
 			((MainActivity) getActivity()).setCurrentLocation(new GeoPoint(location));
+			Log.d("provaAccuraty", Float.toString(location.getAccuracy()));
+			if (firstTime)
+			{
+				mapView.zoomToBoundingBox(getBoundingBox(new GeoPoint(location)));
+				firstTime = false;
+			}
 		}
 	}
 
@@ -468,5 +497,53 @@ public class OsmMap extends Fragment
 				return false;
 			}
 		});
+	}
+	
+	
+	private BoundingBoxE6 getBoundingBox(GeoPoint currentPosition)
+	{
+		BoundingBoxE6 toRtn;
+		BoundingBoxE6 stationsBoundingBox = null;
+		BoundingBoxE6 bikesBoundingBox = null;
+		if (stations != null)
+			stationsBoundingBox = Station.getBoundingBox(stations);
+		if (bikes != null)
+			bikesBoundingBox = Bike.getBoundingBox(bikes);
+
+		int north = Integer.MIN_VALUE;
+		int south = Integer.MAX_VALUE;
+		int west = Integer.MAX_VALUE;
+		int east = Integer.MIN_VALUE;
+		if (stationsBoundingBox != null && bikesBoundingBox != null)
+		{
+			north = stationsBoundingBox.getLatNorthE6() > bikesBoundingBox.getLatNorthE6() ? stationsBoundingBox.getLatNorthE6() : bikesBoundingBox.getLatNorthE6();
+
+			east = stationsBoundingBox.getLonEastE6() > bikesBoundingBox.getLonEastE6() ? stationsBoundingBox.getLonEastE6() : bikesBoundingBox.getLonEastE6();
+
+			south = stationsBoundingBox.getLatSouthE6() < bikesBoundingBox.getLatSouthE6() ? stationsBoundingBox.getLatSouthE6() : bikesBoundingBox.getLatSouthE6();
+
+			west = stationsBoundingBox.getLonWestE6() < bikesBoundingBox.getLonWestE6() ? stationsBoundingBox.getLonWestE6() : bikesBoundingBox.getLonWestE6();
+		}
+
+			GeoPoint mPosition = new GeoPoint(currentPosition.getLatitudeE6(), currentPosition.getLongitudeE6());
+			if (mPosition.getLatitudeE6() > north)
+			{
+				north = mPosition.getLatitudeE6();
+			}
+			if (mPosition.getLatitudeE6() > east)
+			{
+				east = mPosition.getLongitudeE6();
+			}
+			if (mPosition.getLatitudeE6() < west)
+			{
+				west = mPosition.getLongitudeE6();
+			}
+			if (mPosition.getLatitudeE6() < south)
+			{
+				south = mPosition.getLatitudeE6();
+			}
+
+		toRtn = new BoundingBoxE6(north, east, south, west);
+		return toRtn;
 	}
 }
