@@ -625,4 +625,11 @@ public class OsmMap extends Fragment
 		}
 		stationsMarkersOverlay.invalidate();
 	}
+	
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		((MainActivity) getActivity()).setOnStationRefresh(null);
+		((MainActivity) getActivity()).setOnBikesRefresh(null);		
+	}
 }

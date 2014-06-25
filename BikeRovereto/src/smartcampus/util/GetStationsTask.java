@@ -42,6 +42,7 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 	public static final int ERROR_CLIENT = 2;
 	
 	private int currentStatus;
+	private ArrayList<Station> favStations;
 	
 
 	private Context context;
@@ -52,7 +53,7 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 	}
 	public interface AsyncStationResponse
 	{
-	    void processFinish(ArrayList<Station> stations, int status);
+	    void processFinish(ArrayList<Station> stations, ArrayList<Station> favStations, int status);
 	}
 	public AsyncStationResponse delegate = null;
 
@@ -104,7 +105,7 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 			if(data[0] == "")
 			{
 				JSONArray stationsArrayJSON = container.getJSONArray("data");
-				
+				favStations = new ArrayList<Station>();
 				for (int i = 0; i < stationsArrayJSON.length(); i++)
 				{
 					JSONObject stationJSON = stationsArrayJSON.getJSONObject(i);
@@ -122,7 +123,7 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 					station.setUsedSlots(availableBikes);
 					stations.add(station);
 					if (fav)
-						((MainActivity)context).addFavouriteStation(station);
+						favStations.add(station);
 				}
 			}
 			else
@@ -155,7 +156,7 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 	@Override
 	protected void onPostExecute(ArrayList<Station> result) {
 		if (delegate!=null)
-			delegate.processFinish(result, currentStatus);
+			delegate.processFinish(result, favStations, currentStatus);
 	}
 	
 }

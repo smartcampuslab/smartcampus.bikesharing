@@ -34,6 +34,7 @@
     <string name="add_reminder">Add reminder</string>
     <string name="edit_reminder">Edit reminder</string>
     <string name="no_favourites">No favourite stations</string>
+    <string name="no_stations">No stations</string>
     <string name="no_reminders">No reminder setted</string>
     <string name="station">station</string>
     <string name="error">Stations aren\'t available</string>
