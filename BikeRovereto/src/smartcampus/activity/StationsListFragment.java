@@ -48,7 +48,7 @@ public class StationsListFragment extends ListFragment
 	// Container Activity must implement this interface
 	public interface OnStationSelectListener
 	{
-		public void onStationSelected(Station station);
+		public void onStationSelected(Station station, boolean animation);
 	}
 
 	public static StationsListFragment newInstance(ArrayList<Station> stations)
@@ -148,7 +148,7 @@ public class StationsListFragment extends ListFragment
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id)
 			{					
-				mCallback.onStationSelected(mStations.get(position));
+				mCallback.onStationSelected(mStations.get(position), true);
 			}
 		});
 		mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

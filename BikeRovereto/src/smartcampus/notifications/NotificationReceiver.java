@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import smartcampus.activity.MainActivity;
 import smartcampus.model.NotificationBlock;
 import smartcampus.model.Station;
 import smartcampus.util.GetStationsTask;
@@ -26,6 +27,7 @@ public class NotificationReceiver extends BroadcastReceiver
 
 	private AlarmManager alarmMgr;
 	private PendingIntent alarmIntent;
+	public final static String INTENT_FROM_NOTIFICATION = "fromNotification";
 
 	public void registerAlarm(Context context, Calendar when, int uniqueID, String stationID)
 	{
@@ -63,13 +65,17 @@ public class NotificationReceiver extends BroadcastReceiver
 	}
 
 	@Override
-	public void onReceive(Context arg0, Intent arg1)
+	public void onReceive(Context context, Intent intent)
 	{
 		Station station = null;
-		String stationID = arg1.getStringExtra("stationID");
+		String stationID = intent.getStringExtra("stationID");
+		Intent intentToDetails = new Intent(context, MainActivity.class);
 		try
 		{
-			station = new GetStationsTask(arg0).execute(stationID).get(10000, TimeUnit.MILLISECONDS).get(0);
+			station = new GetStationsTask(context).execute(stationID).get(10000, TimeUnit.MILLISECONDS).get(0);
+			intentToDetails.putExtra("station", station);
+			intentToDetails.putExtra(INTENT_FROM_NOTIFICATION, true);
+			PendingIntent pendingIntentToDetails = PendingIntent.getActivity(context, 0, intentToDetails, PendingIntent.FLAG_UPDATE_CURRENT);
 			// define sound URI, the sound to be played when there's a
 			// notification
 			Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -77,16 +83,19 @@ public class NotificationReceiver extends BroadcastReceiver
 			// this is it, we'll build the notification!
 			// in the addAction method, if you don't want any icon, just set the
 			// first param to 0
-			Resources res = arg0.getResources();
-			Notification mNotification = new Notification.Builder(arg0).setContentTitle(res.getText(R.string.station) + " " + station.getName().toUpperCase()).setContentText(
-					res.getText(R.string.sort_available_bikes) + ": " + station.getNBikesPresent() + " - " + res.getText(R.string.sort_available_slots) + ": " + station.getNSlotsEmpty()).setSmallIcon(
-					R.drawable.ic_launcher).setContentIntent(alarmIntent).setSound(soundUri)
+			Resources res = context.getResources();
+			Notification mNotification = new Notification.Builder(context)
+				.setContentTitle(res.getText(R.string.station) + " " + station.getName().toUpperCase())
+				.setContentText(res.getText(R.string.sort_available_bikes) + ": "
+								+ station.getNBikesPresent() + " - " 
+								+ res.getText(R.string.sort_available_slots) 
+								+ ": " + station.getNSlotsEmpty())
+				.setSmallIcon(R.drawable.ic_launcher)
+				.setContentIntent(pendingIntentToDetails)
+				.setSound(soundUri)
+				.build();
 
-			.addAction(R.drawable.ic_launcher, "View", alarmIntent).addAction(0, "Remind", alarmIntent)
-
-			.build();
-
-			NotificationManager notificationManager = (NotificationManager) arg0.getSystemService(arg0.NOTIFICATION_SERVICE);
+			NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
 			// If you want to hide the notification after it was selected, do
 			// the
@@ -97,17 +106,18 @@ public class NotificationReceiver extends BroadcastReceiver
 		}
 		catch (InterruptedException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		catch (ExecutionException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		catch (TimeoutException e)
 		{
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 	}

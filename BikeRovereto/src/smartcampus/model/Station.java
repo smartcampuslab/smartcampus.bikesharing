@@ -1,6 +1,7 @@
 package smartcampus.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
@@ -83,7 +84,7 @@ public class Station implements Parcelable
 		nBikes = source.readInt();
 		maxSlots = source.readInt();
 		brokenBikes = source.readInt();
-		source.readList(reports, null);
+		source.readList(reports, List.class.getClassLoader());
 		id = source.readString();
 	}
 
@@ -217,6 +218,8 @@ public class Station implements Parcelable
 
 	public ArrayList<Report> getReports()
 	{
+		if (reports == null)
+			return new ArrayList<Report>(); //for safety!
 		return reports;
 	}
 

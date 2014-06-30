@@ -106,7 +106,7 @@ public class StationDetails extends Fragment
 		distance.setText(Tools.formatDistance(station.getDistance()));
 
 		ArrayList<String> sReports = new ArrayList<String>();
-
+		Log.d("sas", (station.getReports() == null)+"");
 		for (Report r : station.getReports())
 		{
 			sReports.add(r.getDetails());

@@ -34,7 +34,7 @@ public class FavouriteFragment extends ListFragment{
 	// Container Activity must implement this interface
 	public interface OnStationSelectListener
 	{
-		public void onStationSelected(Station station);
+		public void onStationSelected(Station station, boolean animation);
 	}
 
 	
@@ -63,6 +63,31 @@ public class FavouriteFragment extends ListFragment{
 			throw new ClassCastException(activity.toString()
 					+ " must implement FavouriteFragment.OnStationSelectListener");
 		}
+	}
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{
+		favStations = getArguments().getParcelableArrayList("stations");
+		if (favStations == null) favStations = new ArrayList<Station>();
+		((MainActivity) getActivity())
+				.setOnPositionAquiredListener(new OnPositionAquiredListener()
+				{
+
+					@Override
+					public void onPositionAquired()
+					{
+						adapter.notifyDataSetChanged();
+					}
+				});
+		/*
+		//If the distance is already defined the list is sorted by distance, otherwise
+		//is sorted by available bikes
+		if (mStations.get(0).getDistance()==Station.DISTANCE_NOT_VALID)
+			sortByAvailableBikes(false);
+		else
+			sortByDistance(false);*/
+		super.onCreate(savedInstanceState);
 	}
 	
 	@Override
@@ -120,29 +145,6 @@ public class FavouriteFragment extends ListFragment{
         mSwipeRefreshLayout.setRefreshing(false);
     }
 	
-	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
-		favStations = getArguments().getParcelableArrayList("stations");
-		((MainActivity) getActivity())
-				.setOnPositionAquiredListener(new OnPositionAquiredListener()
-				{
-
-					@Override
-					public void onPositionAquired()
-					{
-						adapter.notifyDataSetChanged();
-					}
-				});
-		/*
-		//If the distance is already defined the list is sorted by distance, otherwise
-		//is sorted by available bikes
-		if (mStations.get(0).getDistance()==Station.DISTANCE_NOT_VALID)
-			sortByAvailableBikes(false);
-		else
-			sortByDistance(false);*/
-		super.onCreate(savedInstanceState);
-	}
 	
 	@Override
 	public void onStart() {
@@ -155,7 +157,7 @@ public class FavouriteFragment extends ListFragment{
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				mCallback.onStationSelected(favStations.get(position));				
+				mCallback.onStationSelected(favStations.get(position), true);				
 			}
 		});
 	}
