@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
+import smartcampus.asynctask.GetStationsTask;
+import smartcampus.asynctask.GetStationsTask.AsyncStationResponse;
 import smartcampus.model.Station;
-import smartcampus.util.GetStationsTask;
-import smartcampus.util.GetStationsTask.AsyncStationResponse;
 import smartcampus.util.StationsAdapter;
 import smartcampus.util.Tools;
 import android.app.Activity;

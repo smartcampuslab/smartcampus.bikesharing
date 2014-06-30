@@ -1,11 +1,10 @@
-package smartcampus.util;
+package smartcampus.asynctask;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
@@ -17,38 +16,42 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
-import smartcampus.model.Bike;
+import smartcampus.model.Report;
 import smartcampus.model.Station;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.util.Log;
 
-public class GetAnarchicBikesTask extends AsyncTask<Void, Void, ArrayList<Bike>>
+public class GetReportsTask extends AsyncTask<String, Void, ArrayList<Report>>
 {
+	private static final String KEY = "name";
+	private static final String KEY2 = "street";
 
-	private static final String BIKE_ID = "id";
-	private static final String BIKE_LATITUDE = "latitude";
-	private static final String BIKE_LONGITUDE = "longitude";
-
+	public static final String BIKE = "bikes";
+	public static final String STATION = "stations";
+	
+	
 	public static final int NO_ERROR = 0;
 	public static final int ERROR_SERVER = 1;
 	public static final int ERROR_CLIENT = 2;
 	
-	private int currentStatus;
+	private int currentStatus;	
 	
-	public interface AsyncBikesResponse
+	public interface AsyncStationResponse
 	{
-		void processFinish(ArrayList<Bike> result, int status);
+	    void processFinish();
 	}
+	public AsyncStationResponse delegate = null;
 
-	public AsyncBikesResponse delegate = null;
-
+	//data[0] is BIKE or STATION
+	//data[1] is the stationID or the bikeID
 	@Override
-	protected ArrayList<Bike> doInBackground(Void... data)
+	protected ArrayList<Report> doInBackground(String... data)
 	{
-		HttpGet httpg = new HttpGet("http://192.168.41.154:8080/bikesharing-web/bikes/5061/");
-		Log.d("prova", httpg.getURI().toString());
+		HttpGet httpg = new HttpGet("http://192.168.41.154:8080/bikesharing-web/" + data[0] + "/5061/reports/"+data[1]);
 		String responseJSON;
-		ArrayList<Bike> bikes = new ArrayList<Bike>();
+		
+		ArrayList<Report> reports = new ArrayList<Report>();
 		try
 		{
 			HttpParams httpParameters = new BasicHttpParams();
@@ -69,43 +72,42 @@ public class GetAnarchicBikesTask extends AsyncTask<Void, Void, ArrayList<Bike>>
 		catch (ClientProtocolException e)
 		{
 			currentStatus = ERROR_CLIENT;
-			return bikes;
+			return reports;
 		}
 		catch (IOException e)
 		{
 			currentStatus = ERROR_CLIENT;
-			return bikes;
+			return reports;
 		}
 		try
 		{
 			JSONObject container = new JSONObject(responseJSON);
-
-			JSONArray bikesArrayJSON = container.getJSONArray("data");
-
-			for (int i = 0; i < bikesArrayJSON.length(); i++)
+			int httpStatus = container.getInt("httpStatus");
+			if (httpStatus == 200)
+				currentStatus = NO_ERROR;
+			else
+				currentStatus = ERROR_SERVER;
+			String errorString = container.getString("errorString");
+			JSONArray stationsArrayJSON = container.getJSONArray("data");
+			for (int i = 0; i < stationsArrayJSON.length(); i++)
 			{
-				JSONObject bikesJSON = bikesArrayJSON.getJSONObject(i);
-				String id = bikesJSON.getString(BIKE_ID);
-				Double latitude = bikesJSON.getDouble(BIKE_LATITUDE);
-				Double longitude = bikesJSON.getDouble(BIKE_LONGITUDE);
-				Bike bike = new Bike(new GeoPoint(latitude, longitude), id);
-		
-				bikes.add(bike);
-			}
-
+				JSONObject stationJSON = stationsArrayJSON.getJSONObject(i);
+				// TODO: creation of the object Report
+			}			
+			
 		}
 		catch (JSONException e)
 		{
 			e.printStackTrace();
-			return bikes;
+			return reports;
 		}
-		return bikes;
+		return reports;
 	}
 
 	@Override
-	protected void onPostExecute(ArrayList<Bike> result)
-	{
-		if (delegate != null)
-			delegate.processFinish(result, currentStatus);
+	protected void onPostExecute(ArrayList<Report> result) {
+		if (delegate!=null)
+			delegate.processFinish();
 	}
+	
 }

@@ -6,9 +6,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import smartcampus.activity.MainActivity;
+import smartcampus.asynctask.GetStationsTask;
 import smartcampus.model.NotificationBlock;
 import smartcampus.model.Station;
-import smartcampus.util.GetStationsTask;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
