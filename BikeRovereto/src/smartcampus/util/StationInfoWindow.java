@@ -55,7 +55,6 @@ public class StationInfoWindow extends MarkerInfoWindow
 	@Override
 	public void open(Object object, GeoPoint position, int offsetX, int offsetY)
 	{
-		// TODO Auto-generated method stub
 		//super.open(object, position, offsetX + 15, offsetY + 80);
 		super.open(object, position, offsetX, offsetY);
 	}

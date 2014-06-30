@@ -1,6 +1,7 @@
 package smartcampus.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
@@ -15,8 +16,7 @@ public class Bike implements Parcelable
 
 	private String id;
 
-	private int nReports;
-	private ArrayList<String> reports;
+	private ArrayList<Report> reports;
 	public static final int DISTANCE_NOT_VALID = -1;
 	private int distance = DISTANCE_NOT_VALID; // >=0 only when distance is
 												// initialized
@@ -25,8 +25,8 @@ public class Bike implements Parcelable
 	{
 		this.position = position;
 		this.id = id;
-		this.nReports = 0;
-		reports = new ArrayList<String>();
+	
+		reports = new ArrayList<Report>();
 	}
 
 	// parcelable stuff
@@ -34,8 +34,7 @@ public class Bike implements Parcelable
 	{
 		position = new GeoPoint(source.readInt(), source.readInt());
 		id = source.readString();
-		nReports = source.readInt();
-		reports = source.createStringArrayList();
+		source.readList(reports, List.class.getClassLoader());
 	}
 
 	public static final Parcelable.Creator<Bike> CREATOR = new Creator<Bike>()
@@ -67,8 +66,7 @@ public class Bike implements Parcelable
 		dest.writeInt(position.getLatitudeE6());
 		dest.writeInt(position.getLongitudeE6());
 		dest.writeString(id);
-		dest.writeInt(nReports);
-		dest.writeStringList(reports);
+		dest.writeList(reports);
 	}
 
 	// getters and setters
@@ -114,23 +112,22 @@ public class Bike implements Parcelable
 		return new BoundingBoxE6(north, east, south, west);
 	}
 
-	public void addReport(String report)
+	public void addReport(Report report)
 	{
 		reports.add(report);
-		nReports++;
 	}
 
-	public String getReport(int position)
+	public Report getReport(int position)
 	{
 		return reports.get(position);
 	}
 
 	public int getNReports()
 	{
-		return nReports;
+		return reports.size();
 	}
 
-	public ArrayList<String> getReports()
+	public ArrayList<Report> getReports()
 	{
 		return reports;
 	}

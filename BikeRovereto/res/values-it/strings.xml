@@ -16,7 +16,7 @@
     <string name="reports">Segnalazioni</string>
     <string name="no_reports">Nessuna segnalazione</string>
     <string name="title_activity_signal">Guasti</string>
-    <string name="signal">Segnala guasto</string>
+    <string name="signal">Segnalazioni</string>
     <string name="action_add_report">Crea segnalazione</string>
     <string name="report_other">Descrizione aggiuntiva</string>
     <string name="report_in">Segnala in</string>
@@ -34,6 +34,22 @@
     <string name="add_reminder">Aggiungi promemoria</string>
     <string name="edit_reminder">Modifica promemoria</string>
     <string name="no_favourites">Nessuna stazione prefererita</string>
+    <string name="no_stations">Nessuna stazione</string>
     <string name="no_reminders">Nessun promemoria impostato</string>
     <string name="station">stazione</string>
+    <string name="error">Stazioni non disponibili</string>
+    <string name="error_bikes">Bici non disponibili</string>
+    <string name="choose1">Suggerimento</string>
+    <string name="choose2">Reclamo</string>
+    <string name="choose3">Segnalazione</string>
+    <string name="map">Mappa</string>
+    <string name="stations">Stazioni</string>
+    <string name="favourites">Preferiti</string>
+    <string name="tire">Ruota</string>
+    <string name="chain">Catena</string>
+    <string name="brakes">Freni</string>
+    <string name="gears">Cambio</string>
+    <string name="anarchich_bike">Bici anarchica</string>
+    <string name="id">ID: </string>
+
 </resources>

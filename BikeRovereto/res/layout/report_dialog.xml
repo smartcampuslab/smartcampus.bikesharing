@@ -1,36 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
-    
-    <CheckBox 
-        android:id="@+id/choose1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Scelta 1"/>
-    <CheckBox 
-        android:id="@+id/choose2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Scelta 2"/>
-    <CheckBox 
-        android:id="@+id/choose3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Scelta 3"/>
-    
-    <EditText 
-        android:id="@+id/description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/report_other"/>
-    
-    <Button 
-        android:id="@+id/add_photo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/add_photo"/>
-    
+    android:scrollbarAlwaysDrawVerticalTrack="true"
+    android:scrollbars="vertical" >
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:orientation="vertical" >
+
+        <RadioGroup
+            android:id="@+id/chooses_group"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <RadioButton
+                android:id="@+id/choose1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/choose1" />
+
+            <RadioButton
+                android:id="@+id/choose2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/choose2" />
+
+            <RadioButton
+                android:id="@+id/choose3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/choose3" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/lr1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <CheckBox
+                android:id="@+id/checkbox_chain"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/chain" />
+
+            <CheckBox
+                android:id="@+id/checkbox_gears"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/gears" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lr2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <CheckBox
+                android:id="@+id/checkbox_brakes"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/brakes" />
+
+            <CheckBox
+                android:id="@+id/checkbox_tire"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/tire" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/report_other" />
+
+        <Button
+            android:id="@+id/add_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/add_photo" />
+        
+        <ImageView
+            android:id="@+id/photo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:visibility="gone"
+            android:layout_marginBottom="5dp"
+            android:layout_gravity="center_horizontal" />
+        
+    </LinearLayout>
+
+</ScrollView>

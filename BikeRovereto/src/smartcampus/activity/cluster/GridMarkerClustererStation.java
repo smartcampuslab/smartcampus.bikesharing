@@ -14,10 +14,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
-public class GridMarkerClustererCustom extends GridMarkerClusterer
+public class GridMarkerClustererStation extends GridMarkerClusterer
 {
 	Context ctx;
-	public GridMarkerClustererCustom(Context ctx)
+	public GridMarkerClustererStation(Context ctx)
 	{
 		super(ctx);
 		this.ctx = ctx;

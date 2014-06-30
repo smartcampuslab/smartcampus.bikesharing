@@ -1,22 +1,27 @@
 package smartcampus.activity;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.osmdroid.util.GeoPoint;
 
+import smartcampus.asynctask.GetAnarchicBikesTask;
+import smartcampus.asynctask.GetStationsTask;
+import smartcampus.asynctask.GetAnarchicBikesTask.AsyncBikesResponse;
+import smartcampus.asynctask.GetStationsTask.AsyncStationResponse;
 import smartcampus.model.Bike;
 import smartcampus.model.NotificationBlock;
 import smartcampus.model.Station;
-import smartcampus.util.GetStationsTask;
+import smartcampus.notifications.NotificationReceiver;
 import smartcampus.util.NavigationDrawerAdapter;
 import smartcampus.util.Tools;
-import smartcampus.util.GetStationsTask.AsyncResponse;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -28,9 +33,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
-public class MainActivity extends ActionBarActivity implements StationsActivity.OnStationSelectListener, FavouriteFragment.OnStationSelectListener
+public class MainActivity extends ActionBarActivity implements StationsListFragment.OnStationSelectListener, FavouriteFragment.OnStationSelectListener
 {
 
 	private String[] navTitles;
@@ -48,45 +54,88 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 	private GeoPoint myLocation;
 	private OnPositionAquiredListener mCallback;
 	private OnStationsAquired mCallbackStationsAquired;
+	private OnStationRefresh mCallbackStationRefreshed;
+
+	private OnBikesAquired mCallbackBikesAquired;
+	private OnBikesRefresh mCallbackBikesRefreshed;
 	private NavigationDrawerAdapter navAdapter;
 
+	private Timer timer;
 	private static final String FRAGMENT_MAP = "map";
 	private static final String FRAGMENT_STATIONS = "stations";
 	private static final String FRAGMENT_FAVOURITE = "favourite";
 	public static final String FILENOTIFICATIONDB = "notificationBlockDB";
-	
+
 	public interface OnPositionAquiredListener
 	{
 		public void onPositionAquired();
 	}
+
+	// stations
 	public interface OnStationsAquired
 	{
 		public void stationsAquired(ArrayList<Station> stations);
 	}
-	
+
+	public interface OnStationRefresh
+	{
+		public void stationsRefreshed(ArrayList<Station> stations);
+	}
+
+	// bikes
+	public interface OnBikesAquired
+	{
+		public void bikesAquired(ArrayList<Bike> bikes);
+	}
+
+	public interface OnBikesRefresh
+	{
+		public void bikesRefreshed(ArrayList<Bike> bikes);
+	}
+
 	public void setOnPositionAquiredListener(OnPositionAquiredListener onPositionAquiredListener)
 	{
 		this.mCallback = onPositionAquiredListener;
 	}
+
+	public void setOnStationRefresh(OnStationRefresh onStationRefresh)
+	{
+		this.mCallbackStationRefreshed = onStationRefresh;
+	}
+
 	public void setOnStationsAquiredListener(OnStationsAquired onStationsAquired)
 	{
 		this.mCallbackStationsAquired = onStationsAquired;
 	}
-	
+
+	public void setOnBikesAquiredListener(OnBikesAquired onBikesAquired)
+	{
+		this.mCallbackBikesAquired = onBikesAquired;
+	}
+
+	public void setOnBikesRefresh(OnBikesRefresh onBikesRefresh)
+	{
+		this.mCallbackBikesRefreshed = onBikesRefresh;
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		
 		getStation();
 		getBikes();
 
 		OsmMap mainFragment = OsmMap.newInstance(stations, bikes);
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-		transaction.replace(R.id.content_frame, mainFragment, FRAGMENT_MAP);
+		transaction.add(R.id.content_frame, mainFragment, FRAGMENT_MAP);
 		transaction.commit();
-
+		if (getIntent().getBooleanExtra(NotificationReceiver.INTENT_FROM_NOTIFICATION, false))
+		{			
+			onStationSelected((Station)getIntent().getParcelableExtra("station"), false);
+		}
+		
 		navTitles = getResources().getStringArray(R.array.navTitles);
 		navIcons = new int[]
 		{ R.drawable.nav_map, R.drawable.nav_station, R.drawable.nav_favourite };
@@ -154,7 +203,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 					currentFragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_STATIONS);
 					if (currentFragment == null || !currentFragment.isVisible())
 					{
-						StationsActivity stationsFragment = StationsActivity.newInstance(stations);
+						StationsListFragment stationsFragment = StationsListFragment.newInstance(stations);
 						transaction.replace(R.id.content_frame, stationsFragment, FRAGMENT_STATIONS);
 						transaction.commit();
 					}
@@ -186,7 +235,7 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 			}
 		});
 		navAdapter.setItemChecked(0);
-		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);		
+		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 	}
 
 	@Override
@@ -225,12 +274,13 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 	}
 
 	@Override
-	public void onStationSelected(Station station)
+	public void onStationSelected(Station station, boolean animation)
 	{
 		Log.d("station selected", station.getName());
 		StationDetails detailsFragment = StationDetails.newInstance(station);
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-		transaction.setCustomAnimations(R.anim.slide_left, R.anim.alpha_out, R.anim.alpha_in, R.anim.slide_right);
+		if (animation)
+			transaction.setCustomAnimations(R.anim.slide_left, R.anim.alpha_out, R.anim.alpha_in, R.anim.slide_right);
 		transaction.replace(R.id.content_frame, detailsFragment);
 		transaction.addToBackStack(null);
 		transaction.commit();
@@ -249,19 +299,21 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 	{
 		super.onPause();
 		mLocationManager.removeUpdates(mLocationListener);
+		stopTimer();
 	}
 
-	private void updateDistances()
+	public void updateDistances()
 	{
 		if (stations != null)
 			for (Station station : stations)
 			{
 				station.setDistance(myLocation.distanceTo(station.getPosition()));
 			}
-		for (Bike bike : bikes)
-		{
-			bike.setDistance(myLocation.distanceTo(bike.getPosition()));
-		}
+		if (bikes != null)
+			for (Bike bike : bikes)
+			{
+				bike.setDistance(myLocation.distanceTo(bike.getPosition()));
+			}
 	}
 
 	private final LocationListener mLocationListener = new LocationListener()
@@ -304,60 +356,80 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 			mCallback.onPositionAquired();
 	}
 
-
 	private void getStation()
 	{
-/*
-		stations = new ArrayList<Station>();
-
-		stations.add(new Station(new GeoPoint(45.890189, 11.034275), "STAZIONE FF.SS.", "Piazzale Orsi", 12, 5, 1, "01"));
-		stations.add(new Station(new GeoPoint(45.882221, 11.040483), "OSPEDALE", "Corso Verona", 12, 5, 1, "02"));
-		stations.add(new Station(new GeoPoint(45.886525, 11.044749), "MUNICIPIO", "Piazzetta Sichardt", 6, 5, 1, "03"));
-		stations.add(new Station(new GeoPoint(45.893571, 11.043891), "MART", "Corso Bettini", 6, 5, 1, "04"));
-		stations.add(new Station(new GeoPoint(45.866352, 11.019310), "ZONA INDUSTRIALE", "Viale Caproni", 6, 5, 1, "05"));
-		stations.add(new Station(new GeoPoint(45.892256, 11.039370), "VIA PAOLI", "Via Manzoni/Via Paoli", 12, 5, 1, "06"));
-		stations.add(new Station(new GeoPoint(45.840603, 11.009298), "SACCO", "Viale della Vittoria/Via Udine", 6, 5, 1, "07"));
-		stations.add(new Station(new GeoPoint(45.893120, 11.038846), "SACCO", "Viale della Vittoria/Via Udine", 12, 5, 1, "08"));
-		stations.add(new Station(new GeoPoint(45.883409, 11.072827), "NORIGLIO", "Via Chiesa San Martino", 6, 5, 1, "09"));
-		stations.add(new Station(new GeoPoint(45.904255, 11.044859), "BRIONE", "Piazza della Pace", 6, 5, 1, "10"));
-		stations.add(new Station(new GeoPoint(45.891021, 11.038729), "PIAZZA ROSMINI", "via boh", 6, 5, 1, "11"));
-
-		for (Station station : stations)
-		{
-			if (station.getFavourite())
-				favStations.add(station);
-		}*/
 		favStations = new ArrayList<Station>();
 		GetStationsTask getStationsTask = new GetStationsTask(this);
-        getStationsTask.delegate=new AsyncResponse() {
-			
+		getStationsTask.delegate = new AsyncStationResponse()
+		{
+
 			@Override
-			public void processFinish(ArrayList<Station> result) {
-				stations=result;
-				mCallbackStationsAquired.stationsAquired(stations);
+			public void processFinish(ArrayList<Station> result, ArrayList<Station> favs, int status)
+			{
+				stations = result;
+				favStations = favs;
+				if (status != GetStationsTask.NO_ERROR)
+				{
+					Toast.makeText(getApplicationContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
+				}
+				else
+				{
+					if (myLocation != null)
+						updateDistances();
+					mCallbackStationsAquired.stationsAquired(stations);
+				}
 			}
 		};
 		getStationsTask.execute("");
-		
+
 	}
 
 	private void getBikes()
 	{
-		bikes = new ArrayList<Bike>();
+		GetAnarchicBikesTask getBikesTask = new GetAnarchicBikesTask();
+		getBikesTask.delegate = new AsyncBikesResponse()
+		{
 
-		bikes.add(new Bike(new GeoPoint(45.924255, 11.064859), "0"));
-		bikes.get(0).addReport("test");
+			@Override
+			public void processFinish(ArrayList<Bike> result, int status)
+			{
+				
+				bikes = result;
+				if (status != GetAnarchicBikesTask.NO_ERROR)
+				{
+					Toast.makeText(getApplicationContext(), getString(R.string.error_bikes), Toast.LENGTH_SHORT).show();
+				}
+				else
+				{
+					mCallbackBikesAquired.bikesAquired(bikes);
+				}
+			}
+		};
+		getBikesTask.execute();
 	}
-
+	
+	public void setStations(ArrayList<Station> stations)
+	{
+		this.stations.clear();
+		this.stations.addAll(stations); 
+	}
+	
+	public void setFavStations(ArrayList<Station> favStations)
+	{
+		this.favStations.clear();
+		this.favStations.addAll(favStations);
+	}
+	
 	public void addFavouriteStation(Station station)
 	{
 		favStations.add(station);
-	}
+	}	
 
 	public void removeFavouriteStation(Station station)
 	{
 		favStations.remove(station);
 	}
+
 	public void addReminderForStation(NotificationBlock nb)
 	{
 		notificationBlock = NotificationBlock.readArrayListFromFile(FILENOTIFICATIONDB, this);
@@ -365,10 +437,92 @@ public class MainActivity extends ActionBarActivity implements StationsActivity.
 		NotificationBlock.saveArrayListToFile(notificationBlock, FILENOTIFICATIONDB, getApplicationContext());
 	}
 
-	public void updateRemindersListFile() {
-		if (notificationBlock == null)
-			notificationBlock = NotificationBlock.readArrayListFromFile(FILENOTIFICATIONDB, this);
-		NotificationBlock.saveArrayListToFile(notificationBlock, FILENOTIFICATIONDB, getApplicationContext());
-	}
+	private void setUpdateTimer()
+	{
+		final Handler handler = new Handler();
+		timer = new Timer();
+		TimerTask doAsynchronousTask = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				handler.post(new Runnable()
+				{
+					@SuppressWarnings("unchecked")
+					public void run()
+					{
+						Log.d("prova", "tik");
+						try
+						{
+							GetAnarchicBikesTask getBikesTask = new GetAnarchicBikesTask();
+							getBikesTask.delegate = new AsyncBikesResponse()
+							{
 
+								@Override
+								public void processFinish(ArrayList<Bike> result, int status)
+								{
+									bikes = result;
+									if (mCallbackBikesRefreshed != null)
+									{
+										mCallbackBikesRefreshed.bikesRefreshed(bikes);
+									}
+								}
+							};
+							getBikesTask.execute();
+
+							favStations = new ArrayList<Station>();
+							GetStationsTask getStationsTask = new GetStationsTask(getApplicationContext());
+							getStationsTask.delegate = new AsyncStationResponse()
+							{
+
+								@Override
+								public void processFinish(ArrayList<Station> result, ArrayList<Station> favs, int status)
+								{
+									stations = result;
+									favStations = favs;
+									if (mCallbackStationRefreshed != null)
+									{
+										mCallbackStationRefreshed.stationsRefreshed(stations);
+									}
+								}
+							};
+							getStationsTask.execute("");
+
+							updateDistances();
+
+						}
+						catch (Exception e)
+						{
+						}
+					}
+				});
+			}
+		};
+		timer.schedule(doAsynchronousTask, 0, 40000);
+	}
+	
+	public void stopTimer()
+	{
+		if (timer != null)
+			timer.cancel();
+	}
+	
+	public void startTimer()
+	{
+		setUpdateTimer();
+	}
+	
+	@Override
+	public void onBackPressed() {
+		if (mDrawerLayout.isDrawerOpen(mDrawerList))
+			mDrawerLayout.closeDrawer(mDrawerList);
+		else
+			super.onBackPressed();
+		
+	}
+	
+	public ArrayList<Station> getStations()
+	{
+		return stations;
+	}
 }

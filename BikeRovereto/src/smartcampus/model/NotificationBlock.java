@@ -27,8 +27,9 @@ public class NotificationBlock implements Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	GregorianCalendar calendar;
-	String stationID;
+	private GregorianCalendar calendar;
+	private String stationID;
+	private int uniqueID;
 
 	public NotificationBlock(GregorianCalendar calendar, String stationID, Context context)
 	{
@@ -36,7 +37,8 @@ public class NotificationBlock implements Serializable
 		upDateCalendar();
 		this.stationID = stationID;
 		NotificationReceiver mr = new NotificationReceiver();
-		mr.registerAlarm(context, calendar, stationID);
+		uniqueID = (int) (calendar.getTimeInMillis() & 0xfffffff);
+		mr.registerAlarm(context, calendar, uniqueID, stationID);
 	}
 
 	public static void saveArrayListToFile(ArrayList<NotificationBlock> arrayList, String fileName, Context context)
@@ -59,12 +61,11 @@ public class NotificationBlock implements Serializable
 		}
 		catch (FileNotFoundException e)
 		{
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -91,23 +92,19 @@ public class NotificationBlock implements Serializable
 			}
 		}
 		catch (StreamCorruptedException e)
-		{
-			// TODO Auto-generated catch block
+		{			
 			e.printStackTrace();
 		}
 		catch (FileNotFoundException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		catch (ClassNotFoundException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -131,6 +128,11 @@ public class NotificationBlock implements Serializable
 	public String getID()
 	{
 		return stationID;
+	}
+	
+	public int getUniqueID()
+	{
+		return uniqueID;
 	}
 
 	public static ArrayList<NotificationBlock> getReminderForID(String id, Context context)

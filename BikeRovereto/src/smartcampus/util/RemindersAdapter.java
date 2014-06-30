@@ -6,7 +6,9 @@ import java.util.Locale;
 
 import smartcampus.activity.MainActivity;
 import smartcampus.model.NotificationBlock;
+import smartcampus.notifications.NotificationReceiver;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,11 +25,14 @@ public class RemindersAdapter extends ArrayAdapter<NotificationBlock>
 
 	private ArrayList<NotificationBlock> reminders;
 	private ArrayList<NotificationBlock> allReminders;
+	private String stationID;
 
-	public RemindersAdapter(Context context, ArrayList<NotificationBlock> reminders, ArrayList<NotificationBlock> allReminders)
+	public RemindersAdapter(Context context, ArrayList<NotificationBlock> reminders, ArrayList<NotificationBlock> allReminders, String stationID)
 	{
 		super(context, 0, reminders);
+		this.reminders = reminders;
 		this.allReminders = allReminders;
+		this.stationID = stationID;
 	}
 
 	@Override
@@ -61,7 +66,11 @@ public class RemindersAdapter extends ArrayAdapter<NotificationBlock>
 			@Override
 			public void onClick(View v) {
 				Log.d("adapter",reminders.size()+"");
-				reminders.remove(position);
+				NotificationBlock currentNB = reminders.get(position);
+				reminders.remove(currentNB);
+				allReminders.remove(currentNB);
+				NotificationReceiver nr = new NotificationReceiver();
+				nr.cancelAlarm(getContext(), currentNB.getUniqueID(), stationID);
 				notifyDataSetChanged();
 				NotificationBlock.saveArrayListToFile(allReminders, MainActivity.FILENOTIFICATIONDB, getContext());
 			}
@@ -75,5 +84,4 @@ public class RemindersAdapter extends ArrayAdapter<NotificationBlock>
 		TextView reminder;
 		ImageView clearBtn;
 	}
-
 }

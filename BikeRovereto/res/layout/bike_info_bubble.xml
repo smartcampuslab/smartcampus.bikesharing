@@ -38,7 +38,7 @@
             android:maxEms="17"
             android:textColor="#ff9200"
             android:textSize="12sp"
-            android:visibility="invisible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/bubble_subdescription"
@@ -48,14 +48,14 @@
             android:maxEms="17"
             android:textColor="#000000"
             android:textSize="11sp"
-            android:visibility="invisible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/btToSignal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background= "#4f3333"
-            android:text="@string/signal"
+            android:text="@string/to_details"
             android:layout_margin="5dp"
             android:gravity="center"
             android:padding="4dp"

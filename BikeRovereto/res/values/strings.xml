@@ -16,7 +16,7 @@
     <string name="reports">Reports</string>
     <string name="no_reports">No reports</string>
     <string name="title_activity_signal">Damages</string>
-    <string name="signal">Signal damage</string>
+    <string name="signal">Warnings</string>
     <string name="action_add_report">New report</string>
     <string name="report_other">Additional description</string>
     <string name="report_in">Report in</string>
@@ -34,7 +34,21 @@
     <string name="add_reminder">Add reminder</string>
     <string name="edit_reminder">Edit reminder</string>
     <string name="no_favourites">No favourite stations</string>
-    <string name="title_activity_reminder_edit">Edit reminder</string>
+    <string name="no_stations">No stations</string>
     <string name="no_reminders">No reminder setted</string>
     <string name="station">station</string>
+    <string name="error">Stations aren\'t available</string>
+    <string name="error_bikes">Bikes aren\'t available</string>
+    <string name="choose1">Advice</string>
+    <string name="choose2">Complaint</string>
+    <string name="choose3">Warning</string>
+    <string name="map">Map</string>
+    <string name="stations">Stations</string>
+    <string name="favourites">Favourites</string>
+    <string name="tire">Tire</string>
+    <string name="chain">Chain</string>
+    <string name="brakes">Brakes</string>
+    <string name="gears">Gears</string>
+    <string name="anarchich_bike">Anarchich bike</string>
+    <string name="id">ID: </string>
 </resources>

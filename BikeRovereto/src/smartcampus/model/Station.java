@@ -1,13 +1,14 @@
 package smartcampus.model;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.List;
 
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 public class Station implements Parcelable
 {
@@ -22,7 +23,7 @@ public class Station implements Parcelable
 	private int brokenBikes;
 	private boolean favourite;
 
-	private ArrayList<String> reports;
+	private ArrayList<Report> reports;
 	public static final int DISTANCE_NOT_VALID = -1;
 	private int distance = DISTANCE_NOT_VALID; // >=0 only when distance is
 												// initialized
@@ -38,7 +39,7 @@ public class Station implements Parcelable
 		this.nBikes = nBikes;
 		this.brokenBikes = brokenBikes;
 		this.id = id;
-		reports = new ArrayList<String>();
+		reports = new ArrayList<Report>();
 	}
 
 	public static BoundingBoxE6 getBoundingBox(ArrayList<Station> stations)
@@ -83,7 +84,7 @@ public class Station implements Parcelable
 		nBikes = source.readInt();
 		maxSlots = source.readInt();
 		brokenBikes = source.readInt();
-		reports = source.createStringArrayList();
+		source.readList(reports, List.class.getClassLoader());
 		id = source.readString();
 	}
 
@@ -124,7 +125,7 @@ public class Station implements Parcelable
 		dest.writeInt(nBikes);
 		dest.writeInt(maxSlots);
 		dest.writeInt(brokenBikes);
-		dest.writeStringList(reports);
+		dest.writeList(reports);
 		dest.writeString(id);
 		
 		
@@ -200,12 +201,12 @@ public class Station implements Parcelable
 		return maxSlots - (nBikes); // Bici mancanti nella stazione
 	}
 
-	public void addReport(String report)
+	public void addReport(Report report)
 	{
 		reports.add(report);
 	}
 
-	public String getReport(int position)
+	public Report getReport(int position)
 	{
 		return reports.get(position);
 	}
@@ -215,8 +216,10 @@ public class Station implements Parcelable
 		return reports.size();
 	}
 
-	public ArrayList<String> getReports()
+	public ArrayList<Report> getReports()
 	{
+		if (reports == null)
+			return new ArrayList<Report>(); //for safety!
 		return reports;
 	}
 
