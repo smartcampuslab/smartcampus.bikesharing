@@ -9,6 +9,7 @@ import org.osmdroid.util.GeoPoint;
 
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
 import smartcampus.model.NotificationBlock;
+import smartcampus.model.Report;
 import smartcampus.model.Station;
 import smartcampus.util.ReportsAdapter;
 import smartcampus.util.Tools;
@@ -92,8 +93,15 @@ public class StationDetails extends Fragment
 		availableBike.setText(station.getNBikesPresent() + "");
 		availableSlots.setText(station.getNSlotsEmpty() + "");
 		distance.setText(Tools.formatDistance(station.getDistance()));
-
-		mList.setAdapter(new ReportsAdapter(getActivity(), 0, station.getReports()));
+		
+		ArrayList<String> sReports = new ArrayList<String>();
+		
+		for(Report r : station.getReports())
+		{
+			sReports.add(r.getDetails());
+			Log.d("prova", r.toString());
+		}
+		mList.setAdapter(new ReportsAdapter(getActivity(), 0, sReports));
 
 		distance.setOnClickListener(new OnClickListener()
 		{
