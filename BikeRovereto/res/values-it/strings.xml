@@ -49,5 +49,7 @@
     <string name="chain">Catena</string>
     <string name="brakes">Freni</string>
     <string name="gears">Cambio</string>
+    <string name="anarchich_bike">Bici anarchica</string>
+    <string name="id">ID: </string>
 
 </resources>
