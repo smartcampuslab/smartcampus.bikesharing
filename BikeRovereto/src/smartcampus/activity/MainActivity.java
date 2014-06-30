@@ -9,6 +9,7 @@ import org.osmdroid.util.GeoPoint;
 import smartcampus.model.Bike;
 import smartcampus.model.NotificationBlock;
 import smartcampus.model.Station;
+import smartcampus.notifications.NotificationReceiver;
 import smartcampus.util.GetAnarchicBikesTask;
 import smartcampus.util.GetAnarchicBikesTask.AsyncBikesResponse;
 import smartcampus.util.GetStationsTask;
@@ -122,15 +123,19 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		
 		getStation();
 		getBikes();
 
 		OsmMap mainFragment = OsmMap.newInstance(stations, bikes);
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-		transaction.replace(R.id.content_frame, mainFragment, FRAGMENT_MAP);
+		transaction.add(R.id.content_frame, mainFragment, FRAGMENT_MAP);
 		transaction.commit();
-
+		if (getIntent().getBooleanExtra(NotificationReceiver.INTENT_FROM_NOTIFICATION, false))
+		{
+			onStationSelected((Station)getIntent().getParcelableExtra("station"));
+		}
+		
 		navTitles = getResources().getStringArray(R.array.navTitles);
 		navIcons = new int[]
 		{ R.drawable.nav_map, R.drawable.nav_station, R.drawable.nav_favourite };

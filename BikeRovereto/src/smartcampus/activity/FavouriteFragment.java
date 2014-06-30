@@ -66,6 +66,31 @@ public class FavouriteFragment extends ListFragment{
 	}
 	
 	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{
+		favStations = getArguments().getParcelableArrayList("stations");
+		if (favStations == null) favStations = new ArrayList<Station>();
+		((MainActivity) getActivity())
+				.setOnPositionAquiredListener(new OnPositionAquiredListener()
+				{
+
+					@Override
+					public void onPositionAquired()
+					{
+						adapter.notifyDataSetChanged();
+					}
+				});
+		/*
+		//If the distance is already defined the list is sorted by distance, otherwise
+		//is sorted by available bikes
+		if (mStations.get(0).getDistance()==Station.DISTANCE_NOT_VALID)
+			sortByAvailableBikes(false);
+		else
+			sortByDistance(false);*/
+		super.onCreate(savedInstanceState);
+	}
+	
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		adapter = new StationsAdapter(getActivity(), 0, favStations, ((MainActivity)getActivity()).getCurrentLocation());
@@ -120,29 +145,6 @@ public class FavouriteFragment extends ListFragment{
         mSwipeRefreshLayout.setRefreshing(false);
     }
 	
-	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
-		favStations = getArguments().getParcelableArrayList("stations");
-		((MainActivity) getActivity())
-				.setOnPositionAquiredListener(new OnPositionAquiredListener()
-				{
-
-					@Override
-					public void onPositionAquired()
-					{
-						adapter.notifyDataSetChanged();
-					}
-				});
-		/*
-		//If the distance is already defined the list is sorted by distance, otherwise
-		//is sorted by available bikes
-		if (mStations.get(0).getDistance()==Station.DISTANCE_NOT_VALID)
-			sortByAvailableBikes(false);
-		else
-			sortByDistance(false);*/
-		super.onCreate(savedInstanceState);
-	}
 	
 	@Override
 	public void onStart() {
