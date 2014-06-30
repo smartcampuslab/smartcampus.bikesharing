@@ -1,12 +1,13 @@
 package eu.trentorise.smartcampus.bikesharing.controller;
 
+import java.util.List;
 import java.util.Map;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,8 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import eu.trentorise.smartcampus.bikesharing.exceptions.InvalidCityIDException;
 import eu.trentorise.smartcampus.bikesharing.exceptions.InvalidStationIDException;
 import eu.trentorise.smartcampus.bikesharing.exceptions.WebServiceErrorException;
-import eu.trentorise.smartcampus.bikesharing.feedback.FeedBack;
-import eu.trentorise.smartcampus.bikesharing.feedback.FeedBackManager;
+import eu.trentorise.smartcampus.bikesharing.feedback.Feedback;
+import eu.trentorise.smartcampus.bikesharing.feedback.FeedbackManager;
 import eu.trentorise.smartcampus.bikesharing.managers.Container;
 import eu.trentorise.smartcampus.bikesharing.managers.DataManager;
 import eu.trentorise.smartcampus.bikesharing.model.AnarchicBike;
@@ -30,7 +31,9 @@ public class WebServiceController
 	private DataManager dataManager;
 	
 	@Autowired
-	private FeedBackManager feedBackManager;
+	private FeedbackManager feedBackManager;
+	
+	private ObjectMapper mapper = new ObjectMapper();
 	
 	@RequestMapping(value = "/stations/{cityID:.*}/{stationID:.*}")
     public @ResponseBody Container<Station> stationService(@PathVariable String cityID, @PathVariable String stationID)
@@ -119,41 +122,66 @@ public class WebServiceController
     }
     
     @RequestMapping(value = "/report", method = RequestMethod.POST)
-    public @ResponseBody Container<Integer> reportService(@RequestBody FeedBack feedBack, @RequestParam(required=false,value="file") MultipartFile file)
+    public @ResponseBody Container<Integer> reportService(@RequestParam("body") String feedback, @RequestParam(required=false,value="file") MultipartFile file)
     {
 		int httpStatus = HttpStatus.OK.value();
 		String errorString = "";
-		
-		feedBackManager.addNewFeedBack(feedBack, file);
+
+		try
+		{
+			feedBackManager.addNewFeedback(mapper.readValue(feedback, Feedback.class), file.getBytes());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			httpStatus = HttpStatus.NOT_ACCEPTABLE.value();
+			errorString = HttpStatus.NOT_ACCEPTABLE.getReasonPhrase() + ": " + e.getMessage();
+		}
 		
 		return new Container<Integer>(httpStatus, errorString, 0);
     }
     
     @RequestMapping(value = "/stations/{cityID:.*}/{stationID:.*}/report")
-    public @ResponseBody Container<FeedBack> stationsReportService(@PathVariable String cityID, @PathVariable String stationID)
+    public @ResponseBody Container<Feedback[]> stationsReportService(@PathVariable String cityID, @PathVariable String stationID)
     {
 		int httpStatus = HttpStatus.OK.value();
 		String errorString = "";
+		List<Feedback> res = null;
 		
-		FeedBack res = new FeedBack(null, 0L, "Station", "1144", "Malfunction", "Colonnina 3 malfunzionante", null);//feedBackManager.getFeedBacks(cityID, stationID)
+		try
+		{
+			res = feedBackManager.getStationFeedback(cityID, stationID);
+		}
+		catch(Exception e)
+		{
+			
+		}
 		
-        return new Container<FeedBack>(httpStatus, errorString, res);
+        return new Container<Feedback[]>(httpStatus, errorString, (Feedback[]) res.toArray());
     }
     
     @RequestMapping(value = "/bikes/{cityID:.*}/{bikeID:.*}/report")
-    public @ResponseBody Container<FeedBack> anarchicBikesReportService(@PathVariable String cityID, @PathVariable String bikeID)
+    public @ResponseBody Container<Feedback[]> anarchicBikesReportService(@PathVariable String cityID, @PathVariable String bikeID)
     {
 		int httpStatus = HttpStatus.OK.value();
 		String errorString = "";
+		List<Feedback> res = null;
 		
-		FeedBack res = new FeedBack(null, 0L, "Bike", "0001", "Malfunction", "Gomma forata", null);//feedBackManager.getFeedBacks(cityID, bikeID)
+		try
+		{
+			res = feedBackManager.getBikeFeedback(cityID, bikeID);
+	    }
+		catch(Exception e)
+		{
+			
+		}
 		
-        return new Container<FeedBack>(httpStatus, errorString, res);
+        return new Container<Feedback[]>(httpStatus, errorString, (Feedback[]) res.toArray());
     }
     
-    /*@RequestMapping(value = "/feedback")
-    public @ResponseBody FeedBack feedback()
+    @RequestMapping(value = "/feedback")
+    public @ResponseBody Feedback feedback()
     {
-        return new FeedBack();
-    }*/
+        return new Feedback();
+    }
 }
