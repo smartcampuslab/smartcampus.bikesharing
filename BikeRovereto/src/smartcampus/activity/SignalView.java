@@ -205,7 +205,7 @@ public class SignalView extends Fragment
 				}
 				else if (chooseComplaint.isChecked())
 				{
-					report = new Report(Report.Type.COMPLAINT, descriptionEditText.getText().toString());
+					report = new Report(Report.Type.COMPLAINT, descriptionEditText.getText().toString(), Report.BIKE, bike.getId());
 					report.setDetails(descriptionEditText.getText().toString());
 				}
 				else if (chooseWarning.isChecked())
