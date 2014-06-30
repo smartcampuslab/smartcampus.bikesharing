@@ -1,4 +1,4 @@
-package smartcampus.util;
+package smartcampus.asynctask;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,6 +19,7 @@ import org.osmdroid.util.GeoPoint;
 
 import smartcampus.activity.MainActivity;
 import smartcampus.model.Station;
+import smartcampus.util.Tools;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;

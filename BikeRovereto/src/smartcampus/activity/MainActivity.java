@@ -6,14 +6,14 @@ import java.util.TimerTask;
 
 import org.osmdroid.util.GeoPoint;
 
+import smartcampus.asynctask.GetAnarchicBikesTask;
+import smartcampus.asynctask.GetStationsTask;
+import smartcampus.asynctask.GetAnarchicBikesTask.AsyncBikesResponse;
+import smartcampus.asynctask.GetStationsTask.AsyncStationResponse;
 import smartcampus.model.Bike;
 import smartcampus.model.NotificationBlock;
 import smartcampus.model.Station;
 import smartcampus.notifications.NotificationReceiver;
-import smartcampus.util.GetAnarchicBikesTask;
-import smartcampus.util.GetAnarchicBikesTask.AsyncBikesResponse;
-import smartcampus.util.GetStationsTask;
-import smartcampus.util.GetStationsTask.AsyncStationResponse;
 import smartcampus.util.NavigationDrawerAdapter;
 import smartcampus.util.Tools;
 import android.content.Intent;

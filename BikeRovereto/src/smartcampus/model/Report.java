@@ -28,25 +28,41 @@ public class Report implements Parcelable
 			}
 		}
 	}
+	public static final String STATION = "station";
+	public static final String BIKE = "bike";
+	
 
-	Type type;
-	String details;
-	Bitmap photo;
+	private Type type;
+	private String details;
+	private Bitmap photo;
+	private String reportOfType;
+	private String id;
+	private long date;
 
-	public Report(Type type, String details, Bitmap photo)
+	public Report(Type type, String details, Bitmap photo, String typeOf, String id, long date)
 	{
 		this.type = type;
 		this.details = details;
 		this.photo = photo;
+		this.reportOfType = typeOf;
+		this.id = id;
+		this.date = date;
 	}
 	
 	public Report()
 	{
 		
 	}
-	public Report(Type type, String details)
+	public Report(String typeOf, String id, long date)
 	{
-		this(type, details, null);
+		
+		this.reportOfType = typeOf;
+		this.id = id;
+		this.date = date;
+	}
+	public Report(Type type, String details, String typeOf, String id, long date)
+	{
+		this(type, details, null, typeOf, id, date);
 	}
 
 	public Type getType()
@@ -63,7 +79,21 @@ public class Report implements Parcelable
 	{
 		return photo;
 	}
-
+	
+	public String getReportOfType()
+	{
+		return reportOfType;
+	}
+	
+	public String getID()
+	{
+		return id;
+	}
+	
+	public long getDate() {
+		return date;
+	}
+	
 	public void setPhoto(Bitmap photo)
 	{
 		this.photo = photo;
@@ -84,6 +114,9 @@ public class Report implements Parcelable
 		details = source.readString();
 		type = Type.values()[source.readInt()];
 		photo = source.readParcelable(null);
+		reportOfType = source.readString();
+		id = source.readString();
+		date = source.readLong();
 	}
 
 	public static final Parcelable.Creator<Report> CREATOR = new Creator<Report>()
@@ -114,11 +147,16 @@ public class Report implements Parcelable
 		dest.writeString(details);
 	    dest.writeInt(type.ordinal());
 		dest.writeParcelable(photo, CONTENTS_FILE_DESCRIPTOR);
+		dest.writeString(reportOfType);
+		dest.writeString(id);
+		dest.writeLong(date);
 	}
 	
 	public String toString()
 	{
 		return type.toString() + " " + details + " " + (photo != null? "photo" : "no photo");
 	}
+
+	
 
 }

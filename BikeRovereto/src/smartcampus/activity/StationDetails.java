@@ -8,6 +8,7 @@ import java.util.Locale;
 import org.osmdroid.util.GeoPoint;
 
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
+import smartcampus.asynctask.SendReport;
 import smartcampus.model.NotificationBlock;
 import smartcampus.model.Report;
 import smartcampus.model.Station;
@@ -213,8 +214,8 @@ public class StationDetails extends Fragment
 
 	private void addReport()
 	{
-		// TODO: add imageview to display the image captured
-		report = new Report();
+		final long date = Calendar.getInstance().getTimeInMillis();
+		report = new Report(Report.STATION, station.getId(), date);
 		View dialogContent = getActivity().getLayoutInflater().inflate(R.layout.report_dialog, null);
 		final RadioGroup radioGroup;
 		final RadioButton chooseAdvice;
@@ -264,7 +265,7 @@ public class StationDetails extends Fragment
 				}
 				else if (chooseComplaint.isChecked())
 				{
-					report = new Report(Report.Type.COMPLAINT, descriptionEditText.getText().toString());
+					report = new Report(Report.Type.COMPLAINT, descriptionEditText.getText().toString(), Report.STATION, station.getId(), date);
 					report.setDetails(descriptionEditText.getText().toString());
 				}
 				else if (chooseWarning.isChecked())
@@ -288,6 +289,7 @@ public class StationDetails extends Fragment
 				// TODO send report to web service
 				station.addReport(report);
 				Log.d("provaFotoz", station.getReport(0).toString());
+				new SendReport().execute(report);
 			}
 		});
 		builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()

@@ -56,6 +56,15 @@ public class Station
 		}
 	}
 
+	
+	
+	public Station()
+	{
+		
+	}
+
+
+
 	public String getName()
 	{
 		return name;
@@ -106,7 +115,4 @@ public class Station
 	{
 		return "\nStation [name=" + name + ", street=" + street + ", id=" + id + ", nBikes=" + nBikes + ", maxSlots=" + maxSlots + ", nBrokenBikes=" + nBrokenBikes + ", latitude=" + latitude + ", longitude=" + longitude + "]";
 	}
-
-	
-	
 }

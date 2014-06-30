@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import eu.trentorise.smartcampus.bikerovereto.R;
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
+import smartcampus.asynctask.GetStationsTask;
+import smartcampus.asynctask.GetStationsTask.AsyncStationResponse;
 import smartcampus.model.Station;
-import smartcampus.util.GetStationsTask;
 import smartcampus.util.StationsAdapter;
 import smartcampus.util.Tools;
-import smartcampus.util.GetStationsTask.AsyncStationResponse;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
