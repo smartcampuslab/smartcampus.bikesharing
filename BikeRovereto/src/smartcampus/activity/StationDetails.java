@@ -100,12 +100,12 @@ public class StationDetails extends Fragment
 		distance.setText(Tools.formatDistance(station.getDistance()));
 		
 		ArrayList<String> sReports = new ArrayList<String>();
-		
+		/*
 		for(Report r : station.getReports())
 		{
 			sReports.add(r.getDetails());
 			Log.d("prova", r.toString());
-		}
+		}*/
 		mList.setAdapter(new ReportsAdapter(getActivity(), 0, sReports));
 
 		distance.setOnClickListener(new OnClickListener()

@@ -34,7 +34,7 @@ public class FavouriteFragment extends ListFragment{
 	// Container Activity must implement this interface
 	public interface OnStationSelectListener
 	{
-		public void onStationSelected(Station station);
+		public void onStationSelected(Station station, boolean animation);
 	}
 
 	
@@ -157,7 +157,7 @@ public class FavouriteFragment extends ListFragment{
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				mCallback.onStationSelected(favStations.get(position));				
+				mCallback.onStationSelected(favStations.get(position), true);				
 			}
 		});
 	}

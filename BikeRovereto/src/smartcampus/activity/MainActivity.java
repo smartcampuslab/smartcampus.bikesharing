@@ -132,8 +132,8 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		transaction.add(R.id.content_frame, mainFragment, FRAGMENT_MAP);
 		transaction.commit();
 		if (getIntent().getBooleanExtra(NotificationReceiver.INTENT_FROM_NOTIFICATION, false))
-		{
-			onStationSelected((Station)getIntent().getParcelableExtra("station"));
+		{			
+			onStationSelected((Station)getIntent().getParcelableExtra("station"), false);
 		}
 		
 		navTitles = getResources().getStringArray(R.array.navTitles);
@@ -274,12 +274,13 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	}
 
 	@Override
-	public void onStationSelected(Station station)
+	public void onStationSelected(Station station, boolean animation)
 	{
 		Log.d("station selected", station.getName());
 		StationDetails detailsFragment = StationDetails.newInstance(station);
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-		transaction.setCustomAnimations(R.anim.slide_left, R.anim.alpha_out, R.anim.alpha_in, R.anim.slide_right);
+		if (animation)
+			transaction.setCustomAnimations(R.anim.slide_left, R.anim.alpha_out, R.anim.alpha_in, R.anim.slide_right);
 		transaction.replace(R.id.content_frame, detailsFragment);
 		transaction.addToBackStack(null);
 		transaction.commit();
@@ -298,7 +299,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	{
 		super.onPause();
 		mLocationManager.removeUpdates(mLocationListener);
-		timer.cancel();
+		stopTimer();
 	}
 
 	public void updateDistances()
@@ -502,7 +503,8 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	
 	public void stopTimer()
 	{
-		timer.cancel();
+		if (timer != null)
+			timer.cancel();
 	}
 	
 	public void startTimer()
