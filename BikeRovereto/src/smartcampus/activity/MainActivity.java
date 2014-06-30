@@ -505,5 +505,9 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	{
 		setUpdateTimer();
 	}
-
+	
+	public ArrayList<Station> getStations()
+	{
+		return stations;
+	}
 }

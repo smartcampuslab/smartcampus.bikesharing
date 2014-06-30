@@ -241,6 +241,8 @@ public class StationDetails extends Fragment
 					report.setType(Report.Type.WARNING);
 				report.setDetails(descriptionEditText.getText().toString());
 				report.setPhoto(imageBitmap);
+				
+				//TODO send report to web service
 				station.addReport(report);
 				Log.d("provaFotoz", station.getReport(0).toString());
 			}
@@ -294,8 +296,6 @@ public class StationDetails extends Fragment
 			imageBitmap = (Bitmap) extras.get("data");
 			report.setPhoto(imageBitmap);
 			
-			// ((ImageView)getActivity().getLayoutInflater().inflate(R.layout.report_dialog, null).findViewById(R.id.aquired_image)).setImageBitmap(imageBitmap);
-			((Button)getActivity().getLayoutInflater().inflate(R.layout.report_dialog, null).findViewById(R.id.add_photo)).setBackgroundColor(Color.RED);
 			// mImageView.setImageBitmap(imageBitmap);
 		}
 	}
