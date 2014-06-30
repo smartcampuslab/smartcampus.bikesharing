@@ -42,6 +42,9 @@
     <string name="choose1">Advice</string>
     <string name="choose2">Complaint</string>
     <string name="choose3">Warning</string>
+    <string name="map">Map</string>
+    <string name="stations">Stations</string>
+    <string name="favourites">Favourites</string>
     <string name="tire">Tire</string>
     <string name="chain">Chain</string>
     <string name="brakes">Brakes</string>
