@@ -18,14 +18,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,12 +37,15 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import eu.trentorise.smartcampus.bikerovereto.R;
@@ -213,16 +216,27 @@ public class StationDetails extends Fragment
 		// TODO: add imageview to display the image captured
 		report = new Report();
 		View dialogContent = getActivity().getLayoutInflater().inflate(R.layout.report_dialog, null);
-		final RadioGroup choosesGroup;
-		final RadioButton choose1;
-		final RadioButton choose2;
-		final RadioButton choose3;
+		final RadioGroup radioGroup;
+		final RadioButton chooseAdvice;
+		final RadioButton chooseComplaint;
+		final RadioButton chooseWarning;
 		final EditText descriptionEditText;
 		final Button addPhoto;
-		choosesGroup = (RadioGroup) dialogContent.findViewById(R.id.chooses_group);
-		choose1 = (RadioButton) dialogContent.findViewById(R.id.choose1);
-		choose2 = (RadioButton) dialogContent.findViewById(R.id.choose2);
-		choose3 = (RadioButton) dialogContent.findViewById(R.id.choose3);
+		final LinearLayout[] signalLayouts = new LinearLayout[2];
+		final CheckBox[] checkBoxes = new CheckBox[4];
+		radioGroup = (RadioGroup) dialogContent.findViewById(R.id.chooses_group);
+		chooseAdvice = (RadioButton) dialogContent.findViewById(R.id.choose1);
+		chooseComplaint = (RadioButton) dialogContent.findViewById(R.id.choose2);
+		chooseWarning = (RadioButton) dialogContent.findViewById(R.id.choose3);
+
+		checkBoxes[0] = (CheckBox) dialogContent.findViewById(R.id.checkbox_chain);
+		checkBoxes[1] = (CheckBox) dialogContent.findViewById(R.id.checkbox_brakes);
+		checkBoxes[2] = (CheckBox) dialogContent.findViewById(R.id.checkbox_gears);
+		checkBoxes[3] = (CheckBox) dialogContent.findViewById(R.id.checkbox_tire);
+
+		signalLayouts[0] = (LinearLayout) dialogContent.findViewById(R.id.lr1);
+		signalLayouts[1] = (LinearLayout) dialogContent.findViewById(R.id.lr2);
+
 		descriptionEditText = (EditText) dialogContent.findViewById(R.id.description);
 		addPhoto = (Button) dialogContent.findViewById(R.id.add_photo);
 		photoView = (ImageView) dialogContent.findViewById(R.id.photo);
@@ -237,18 +251,38 @@ public class StationDetails extends Fragment
 		});
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
 		builder.setTitle(getString(R.string.report_in) + " " + station.getName());
 		builder.setPositiveButton(R.string.report, new DialogInterface.OnClickListener()
 		{
 			public void onClick(DialogInterface dialogI, int id)
 			{
-				if (choose1.isChecked())
+				if (chooseAdvice.isChecked())
+				{
 					report.setType(Report.Type.ADVICE);
-				if (choose2.isChecked())
+					report.setDetails(descriptionEditText.getText().toString());
+				}
+				else if (chooseComplaint.isChecked())
+				{
 					report = new Report(Report.Type.COMPLAINT, descriptionEditText.getText().toString());
-				if (choose3.isChecked())
+					report.setDetails(descriptionEditText.getText().toString());
+				}
+				else if (chooseWarning.isChecked())
+				{
 					report.setType(Report.Type.WARNING);
-				report.setDetails(descriptionEditText.getText().toString());
+					String details = "";
+					for (int i = 0; i < 4; i++)
+					{
+						if (checkBoxes[i].isChecked())
+						{
+							details += checkBoxes[i].getText().toString() + " ";
+						}
+						details += descriptionEditText.getText().toString();
+						report.setDetails(details);
+					}
+
+				}
+
 				report.setPhoto(imageBitmap);
 
 				// TODO send report to web service
@@ -264,7 +298,97 @@ public class StationDetails extends Fragment
 		});
 
 		builder.setView(dialogContent);
-		builder.show();
+		final AlertDialog dialog = builder.create();
+		dialog.show();
+		// Initially disable the button
+		((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+
+		radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener()
+		{
+
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId)
+			{
+				if (chooseWarning.isChecked())
+				{
+					for (int i = 0; i < 2; i++)
+					{
+						signalLayouts[i].setVisibility(View.VISIBLE);
+					}
+				}
+				else
+				{
+					for (int i = 0; i < 2; i++)
+					{
+						signalLayouts[i].setVisibility(View.GONE);
+					}
+				}
+				Log.d("provassh", descriptionEditText.getText().toString() + "d");
+				if ((chooseAdvice.isChecked() || chooseComplaint.isChecked()) && (!descriptionEditText.getText().toString().equals("")))
+				{
+					((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+				}
+				else if ((chooseWarning.isChecked() && (!descriptionEditText.getText().toString().equals("") || checkBoxes[0].isChecked()
+						|| checkBoxes[1].isChecked() || checkBoxes[2].isChecked() || checkBoxes[3].isChecked())))
+				{
+					((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+				}
+			}
+		});
+		descriptionEditText.addTextChangedListener(new TextWatcher()
+		{
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count)
+			{
+				if (!descriptionEditText.getText().toString().equals(""))
+				{
+					if (chooseAdvice.isChecked() || chooseComplaint.isChecked() || chooseWarning.isChecked())
+					{
+						((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+					}
+				}
+				else
+				{
+					((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+				}
+
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after)
+			{
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable s)
+			{
+				// TODO Auto-generated method stub
+
+			}
+		});
+
+		for(int i = 0; i < 4; i++)
+		{
+		checkBoxes[i].setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+		{
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+			{
+				if(checkBoxes[0].isChecked() || checkBoxes[1].isChecked() || checkBoxes[2].isChecked() || checkBoxes[3].isChecked())
+				{
+					((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+				}
+				else
+				{
+					((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+				}
+			}
+		});
+		}
 	}
 
 	private void addReminder()
@@ -278,8 +402,9 @@ public class StationDetails extends Fragment
 		{
 			public void onClick(DialogInterface dialogI, int id)
 			{
-				((MainActivity) getActivity()).addReminderForStation(new NotificationBlock(new GregorianCalendar(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), picker
-						.getCurrentHour(), picker.getCurrentMinute(), 0), station.getId(), getActivity())
+				((MainActivity) getActivity()).addReminderForStation(new NotificationBlock(new GregorianCalendar(c.get(Calendar.YEAR), c
+						.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), picker.getCurrentHour(), picker.getCurrentMinute(), 0), station.getId(),
+						getActivity())
 
 				);
 			}

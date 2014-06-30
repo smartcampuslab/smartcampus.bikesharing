@@ -45,4 +45,8 @@
     <string name="map">Map</string>
     <string name="stations">Stations</string>
     <string name="favourites">Favourites</string>
+    <string name="tire">Tire</string>
+    <string name="chain">Chain</string>
+    <string name="brakes">Brakes</string>
+    <string name="gears">Gears</string>
 </resources>

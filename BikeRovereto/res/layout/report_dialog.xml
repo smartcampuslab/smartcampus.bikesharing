@@ -34,9 +34,52 @@
                 android:id="@+id/choose3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 android:text="@string/choose3" />
         </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/lr1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <CheckBox
+                android:id="@+id/checkbox_chain"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/chain" />
+
+            <CheckBox
+                android:id="@+id/checkbox_gears"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/gears" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lr2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <CheckBox
+                android:id="@+id/checkbox_brakes"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/brakes" />
+
+            <CheckBox
+                android:id="@+id/checkbox_tire"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/tire" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/description"
