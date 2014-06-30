@@ -200,9 +200,9 @@ public class Station implements Parcelable
 		return maxSlots - (nBikes); // Bici mancanti nella stazione
 	}
 
-	public void addReport(String report)
+	public void addReport(Report report)
 	{
-		reports.add(new Report(Report.Type.COMPLAINT, report, null));
+		reports.add(report);
 	}
 
 	public Report getReport(int position)

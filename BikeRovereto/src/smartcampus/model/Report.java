@@ -39,6 +39,15 @@ public class Report implements Parcelable
 		this.details = details;
 		this.photo = photo;
 	}
+	
+	public Report()
+	{
+		
+	}
+	public Report(Type type, String details)
+	{
+		this(type, details, null);
+	}
 
 	public Type getType()
 	{
@@ -55,6 +64,20 @@ public class Report implements Parcelable
 		return photo;
 	}
 
+	public void setPhoto(Bitmap photo)
+	{
+		this.photo = photo;
+	}
+	
+	public void setType(Type type)
+	{
+		this.type = type;
+	}
+	
+	public void setDetails(String details)
+	{
+		this.details = details;
+	}
 	// parcelable stuff
 	public Report(Parcel source)
 	{
@@ -91,6 +114,11 @@ public class Report implements Parcelable
 		dest.writeString(details);
 	    dest.writeInt(type.ordinal());
 		dest.writeParcelable(photo, CONTENTS_FILE_DESCRIPTOR);
+	}
+	
+	public String toString()
+	{
+		return type.toString() + " " + details + " " + (photo != null? "photo" : "no photo");
 	}
 
 }

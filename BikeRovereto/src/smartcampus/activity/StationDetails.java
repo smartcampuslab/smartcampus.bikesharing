@@ -17,6 +17,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -57,7 +60,9 @@ public class StationDetails extends Fragment
 	private ImageView editReminder;
 
 	private static final int REQUEST_IMAGE_CAPTURE = 1;
-
+	
+	private Report report;
+	private Bitmap imageBitmap;
 	public static StationDetails newInstance(Station station)
 	{
 		StationDetails fragment = new StationDetails();
@@ -200,7 +205,7 @@ public class StationDetails extends Fragment
 	private void addReport()
 	{
 		// TODO: add imageview to display the image captured
-
+		report = new Report();
 		View dialogContent = getActivity().getLayoutInflater().inflate(R.layout.report_dialog, null);
 		final CheckBox choose1;
 		final CheckBox choose2;
@@ -212,7 +217,6 @@ public class StationDetails extends Fragment
 		choose3 = (CheckBox) dialogContent.findViewById(R.id.choose3);
 		descriptionEditText = (EditText) dialogContent.findViewById(R.id.description);
 		addPhoto = (Button) dialogContent.findViewById(R.id.add_photo);
-
 		addPhoto.setOnClickListener(new OnClickListener()
 		{
 
@@ -223,8 +227,6 @@ public class StationDetails extends Fragment
 			}
 		});
 
-		final ArrayList<String> choosesAndDescription = new ArrayList<String>();
-
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle(getString(R.string.report_in) + " " + station.getName());
 		builder.setPositiveButton(R.string.report, new DialogInterface.OnClickListener()
@@ -232,12 +234,15 @@ public class StationDetails extends Fragment
 			public void onClick(DialogInterface dialogI, int id)
 			{
 				if (choose1.isChecked())
-					choosesAndDescription.add(choose1.getText().toString());
+					report.setType(Report.Type.ADVICE);
 				if (choose2.isChecked())
-					choosesAndDescription.add(choose2.getText().toString());
+					report = new Report(Report.Type.COMPLAINT, descriptionEditText.getText().toString());
 				if (choose3.isChecked())
-					choosesAndDescription.add(choose3.getText().toString());
-				choosesAndDescription.add(descriptionEditText.getText().toString());
+					report.setType(Report.Type.WARNING);
+				report.setDetails(descriptionEditText.getText().toString());
+				report.setPhoto(imageBitmap);
+				station.addReport(report);
+				Log.d("provaFotoz", station.getReport(0).toString());
 			}
 		});
 		builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
@@ -247,9 +252,7 @@ public class StationDetails extends Fragment
 			}
 		});
 		builder.setView(dialogContent);
-
 		builder.show();
-
 	}
 
 	private void addReminder()
@@ -288,7 +291,11 @@ public class StationDetails extends Fragment
 		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK)
 		{
 			Bundle extras = data.getExtras();
-			// Bitmap imageBitmap = (Bitmap) extras.get("data");
+			imageBitmap = (Bitmap) extras.get("data");
+			report.setPhoto(imageBitmap);
+			
+			// ((ImageView)getActivity().getLayoutInflater().inflate(R.layout.report_dialog, null).findViewById(R.id.aquired_image)).setImageBitmap(imageBitmap);
+			((Button)getActivity().getLayoutInflater().inflate(R.layout.report_dialog, null).findViewById(R.id.add_photo)).setBackgroundColor(Color.RED);
 			// mImageView.setImageBitmap(imageBitmap);
 		}
 	}

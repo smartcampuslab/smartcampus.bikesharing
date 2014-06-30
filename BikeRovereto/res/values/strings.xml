@@ -39,4 +39,7 @@
     <string name="station">station</string>
     <string name="error">Stations aren\'t available</string>
     <string name="error_bikes">Bikes aren\'t available</string>
+    <string name="choose1">Advice</string>
+    <string name="choose2">Complaint</string>
+    <string name="choose3">Warning</string>
 </resources>
