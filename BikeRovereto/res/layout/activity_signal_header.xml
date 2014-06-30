@@ -22,14 +22,14 @@
                 style="@android:style/TextAppearance.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bici anarchica" />
+                android:text="@string/anarchich_bike" />
 
             <TextView
                 android:id="@+id/txtId"
                 style="@android:style/TextAppearance.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ID" />
+                android:text="@string/id" />
 
         </LinearLayout>
 

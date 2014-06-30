@@ -49,4 +49,6 @@
     <string name="chain">Chain</string>
     <string name="brakes">Brakes</string>
     <string name="gears">Gears</string>
+    <string name="anarchich_bike">Anarchich bike</string>
+    <string name="id">ID: </string>
 </resources>
