@@ -396,7 +396,7 @@ public class StationDetails extends Fragment
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		final TimePicker picker = new TimePicker(getActivity());
 		final Calendar c = Calendar.getInstance(Locale.ITALIAN);
-		Log.d("dai", c.getTime().getHours() + " " + c.getTime().getMinutes());
+		//Log.d("dai", c.getTime().getHours() + " " + c.getTime().getMinutes());
 		builder.setTitle(getString(R.string.add_reminder));
 		builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
 		{

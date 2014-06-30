@@ -51,4 +51,8 @@
     <string name="gears">Gears</string>
     <string name="anarchich_bike">Anarchich bike</string>
     <string name="id">ID: </string>
+    <string name="about">About</string>
+    <string name="title_activity_about">AboutActivity</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>

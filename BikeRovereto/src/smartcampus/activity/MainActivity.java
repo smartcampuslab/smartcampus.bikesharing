@@ -34,6 +34,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+import eu.trentorise.smartcampus.bikerovereto.AboutActivity;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
 public class MainActivity extends ActionBarActivity implements StationsListFragment.OnStationSelectListener, FavouriteFragment.OnStationSelectListener
@@ -141,7 +142,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		{ R.drawable.nav_map, R.drawable.nav_station, R.drawable.nav_favourite };
 		navExtraTitles = getResources().getStringArray(R.array.navExtraTitles);
 		navExtraIcons = new int[]
-		{ R.drawable.nav_settings };
+		{ R.drawable.nav_settings, R.drawable.ic_action_about };
 
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -230,6 +231,11 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 					i.putParcelableArrayListExtra("stations", stations);
 					startActivity(i);
 					break;
+				case 4:
+//					Intent i2 = new Intent(getBaseContext(), AboutActivity.class);
+//					startActivity(i2);
+					break;
+					
 				}
 				mDrawerLayout.closeDrawers();
 			}
