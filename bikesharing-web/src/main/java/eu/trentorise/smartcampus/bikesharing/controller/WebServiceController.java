@@ -1,8 +1,11 @@
 package eu.trentorise.smartcampus.bikesharing.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -122,14 +125,15 @@ public class WebServiceController
     }
     
     @RequestMapping(value = "/report", method = RequestMethod.POST)
-    public @ResponseBody Container<Integer> reportService(@RequestParam("body") String feedback, @RequestParam(required=false,value="file") MultipartFile file)
+    public @ResponseBody Container<Integer> reportService(@RequestParam("body") String body, @RequestParam(required=false,value="file") MultipartFile file)
     {
 		int httpStatus = HttpStatus.OK.value();
 		String errorString = "";
+		
 
 		try
 		{
-			feedBackManager.addNewFeedback(mapper.readValue(feedback, Feedback.class), file.getBytes());
+			feedBackManager.addNewFeedback(mapper.readValue(body, Feedback.class), file.getBytes());
 		}
 		catch (Exception e)
 		{
