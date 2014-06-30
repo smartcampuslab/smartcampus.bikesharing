@@ -48,7 +48,7 @@ public class GetReportsTask extends AsyncTask<String, Void, ArrayList<Report>>
 	@Override
 	protected ArrayList<Report> doInBackground(String... data)
 	{
-		HttpGet httpg = new HttpGet("http://192.168.41.157:8080/bikesharing-web/" + data[0] + "/5061/reports/"+data[1]);
+		HttpGet httpg = new HttpGet("http://192.168.41.154:8080/bikesharing-web/" + data[0] + "/5061/reports/"+data[1]);
 		String responseJSON;
 		
 		ArrayList<Report> reports = new ArrayList<Report>();

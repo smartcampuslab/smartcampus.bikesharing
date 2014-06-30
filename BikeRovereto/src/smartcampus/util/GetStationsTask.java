@@ -61,7 +61,7 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 	@Override
 	protected ArrayList<Station> doInBackground(String... data)
 	{
-		HttpGet httpg = new HttpGet("http://192.168.41.157:8080/bikesharing-web/stations/5061/"+data[0]);
+		HttpGet httpg = new HttpGet("http://192.168.41.154:8080/bikesharing-web/stations/5061/"+data[0]);
 		String responseJSON;
 		
 		ArrayList<Station> stations = new ArrayList<Station>();

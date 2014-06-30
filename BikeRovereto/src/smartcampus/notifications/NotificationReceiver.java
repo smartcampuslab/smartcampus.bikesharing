@@ -97,17 +97,14 @@ public class NotificationReceiver extends BroadcastReceiver
 		}
 		catch (InterruptedException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		catch (ExecutionException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		catch (TimeoutException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

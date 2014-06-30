@@ -487,7 +487,6 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 						}
 						catch (Exception e)
 						{
-							// TODO Auto-generated catch block
 						}
 					}
 				});
@@ -504,6 +503,15 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	public void startTimer()
 	{
 		setUpdateTimer();
+	}
+	
+	@Override
+	public void onBackPressed() {
+		if (mDrawerLayout.isDrawerOpen(mDrawerList))
+			mDrawerLayout.closeDrawer(mDrawerList);
+		else
+			super.onBackPressed();
+		
 	}
 
 }
