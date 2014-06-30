@@ -383,7 +383,8 @@ public class OsmMap extends Fragment
 
 	private void refreshBikesMarkers()
 	{
-		bikesMarkersOverlay.getItems().clear();
+		//if(bikesMarkersOverlay.getItems() != null)
+			bikesMarkersOverlay.getItems().clear();
 
 		Resources res = getResources();
 
@@ -407,6 +408,7 @@ public class OsmMap extends Fragment
 
 	private void refreshStationsMarkers()
 	{
+		if(stationsMarkersOverlay.getItems() != null)
 		stationsMarkersOverlay.getItems().clear();
 		Resources res = getResources();
 
