@@ -42,7 +42,7 @@ public class DataManager
 			           });
 		
 		anarchicBikesCache = CacheBuilder.newBuilder()
-			       .expireAfterWrite(1, TimeUnit.MINUTES)
+			       .expireAfterWrite(1, TimeUnit.SECONDS)
 			       .build(
 			           new CacheLoader<String,  Map<String, AnarchicBike>>() {
 			             public Map<String, AnarchicBike> load(String key) throws WebServiceErrorException
