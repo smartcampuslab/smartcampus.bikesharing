@@ -39,6 +39,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -63,6 +64,8 @@ public class StationDetails extends Fragment
 
 	private static final int REQUEST_IMAGE_CAPTURE = 1;
 
+	private ImageView photoView;
+	
 	private Report report;
 	private Bitmap imageBitmap;
 
@@ -222,6 +225,7 @@ public class StationDetails extends Fragment
 		choose3 = (RadioButton) dialogContent.findViewById(R.id.choose3);
 		descriptionEditText = (EditText) dialogContent.findViewById(R.id.description);
 		addPhoto = (Button) dialogContent.findViewById(R.id.add_photo);
+		photoView = (ImageView) dialogContent.findViewById(R.id.photo);
 		addPhoto.setOnClickListener(new OnClickListener()
 		{
 
@@ -302,7 +306,9 @@ public class StationDetails extends Fragment
 			imageBitmap = (Bitmap) extras.get("data");
 			report.setPhoto(imageBitmap);
 
-			// mImageView.setImageBitmap(imageBitmap);
+			photoView.setVisibility(View.VISIBLE);
+			photoView.setScaleType(ScaleType.CENTER_CROP);
+			photoView.setImageBitmap(imageBitmap);
 		}
 	}
 

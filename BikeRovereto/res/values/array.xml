@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>    
     <string-array name="navTitles">
-        <item>Mappa</item>
-        <item>Stazioni</item>
-        <item>Preferiti</item>
+        <item>@string/map</item>
+        <item>@string/stations</item>
+        <item>@string/favourites</item>
     </string-array>
     <string-array name="navExtraTitles">
-        <item>Impostazioni</item>
+        <item>@string/action_settings</item>
     </string-array>
 </resources>
