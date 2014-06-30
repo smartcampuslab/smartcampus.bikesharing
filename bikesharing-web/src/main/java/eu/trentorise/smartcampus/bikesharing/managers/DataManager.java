@@ -31,20 +31,18 @@ public class DataManager
 	
 	public DataManager()
 	{		
-		stationsCache = CacheBuilder.newBuilder()
-			       .expireAfterWrite(1, TimeUnit.MINUTES)
-			       .build(
-			           new CacheLoader<String, Map<String, Station>>() {
+		stationsCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build(
+			           new CacheLoader<String, Map<String, Station>>()
+			           {
 			             public Map<String, Station> load(String key) throws WebServiceErrorException
 			             {
 							 return stationServiceClient.getElencoStazioniPerComuneJSON(key);
-			            }
+			             }
 			           });
 		
-		anarchicBikesCache = CacheBuilder.newBuilder()
-			       .expireAfterWrite(1, TimeUnit.MINUTES)
-			       .build(
-			           new CacheLoader<String,  Map<String, AnarchicBike>>() {
+		anarchicBikesCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.SECONDS).build(
+			           new CacheLoader<String,  Map<String, AnarchicBike>>()
+			           {
 			             public Map<String, AnarchicBike> load(String key) throws WebServiceErrorException
 			             {
 			            	 return anarchicBikeServiceClient.getAnarchicBikes(key);
