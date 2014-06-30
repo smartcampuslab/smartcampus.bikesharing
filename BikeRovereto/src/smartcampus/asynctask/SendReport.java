@@ -22,7 +22,7 @@ public class SendReport extends AsyncTask<Report, Void, String>{
 	protected String doInBackground(Report... reports) {
 		InputStream inputStream = null;
         String result = "";
-        String url = "192.168.41.154:8080/bikesharing-web/" + reports[0].getReportOfType() + "/5061/" + reports[0].getID() + "reports";
+        String url = "192.168.41.154:8080/bikesharing-web/reports";
         try {
  
             // 1. create HttpClient
@@ -38,6 +38,9 @@ public class SendReport extends AsyncTask<Report, Void, String>{
             JSONObject jsonObject = new JSONObject();
             jsonObject.accumulate("type", reports[0].getType().toString());
             jsonObject.accumulate("details", reports[0].getDetails());
+            jsonObject.accumulate("objectType", reports[0].getReportOfType());            
+            jsonObject.accumulate("objectID", reports[0].getID());
+            jsonObject.accumulate("date", reports[0].getDate());
  
             // 4. convert JSONObject to JSON to String
             json = jsonObject.toString();

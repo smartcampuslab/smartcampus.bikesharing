@@ -214,8 +214,8 @@ public class StationDetails extends Fragment
 
 	private void addReport()
 	{
-		// TODO: add imageview to display the image captured
-		report = new Report();
+		final long date = Calendar.getInstance().getTimeInMillis();
+		report = new Report(Report.STATION, station.getId(), date);
 		View dialogContent = getActivity().getLayoutInflater().inflate(R.layout.report_dialog, null);
 		final RadioGroup radioGroup;
 		final RadioButton chooseAdvice;
@@ -265,7 +265,7 @@ public class StationDetails extends Fragment
 				}
 				else if (chooseComplaint.isChecked())
 				{
-					report = new Report(Report.Type.COMPLAINT, descriptionEditText.getText().toString(), Report.STATION, station.getId());
+					report = new Report(Report.Type.COMPLAINT, descriptionEditText.getText().toString(), Report.STATION, station.getId(), date);
 					report.setDetails(descriptionEditText.getText().toString());
 				}
 				else if (chooseWarning.isChecked())

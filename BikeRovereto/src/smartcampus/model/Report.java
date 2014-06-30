@@ -28,8 +28,8 @@ public class Report implements Parcelable
 			}
 		}
 	}
-	public static final String STATION = "stations"; //they are useful for the URL
-	public static final String BIKE = "bikes";
+	public static final String STATION = "station";
+	public static final String BIKE = "bike";
 	
 
 	private Type type;
@@ -37,23 +37,32 @@ public class Report implements Parcelable
 	private Bitmap photo;
 	private String reportOfType;
 	private String id;
+	private long date;
 
-	public Report(Type type, String details, Bitmap photo, String typeOf, String id)
+	public Report(Type type, String details, Bitmap photo, String typeOf, String id, long date)
 	{
 		this.type = type;
 		this.details = details;
 		this.photo = photo;
 		this.reportOfType = typeOf;
 		this.id = id;
+		this.date = date;
 	}
 	
 	public Report()
 	{
 		
 	}
-	public Report(Type type, String details, String typeOf, String id)
+	public Report(String typeOf, String id, long date)
 	{
-		this(type, details, null, typeOf, id);
+		
+		this.reportOfType = typeOf;
+		this.id = id;
+		this.date = date;
+	}
+	public Report(Type type, String details, String typeOf, String id, long date)
+	{
+		this(type, details, null, typeOf, id, date);
 	}
 
 	public Type getType()
@@ -80,7 +89,11 @@ public class Report implements Parcelable
 	{
 		return id;
 	}
-
+	
+	public long getDate() {
+		return date;
+	}
+	
 	public void setPhoto(Bitmap photo)
 	{
 		this.photo = photo;
@@ -103,6 +116,7 @@ public class Report implements Parcelable
 		photo = source.readParcelable(null);
 		reportOfType = source.readString();
 		id = source.readString();
+		date = source.readLong();
 	}
 
 	public static final Parcelable.Creator<Report> CREATOR = new Creator<Report>()
@@ -135,11 +149,14 @@ public class Report implements Parcelable
 		dest.writeParcelable(photo, CONTENTS_FILE_DESCRIPTOR);
 		dest.writeString(reportOfType);
 		dest.writeString(id);
+		dest.writeLong(date);
 	}
 	
 	public String toString()
 	{
 		return type.toString() + " " + details + " " + (photo != null? "photo" : "no photo");
 	}
+
+	
 
 }

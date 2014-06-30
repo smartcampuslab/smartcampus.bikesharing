@@ -1,6 +1,7 @@
 package smartcampus.activity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import org.osmdroid.util.GeoPoint;
 
@@ -154,8 +155,8 @@ public class SignalView extends Fragment
 
 	private void addReport()
 	{
-		// TODO: add imageview to display the image captured
-		report = new Report();
+		final long date = Calendar.getInstance().getTimeInMillis();
+		report = new Report(Report.BIKE, bike.getId(), date);
 		View dialogContent = getActivity().getLayoutInflater().inflate(R.layout.report_dialog, null);
 		final RadioGroup radioGroup;
 		final RadioButton chooseAdvice;
@@ -205,7 +206,7 @@ public class SignalView extends Fragment
 				}
 				else if (chooseComplaint.isChecked())
 				{
-					report = new Report(Report.Type.COMPLAINT, descriptionEditText.getText().toString(), Report.BIKE, bike.getId());
+					report = new Report(Report.Type.COMPLAINT, descriptionEditText.getText().toString(), Report.BIKE, bike.getId(), date);
 					report.setDetails(descriptionEditText.getText().toString());
 				}
 				else if (chooseWarning.isChecked())
