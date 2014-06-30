@@ -40,6 +40,8 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import eu.trentorise.smartcampus.bikerovereto.R;
@@ -60,9 +62,10 @@ public class StationDetails extends Fragment
 	private ImageView editReminder;
 
 	private static final int REQUEST_IMAGE_CAPTURE = 1;
-	
+
 	private Report report;
 	private Bitmap imageBitmap;
+
 	public static StationDetails newInstance(Station station)
 	{
 		StationDetails fragment = new StationDetails();
@@ -98,14 +101,14 @@ public class StationDetails extends Fragment
 		availableBike.setText(station.getNBikesPresent() + "");
 		availableSlots.setText(station.getNSlotsEmpty() + "");
 		distance.setText(Tools.formatDistance(station.getDistance()));
-		
+
 		ArrayList<String> sReports = new ArrayList<String>();
-		/*
-		for(Report r : station.getReports())
+		Log.d("sas", (station.getReports() == null)+"");
+		for (Report r : station.getReports())
 		{
 			sReports.add(r.getDetails());
 			Log.d("prova", r.toString());
-		}*/
+		}
 		mList.setAdapter(new ReportsAdapter(getActivity(), 0, sReports));
 
 		distance.setOnClickListener(new OnClickListener()
@@ -207,14 +210,16 @@ public class StationDetails extends Fragment
 		// TODO: add imageview to display the image captured
 		report = new Report();
 		View dialogContent = getActivity().getLayoutInflater().inflate(R.layout.report_dialog, null);
-		final CheckBox choose1;
-		final CheckBox choose2;
-		final CheckBox choose3;
+		final RadioGroup choosesGroup;
+		final RadioButton choose1;
+		final RadioButton choose2;
+		final RadioButton choose3;
 		final EditText descriptionEditText;
 		final Button addPhoto;
-		choose1 = (CheckBox) dialogContent.findViewById(R.id.choose1);
-		choose2 = (CheckBox) dialogContent.findViewById(R.id.choose2);
-		choose3 = (CheckBox) dialogContent.findViewById(R.id.choose3);
+		choosesGroup = (RadioGroup) dialogContent.findViewById(R.id.chooses_group);
+		choose1 = (RadioButton) dialogContent.findViewById(R.id.choose1);
+		choose2 = (RadioButton) dialogContent.findViewById(R.id.choose2);
+		choose3 = (RadioButton) dialogContent.findViewById(R.id.choose3);
 		descriptionEditText = (EditText) dialogContent.findViewById(R.id.description);
 		addPhoto = (Button) dialogContent.findViewById(R.id.add_photo);
 		addPhoto.setOnClickListener(new OnClickListener()
@@ -241,8 +246,8 @@ public class StationDetails extends Fragment
 					report.setType(Report.Type.WARNING);
 				report.setDetails(descriptionEditText.getText().toString());
 				report.setPhoto(imageBitmap);
-				
-				//TODO send report to web service
+
+				// TODO send report to web service
 				station.addReport(report);
 				Log.d("provaFotoz", station.getReport(0).toString());
 			}
@@ -253,6 +258,7 @@ public class StationDetails extends Fragment
 			{
 			}
 		});
+
 		builder.setView(dialogContent);
 		builder.show();
 	}
@@ -262,14 +268,14 @@ public class StationDetails extends Fragment
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		final TimePicker picker = new TimePicker(getActivity());
 		final Calendar c = Calendar.getInstance(Locale.ITALIAN);
-		Log.d("dai", c.getTime().getHours()+" "+c.getTime().getMinutes());
+		Log.d("dai", c.getTime().getHours() + " " + c.getTime().getMinutes());
 		builder.setTitle(getString(R.string.add_reminder));
 		builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
 		{
 			public void onClick(DialogInterface dialogI, int id)
 			{
 				((MainActivity) getActivity()).addReminderForStation(new NotificationBlock(new GregorianCalendar(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), picker
-						.getCurrentHour(), picker.getCurrentMinute(),0), station.getId(), getActivity())
+						.getCurrentHour(), picker.getCurrentMinute(), 0), station.getId(), getActivity())
 
 				);
 			}
@@ -295,7 +301,7 @@ public class StationDetails extends Fragment
 			Bundle extras = data.getExtras();
 			imageBitmap = (Bitmap) extras.get("data");
 			report.setPhoto(imageBitmap);
-			
+
 			// mImageView.setImageBitmap(imageBitmap);
 		}
 	}

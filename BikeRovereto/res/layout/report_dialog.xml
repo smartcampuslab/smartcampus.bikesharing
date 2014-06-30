@@ -1,34 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
-    
-    <CheckBox 
-        android:id="@+id/choose1"
-        android:layout_width="wrap_content"
+    android:scrollbarAlwaysDrawVerticalTrack="true"
+    android:scrollbars="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/choose1"/>
-    <CheckBox 
-        android:id="@+id/choose2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/choose2"/>
-    <CheckBox 
-        android:id="@+id/choose3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/choose3"/>
-    
-    <EditText 
-        android:id="@+id/description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/report_other"/>
-    
-    <Button 
-        android:id="@+id/add_photo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/add_photo"/>
-</LinearLayout>
+        android:orientation="vertical" >
+
+        <RadioGroup
+            android:id="@+id/chooses_group"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <RadioButton
+                android:id="@+id/choose1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/choose1" />
+
+            <RadioButton
+                android:id="@+id/choose2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/choose2" />
+
+            <RadioButton
+                android:id="@+id/choose3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/choose3" />
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/report_other" />
+
+        <Button
+            android:id="@+id/add_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_photo" />
+    </LinearLayout>
+
+</ScrollView>
