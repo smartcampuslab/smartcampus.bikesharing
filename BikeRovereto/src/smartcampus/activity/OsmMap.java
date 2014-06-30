@@ -88,6 +88,7 @@ public class OsmMap extends Fragment
 
 		// default bounding box
 		currentBoundingBox = defaultBoundingBox;
+		Log.d("provaBB", "loadDefauls");
 		setCallBackListeners();
 		super.onCreate(savedInstanceState);
 	}
