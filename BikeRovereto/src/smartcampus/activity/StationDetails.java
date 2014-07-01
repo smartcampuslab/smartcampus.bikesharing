@@ -1,5 +1,6 @@
 package smartcampus.activity;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -16,11 +17,13 @@ import smartcampus.util.ReportsAdapter;
 import smartcampus.util.Tools;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -49,6 +52,7 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
 public class StationDetails extends Fragment
@@ -72,6 +76,8 @@ public class StationDetails extends Fragment
 	
 	private Report report;
 	private Bitmap imageBitmap;
+
+	private Uri mImageUri;
 
 	public static StationDetails newInstance(Station station)
 	{
@@ -206,6 +212,22 @@ public class StationDetails extends Fragment
 	private void dispatchTakePictureIntent()
 	{
 		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		File photo;
+	    try
+	    {
+	        // place where to store camera taken picture
+	        photo = this.createTemporaryFile("picture", ".png");
+	        photo.delete();
+	    }
+	    catch(Exception e)
+	    {
+	        Log.v("REPORT", "Can't create file to take picture!");
+	        return;
+	    }
+	    mImageUri = Uri.fromFile(photo);
+	    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+	    Log.d("test", mImageUri.toString());
+	    //start camera intent
 		if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null)
 		{
 			startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
@@ -289,7 +311,7 @@ public class StationDetails extends Fragment
 				// TODO send report to web service
 				station.addReport(report);
 				Log.d("provaFotoz", station.getReport(0).toString());
-				new SendReport().execute(report);
+				new SendReport(getActivity()).execute(report);
 			}
 		});
 		builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
@@ -429,8 +451,7 @@ public class StationDetails extends Fragment
 		Log.d("station details", "onActivityResult");
 		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK)
 		{
-			Bundle extras = data.getExtras();
-			imageBitmap = (Bitmap) extras.get("data");
+			imageBitmap = grabImage();
 			report.setPhoto(imageBitmap);
 
 			photoView.setVisibility(View.VISIBLE);
@@ -438,5 +459,32 @@ public class StationDetails extends Fragment
 			photoView.setImageBitmap(imageBitmap);
 		}
 	}
+	
+	private File createTemporaryFile(String part, String ext) throws Exception
+	{
+		File tempDir = getActivity().getExternalCacheDir();
+	    tempDir=new File(tempDir.getAbsolutePath());
+	    if(!tempDir.exists())
+	    {
+	        tempDir.mkdir();
+	    }
+	    return File.createTempFile(part, ext, tempDir);
+	}
+	
+	public Bitmap grabImage()
+	{
+	    getActivity().getContentResolver().notifyChange(mImageUri, null);
+	    ContentResolver cr = getActivity().getContentResolver();
+	    try
+	    {
+	        return android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
+	    }
+	    catch (Exception e)
+	    {
+	        Log.d("REPORT", "Failed to load", e);
+	        return null;
+	    }
+	}
+
 
 }

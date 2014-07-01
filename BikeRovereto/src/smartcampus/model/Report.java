@@ -1,9 +1,12 @@
 package smartcampus.model;
 
+import java.io.ByteArrayOutputStream;
+
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 public class Report implements Parcelable
 {
@@ -108,15 +111,23 @@ public class Report implements Parcelable
 	{
 		this.details = details;
 	}
+	
+	public byte[] getPhotoAsByteArray()
+	{
+		return bitmapAsByteArray(photo);
+	}
+	
 	// parcelable stuff
 	public Report(Parcel source)
 	{
 		details = source.readString();
 		type = Type.values()[source.readInt()];
-		photo = source.readParcelable(null);
 		reportOfType = source.readString();
 		id = source.readString();
 		date = source.readLong();
+		byte[] imageByte = new byte[source.readInt()];
+		source.readByteArray(imageByte);
+		photo = byteArrayToBitmap(imageByte);
 	}
 
 	public static final Parcelable.Creator<Report> CREATOR = new Creator<Report>()
@@ -146,17 +157,31 @@ public class Report implements Parcelable
 	{
 		dest.writeString(details);
 	    dest.writeInt(type.ordinal());
-		dest.writeParcelable(photo, CONTENTS_FILE_DESCRIPTOR);
 		dest.writeString(reportOfType);
 		dest.writeString(id);
 		dest.writeLong(date);
+		byte[] byteArray = bitmapAsByteArray(photo);
+		dest.writeInt(byteArray.length);
+		dest.writeByteArray(byteArray);
 	}
 	
 	public String toString()
 	{
 		return type.toString() + " " + details + " " + (photo != null? "photo" : "no photo");
 	}
-
 	
+	private static byte[] bitmapAsByteArray(Bitmap bitmap) {
+		if (bitmap != null) {
+			ByteArrayOutputStream bais = new ByteArrayOutputStream();
+			bitmap.compress(CompressFormat.PNG, 50, bais);
+			return bais.toByteArray();
+		}
+		return null;
+	}
+	
+	private static Bitmap byteArrayToBitmap(byte[] byteArray)
+	{
+		return BitmapFactory.decodeByteArray(byteArray, 0,byteArray.length);
+	}	
 
 }
