@@ -27,10 +27,10 @@ public class BikeInfoWindow extends MarkerInfoWindow
 
 	public BikeInfoWindow(MapView mapView, final FragmentManager fragmentManager)
 	{
-		super(R.layout.bike_info_bubble, mapView);
+		super(R.layout.info_bubble, mapView);
 		myMapView = mapView;
 		
-		TextView btn = (TextView) (mView.findViewById(R.id.btToSignal));
+		TextView btn = (TextView) (mView.findViewById(R.id.btToDetails));
 		btn.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
@@ -67,6 +67,10 @@ public class BikeInfoWindow extends MarkerInfoWindow
 		super.onOpen(item);
 		BikeMarker sItem = (BikeMarker) item;
 		bike = sItem.getBike();
+		if(bike.getReports().size() > 0)
+		{
+			mView.findViewById(R.id.image_warnings).setVisibility(View.VISIBLE);
+		}
 	}
 
 	@Override

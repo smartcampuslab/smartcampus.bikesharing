@@ -300,9 +300,9 @@ public class StationDetails extends Fragment
 						{
 							details += checkBoxes[i].getText().toString() + " ";
 						}
-						details += descriptionEditText.getText().toString();
 						report.setDetails(details);
 					}
+					details += descriptionEditText.getText().toString();
 
 				}
 
