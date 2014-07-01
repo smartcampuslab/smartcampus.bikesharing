@@ -8,10 +8,12 @@ import org.osmdroid.util.GeoPoint;
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
 import smartcampus.model.Bike;
 import smartcampus.model.Report;
+import smartcampus.util.ReportTools;
 import smartcampus.util.ReportsAdapter;
 import smartcampus.util.Tools;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -34,10 +36,12 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ImageView.ScaleType;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikerovereto.R;
@@ -49,8 +53,7 @@ public class SignalView extends Fragment
 	private TextView distance;
 	private ListView mList;
 
-	private Report report;
-	private Bitmap imageBitmap;
+	private ImageView photoView;
 	// private LocationManager mLocationManager;
 	private static final int REQUEST_IMAGE_CAPTURE = 1;
 
@@ -137,7 +140,7 @@ public class SignalView extends Fragment
 			getFragmentManager().popBackStack();
 			break;
 		case R.id.action_add_report:
-			addReport();
+			ReportTools.addReport(bike, getActivity(), this);
 			break;
 		case R.id.action_settings:
 			break;
@@ -153,206 +156,20 @@ public class SignalView extends Fragment
 		super.onDetach();
 	}
 
-	private void addReport()
-	{
-		final long date = Calendar.getInstance().getTimeInMillis();
-		report = new Report(Report.BIKE, bike.getId(), date);
-		View dialogContent = getActivity().getLayoutInflater().inflate(R.layout.report_dialog, null);
-		final RadioGroup radioGroup;
-		final RadioButton chooseAdvice;
-		final RadioButton chooseComplaint;
-		final RadioButton chooseWarning;
-		final EditText descriptionEditText;
-		final Button addPhoto;
-		final LinearLayout[] signalLayouts = new LinearLayout[2];
-		final CheckBox[] checkBoxes = new CheckBox[4];
-		radioGroup = (RadioGroup) dialogContent.findViewById(R.id.chooses_group);
-		chooseAdvice = (RadioButton) dialogContent.findViewById(R.id.choose1);
-		chooseComplaint = (RadioButton) dialogContent.findViewById(R.id.choose2);
-		chooseWarning = (RadioButton) dialogContent.findViewById(R.id.choose3);
-
-		checkBoxes[0] = (CheckBox) dialogContent.findViewById(R.id.checkbox_chain);
-		checkBoxes[1] = (CheckBox) dialogContent.findViewById(R.id.checkbox_brakes);
-		checkBoxes[2] = (CheckBox) dialogContent.findViewById(R.id.checkbox_gears);
-		checkBoxes[3] = (CheckBox) dialogContent.findViewById(R.id.checkbox_tire);
-
-		signalLayouts[0] = (LinearLayout) dialogContent.findViewById(R.id.lr1);
-		signalLayouts[1] = (LinearLayout) dialogContent.findViewById(R.id.lr2);
-
-		descriptionEditText = (EditText) dialogContent.findViewById(R.id.description);
-		addPhoto = (Button) dialogContent.findViewById(R.id.add_photo);
-
-		addPhoto.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public void onClick(View arg0)
-			{
-				dispatchTakePictureIntent();
-			}
-		});
-
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-		builder.setTitle(getString(R.string.report_in) + " " + bike.getId());
-		builder.setPositiveButton(R.string.report, new DialogInterface.OnClickListener()
-		{
-			public void onClick(DialogInterface dialogI, int id)
-			{
-				if (chooseAdvice.isChecked())
-				{
-					report.setType(Report.Type.ADVICE);
-					report.setDetails(descriptionEditText.getText().toString());
-				}
-				else if (chooseComplaint.isChecked())
-				{
-					report = new Report(Report.Type.COMPLAINT, descriptionEditText.getText().toString(), Report.BIKE, bike.getId(), date);
-					report.setDetails(descriptionEditText.getText().toString());
-				}
-				else if (chooseWarning.isChecked())
-				{
-					report.setType(Report.Type.WARNING);
-					String details = "";
-					for (int i = 0; i < 4; i++)
-					{
-						if (checkBoxes[i].isChecked())
-						{
-							details += checkBoxes[i].getText().toString() + " ";
-						}
-						report.setDetails(details);
-					}
-					details += descriptionEditText.getText().toString();
-				}
-
-				report.setPhoto(imageBitmap);
-
-				// TODO send report to web service
-				bike.addReport(report);
-				Log.d("provaFotoz", bike.getReport(0).toString());
-			}
-		});
-		builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
-		{
-			public void onClick(DialogInterface dialog, int id)
-			{
-			}
-		});
-
-		builder.setView(dialogContent);
-		final AlertDialog dialog = builder.create();
-		dialog.show();
-		// Initially disable the button
-		((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-
-		radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener()
-		{
-
-			@Override
-			public void onCheckedChanged(RadioGroup group, int checkedId)
-			{
-				if (chooseWarning.isChecked())
-				{
-					for (int i = 0; i < 2; i++)
-					{
-						signalLayouts[i].setVisibility(View.VISIBLE);
-					}
-				}
-				else
-				{
-					for (int i = 0; i < 2; i++)
-					{
-						signalLayouts[i].setVisibility(View.GONE);
-					}
-				}
-				Log.d("provassh", descriptionEditText.getText().toString() + "d");
-				if ((chooseAdvice.isChecked() || chooseComplaint.isChecked()) && (!descriptionEditText.getText().toString().equals("")))
-				{
-					((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
-				}
-				else if ((chooseWarning.isChecked() && (!descriptionEditText.getText().toString().equals("") || checkBoxes[0].isChecked()
-						|| checkBoxes[1].isChecked() || checkBoxes[2].isChecked() || checkBoxes[3].isChecked())))
-				{
-					((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
-				}
-			}
-		});
-		descriptionEditText.addTextChangedListener(new TextWatcher()
-		{
-
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count)
-			{
-				if (!descriptionEditText.getText().toString().equals(""))
-				{
-					if (chooseAdvice.isChecked() || chooseComplaint.isChecked() || chooseWarning.isChecked())
-					{
-						((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
-					}
-				}
-				else
-				{
-					((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-				}
-
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after)
-			{
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void afterTextChanged(Editable s)
-			{
-				// TODO Auto-generated method stub
-
-			}
-		});
-
-		for (int i = 0; i < 4; i++)
-		{
-			checkBoxes[i].setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-			{
-
-				@Override
-				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-				{
-					if (checkBoxes[0].isChecked() || checkBoxes[1].isChecked() || checkBoxes[2].isChecked() || checkBoxes[3].isChecked())
-					{
-						((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
-					}
-					else
-					{
-						((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-					}
-				}
-			});
-		}
-	}
-
-	private void dispatchTakePictureIntent()
-	{
-		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null)
-		{
-			startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-		}
-	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		Log.d("station details", "onActivityResult");
-		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK)
+		if (requestCode == ReportTools.REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK)
 		{
-			Bundle extras = data.getExtras();
-			imageBitmap = (Bitmap) extras.get("data");
-			report.setPhoto(imageBitmap);
-
-			// mImageView.setImageBitmap(imageBitmap);
+			Bitmap imageBitmap = ReportTools.grabImage(getActivity());
+			ReportTools.image = imageBitmap;
+			
+			photoView = ReportTools.photoView;
+			photoView.setVisibility(View.VISIBLE);
+			photoView.setScaleType(ScaleType.CENTER_CROP);
+			photoView.setImageBitmap(imageBitmap);
 		}
 	}
-
 }

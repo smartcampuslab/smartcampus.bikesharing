@@ -1,12 +1,8 @@
 package smartcampus.model;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -43,8 +39,9 @@ public class Report implements Parcelable
 	private String reportOfType;
 	private String id;
 	private long date;
-	private ArrayList<String> warnings = new ArrayList<String>();
+	private ArrayList<String> warnings;
 	public static final String CHAIN = "chain", GEARS = "gears", BRAKES = "brakes", TIRE = "tire";
+	public static final String[] WARNINGS = new String[] {CHAIN, GEARS, BRAKES, TIRE};
 
 	public Report(Type type, String details, Bitmap photo, String typeOf, String id, long date)
 	{
@@ -115,23 +112,16 @@ public class Report implements Parcelable
 	{
 		this.details = details;
 	}
-	
-	public byte[] getPhotoAsByteArray()
-	{
-		return bitmapAsByteArray(photo);
-	}
-	
+		
 	// parcelable stuff
 	public Report(Parcel source)
 	{
 		details = source.readString();
 		type = Type.values()[source.readInt()];
+		photo = Bitmap.CREATOR.createFromParcel(source); //TODO: bitmap parcel!
 		reportOfType = source.readString();
 		id = source.readString();
 		date = source.readLong();
-		byte[] imageByte = new byte[source.readInt()];
-		source.readByteArray(imageByte);
-		photo = byteArrayToBitmap(imageByte);
 	}
 
 	public static final Parcelable.Creator<Report> CREATOR = new Creator<Report>()
@@ -161,12 +151,11 @@ public class Report implements Parcelable
 	{
 		dest.writeString(details);
 	    dest.writeInt(type.ordinal());
+	    photo.writeToParcel(dest, 0);
+	    dest.setDataPosition(0);
 		dest.writeString(reportOfType);
 		dest.writeString(id);
 		dest.writeLong(date);
-		byte[] byteArray = bitmapAsByteArray(photo);
-		dest.writeInt(byteArray.length);
-		dest.writeByteArray(byteArray);
 	}
 	
 	public String toString()
@@ -174,25 +163,13 @@ public class Report implements Parcelable
 		return type.toString() + " " + details + " " + (photo != null? "photo" : "no photo");
 	}
 	
-	private static byte[] bitmapAsByteArray(Bitmap bitmap) {
-		if (bitmap != null) {
-			ByteArrayOutputStream bais = new ByteArrayOutputStream();
-			bitmap.compress(CompressFormat.PNG, 50, bais);
-			return bais.toByteArray();
-		}
-		return null;
-	}
-	
-	private static Bitmap byteArrayToBitmap(byte[] byteArray)
+	public ArrayList<String> getWarnings()
 	{
-		return BitmapFactory.decodeByteArray(byteArray, 0,byteArray.length);
-	}
-
-	public ArrayList<String> getWarnings() {
 		return warnings;
 	}
-
-	public void addWarning(String war){
+	public void addWarning(String war)
+	{
+		if (warnings == null) warnings = new ArrayList<String>();
 		warnings.add(war);
 	}
 
