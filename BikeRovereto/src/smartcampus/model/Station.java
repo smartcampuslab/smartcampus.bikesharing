@@ -8,9 +8,8 @@ import org.osmdroid.util.GeoPoint;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
-public class Station implements Parcelable
+public class Station implements Parcelable, Reportable
 {
 	private GeoPoint position;
 	private String name, street;
@@ -201,27 +200,7 @@ public class Station implements Parcelable
 		return maxSlots - (nBikes); // Bici mancanti nella stazione
 	}
 
-	public void addReport(Report report)
-	{
-		reports.add(report);
-	}
 
-	public Report getReport(int position)
-	{
-		return reports.get(position);
-	}
-
-	public int getNReports()
-	{
-		return reports.size();
-	}
-
-	public ArrayList<Report> getReports()
-	{
-		if (reports == null)
-			return new ArrayList<Report>(); //for safety!
-		return reports;
-	}
 
 	public int getDistance()
 	{
@@ -245,5 +224,40 @@ public class Station implements Parcelable
 	public String getId()
 	{
 		return id;
+	}
+
+	@Override
+	public String getType()
+	{
+		return Report.STATION;
+	}
+
+	@Override
+	public void addReport(Report report)
+	{
+		reports.add(report);
+		
+	}
+
+
+	@Override
+	public int getNReports()
+	{
+		return reports.size();
+	}
+
+	@Override
+	public ArrayList<Report> getReports()
+	{
+
+		if (reports == null)
+			return new ArrayList<Report>(); //for safety!
+		return reports;
+	}
+
+	@Override
+	public Report getReport(int index)
+	{
+		return reports.get(index);
 	}
 }

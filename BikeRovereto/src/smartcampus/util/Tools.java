@@ -7,6 +7,7 @@ import org.osmdroid.util.GeoPoint;
 
 import smartcampus.asynctask.SendReport;
 import smartcampus.model.Report;
+import smartcampus.model.Reportable;
 import smartcampus.model.Station;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -78,11 +79,11 @@ public class Tools
 		return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB;
 	}
 
-	public static Report addReport(final Station station, final Activity activity, Context context, ImageView photoView, final Bitmap imageBitmap, final Fragment fragment, final Uri mImageUri)
+	public static Report addReport(final Reportable reportable, final Activity activity, Context context, ImageView photoView, final Bitmap imageBitmap, final Fragment fragment, final Uri mImageUri)
 	{
 		final Report report;
 		final long date = Calendar.getInstance().getTimeInMillis();
-		report = new Report(Report.STATION, station.getId(), date);
+		report = new Report(reportable.getType(), reportable.getId(), date);
 		View dialogContent = activity.getLayoutInflater().inflate(R.layout.report_dialog, null);
 		final RadioGroup radioGroup;
 		final RadioButton chooseAdvice;
@@ -120,7 +121,7 @@ public class Tools
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
-		builder.setTitle(context.getString(R.string.report_in) + " " + station.getName());
+		builder.setTitle(context.getString(R.string.report_in) + " " + reportable.getName());
 		builder.setPositiveButton(R.string.report, new DialogInterface.OnClickListener()
 		{
 			public void onClick(DialogInterface dialogI, int id)
@@ -154,8 +155,7 @@ public class Tools
 				report.setPhoto(imageBitmap);
 
 				// TODO send report to web service
-				station.addReport(report);
-				Log.d("provaFotoz", station.getReport(0).toString());
+				reportable.addReport(report);
 				new SendReport(activity).execute(report);
 			}
 		});

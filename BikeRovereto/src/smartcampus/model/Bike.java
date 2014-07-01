@@ -9,7 +9,7 @@ import org.osmdroid.util.GeoPoint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Bike implements Parcelable
+public class Bike implements Parcelable, Reportable
 {
 
 	private GeoPoint position;
@@ -112,25 +112,6 @@ public class Bike implements Parcelable
 		return new BoundingBoxE6(north, east, south, west);
 	}
 
-	public void addReport(Report report)
-	{
-		reports.add(report);
-	}
-
-	public Report getReport(int position)
-	{
-		return reports.get(position);
-	}
-
-	public int getNReports()
-	{
-		return reports.size();
-	}
-
-	public ArrayList<Report> getReports()
-	{
-		return reports;
-	}
 
 	public int getDistance()
 	{
@@ -150,5 +131,46 @@ public class Bike implements Parcelable
 	public double getLongitudeDegree()
 	{
 		return position.getLongitudeE6() / 1E6;
+	}
+
+	@Override
+	public String getType()
+	{
+		return Report.BIKE;
+	}
+
+	@Override
+	public void addReport(Report report)
+	{
+		reports.add(report);
+		
+	}
+
+
+	@Override
+	public int getNReports()
+	{
+		return reports.size();
+	}
+
+	@Override
+	public ArrayList<Report> getReports()
+	{
+
+		if (reports == null)
+			return new ArrayList<Report>(); //for safety!
+		return reports;
+	}
+
+	@Override
+	public Report getReport(int index)
+	{
+		return reports.get(index);
+	}
+
+	@Override
+	public String getName()
+	{
+		return id;
 	}
 }
