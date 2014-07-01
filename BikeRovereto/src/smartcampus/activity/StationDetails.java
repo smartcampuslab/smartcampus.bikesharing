@@ -70,7 +70,7 @@ public class StationDetails extends Fragment
 
 	private ImageView editReminder;
 
-	private static final int REQUEST_IMAGE_CAPTURE = 1;
+	
 
 	private ImageView photoView;
 	
@@ -193,7 +193,7 @@ public class StationDetails extends Fragment
 			getFragmentManager().popBackStack();
 			break;
 		case R.id.action_add_report:
-			addReport();
+			Tools.addReport(station, getActivity(), getActivity().getApplicationContext(), photoView, imageBitmap, this, mImageUri);
 			break;
 		case R.id.action_settings:
 			break;
@@ -209,211 +209,6 @@ public class StationDetails extends Fragment
 		super.onDetach();
 	}
 
-	private void dispatchTakePictureIntent()
-	{
-		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		File photo;
-	    try
-	    {
-	        // place where to store camera taken picture
-	        photo = this.createTemporaryFile("picture", ".png");
-	        photo.delete();
-	    }
-	    catch(Exception e)
-	    {
-	        Log.v("REPORT", "Can't create file to take picture!");
-	        return;
-	    }
-	    mImageUri = Uri.fromFile(photo);
-	    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
-	    Log.d("test", mImageUri.toString());
-	    //start camera intent
-		if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null)
-		{
-			startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-		}
-	}
-
-	private void addReport()
-	{
-		final long date = Calendar.getInstance().getTimeInMillis();
-		report = new Report(Report.STATION, station.getId(), date);
-		View dialogContent = getActivity().getLayoutInflater().inflate(R.layout.report_dialog, null);
-		final RadioGroup radioGroup;
-		final RadioButton chooseAdvice;
-		final RadioButton chooseComplaint;
-		final RadioButton chooseWarning;
-		final EditText descriptionEditText;
-		final Button addPhoto;
-		final LinearLayout[] signalLayouts = new LinearLayout[2];
-		final CheckBox[] checkBoxes = new CheckBox[4];
-		radioGroup = (RadioGroup) dialogContent.findViewById(R.id.chooses_group);
-		chooseAdvice = (RadioButton) dialogContent.findViewById(R.id.choose1);
-		chooseComplaint = (RadioButton) dialogContent.findViewById(R.id.choose2);
-		chooseWarning = (RadioButton) dialogContent.findViewById(R.id.choose3);
-
-		checkBoxes[0] = (CheckBox) dialogContent.findViewById(R.id.checkbox_chain);
-		checkBoxes[1] = (CheckBox) dialogContent.findViewById(R.id.checkbox_brakes);
-		checkBoxes[2] = (CheckBox) dialogContent.findViewById(R.id.checkbox_gears);
-		checkBoxes[3] = (CheckBox) dialogContent.findViewById(R.id.checkbox_tire);
-
-		signalLayouts[0] = (LinearLayout) dialogContent.findViewById(R.id.lr1);
-		signalLayouts[1] = (LinearLayout) dialogContent.findViewById(R.id.lr2);
-
-		descriptionEditText = (EditText) dialogContent.findViewById(R.id.description);
-		addPhoto = (Button) dialogContent.findViewById(R.id.add_photo);
-		photoView = (ImageView) dialogContent.findViewById(R.id.photo);
-		addPhoto.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public void onClick(View arg0)
-			{
-				dispatchTakePictureIntent();
-			}
-		});
-
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-		builder.setTitle(getString(R.string.report_in) + " " + station.getName());
-		builder.setPositiveButton(R.string.report, new DialogInterface.OnClickListener()
-		{
-			public void onClick(DialogInterface dialogI, int id)
-			{
-				if (chooseAdvice.isChecked())
-				{
-					report.setType(Report.Type.ADVICE);
-					report.setDetails(descriptionEditText.getText().toString());
-				}
-				else if (chooseComplaint.isChecked())
-				{
-					report = new Report(Report.Type.COMPLAINT, descriptionEditText.getText().toString(), Report.STATION, station.getId(), date);
-					report.setDetails(descriptionEditText.getText().toString());
-				}
-				else if (chooseWarning.isChecked())
-				{
-					report.setType(Report.Type.WARNING);
-					String details = "";
-					for (int i = 0; i < 4; i++)
-					{
-						if (checkBoxes[i].isChecked())
-						{
-							details += checkBoxes[i].getText().toString() + " ";
-						}
-						report.setDetails(details);
-					}
-					details += descriptionEditText.getText().toString();
-
-				}
-
-				report.setPhoto(imageBitmap);
-
-				// TODO send report to web service
-				station.addReport(report);
-				Log.d("provaFotoz", station.getReport(0).toString());
-				new SendReport(getActivity()).execute(report);
-			}
-		});
-		builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
-		{
-			public void onClick(DialogInterface dialog, int id)
-			{
-			}
-		});
-
-		builder.setView(dialogContent);
-		final AlertDialog dialog = builder.create();
-		dialog.show();
-		// Initially disable the button
-		((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-
-		radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener()
-		{
-
-			@Override
-			public void onCheckedChanged(RadioGroup group, int checkedId)
-			{
-				if (chooseWarning.isChecked())
-				{
-					for (int i = 0; i < 2; i++)
-					{
-						signalLayouts[i].setVisibility(View.VISIBLE);
-					}
-				}
-				else
-				{
-					for (int i = 0; i < 2; i++)
-					{
-						signalLayouts[i].setVisibility(View.GONE);
-					}
-				}
-				Log.d("provassh", descriptionEditText.getText().toString() + "d");
-				if ((chooseAdvice.isChecked() || chooseComplaint.isChecked()) && (!descriptionEditText.getText().toString().equals("")))
-				{
-					((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
-				}
-				else if ((chooseWarning.isChecked() && (!descriptionEditText.getText().toString().equals("") || checkBoxes[0].isChecked()
-						|| checkBoxes[1].isChecked() || checkBoxes[2].isChecked() || checkBoxes[3].isChecked())))
-				{
-					((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
-				}
-			}
-		});
-		descriptionEditText.addTextChangedListener(new TextWatcher()
-		{
-
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count)
-			{
-				if (!descriptionEditText.getText().toString().equals(""))
-				{
-					if (chooseAdvice.isChecked() || chooseComplaint.isChecked() || chooseWarning.isChecked())
-					{
-						((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
-					}
-				}
-				else
-				{
-					((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-				}
-
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after)
-			{
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void afterTextChanged(Editable s)
-			{
-				// TODO Auto-generated method stub
-
-			}
-		});
-
-		for(int i = 0; i < 4; i++)
-		{
-		checkBoxes[i].setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-		{
-
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-			{
-				if(checkBoxes[0].isChecked() || checkBoxes[1].isChecked() || checkBoxes[2].isChecked() || checkBoxes[3].isChecked())
-				{
-					((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
-				}
-				else
-				{
-					((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-				}
-			}
-		});
-		}
-	}
 
 	private void addReminder()
 	{
@@ -449,7 +244,7 @@ public class StationDetails extends Fragment
 	public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		Log.d("station details", "onActivityResult");
-		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK)
+		if (requestCode == Tools.REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK)
 		{
 			imageBitmap = grabImage();
 			report.setPhoto(imageBitmap);
@@ -458,17 +253,6 @@ public class StationDetails extends Fragment
 			photoView.setScaleType(ScaleType.CENTER_CROP);
 			photoView.setImageBitmap(imageBitmap);
 		}
-	}
-	
-	private File createTemporaryFile(String part, String ext) throws Exception
-	{
-		File tempDir = getActivity().getExternalCacheDir();
-	    tempDir=new File(tempDir.getAbsolutePath());
-	    if(!tempDir.exists())
-	    {
-	        tempDir.mkdir();
-	    }
-	    return File.createTempFile(part, ext, tempDir);
 	}
 	
 	public Bitmap grabImage()
