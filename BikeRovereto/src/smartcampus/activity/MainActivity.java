@@ -7,8 +7,8 @@ import java.util.TimerTask;
 import org.osmdroid.util.GeoPoint;
 
 import smartcampus.asynctask.GetAnarchicBikesTask;
-import smartcampus.asynctask.GetStationsTask;
 import smartcampus.asynctask.GetAnarchicBikesTask.AsyncBikesResponse;
+import smartcampus.asynctask.GetStationsTask;
 import smartcampus.asynctask.GetStationsTask.AsyncStationResponse;
 import smartcampus.model.Bike;
 import smartcampus.model.NotificationBlock;
@@ -34,10 +34,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
-import eu.trentorise.smartcampus.bikerovereto.AboutActivity;
+import eu.trentorise.smartcampus.bikerovereto.About;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
-public class MainActivity extends ActionBarActivity implements StationsListFragment.OnStationSelectListener, FavouriteFragment.OnStationSelectListener
+public class MainActivity extends ActionBarActivity implements StationsListFragment.OnStationSelectListener,
+		FavouriteFragment.OnStationSelectListener
 {
 
 	private String[] navTitles;
@@ -66,6 +67,9 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	private static final String FRAGMENT_STATIONS = "stations";
 	private static final String FRAGMENT_FAVOURITE = "favourite";
 	public static final String FILENOTIFICATIONDB = "notificationBlockDB";
+	public static final String FRAGMENT_ABOUT = "about";
+
+	//private Fragment fragmentShow;
 
 	public interface OnPositionAquiredListener
 	{
@@ -124,7 +128,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		getStation();
 		getBikes();
 
@@ -133,10 +137,10 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		transaction.add(R.id.content_frame, mainFragment, FRAGMENT_MAP);
 		transaction.commit();
 		if (getIntent().getBooleanExtra(NotificationReceiver.INTENT_FROM_NOTIFICATION, false))
-		{			
-			onStationSelected((Station)getIntent().getParcelableExtra("station"), false);
+		{
+			onStationSelected((Station) getIntent().getParcelableExtra("station"), false);
 		}
-		
+
 		navTitles = getResources().getStringArray(R.array.navTitles);
 		navIcons = new int[]
 		{ R.drawable.nav_map, R.drawable.nav_station, R.drawable.nav_favourite };
@@ -176,6 +180,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		// Set the adapter for the list view
 		navAdapter = new NavigationDrawerAdapter(this, navTitles, navIcons, navExtraTitles, navExtraIcons);
 		mDrawerList.setAdapter(navAdapter);
+
 		// Set the list's click listener
 		mDrawerList.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener()
 		{
@@ -192,7 +197,8 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 					if (currentFragment == null || !currentFragment.isVisible())
 					{
 						OsmMap mapFragment = OsmMap.newInstance(stations, bikes);
-						transaction.replace(R.id.content_frame, mapFragment, FRAGMENT_MAP);
+						//transaction.replace(R.id.content_frame, mapFragment, FRAGMENT_MAP);
+						transaction.show(mapFragment);
 						transaction.commit();
 					}
 					// Highlight the selected item, update the title, and close
@@ -205,7 +211,8 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 					if (currentFragment == null || !currentFragment.isVisible())
 					{
 						StationsListFragment stationsFragment = StationsListFragment.newInstance(stations);
-						transaction.replace(R.id.content_frame, stationsFragment, FRAGMENT_STATIONS);
+						//transaction.replace(R.id.content_frame, stationsFragment, FRAGMENT_STATIONS);
+						transaction.show(stationsFragment);
 						transaction.commit();
 					}
 					// Highlight the selected item, update the title, and close
@@ -218,7 +225,8 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 					if (currentFragment == null || !currentFragment.isVisible())
 					{
 						FavouriteFragment stationsFragment = FavouriteFragment.newInstance(favStations);
-						transaction.replace(R.id.content_frame, stationsFragment, FRAGMENT_FAVOURITE);
+						//transaction.replace(R.id.content_frame, stationsFragment, FRAGMENT_FAVOURITE);
+						transaction.show(stationsFragment);
 						transaction.commit();
 					}
 					// Highlight the selected item, update the title, and close
@@ -232,10 +240,11 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 					startActivity(i);
 					break;
 				case 4:
-//					Intent i2 = new Intent(getBaseContext(), AboutActivity.class);
-//					startActivity(i2);
+					Intent i2 = new Intent(getBaseContext(), About.class);
+					startActivity(i2);
+					overridePendingTransition(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_top);
 					break;
-					
+
 				}
 				mDrawerLayout.closeDrawers();
 			}
@@ -296,7 +305,8 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	protected void onStart()
 	{
 		super.onStart();
-		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Tools.LOCATION_REFRESH_TIME, Tools.LOCATION_REFRESH_DISTANCE, mLocationListener);
+		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Tools.LOCATION_REFRESH_TIME, Tools.LOCATION_REFRESH_DISTANCE,
+				mLocationListener);
 
 	}
 
@@ -399,7 +409,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 			@Override
 			public void processFinish(ArrayList<Bike> result, int status)
 			{
-				
+
 				bikes = result;
 				if (status != GetAnarchicBikesTask.NO_ERROR)
 				{
@@ -413,23 +423,23 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		};
 		getBikesTask.execute();
 	}
-	
+
 	public void setStations(ArrayList<Station> stations)
 	{
 		this.stations.clear();
-		this.stations.addAll(stations); 
+		this.stations.addAll(stations);
 	}
-	
+
 	public void setFavStations(ArrayList<Station> favStations)
 	{
 		this.favStations.clear();
 		this.favStations.addAll(favStations);
 	}
-	
+
 	public void addFavouriteStation(Station station)
 	{
 		favStations.add(station);
-	}	
+	}
 
 	public void removeFavouriteStation(Station station)
 	{
@@ -506,27 +516,27 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		};
 		timer.schedule(doAsynchronousTask, 0, 40000);
 	}
-	
+
 	public void stopTimer()
 	{
 		if (timer != null)
 			timer.cancel();
 	}
-	
+
 	public void startTimer()
 	{
 		setUpdateTimer();
 	}
-	
+
 	@Override
-	public void onBackPressed() {
-		if (mDrawerLayout.isDrawerOpen(mDrawerList))
-			mDrawerLayout.closeDrawer(mDrawerList);
-		else
-			super.onBackPressed();
-		
+	public void onBackPressed()
+	{
+			if (mDrawerLayout.isDrawerOpen(mDrawerList))
+				mDrawerLayout.closeDrawer(mDrawerList);
+			else
+				super.onBackPressed();
 	}
-	
+
 	public ArrayList<Station> getStations()
 	{
 		return stations;

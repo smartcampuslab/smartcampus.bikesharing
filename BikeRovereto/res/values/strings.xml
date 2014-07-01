@@ -7,7 +7,7 @@
     <string name="toMap">OSM</string>
     <string name="title_activity_stations">Stations</string>
     <string name="to_details">Details</string>
-    <string name="sort">Sort by...</string>
+    <string name="sort">Sort by&#8230;</string>
     <string name="sort_distance">Distance</string>
     <string name="sort_available_bikes">Available bikes</string>
     <string name="sort_available_slots">Available slots</string>
@@ -54,5 +54,6 @@
     <string name="about">About</string>
     <string name="title_activity_about">AboutActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="credits">Credits</string>
 
 </resources>
