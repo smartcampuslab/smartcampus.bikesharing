@@ -34,7 +34,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
-import eu.trentorise.smartcampus.bikerovereto.About;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
 public class MainActivity extends ActionBarActivity implements StationsListFragment.OnStationSelectListener,

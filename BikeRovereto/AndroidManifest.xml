@@ -64,7 +64,7 @@
             android:label="@string/title_activity_about" >
         </activity>
         <activity
-            android:name="eu.trentorise.smartcampus.bikerovereto.About"
+            android:name="smartcampus.activity.About"
             android:label="@string/title_activity_about" >
         </activity>
     </application>

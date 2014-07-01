@@ -192,15 +192,19 @@ public class Tools
 						signalLayouts[i].setVisibility(View.GONE);
 					}
 				}
-				Log.d("provassh", descriptionEditText.getText().toString() + "d");
 				if ((chooseAdvice.isChecked() || chooseComplaint.isChecked()) && (!descriptionEditText.getText().toString().equals("")))
 				{
 					((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+					
 				}
 				else if ((chooseWarning.isChecked() && (!descriptionEditText.getText().toString().equals("") || checkBoxes[0].isChecked()
 						|| checkBoxes[1].isChecked() || checkBoxes[2].isChecked() || checkBoxes[3].isChecked())))
 				{
 					((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+				}
+				else
+				{
+					((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
 				}
 			}
 		});

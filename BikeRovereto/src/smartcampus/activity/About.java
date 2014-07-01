@@ -1,5 +1,9 @@
-package eu.trentorise.smartcampus.bikerovereto;
+package smartcampus.activity;
 
+import eu.trentorise.smartcampus.bikerovereto.R;
+import eu.trentorise.smartcampus.bikerovereto.R.anim;
+import eu.trentorise.smartcampus.bikerovereto.R.id;
+import eu.trentorise.smartcampus.bikerovereto.R.layout;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
