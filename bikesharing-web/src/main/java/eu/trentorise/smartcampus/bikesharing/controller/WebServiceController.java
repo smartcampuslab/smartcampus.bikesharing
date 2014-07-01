@@ -133,7 +133,14 @@ public class WebServiceController
 
 		try
 		{
-			feedBackManager.addNewFeedback(mapper.readValue(body, Feedback.class), file.getBytes());
+			byte[] byteArray = null;
+			
+			if(file != null)
+			{
+				byteArray = file.getBytes();
+			}
+			
+			feedBackManager.addNewFeedback(mapper.readValue(body, Feedback.class), byteArray);
 		}
 		catch (Exception e)
 		{

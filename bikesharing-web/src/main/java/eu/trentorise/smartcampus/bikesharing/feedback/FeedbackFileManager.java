@@ -41,6 +41,6 @@ public class FeedbackFileManager
 		{
 			e.printStackTrace();
 		}
-		return name;
+		return name + "." + format;
 	}
 }

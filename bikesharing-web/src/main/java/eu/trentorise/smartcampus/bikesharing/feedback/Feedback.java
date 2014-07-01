@@ -1,5 +1,7 @@
 package eu.trentorise.smartcampus.bikesharing.feedback;
 
+import java.util.Arrays;
+
 import org.springframework.data.annotation.Id;
 
 public class Feedback
@@ -13,11 +15,12 @@ public class Feedback
 	private String reportType;
 	private String report;
 	private String fileId;
+	private String[] warnings;
 	
 	
 	
-	public Feedback(long date, String objectType, String objectId,
-			String reportType, String report, String fileId) {
+	public Feedback(long date, String objectType, String objectId, String reportType, String report, String fileId, String[] warnings)
+	{
 		super();
 		this.date = date;
 		this.objectType = objectType;
@@ -102,11 +105,20 @@ public class Feedback
 		this.fileId = fileId;
 	}
 
+	public String[] getWarnings() {
+		return warnings;
+	}
+
+	public void setWarnings(String[] warnings) {
+		this.warnings = warnings;
+	}
+
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return "Feedback [id=" + id + ", date=" + date + ", objectType="
 				+ objectType + ", objectId=" + objectId + ", reportType="
 				+ reportType + ", report=" + report + ", fileId=" + fileId
-				+ "]";
+				+ ", warnings=" + Arrays.toString(warnings) + "]";
 	}
 }
