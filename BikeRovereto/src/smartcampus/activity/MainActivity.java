@@ -238,7 +238,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 				case 4:
 					Intent i2 = new Intent(getBaseContext(), About.class);
 					startActivity(i2);
-					overridePendingTransition(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_top);
+					overridePendingTransition(R.anim.slide_up, R.anim.slide_up_slower);
 					break;
 
 				}

@@ -45,6 +45,6 @@ public class About extends Activity
 	public void onBackPressed()
 	{
 		finish();
-		overridePendingTransition(R.anim.abc_slide_in_top,R.anim.abc_slide_out_bottom);
+		overridePendingTransition(R.anim.slide_down_slower, R.anim.slide_down);
 	}
 }
