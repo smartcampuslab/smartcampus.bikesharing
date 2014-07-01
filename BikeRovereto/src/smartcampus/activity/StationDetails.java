@@ -1,6 +1,5 @@
 package smartcampus.activity;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -9,27 +8,22 @@ import java.util.Locale;
 import org.osmdroid.util.GeoPoint;
 
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
-import smartcampus.asynctask.SendReport;
 import smartcampus.model.NotificationBlock;
 import smartcampus.model.Report;
 import smartcampus.model.Station;
+import smartcampus.util.ReportTools;
 import smartcampus.util.ReportsAdapter;
 import smartcampus.util.Tools;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,20 +33,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
 public class StationDetails extends Fragment
@@ -70,14 +55,8 @@ public class StationDetails extends Fragment
 
 	private ImageView editReminder;
 
-	
-
 	private ImageView photoView;
 	
-	private Report report;
-	private Bitmap imageBitmap;
-
-	private Uri mImageUri;
 
 	public static StationDetails newInstance(Station station)
 	{
@@ -193,7 +172,7 @@ public class StationDetails extends Fragment
 			getFragmentManager().popBackStack();
 			break;
 		case R.id.action_add_report:
-			Tools.addReport(station, getActivity(), getActivity().getApplicationContext(), photoView, imageBitmap, this, mImageUri);
+			ReportTools.addReport(station, getActivity(), this);
 			break;
 		case R.id.action_settings:
 			break;
@@ -244,31 +223,17 @@ public class StationDetails extends Fragment
 	public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		Log.d("station details", "onActivityResult");
-		if (requestCode == Tools.REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK)
+		if (requestCode == ReportTools.REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK)
 		{
-			imageBitmap = grabImage();
-			report.setPhoto(imageBitmap);
-
+			Bitmap imageBitmap = ReportTools.grabImage(getActivity());
+			ReportTools.image = imageBitmap;
+			
+			photoView = ReportTools.photoView;
 			photoView.setVisibility(View.VISIBLE);
 			photoView.setScaleType(ScaleType.CENTER_CROP);
 			photoView.setImageBitmap(imageBitmap);
 		}
 	}
 	
-	public Bitmap grabImage()
-	{
-	    getActivity().getContentResolver().notifyChange(mImageUri, null);
-	    ContentResolver cr = getActivity().getContentResolver();
-	    try
-	    {
-	        return android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
-	    }
-	    catch (Exception e)
-	    {
-	        Log.d("REPORT", "Failed to load", e);
-	        return null;
-	    }
-	}
-
 
 }

@@ -1,28 +1,22 @@
 package smartcampus.activity;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import org.osmdroid.util.GeoPoint;
 
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
 import smartcampus.model.Bike;
 import smartcampus.model.Report;
+import smartcampus.util.ReportTools;
 import smartcampus.util.ReportsAdapter;
 import smartcampus.util.Tools;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.ContentResolver;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,17 +25,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.ImageView.ScaleType;
-import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.ListView;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
@@ -53,14 +39,7 @@ public class SignalView extends Fragment
 	private ListView mList;
 
 	private ImageView photoView;
-
-	private Report report;
-	private Bitmap imageBitmap;
-
-	private Uri mImageUri;
-
 	// private LocationManager mLocationManager;
-	private static final int REQUEST_IMAGE_CAPTURE = 1;
 
 	public static SignalView newInstance(Bike bike)
 	{
@@ -145,7 +124,7 @@ public class SignalView extends Fragment
 			getFragmentManager().popBackStack();
 			break;
 		case R.id.action_add_report:
-			Tools.addReport(bike, getActivity(), getActivity().getApplicationContext(), photoView, imageBitmap, this, mImageUri);
+			ReportTools.addReport(bike, getActivity(), this);
 			break;
 		case R.id.action_settings:
 			break;
@@ -165,29 +144,16 @@ public class SignalView extends Fragment
 	public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		Log.d("station details", "onActivityResult");
-		if (requestCode == Tools.REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK)
+		if (requestCode == ReportTools.REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK)
 		{
-			imageBitmap = grabImage();
-			report.setPhoto(imageBitmap);
-
+			Bitmap imageBitmap = ReportTools.grabImage(getActivity());
+			ReportTools.image = imageBitmap;
+			
+			photoView = ReportTools.photoView;
+			
 			photoView.setVisibility(View.VISIBLE);
 			photoView.setScaleType(ScaleType.CENTER_CROP);
 			photoView.setImageBitmap(imageBitmap);
-		}
-	}
-
-	public Bitmap grabImage()
-	{
-		getActivity().getContentResolver().notifyChange(mImageUri, null);
-		ContentResolver cr = getActivity().getContentResolver();
-		try
-		{
-			return android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
-		}
-		catch (Exception e)
-		{
-			Log.d("REPORT", "Failed to load", e);
-			return null;
 		}
 	}
 }

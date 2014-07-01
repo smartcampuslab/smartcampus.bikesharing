@@ -84,16 +84,19 @@ public class SendReport extends AsyncTask<Report, Void, String>{
             multipartEntity.addPart("body", new StringBody(json));
             //create a file to write bitmap data
                         
-            File f = new File(context.getCacheDir(), "imageReport");
-            f.createNewFile();           
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            reports[0].getPhoto().compress(CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
-            byte[] bitmapdata = bos.toByteArray();
-
-            //write the bytes in file
-            FileOutputStream fos = new FileOutputStream(f);
-            fos.write(bitmapdata);
-            multipartEntity.addPart("file", new FileBody(f));
+            if (reports[0].getPhoto() != null)
+            {
+	            File f = new File(context.getCacheDir(), "imageReport");
+	            f.createNewFile();           
+	            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+	            reports[0].getPhoto().compress(CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+	            byte[] bitmapdata = bos.toByteArray();
+	
+	            //write the bytes in file
+	            FileOutputStream fos = new FileOutputStream(f);
+	            fos.write(bitmapdata);
+	            multipartEntity.addPart("file", new FileBody(f));
+            }
             Log.d("send", json);
 
             httpPost.setEntity(multipartEntity);
