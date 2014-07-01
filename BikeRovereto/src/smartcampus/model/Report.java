@@ -28,6 +28,17 @@ public class Report implements Parcelable
 				throw new IllegalArgumentException();
 			}
 		}
+		public static Type stringToType(String typeString)
+		{
+			if (typeString == "advice")
+				return ADVICE;
+			else if (typeString == "complaint")
+				return COMPLAINT;
+			else if (typeString == "warning")
+				return WARNING;
+			else
+				throw new IllegalArgumentException();			
+		}
 	}
 	public static final String STATION = "station";
 	public static final String BIKE = "bike";
