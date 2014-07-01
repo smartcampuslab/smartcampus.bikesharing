@@ -39,6 +39,7 @@
     <string name="station">stazione</string>
     <string name="error">Stazioni non disponibili</string>
     <string name="error_bikes">Bici non disponibili</string>
+    <string name="error_reports">Segnalazioni non disponibili</string>    
     <string name="choose1">Suggerimento</string>
     <string name="choose2">Reclamo</string>
     <string name="choose3">Segnalazione</string>

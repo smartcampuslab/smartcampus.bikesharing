@@ -14,14 +14,10 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.osmdroid.util.GeoPoint;
 
 import smartcampus.model.Report;
-import smartcampus.model.Report.Type;
-import smartcampus.model.Station;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Log;
 
 public class GetReportsTask extends AsyncTask<String, Void, ArrayList<Report>>
 {
@@ -35,11 +31,11 @@ public class GetReportsTask extends AsyncTask<String, Void, ArrayList<Report>>
 	
 	private int currentStatus;	
 	
-	public interface AsyncStationResponse
+	public interface AsyncReportsResponse
 	{
 	    void processFinish(ArrayList<Report> reports, int status);
 	}
-	public AsyncStationResponse delegate = null;
+	public AsyncReportsResponse delegate = null;
 
 	//data[0] is BIKE or STATION
 	//data[1] is the stationID or the bikeID
@@ -47,6 +43,7 @@ public class GetReportsTask extends AsyncTask<String, Void, ArrayList<Report>>
 	protected ArrayList<Report> doInBackground(String... data)
 	{
 		HttpGet httpg = new HttpGet("http://192.168.41.154:8080/bikesharing-web/" + data[0] + "/5061/"+data[1]+"/reports");
+		Log.d("getReportsTask", httpg.getURI().toString());
 		String responseJSON;
 		
 		ArrayList<Report> reports = new ArrayList<Report>();
@@ -87,6 +84,7 @@ public class GetReportsTask extends AsyncTask<String, Void, ArrayList<Report>>
 				currentStatus = ERROR_SERVER;
 			String errorString = container.getString("errorString");
 			JSONArray reportsArrayJSON = container.getJSONArray("data");
+			Log.d("getReportsTask", reportsArrayJSON.length()+"");
 			for (int i = 0; i < reportsArrayJSON.length(); i++)
 			{
 				JSONObject reportJSON = reportsArrayJSON.getJSONObject(i);
@@ -117,6 +115,7 @@ public class GetReportsTask extends AsyncTask<String, Void, ArrayList<Report>>
 
 	@Override
 	protected void onPostExecute(ArrayList<Report> result) {
+		Log.d("getReportsTask", "finished");
 		if (delegate!=null)
 			delegate.processFinish(result, currentStatus);
 	}

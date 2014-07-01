@@ -30,11 +30,11 @@ public class Report implements Parcelable
 		}
 		public static Type stringToType(String typeString)
 		{
-			if (typeString == "advice")
+			if (typeString.equals("advice"))
 				return ADVICE;
-			else if (typeString == "complaint")
+			else if (typeString.equals("complaint"))
 				return COMPLAINT;
-			else if (typeString == "warning")
+			else if (typeString.equals("warning"))
 				return WARNING;
 			else
 				throw new IllegalArgumentException();			

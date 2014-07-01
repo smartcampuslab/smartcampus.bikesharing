@@ -2,22 +2,22 @@ package smartcampus.util;
 
 import java.util.ArrayList;
 
+import smartcampus.model.Report;
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class ReportsAdapter extends ArrayAdapter<String>
+public class ReportsAdapter extends ArrayAdapter<Report>
 {
 
-	ArrayList<String> mReports;
+	ArrayList<Report> mReports;
 
 	public ReportsAdapter(Context context, int resource,
-			ArrayList<String> reports)
+			ArrayList<Report> reports)
 	{
 		super(context, resource, reports);
 		mReports = reports;
@@ -37,14 +37,14 @@ public class ReportsAdapter extends ArrayAdapter<String>
 
 			viewHolder = new ViewHolder();
 			viewHolder.report = (TextView) convertView
-					.findViewById(android.R.id.text1);
+					.findViewById(android.R.id.text1); //TODO: custom layout!
 			convertView.setTag(viewHolder);
 		}
 		else
 		{
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
-		viewHolder.report.setText(mReports.get(position));
+		viewHolder.report.setText(mReports.get(position).getDetails());
 		return convertView;
 
 	}

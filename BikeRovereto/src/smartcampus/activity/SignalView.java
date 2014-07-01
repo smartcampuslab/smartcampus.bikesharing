@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import org.osmdroid.util.GeoPoint;
 
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
+import smartcampus.asynctask.GetReportsTask;
+import smartcampus.asynctask.GetReportsTask.AsyncReportsResponse;
 import smartcampus.model.Bike;
 import smartcampus.model.Report;
 import smartcampus.util.ReportTools;
@@ -17,6 +19,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
+import android.text.GetChars;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,9 +32,10 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
-public class SignalView extends Fragment
+public class SignalView extends Fragment implements AsyncReportsResponse
 {
 	private Bike bike;
 	private TextView txtID;
@@ -40,6 +44,8 @@ public class SignalView extends Fragment
 
 	private ImageView photoView;
 	// private LocationManager mLocationManager;
+	private ArrayList<Report> mReports;
+	private ReportsAdapter adapter;
 
 	public static SignalView newInstance(Bike bike)
 	{
@@ -68,14 +74,11 @@ public class SignalView extends Fragment
 
 		distance.setText(Tools.formatDistance(bike.getDistance()));
 
-		ArrayList<String> sReports = new ArrayList<String>();
-		Log.d("sas", (bike.getReports() == null) + "");
-		for (Report r : bike.getReports())
-		{
-			sReports.add(r.getDetails());
-			Log.d("prova", r.toString());
-		}
-		mList.setAdapter(new ReportsAdapter(getActivity(), 0, sReports));
+
+		mReports = new ArrayList<Report>();
+		new GetReportsTask().execute(GetReportsTask.BIKE, bike.getId());
+		adapter = new ReportsAdapter(getActivity(), 0, mReports);
+		mList.setAdapter(adapter);
 
 		distance.setOnClickListener(new OnClickListener()
 		{
@@ -154,6 +157,16 @@ public class SignalView extends Fragment
 			photoView.setVisibility(View.VISIBLE);
 			photoView.setScaleType(ScaleType.CENTER_CROP);
 			photoView.setImageBitmap(imageBitmap);
+		}
+	}
+
+	@Override
+	public void processFinish(ArrayList<Report> reports, int status) {
+		mReports = reports;
+		adapter.notifyDataSetChanged();
+		if (status != GetReportsTask.NO_ERROR)
+		{
+			Toast.makeText(getActivity(), getString(R.string.error_reports), Toast.LENGTH_SHORT).show();
 		}
 	}
 }
