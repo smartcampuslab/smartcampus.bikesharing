@@ -1,6 +1,8 @@
 package smartcampus.model;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -41,6 +43,8 @@ public class Report implements Parcelable
 	private String reportOfType;
 	private String id;
 	private long date;
+	private ArrayList<String> warnings = new ArrayList<String>();
+	public static final String CHAIN = "chain", GEARS = "gears", BRAKES = "brakes", TIRE = "tire";
 
 	public Report(Type type, String details, Bitmap photo, String typeOf, String id, long date)
 	{
@@ -182,6 +186,14 @@ public class Report implements Parcelable
 	private static Bitmap byteArrayToBitmap(byte[] byteArray)
 	{
 		return BitmapFactory.decodeByteArray(byteArray, 0,byteArray.length);
-	}	
+	}
+
+	public ArrayList<String> getWarnings() {
+		return warnings;
+	}
+
+	public void addWarning(String war){
+		warnings.add(war);
+	}
 
 }

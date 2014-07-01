@@ -16,6 +16,7 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import smartcampus.model.Report;
@@ -53,11 +54,13 @@ public class SendReport extends AsyncTask<Report, Void, String>{
             jsonObject.accumulate("id", null);
             jsonObject.accumulate("reportType", reports[0].getType().toString());
             jsonObject.accumulate("report", reports[0].getDetails());
-            jsonObject.accumulate("objectType", reports[0].getReportOfType());            
+            JSONArray jsonArray = new JSONArray(reports[0].getWarnings());
+            jsonObject.accumulate("warnings", jsonArray);
+            jsonObject.accumulate("objectType", reports[0].getReportOfType());
             jsonObject.accumulate("objectId", reports[0].getID());
             jsonObject.accumulate("date", reports[0].getDate());
             jsonObject.accumulate("fieldId", null);
-           // jsonObject.accumulate("file", reports[0].getPhotoAsByteArray());
+            // jsonObject.accumulate("file", reports[0].getPhotoAsByteArray());
  
             // 4. convert JSONObject to JSON to String
             json = jsonObject.toString();
