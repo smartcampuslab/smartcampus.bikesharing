@@ -12,6 +12,7 @@ import smartcampus.util.ReportsAdapter;
 import smartcampus.util.Tools;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -34,10 +35,12 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ImageView.ScaleType;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikerovereto.R;
@@ -49,8 +52,13 @@ public class SignalView extends Fragment
 	private TextView distance;
 	private ListView mList;
 
+	private ImageView photoView;
+
 	private Report report;
 	private Bitmap imageBitmap;
+
+	private Uri mImageUri;
+
 	// private LocationManager mLocationManager;
 	private static final int REQUEST_IMAGE_CAPTURE = 1;
 
@@ -80,9 +88,9 @@ public class SignalView extends Fragment
 		mList.addHeaderView(header, null, false);
 
 		distance.setText(Tools.formatDistance(bike.getDistance()));
-		
+
 		ArrayList<String> sReports = new ArrayList<String>();
-		Log.d("sas", (bike.getReports() == null)+"");
+		Log.d("sas", (bike.getReports() == null) + "");
 		for (Report r : bike.getReports())
 		{
 			sReports.add(r.getDetails());
@@ -157,14 +165,29 @@ public class SignalView extends Fragment
 	public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		Log.d("station details", "onActivityResult");
-		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK)
+		if (requestCode == Tools.REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK)
 		{
-			Bundle extras = data.getExtras();
-			imageBitmap = (Bitmap) extras.get("data");
+			imageBitmap = grabImage();
 			report.setPhoto(imageBitmap);
 
-			// mImageView.setImageBitmap(imageBitmap);
+			photoView.setVisibility(View.VISIBLE);
+			photoView.setScaleType(ScaleType.CENTER_CROP);
+			photoView.setImageBitmap(imageBitmap);
 		}
 	}
 
+	public Bitmap grabImage()
+	{
+		getActivity().getContentResolver().notifyChange(mImageUri, null);
+		ContentResolver cr = getActivity().getContentResolver();
+		try
+		{
+			return android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
+		}
+		catch (Exception e)
+		{
+			Log.d("REPORT", "Failed to load", e);
+			return null;
+		}
+	}
 }
