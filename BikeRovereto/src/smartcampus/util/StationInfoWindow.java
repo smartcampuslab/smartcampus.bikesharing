@@ -14,6 +14,7 @@ import smartcampus.model.Station;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
@@ -84,6 +85,14 @@ public class StationInfoWindow extends MarkerInfoWindow
 		mView.findViewById(R.id.numbers_layout).setVisibility(View.VISIBLE);
 		mView.findViewById(R.id.images_layout).setVisibility(View.VISIBLE);
 		
+		LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)mView.findViewById(R.id.main_layout).getLayoutParams();
+		   params.setMargins(0,0,0,5);
+		   mView.findViewById(R.id.main_layout).setLayoutParams(params);
+		
+		if(station.getReports().size() > 0)
+		{
+			mView.findViewById(R.id.image_warnings).setVisibility(View.VISIBLE);
+		}
 	}
 	
 
