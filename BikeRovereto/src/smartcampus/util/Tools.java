@@ -48,6 +48,4 @@ public class Tools
 	{
 		return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB;
 	}
-
-	
 }

@@ -6,6 +6,7 @@ import java.util.Calendar;
 import smartcampus.asynctask.SendReport;
 import smartcampus.model.Bike;
 import smartcampus.model.Report;
+import smartcampus.model.Reportable;
 import smartcampus.model.Station;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -40,14 +41,11 @@ public class ReportTools {
 	public static Bitmap image;
 	public static final int REQUEST_IMAGE_CAPTURE = 1;
 	
-	public static Report addReport(final Object object, final Activity activity, final Fragment fragment)
+	public static Report addReport(final Reportable reportable, final Activity activity, final Fragment fragment)
 	{
 		final Report report;
 		final long date = Calendar.getInstance().getTimeInMillis();
-		if (object instanceof Station)
-			report = new Report(Report.STATION, ((Station)object).getId(), date);
-		else
-			report = new Report(Report.BIKE, ((Bike)object).getId(), date);
+		report = new Report(reportable.getType(), reportable.getId(), date);
 		View dialogContent = activity.getLayoutInflater().inflate(R.layout.report_dialog, null);
 		final RadioGroup radioGroup;
 		final RadioButton chooseAdvice;
@@ -84,10 +82,8 @@ public class ReportTools {
 		});
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-		if (object instanceof Station)
-			builder.setTitle(activity.getString(R.string.report_in) + " " + ((Station)object).getName());
-		else
-			builder.setTitle(activity.getString(R.string.report_in) + " " + ((Bike)object).getId());
+
+		builder.setTitle(activity.getString(R.string.report_in) + " " + reportable.getName());
 		builder.setPositiveButton(R.string.report, new DialogInterface.OnClickListener()
 		{
 			public void onClick(DialogInterface dialogI, int id)
@@ -117,10 +113,7 @@ public class ReportTools {
 
 				report.setPhoto(image);
 
-				if (object instanceof Station)
-					((Station)object).addReport(report);
-				else
-					((Bike)object).addReport(report);
+				reportable.addReport(report);
 				new SendReport(activity).execute(report);
 			}
 		});
@@ -166,6 +159,10 @@ public class ReportTools {
 						|| checkBoxes[1].isChecked() || checkBoxes[2].isChecked() || checkBoxes[3].isChecked())))
 				{
 					((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+				}
+				else
+				{
+					((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
 				}
 			}
 		});
