@@ -27,10 +27,10 @@ public class BikeInfoWindow extends MarkerInfoWindow
 
 	public BikeInfoWindow(MapView mapView, final FragmentManager fragmentManager)
 	{
-		super(R.layout.bike_info_bubble, mapView);
+		super(R.layout.info_bubble, mapView);
 		myMapView = mapView;
 		
-		TextView btn = (TextView) (mView.findViewById(R.id.btToSignal));
+		TextView btn = (TextView) (mView.findViewById(R.id.btToDetails));
 		btn.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)

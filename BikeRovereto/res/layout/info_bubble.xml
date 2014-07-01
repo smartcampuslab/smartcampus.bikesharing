@@ -17,18 +17,18 @@
         android:layout_height="wrap_content"
         android:minWidth="150dp"
         android:orientation="vertical"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp" >
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp" >
 
         <TextView
             android:id="@+id/bubble_title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dip"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:maxEms="17"
-            android:text="Title"
-            android:textColor="#666666" />
+            android:textColor="#666666"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/bubble_description"
@@ -36,26 +36,26 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:maxEms="17"
-            android:text="Description"
             android:textColor="#ff9200"
             android:textSize="12sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/bubble_subdescription"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:maxEms="17"
-            android:text="Address"
             android:textColor="#000000"
             android:textSize="10sp"
-            android:visibility="invisible" />
+            android:visibility="gone" />
 
         <LinearLayout
+             android:id="@+id/images_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="5dp"
-            android:orientation="horizontal" >
+            android:orientation="horizontal" 
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/green_bike"
@@ -77,10 +77,12 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/numbers_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="5dp"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:visibility="gone" >
 
             <TextView
                 android:id="@+id/txt_available"
@@ -109,14 +111,12 @@
             android:id="@+id/btToDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background= "#4f3333"
-            android:text="@string/to_details"
             android:layout_margin="5dp"
+            android:background="#4f3333"
             android:gravity="center"
-            android:padding="4dp"
+            android:text="@string/to_details"
             android:textColor="#ffffff"
             android:textSize="15sp" />
-   
     </LinearLayout>
 
 </LinearLayout>

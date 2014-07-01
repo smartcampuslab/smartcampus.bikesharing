@@ -69,14 +69,21 @@ public class StationInfoWindow extends MarkerInfoWindow
 		station = sItem.getStation();
 		mView.findViewById(R.id.green_bike).setVisibility(View.VISIBLE);
 		mView.findViewById(R.id.black_bike).setVisibility(View.VISIBLE);
+		
 		TextView tAvailable = (TextView) mView.findViewById(R.id.txt_available);
 		TextView tEmpty = (TextView) mView.findViewById(R.id.txt_empty);
-		tAvailable
-				.setText(Integer.toString(sItem.getStation().getNBikesPresent()));
+		tAvailable.setText(Integer.toString(sItem.getStation().getNBikesPresent()));
 		tEmpty.setText(Integer.toString(sItem.getStation().getNSlotsEmpty()));
 		tAvailable.setVisibility(View.VISIBLE);
 		tEmpty.setVisibility(View.VISIBLE);
-
+		
+		mView.findViewById(R.id.bubble_title).setVisibility(View.VISIBLE);
+		mView.findViewById(R.id.bubble_description).setVisibility(View.VISIBLE);
+		
+		
+		mView.findViewById(R.id.numbers_layout).setVisibility(View.VISIBLE);
+		mView.findViewById(R.id.images_layout).setVisibility(View.VISIBLE);
+		
 	}
 	
 

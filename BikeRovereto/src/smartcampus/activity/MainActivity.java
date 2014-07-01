@@ -69,7 +69,6 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	public static final String FILENOTIFICATIONDB = "notificationBlockDB";
 	public static final String FRAGMENT_ABOUT = "about";
 
-	//private Fragment fragmentShow;
 
 	public interface OnPositionAquiredListener
 	{
@@ -197,8 +196,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 					if (currentFragment == null || !currentFragment.isVisible())
 					{
 						OsmMap mapFragment = OsmMap.newInstance(stations, bikes);
-						//transaction.replace(R.id.content_frame, mapFragment, FRAGMENT_MAP);
-						transaction.show(mapFragment);
+						transaction.replace(R.id.content_frame, mapFragment, FRAGMENT_MAP);
 						transaction.commit();
 					}
 					// Highlight the selected item, update the title, and close
@@ -211,8 +209,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 					if (currentFragment == null || !currentFragment.isVisible())
 					{
 						StationsListFragment stationsFragment = StationsListFragment.newInstance(stations);
-						//transaction.replace(R.id.content_frame, stationsFragment, FRAGMENT_STATIONS);
-						transaction.show(stationsFragment);
+						transaction.replace(R.id.content_frame, stationsFragment, FRAGMENT_STATIONS);
 						transaction.commit();
 					}
 					// Highlight the selected item, update the title, and close
@@ -225,8 +222,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 					if (currentFragment == null || !currentFragment.isVisible())
 					{
 						FavouriteFragment stationsFragment = FavouriteFragment.newInstance(favStations);
-						//transaction.replace(R.id.content_frame, stationsFragment, FRAGMENT_FAVOURITE);
-						transaction.show(stationsFragment);
+						transaction.replace(R.id.content_frame, stationsFragment, FRAGMENT_FAVOURITE);
 						transaction.commit();
 					}
 					// Highlight the selected item, update the title, and close
