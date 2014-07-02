@@ -45,7 +45,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
-public class StationDetails extends Fragment implements AsyncReportsResponse
+public class StationDetails extends Fragment
 {
 
 	// the station with its details
@@ -104,9 +104,29 @@ public class StationDetails extends Fragment implements AsyncReportsResponse
 		distance.setText(Tools.formatDistance(station.getDistance()));
 
 		mReports = new ArrayList<Report>();
-		new GetReportsTask().execute(GetReportsTask.STATION, station.getId());
 		adapter = new ReportsAdapter(getActivity(), 0, mReports);
 		mList.setAdapter(adapter);
+		GetReportsTask getReportsTask = new GetReportsTask();
+		
+		
+		getReportsTask.delegate = new AsyncReportsResponse() {
+			
+			@Override
+			public void processFinish(ArrayList<Report> reports, int status) {
+				Log.d("stationDetails", "received reports");
+				mReports = reports;
+				adapter.clear();
+				adapter.addAll(mReports);
+				adapter.notifyDataSetChanged();
+				Log.d("stationDetails", "mReports size"+mReports.size());
+				if (status != GetReportsTask.NO_ERROR)
+				{
+					Toast.makeText(getActivity(), getString(R.string.error_reports), Toast.LENGTH_SHORT).show();
+				}
+			}
+		};
+		getReportsTask.execute(GetReportsTask.STATION, station.getId());	
+		
 
 		distance.setOnClickListener(new OnClickListener()
 		{
@@ -238,17 +258,6 @@ public class StationDetails extends Fragment implements AsyncReportsResponse
 			photoView.setScaleType(ScaleType.CENTER_CROP);
 			photoView.setImageBitmap(imageBitmap);
 		}
-	}
-
-	@Override
-	public void processFinish(ArrayList<Report> reports, int status) {
-		mReports = reports;
-		adapter.notifyDataSetChanged();
-		if (status != GetReportsTask.NO_ERROR)
-		{
-			Toast.makeText(getActivity(), getString(R.string.error_reports), Toast.LENGTH_SHORT).show();
-		}
-	}
-	
+	}		
 
 }

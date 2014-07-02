@@ -2,9 +2,12 @@ package smartcampus.model;
 
 import java.util.ArrayList;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+import eu.trentorise.smartcampus.bikerovereto.R;
 
 public class Report implements Parcelable
 {
@@ -24,6 +27,20 @@ public class Report implements Parcelable
 				return "complaint";
 			case WARNING:
 				return "warning";
+			default:
+				throw new IllegalArgumentException();
+			}
+		}
+		public String toHumanString(Context context)
+		{
+			switch (this)
+			{
+			case ADVICE:
+				return context.getString(R.string.choose1);
+			case COMPLAINT:
+				return context.getString(R.string.choose2);
+			case WARNING:
+				return context.getString(R.string.choose3);
 			default:
 				throw new IllegalArgumentException();
 			}
@@ -129,7 +146,9 @@ public class Report implements Parcelable
 	{
 		details = source.readString();
 		type = Type.values()[source.readInt()];
-		photo = Bitmap.CREATOR.createFromParcel(source); //TODO: bitmap parcel!
+		byte photoIsNull = source.readByte();
+		if (photoIsNull == 0)
+			photo = Bitmap.CREATOR.createFromParcel(source); //TODO: bitmap parcel!
 		reportOfType = source.readString();
 		id = source.readString();
 		date = source.readLong();
@@ -162,7 +181,9 @@ public class Report implements Parcelable
 	{
 		dest.writeString(details);
 	    dest.writeInt(type.ordinal());
-	    photo.writeToParcel(dest, 0);
+	    dest.writeByte((byte) (photo == null ? 1 : 0));
+	    if (photo != null)
+	    	photo.writeToParcel(dest, 0);
 	    dest.setDataPosition(0);
 		dest.writeString(reportOfType);
 		dest.writeString(id);
@@ -178,10 +199,34 @@ public class Report implements Parcelable
 	{
 		return warnings;
 	}
+	
+	public String getWarningsHumanReadable(Context context)
+	{
+		String humanReadable="";
+		for (String war : warnings)
+		{
+			Log.d("currentWar",war);
+			if (war.equals(CHAIN))
+				humanReadable += context.getString(R.string.chain);
+			else if (war.equals(GEARS))
+				humanReadable += context.getString(R.string.gears);
+			else if (war.equals(BRAKES))
+				humanReadable += context.getString(R.string.brakes);
+			else if (war.equals(TIRE))
+				humanReadable += context.getString(R.string.tire);
+			humanReadable += " , ";
+		}
+		return (String) humanReadable.subSequence(0, humanReadable.length()-3);
+	}
+	
 	public void addWarning(String war)
 	{
 		if (warnings == null) warnings = new ArrayList<String>();
 		warnings.add(war);
+	}
+
+	public void addAllWarnings(ArrayList<String> warnings) {
+		this.warnings = warnings;
 	}
 
 }

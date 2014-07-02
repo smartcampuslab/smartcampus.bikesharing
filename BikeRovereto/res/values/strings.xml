@@ -58,5 +58,6 @@
     <string name="credits">Credits</string>
     <string name="bikes">Bikes</string>
 	<string name="Slots">Slots</string>
+    <string name="problems">Problems in:</string>
 
 </resources>

@@ -97,11 +97,13 @@ public class GetReportsTask extends AsyncTask<String, Void, ArrayList<Report>>
 				for (int j=0; j<jsonArray.length(); j++) {
 					warnings.add(jsonArray.getString(j));
 				}
+				Log.d("getReportsTask",warnings.toString());
 				String objectType = reportJSON.getString("objectType");
 				String objectId = reportJSON.getString("objectId");
 				long date = reportJSON.getLong("date");
 
 				Report report = new Report(reportType, details, objectType, objectId, date);
+				report.addAllWarnings(warnings);
 				reports.add(report);
 			}			
 			
@@ -116,7 +118,7 @@ public class GetReportsTask extends AsyncTask<String, Void, ArrayList<Report>>
 
 	@Override
 	protected void onPostExecute(ArrayList<Report> result) {
-		Log.d("getReportsTask", "finished");
+		Log.d("getReportsTask", "finished with "+result.size()+" reports");
 		if (delegate!=null)
 			delegate.processFinish(result, currentStatus);
 	}

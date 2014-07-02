@@ -58,6 +58,7 @@ public class SendReport extends AsyncTask<Report, Void, String>{
             jsonObject.accumulate("warnings", jsonArray);
             jsonObject.accumulate("objectType", reports[0].getReportOfType());
             jsonObject.accumulate("objectId", reports[0].getID());
+            jsonObject.accumulate("cityId", "5061"); //Code of the city
             jsonObject.accumulate("date", reports[0].getDate());
             jsonObject.accumulate("fieldId", null);
             // jsonObject.accumulate("file", reports[0].getPhotoAsByteArray());
