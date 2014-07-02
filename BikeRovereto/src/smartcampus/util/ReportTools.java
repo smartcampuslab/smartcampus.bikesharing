@@ -4,10 +4,8 @@ import java.io.File;
 import java.util.Calendar;
 
 import smartcampus.asynctask.SendReport;
-import smartcampus.model.Bike;
 import smartcampus.model.Report;
 import smartcampus.model.Reportable;
-import smartcampus.model.Station;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -113,7 +111,7 @@ public class ReportTools {
 
 				report.setPhoto(image);
 
-				reportable.addReport(report);
+				//reportable.addReport(report);
 				new SendReport(activity).execute(report);
 				reportsAdapter.add(report);
 			}

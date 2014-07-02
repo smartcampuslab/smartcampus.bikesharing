@@ -69,7 +69,7 @@ public class Report implements Parcelable
 	private long date;
 	private ArrayList<String> warnings;
 	public static final String CHAIN = "chain", GEARS = "gears", BRAKES = "brakes", TIRE = "tire";
-	public static final String[] WARNINGS = new String[] {CHAIN, GEARS, BRAKES, TIRE};
+	public static final String[] WARNINGS = new String[] {CHAIN, BRAKES, GEARS, TIRE};
 
 	public Report(Type type, String details, Bitmap photo, String typeOf, String id, long date)
 	{
@@ -197,6 +197,10 @@ public class Report implements Parcelable
 	
 	public ArrayList<String> getWarnings()
 	{
+		if(warnings == null)
+		{
+			warnings = new ArrayList<String>();
+		}
 		return warnings;
 	}
 	
