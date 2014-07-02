@@ -19,13 +19,16 @@ public class Bike implements Parcelable, Reportable
 	private ArrayList<Report> reports;
 	public static final int DISTANCE_NOT_VALID = -1;
 	private int distance = DISTANCE_NOT_VALID; // >=0 only when distance is
-												// initialized
+
+	private boolean areThereReports = false;
+
+	// initialized
 
 	public Bike(GeoPoint position, String id)
 	{
 		this.position = position;
 		this.id = id;
-	
+
 		reports = new ArrayList<Report>();
 	}
 
@@ -35,6 +38,7 @@ public class Bike implements Parcelable, Reportable
 		position = new GeoPoint(source.readInt(), source.readInt());
 		id = source.readString();
 		source.readList(reports, List.class.getClassLoader());
+		areThereReports = source.readInt() > 0;
 	}
 
 	public static final Parcelable.Creator<Bike> CREATOR = new Creator<Bike>()
@@ -67,6 +71,7 @@ public class Bike implements Parcelable, Reportable
 		dest.writeInt(position.getLongitudeE6());
 		dest.writeString(id);
 		dest.writeList(reports);
+		dest.writeInt(areThereReports ? 1 : 0);
 	}
 
 	// getters and setters
@@ -112,7 +117,6 @@ public class Bike implements Parcelable, Reportable
 		return new BoundingBoxE6(north, east, south, west);
 	}
 
-
 	public int getDistance()
 	{
 		return distance;
@@ -143,9 +147,8 @@ public class Bike implements Parcelable, Reportable
 	public void addReport(Report report)
 	{
 		reports.add(report);
-		
+		areThereReports = true;
 	}
-
 
 	@Override
 	public int getNReports()
@@ -158,7 +161,7 @@ public class Bike implements Parcelable, Reportable
 	{
 
 		if (reports == null)
-			return new ArrayList<Report>(); //for safety!
+			return new ArrayList<Report>(); // for safety!
 		return reports;
 	}
 
@@ -172,5 +175,15 @@ public class Bike implements Parcelable, Reportable
 	public String getName()
 	{
 		return id;
+	}
+
+	public boolean areThereReports()
+	{
+		return areThereReports;
+	}
+
+	public void thereAreReports(boolean b)
+	{
+		areThereReports = b;
 	}
 }

@@ -67,9 +67,13 @@ public class BikeInfoWindow extends MarkerInfoWindow
 		super.onOpen(item);
 		BikeMarker sItem = (BikeMarker) item;
 		bike = sItem.getBike();
-		if(bike.getReports().size() > 0)
+		if(bike.areThereReports())
 		{
 			mView.findViewById(R.id.image_warnings).setVisibility(View.VISIBLE);
+		}
+		else
+		{
+			mView.findViewById(R.id.image_warnings).setVisibility(View.GONE);
 		}
 	}
 
