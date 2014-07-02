@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -55,6 +56,7 @@ public class SendReport extends AsyncTask<Report, Void, String>{
             HttpPost httpPost = new HttpPost(url);
  
             String json = "";
+            Charset charsEncoding = Charset.forName("UTF-8");
  
             // 3. build jsonObject
             JSONObject jsonObject = new JSONObject();
@@ -75,7 +77,7 @@ public class SendReport extends AsyncTask<Report, Void, String>{
  
             // 5. set json
             MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-            multipartEntity.addPart("body", new StringBody(json));
+            multipartEntity.addPart("body", new StringBody(json, charsEncoding));
             //create a file to write bitmap data
                         
             if (reports[0].getPhoto() != null)
