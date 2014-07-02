@@ -16,7 +16,6 @@ public class Station implements Parcelable, Reportable
 
 	private String id;
 
-	
 	private int nBikes;
 	private int maxSlots;
 	private int brokenBikes;
@@ -26,9 +25,10 @@ public class Station implements Parcelable, Reportable
 	public static final int DISTANCE_NOT_VALID = -1;
 	private int distance = DISTANCE_NOT_VALID; // >=0 only when distance is
 												// initialized
+	private boolean thereAreReports;
 
-	//TODO: implement brokenSlots
-	
+	// TODO: implement brokenSlots
+
 	public Station(GeoPoint position, String name, String street, int maxSlots, int nBikes, int brokenBikes, String id)
 	{
 		this.position = position;
@@ -85,6 +85,7 @@ public class Station implements Parcelable, Reportable
 		brokenBikes = source.readInt();
 		source.readList(reports, List.class.getClassLoader());
 		id = source.readString();
+		thereAreReports = source.readInt() > 0;
 	}
 
 	public static final Parcelable.Creator<Station> CREATOR = new Creator<Station>()
@@ -126,8 +127,8 @@ public class Station implements Parcelable, Reportable
 		dest.writeInt(brokenBikes);
 		dest.writeList(reports);
 		dest.writeString(id);
-		
-		
+		dest.writeInt(thereAreReports ? 1 : 0);
+
 	}
 
 	// getters and setters
@@ -163,7 +164,7 @@ public class Station implements Parcelable, Reportable
 
 	public int getUnavailableSlots()
 	{
-		return brokenBikes; 
+		return brokenBikes;
 	}
 
 	public double getBikesPresentPercentage()
@@ -184,7 +185,7 @@ public class Station implements Parcelable, Reportable
 		}
 		this.nBikes = usedSlots;
 	}
-	
+
 	public void setBrokenSlots(int brokenSlots)
 	{
 		this.brokenBikes = brokenSlots;
@@ -200,8 +201,6 @@ public class Station implements Parcelable, Reportable
 		return maxSlots - (nBikes); // Bici mancanti nella stazione
 	}
 
-
-
 	public int getDistance()
 	{
 		return distance;
@@ -211,16 +210,17 @@ public class Station implements Parcelable, Reportable
 	{
 		this.distance = distance;
 	}
-	
+
 	public void setFavourite(boolean fav)
 	{
-		this.favourite=fav;
+		this.favourite = fav;
 	}
-	
+
 	public boolean getFavourite()
 	{
 		return favourite;
 	}
+
 	public String getId()
 	{
 		return id;
@@ -237,9 +237,9 @@ public class Station implements Parcelable, Reportable
 	{
 		if (reports == null)
 			reports = new ArrayList<Report>();
-		reports.add(report);		
+		reports.add(report);
+		thereAreReports = true;
 	}
-
 
 	@Override
 	public int getNReports()
@@ -252,7 +252,7 @@ public class Station implements Parcelable, Reportable
 	{
 
 		if (reports == null)
-			return new ArrayList<Report>(); //for safety!
+			return new ArrayList<Report>(); // for safety!
 		return reports;
 	}
 
@@ -260,5 +260,15 @@ public class Station implements Parcelable, Reportable
 	public Report getReport(int index)
 	{
 		return reports.get(index);
+	}
+
+	public void thereAreReports(boolean b)
+	{
+		this.thereAreReports = b;
+	}
+
+	public boolean areThereReports()
+	{
+		return thereAreReports;
 	}
 }

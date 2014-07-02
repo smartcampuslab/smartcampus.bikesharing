@@ -81,7 +81,9 @@ public class NotificationReceiver extends BroadcastReceiver
 			// define sound URI, the sound to be played when there's a
 			// notification
 			Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
+			
+			
+			
 			// this is it, we'll build the notification!
 			// in the addAction method, if you don't want any icon, just set the
 			// first param to 0

@@ -74,9 +74,28 @@ public class SignalView extends Fragment implements AsyncReportsResponse
 
 		distance.setText(Tools.formatDistance(bike.getDistance()));
 
-
 		mReports = new ArrayList<Report>();
-		new GetReportsTask().execute(GetReportsTask.BIKE, bike.getId());
+		GetReportsTask getReportsTask = new GetReportsTask();
+
+		getReportsTask.delegate = new AsyncReportsResponse()
+		{
+
+			@Override
+			public void processFinish(ArrayList<Report> reports, int status)
+			{
+				Log.d("signalView", "received reports");
+				mReports = reports;
+				adapter.clear();
+				adapter.addAll(mReports);
+				adapter.notifyDataSetChanged();
+				Log.d("signalView", "mReports size" + mReports.size());
+				if (status != GetReportsTask.NO_ERROR)
+				{
+					Toast.makeText(getActivity(), getString(R.string.error_reports), Toast.LENGTH_SHORT).show();
+				}
+			}
+		};
+		getReportsTask.execute(GetReportsTask.BIKE, bike.getId());
 		adapter = new ReportsAdapter(getActivity(), 0, mReports);
 		mList.setAdapter(adapter);
 
@@ -151,9 +170,9 @@ public class SignalView extends Fragment implements AsyncReportsResponse
 		{
 			Bitmap imageBitmap = ReportTools.grabImage(getActivity());
 			ReportTools.image = imageBitmap;
-			
+
 			photoView = ReportTools.photoView;
-			
+
 			photoView.setVisibility(View.VISIBLE);
 			photoView.setScaleType(ScaleType.CENTER_CROP);
 			photoView.setImageBitmap(imageBitmap);
@@ -161,7 +180,8 @@ public class SignalView extends Fragment implements AsyncReportsResponse
 	}
 
 	@Override
-	public void processFinish(ArrayList<Report> reports, int status) {
+	public void processFinish(ArrayList<Report> reports, int status)
+	{
 		mReports = reports;
 		adapter.notifyDataSetChanged();
 		if (status != GetReportsTask.NO_ERROR)

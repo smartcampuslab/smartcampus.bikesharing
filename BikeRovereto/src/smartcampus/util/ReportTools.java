@@ -150,11 +150,11 @@ public class ReportTools {
 					}
 				}
 				Log.d("provassh", descriptionEditText.getText().toString() + "d");
-				if ((chooseAdvice.isChecked() || chooseComplaint.isChecked()) && (!descriptionEditText.getText().toString().equals("")))
+				if ((chooseAdvice.isChecked() || chooseComplaint.isChecked()) && descriptionEditText.getText().toString().trim().length() > 0)
 				{
 					((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
 				}
-				else if ((chooseWarning.isChecked() && (!descriptionEditText.getText().toString().equals("") || checkBoxes[0].isChecked()
+				else if ((chooseWarning.isChecked() && (descriptionEditText.getText().toString().trim().length() > 0 || checkBoxes[0].isChecked()
 						|| checkBoxes[1].isChecked() || checkBoxes[2].isChecked() || checkBoxes[3].isChecked())))
 				{
 					((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
@@ -171,7 +171,7 @@ public class ReportTools {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count)
 			{
-				if (!descriptionEditText.getText().toString().equals(""))
+				if (descriptionEditText.getText().toString().trim().length() > 0)
 				{
 					if (chooseAdvice.isChecked() || chooseComplaint.isChecked() || chooseWarning.isChecked())
 					{
