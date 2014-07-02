@@ -33,8 +33,8 @@ public class WebServiceController
 	@Autowired
 	private FeedbackManager feedBackManager;
 	
-	@RequestMapping(value = "/stations/{cityID:.*}/{stationID:.*}")
-    public @ResponseBody Container<Station> stationService(@PathVariable String cityID, @PathVariable String stationID)
+	@RequestMapping(value = "/stations/{cityId:.*}/{stationId:.*}", method = RequestMethod.GET)
+    public @ResponseBody Container<Station> stationService(@PathVariable String cityId, @PathVariable String stationId)
     {
 		int httpStatus = HttpStatus.OK.value();
 		String errorString =  "";
@@ -42,7 +42,7 @@ public class WebServiceController
 		
 		try
 		{
-			station = dataManager.getStation(cityID, stationID);
+			station = dataManager.getStation(cityId, stationId);
 		}
 		catch (InvalidCityIDException e)
 		{
@@ -66,8 +66,8 @@ public class WebServiceController
         return new Container<Station>(httpStatus, errorString, station);
     }
 	
-	@RequestMapping(value = "/stations/{cityID:.*}")
-    public @ResponseBody Container<Object[]> stationsService(@PathVariable String cityID)
+	@RequestMapping(value = "/stations/{cityId:.*}", method = RequestMethod.GET)
+    public @ResponseBody Container<Object[]> stationsService(@PathVariable String cityId)
     {
 		int httpStatus = HttpStatus.OK.value();
 		String errorString = "";
@@ -75,7 +75,7 @@ public class WebServiceController
 		
 		try
 		{
-			stations = dataManager.getStations(cityID);
+			stations = dataManager.getStations(cityId);
 		}
 		catch (InvalidCityIDException e)
 		{
@@ -93,8 +93,8 @@ public class WebServiceController
         return new Container<Object[]>(httpStatus, errorString, stations.values().toArray());
     }
 	
-	@RequestMapping(value = "/bikes/{cityID:.*}")
-    public @ResponseBody Container<Object[]> anarchicBikesService(@PathVariable String cityID)
+	@RequestMapping(value = "/bikes/{cityId:.*}", method = RequestMethod.GET)
+    public @ResponseBody Container<Object[]> anarchicBikesService(@PathVariable String cityId)
     {
 		int httpStatus = HttpStatus.OK.value();
 		String errorString =  "";
@@ -102,7 +102,7 @@ public class WebServiceController
 		
 		try
 		{
-			bikes = dataManager.getAnarchicBikes(cityID);
+			bikes = dataManager.getAnarchicBikes(cityId);
 		}
 		catch (InvalidCityIDException e)
 		{
@@ -121,7 +121,7 @@ public class WebServiceController
     }
     
     @RequestMapping(value = "/report", method = RequestMethod.POST)
-    public @ResponseBody Container<Integer> reportService(@RequestParam("body") String feedback, @RequestParam(required=false,value="file") MultipartFile file)
+    public @ResponseBody Container<Integer> reportService(@RequestParam(value = "body") String feedback, @RequestParam(required=false,value="file") MultipartFile file)
     {
 		int httpStatus = HttpStatus.OK.value();
 		String errorString = "";
@@ -156,24 +156,24 @@ public class WebServiceController
 		return new Container<Integer>(httpStatus, errorString, 0);
     }
     
-    @RequestMapping(value = "/stations/{cityID:.*}/{stationID:.*}/reports")
-    public @ResponseBody Container<Feedback[]> stationsReportService(@PathVariable String cityID, @PathVariable String stationID)
+    @RequestMapping(value = "/stations/{cityId:.*}/{stationId:.*}/reports")
+    public @ResponseBody Container<Feedback[]> stationsReportService(@PathVariable String cityId, @PathVariable String stationId)
     {
 		int httpStatus = HttpStatus.OK.value();
 		String errorString = "";
 		
-		List<Feedback> res = feedBackManager.getStationFeedback(cityID, stationID);
+		List<Feedback> res = feedBackManager.getStationFeedbacks(cityId, stationId);
 		
         return new Container<Feedback[]>(httpStatus, errorString, res.toArray(new Feedback[res.size()]));
     }
     
-    @RequestMapping(value = "/bikes/{cityID:.*}/{bikeID:.*}/reports")
-    public @ResponseBody Container<Feedback[]> anarchicBikesReportService(@PathVariable String cityID, @PathVariable String bikeID)
+    @RequestMapping(value = "/bikes/{cityId:.*}/{bikeId:.*}/reports")
+    public @ResponseBody Container<Feedback[]> anarchicBikesReportService(@PathVariable String cityId, @PathVariable String bikeId)
     {
 		int httpStatus = HttpStatus.OK.value();
 		String errorString = "";
 		
-		List<Feedback> res = feedBackManager.getBikeFeedback(cityID, bikeID);
+		List<Feedback> res = feedBackManager.getBikeFeedbacks(cityId, bikeId);
 
         return new Container<Feedback[]>(httpStatus, errorString, res.toArray(new Feedback[res.size()]));
     }

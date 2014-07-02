@@ -11,15 +11,10 @@ import eu.trentorise.smartcampus.bikesharing.model.AnarchicBike;
 @Component
 public class AnarchicBikeServiceClient
 {
-	
-	public AnarchicBikeServiceClient()
-	{
-		
-	}
-	
 	public Map<String, AnarchicBike> getAnarchicBikes(String cityID) throws WebServiceErrorException
 	{		
 		Map<String, AnarchicBike> anarchicBikes = new HashMap<String, AnarchicBike>();
+		//create and add 4 random "AnarchicBikes"
 		AnarchicBike bike = new AnarchicBike("0000");
 		anarchicBikes.put(bike.getId(), bike);
 		bike = new AnarchicBike("0001");

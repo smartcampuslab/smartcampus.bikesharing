@@ -28,6 +28,7 @@ public class FeedbackFileManager
 		if(file != null)
 		{
 			name = path + UUID.randomUUID().toString() + "." + format;
+			
 			try
 			{
 				BufferedOutputStream outFile = new BufferedOutputStream(new FileOutputStream(new File(name)));
