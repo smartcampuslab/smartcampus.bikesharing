@@ -9,7 +9,8 @@ import eu.trentorise.smartcampus.bikesharing.exceptions.WebServiceErrorException
 import eu.trentorise.smartcampus.bikesharing.model.AnarchicBike;
 
 @Component
-public class AnarchicBikeServiceClient {
+public class AnarchicBikeServiceClient
+{
 	
 	public AnarchicBikeServiceClient()
 	{

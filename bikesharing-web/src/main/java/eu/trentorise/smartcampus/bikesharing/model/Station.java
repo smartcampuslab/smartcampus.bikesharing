@@ -36,6 +36,7 @@ public class Station
 		nBikes = 0;
 		maxSlots = 0;
 		nBrokenBikes = 0;
+		
 		for (char c : attributes[6].toCharArray())
 		{
 			if(c == '4')

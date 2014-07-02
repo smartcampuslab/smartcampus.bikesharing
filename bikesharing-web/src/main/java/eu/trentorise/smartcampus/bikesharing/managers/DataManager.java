@@ -108,7 +108,7 @@ public class DataManager
 		
 		if (res == null)
 		{
-			throw new WebServiceErrorException("No data for cityID: ");
+			throw new WebServiceErrorException("No data for cityID: " + cityID);
 		}
 		
 		return res;
