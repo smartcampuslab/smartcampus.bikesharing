@@ -95,8 +95,8 @@ public class NotificationReceiver extends BroadcastReceiver
 			
 			Notification mNotification = new NotificationCompat.Builder(context).setContentTitle(
 					station.getName().toUpperCase()).setContentText(
-					res.getText(R.string.sort_available_bikes) + ": " + station.getNBikesPresent() + " - "
-							+ res.getText(R.string.sort_available_slots) + ": " + station.getNSlotsEmpty()).setSmallIcon(R.drawable.ic_launcher)
+					res.getText(R.string.bikes) + ": " + station.getNBikesPresent() + "  -   "
+							+ res.getText(R.string.Slots) + ": " + station.getNSlotsEmpty()).setSmallIcon(R.drawable.ic_launcher)
 					.setContentIntent(pendingIntentToDetails).setSound(soundUri).setContent(remoteViews).build();
 
 			NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

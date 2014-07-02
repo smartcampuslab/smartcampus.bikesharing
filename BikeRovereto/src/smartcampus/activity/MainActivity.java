@@ -465,7 +465,6 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 					@SuppressWarnings("unchecked")
 					public void run()
 					{
-						Log.d("prova", "tik");
 						try
 						{
 							GetAnarchicBikesTask getBikesTask = new GetAnarchicBikesTask();

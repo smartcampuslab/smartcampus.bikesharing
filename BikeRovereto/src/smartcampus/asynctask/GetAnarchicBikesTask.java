@@ -19,6 +19,7 @@ import org.osmdroid.util.GeoPoint;
 
 import smartcampus.model.Bike;
 import smartcampus.model.Station;
+import smartcampus.util.Tools;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -45,8 +46,7 @@ public class GetAnarchicBikesTask extends AsyncTask<Void, Void, ArrayList<Bike>>
 	@Override
 	protected ArrayList<Bike> doInBackground(Void... data)
 	{
-		HttpGet httpg = new HttpGet("http://192.168.41.154:8080/bikesharing-web/bikes/5061/");
-		Log.d("prova", httpg.getURI().toString());
+		HttpGet httpg = new HttpGet(Tools.SERVICE_URL + Tools.BIKES_REQUEST + Tools.CAP_ROVERETO);
 		String responseJSON;
 		ArrayList<Bike> bikes = new ArrayList<Bike>();
 		try

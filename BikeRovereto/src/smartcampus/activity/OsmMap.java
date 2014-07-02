@@ -207,6 +207,10 @@ public class OsmMap extends Fragment
 			}
 			mapView.invalidate();
 			break;
+		case R.id.bt_refresh:
+			((MainActivity)getActivity()).stopTimer();
+			((MainActivity)getActivity()).startTimer();
+			break;
 		}
 
 		return true;
@@ -382,12 +386,12 @@ public class OsmMap extends Fragment
 
 	private void refreshBikesMarkers()
 	{
-		if(bikesMarkersOverlay == null)
+		if (bikesMarkersOverlay == null)
 		{
 			bikesMarkersOverlay = new GridMarkerClustererBikes(getActivity());
 		}
-		if(bikesMarkersOverlay.getItems() != null)
-		bikesMarkersOverlay.getItems().clear();
+		if (bikesMarkersOverlay.getItems() != null)
+			bikesMarkersOverlay.getItems().clear();
 
 		Resources res = getResources();
 
@@ -411,7 +415,7 @@ public class OsmMap extends Fragment
 
 	private void refreshStationsMarkers()
 	{
-		if(stationsMarkersOverlay == null)
+		if (stationsMarkersOverlay == null)
 		{
 			stationsMarkersOverlay = new GridMarkerClustererStation(getActivity());
 		}

@@ -54,4 +54,6 @@
     <string name="id">ID: </string>
 	<string name="about">About</string>
 	<string name="credits">Credits</string>
+	<string name="bikes">Bici</string>
+	<string name="Slots">Slot</string>
 </resources>

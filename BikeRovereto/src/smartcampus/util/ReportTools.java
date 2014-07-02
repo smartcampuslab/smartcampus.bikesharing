@@ -82,7 +82,7 @@ public class ReportTools {
 		});
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-
+		builder.setInverseBackgroundForced(true);
 		builder.setTitle(activity.getString(R.string.report_in) + " " + reportable.getName());
 		builder.setPositiveButton(R.string.report, new DialogInterface.OnClickListener()
 		{

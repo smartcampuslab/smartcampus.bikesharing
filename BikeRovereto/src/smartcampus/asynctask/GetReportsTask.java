@@ -16,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import smartcampus.model.Report;
+import smartcampus.util.Tools;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -42,7 +43,7 @@ public class GetReportsTask extends AsyncTask<String, Void, ArrayList<Report>>
 	@Override
 	protected ArrayList<Report> doInBackground(String... data)
 	{
-		HttpGet httpg = new HttpGet("http://192.168.41.154:8080/bikesharing-web/" + data[0] + "/5061/"+data[1]+"/reports");
+		HttpGet httpg = new HttpGet(Tools.SERVICE_URL + data[0] + "/" + Tools.CAP_ROVERETO + data[1] + "/" + Tools.REPORTS_REQUEST);
 		Log.d("getReportsTask", httpg.getURI().toString());
 		String responseJSON;
 		

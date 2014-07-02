@@ -27,7 +27,7 @@ public class BikeInfoWindow extends MarkerInfoWindow
 
 	public BikeInfoWindow(MapView mapView, final FragmentManager fragmentManager)
 	{
-		super(R.layout.info_bubble, mapView);
+		super(R.layout.bonuspack_bubble, mapView);
 		myMapView = mapView;
 		
 		TextView btn = (TextView) (mView.findViewById(R.id.btToDetails));

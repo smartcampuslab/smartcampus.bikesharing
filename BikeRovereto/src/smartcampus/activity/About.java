@@ -1,17 +1,14 @@
 package smartcampus.activity;
 
-import eu.trentorise.smartcampus.bikerovereto.R;
-import eu.trentorise.smartcampus.bikerovereto.R.anim;
-import eu.trentorise.smartcampus.bikerovereto.R.id;
-import eu.trentorise.smartcampus.bikerovereto.R.layout;
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import eu.trentorise.smartcampus.bikerovereto.R;
 
-public class About extends Activity
+public class About extends ActionBarActivity
 {
 	Button close;
 	Fragment fragment;
@@ -21,7 +18,7 @@ public class About extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fragment_about);
-		getActionBar().hide();
+		getSupportActionBar().hide();
 		close = (Button) findViewById(R.id.bt_close);
 		setBtClose();
 	}
@@ -29,7 +26,6 @@ public class About extends Activity
 	@Override
 	protected void onDestroy()
 	{
-		// TODO Auto-generated method stub
 		super.onDestroy();
 	}
 	

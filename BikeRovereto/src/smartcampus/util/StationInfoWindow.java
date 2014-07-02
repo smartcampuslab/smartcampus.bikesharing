@@ -27,7 +27,7 @@ public class StationInfoWindow extends MarkerInfoWindow
 
 	public StationInfoWindow(MapView mapView, final FragmentManager fragmentManager)
 	{
-		super(R.layout.info_bubble, mapView);
+		super(R.layout.bonuspack_bubble, mapView);
 		//mContext = context;
 		myMapView = mapView;
 		TextView btn = (TextView) (mView.findViewById(R.id.btToDetails));
