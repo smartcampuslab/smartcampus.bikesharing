@@ -27,16 +27,32 @@ public class ReportsAdapter extends ArrayAdapter<Report>
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
 		ViewHolder viewHolder;
+		int layoutCode = getItemViewType(position);
+		
 		if (convertView == null)
 		{
 			LayoutInflater inflater = ((Activity) getContext()).getLayoutInflater();
-			convertView = inflater.inflate(R.layout.report_model, parent, false);
-
 			viewHolder = new ViewHolder();
-			viewHolder.type = (TextView) convertView.findViewById(R.id.type);
-
-			viewHolder.problems = (TextView) convertView.findViewById(R.id.problems);
-			viewHolder.summary = (TextView) convertView.findViewById(R.id.summary);
+			if (layoutCode == 0)
+			{
+				convertView = inflater.inflate(R.layout.report_model_warning_without_summary, parent, false);
+				viewHolder.type = (TextView) convertView.findViewById(R.id.type);
+				viewHolder.problems = (TextView) convertView.findViewById(R.id.problems);
+				
+			}
+			else if (layoutCode == 1)
+			{
+				convertView = inflater.inflate(R.layout.report_model_warning, parent, false);
+				viewHolder.type = (TextView) convertView.findViewById(R.id.type);
+				viewHolder.problems = (TextView) convertView.findViewById(R.id.problems);
+				viewHolder.summary = (TextView) convertView.findViewById(R.id.summary);
+			}
+			else
+			{
+				convertView = inflater.inflate(R.layout.report_model, parent, false);
+				viewHolder.type = (TextView) convertView.findViewById(R.id.type);
+				viewHolder.summary = (TextView) convertView.findViewById(R.id.summary);
+			}			
 			convertView.setTag(viewHolder);
 		}
 		else
@@ -46,26 +62,22 @@ public class ReportsAdapter extends ArrayAdapter<Report>
 		
 		viewHolder.type.setText(mReports.get(position).getType().toHumanString(getContext()));
 		
-		if (mReports.get(position).getType() == Report.Type.WARNING)
-		{
-			viewHolder.problems.setVisibility(View.VISIBLE);
+		switch (layoutCode) {
+		case 0:
 			viewHolder.problems.setText(getContext().getString(R.string.problems) + " "
 					+ mReports.get(position).getWarningsHumanReadable(getContext()));
-		}
-		else
-		{
-			viewHolder.problems.setVisibility(View.GONE);
-		}
-		if(!mReports.get(position).getDetails().equals(""))
-		{
+			break;
+		case 1:
+			viewHolder.problems.setText(getContext().getString(R.string.problems) + " "
+					+ mReports.get(position).getWarningsHumanReadable(getContext()));
 			viewHolder.summary.setText(mReports.get(position).getDetails());
+			break;
+		default:
+			viewHolder.summary.setText(mReports.get(position).getDetails());			
+			break;
 		}
-		else
-		{
-			viewHolder.summary.setVisibility(View.GONE);
-		}
+		
 		return convertView;
-
 	}
 
 	@Override
@@ -73,6 +85,31 @@ public class ReportsAdapter extends ArrayAdapter<Report>
 	{
 		return mReports.size();
 	}
+	
+	@Override
+	public int getViewTypeCount() {
+		return 3;
+	}
+	
+	@Override
+	public int getItemViewType(int position) {
+		if (getItem(position).getDetails().equals(""))
+		{
+			return 0;
+		}
+		else
+		{
+			if ( getItem(position).getType() == Report.Type.WARNING)
+			{
+				return 1;
+			}
+			else
+			{
+				return 2;
+			}
+		}
+	}
+	
 
 	private static class ViewHolder
 	{

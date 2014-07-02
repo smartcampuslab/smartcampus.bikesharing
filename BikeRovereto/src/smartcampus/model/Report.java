@@ -214,6 +214,10 @@ public class Report implements Parcelable
 	public String getWarningsHumanReadable(Context context)
 	{
 		String humanReadable = "";
+		if (warnings.size() == 0 || warnings == null)
+		{
+			return humanReadable;
+		}
 		for (String war : warnings)
 		{
 			Log.d("currentWar", war);
