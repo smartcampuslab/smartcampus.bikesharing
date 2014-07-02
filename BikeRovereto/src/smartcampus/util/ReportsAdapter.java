@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import smartcampus.model.Report;
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +22,14 @@ public class ReportsAdapter extends ArrayAdapter<Report>
 	{
 		super(context, resource, reports);
 		mReports = reports;
+		Log.d("reportsAdapter", "adapter costructor");
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
 		ViewHolder viewHolder;
-
+		Log.d("reportsAdapter", "view created: pos"+position);
 		if (convertView == null)
 		{
 			LayoutInflater inflater = ((Activity) getContext())
@@ -47,6 +49,11 @@ public class ReportsAdapter extends ArrayAdapter<Report>
 		viewHolder.report.setText(mReports.get(position).getDetails());
 		return convertView;
 
+	}
+	
+	@Override
+	public int getCount() {
+		return mReports.size();
 	}
 
 	private static class ViewHolder

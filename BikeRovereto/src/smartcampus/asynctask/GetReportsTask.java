@@ -115,7 +115,7 @@ public class GetReportsTask extends AsyncTask<String, Void, ArrayList<Report>>
 
 	@Override
 	protected void onPostExecute(ArrayList<Report> result) {
-		Log.d("getReportsTask", "finished");
+		Log.d("getReportsTask", "finished with "+result.size()+" reports");
 		if (delegate!=null)
 			delegate.processFinish(result, currentStatus);
 	}

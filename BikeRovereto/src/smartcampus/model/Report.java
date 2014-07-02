@@ -129,7 +129,9 @@ public class Report implements Parcelable
 	{
 		details = source.readString();
 		type = Type.values()[source.readInt()];
-		photo = Bitmap.CREATOR.createFromParcel(source); //TODO: bitmap parcel!
+		byte photoIsNull = source.readByte();
+		if (photoIsNull == 0)
+			photo = Bitmap.CREATOR.createFromParcel(source); //TODO: bitmap parcel!
 		reportOfType = source.readString();
 		id = source.readString();
 		date = source.readLong();
@@ -162,7 +164,9 @@ public class Report implements Parcelable
 	{
 		dest.writeString(details);
 	    dest.writeInt(type.ordinal());
-	    photo.writeToParcel(dest, 0);
+	    dest.writeByte((byte) (photo == null ? 1 : 0));
+	    if (photo != null)
+	    	photo.writeToParcel(dest, 0);
 	    dest.setDataPosition(0);
 		dest.writeString(reportOfType);
 		dest.writeString(id);
