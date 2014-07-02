@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.http.HttpResponse;
@@ -60,7 +61,7 @@ public class SendReport extends AsyncTask<Report, Void, String>{
 				HttpPost httpPost = new HttpPost(url);
  
 				String json = "";
- 
+	            Charset charsEncoding = Charset.forName("UTF-8");
 				// 3. build jsonObject
 				JSONObject jsonObject = new JSONObject();
 				jsonObject.accumulate("id", null);
@@ -73,14 +74,13 @@ public class SendReport extends AsyncTask<Report, Void, String>{
 				jsonObject.accumulate("cityId", "5061"); //Code of the city
 				jsonObject.accumulate("date", reports[0].getDate());
 				jsonObject.accumulate("fieldId", null);
-				// jsonObject.accumulate("file", reports[0].getPhotoAsByteArray());
- 
 				// 4. convert JSONObject to JSON to String
 				json = jsonObject.toString();
  
+            
 				// 5. set json
 				MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-				multipartEntity.addPart("body", new StringBody(json));
+				multipartEntity.addPart("body", new StringBody(json, charsEncoding));
 				//create a file to write bitmap data
 				            
 				if (reports[0].getPhoto() != null)
@@ -90,7 +90,6 @@ public class SendReport extends AsyncTask<Report, Void, String>{
 				    ByteArrayOutputStream bos = new ByteArrayOutputStream();
 				    reports[0].getPhoto().compress(CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
 				    byte[] bitmapdata = bos.toByteArray();
-
 				    //write the bytes in file
 				    FileOutputStream fos = new FileOutputStream(f);
 				    fos.write(bitmapdata);
