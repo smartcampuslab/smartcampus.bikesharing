@@ -17,6 +17,7 @@ public class Tools
 	public static final String STATIONS_REQUEST = "stations/";
 	public static final String BIKES_REQUEST = "bikes/";
 	public static final String REPORTS_REQUEST = "reports/";
+	public static final String REPORT_REQUEST = "report/";
 	public static final String CAP_ROVERETO = "5061/";
 	
 	

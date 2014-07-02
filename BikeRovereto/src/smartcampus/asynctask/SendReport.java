@@ -50,7 +50,7 @@ public class SendReport extends AsyncTask<Report, Void, String>{
 	protected String doInBackground(Report... reports) {
 		InputStream inputStream = null;
         String result = "";
-        String url = Tools.SERVICE_URL + Tools.REPORTS_REQUEST;
+        String url = Tools.SERVICE_URL + Tools.REPORT_REQUEST;
             try
 			{
 				// 1. create HttpClient
