@@ -24,10 +24,17 @@ import android.content.Context;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
+import eu.trentorise.smartcampus.bikerovereto.R;
 //TODO: not tested and fix keys!
 
 public class SendReport extends AsyncTask<Report, Void, String>{
 	Context context;
+	int status;
+
+	public static final int NO_ERROR = 0;
+	public static final int ERROR_SERVER = 1;
+	public static final int ERROR_CLIENT = 2;
 	
 	public SendReport(Context context)
 	{
@@ -66,21 +73,7 @@ public class SendReport extends AsyncTask<Report, Void, String>{
             // 4. convert JSONObject to JSON to String
             json = jsonObject.toString();
  
-            // 5. set json to StringEntity
-            /*
-            StringEntity se = new StringEntity(container.toString());            
-            BasicNameValuePair param = new BasicNameValuePair("body", container.toString());
-            List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
-            params.add(param);
-            UrlEncodedFormEntity entity = new UrlEncodedFormEntity(params);
-            entity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));*/  
-            
-            /*ArrayList<NameValuePair> postParameters;
-            postParameters = new ArrayList<NameValuePair>();
-            postParameters.add(new BasicNameValuePair("body", json));
-            postParameters.add(new BasicNameValuePair("name", "value"));*/
-            // 6. set httpPost Entity
-            //httpPost.setEntity(new UrlEncodedFormEntity(postParameters));
+            // 5. set json
             MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
             multipartEntity.addPart("body", new StringBody(json));
             //create a file to write bitmap data
@@ -110,12 +103,24 @@ public class SendReport extends AsyncTask<Report, Void, String>{
  
             // 10. convert inputstream to string
             if(inputStream != null)
-                result = convertInputStreamToString(inputStream);
+            {
+            	result = convertInputStreamToString(inputStream);
+            	JSONObject jsonResult = new JSONObject(result);
+            	int httpStatus = jsonResult.getInt("httpStatus");
+    			if (httpStatus == 200)
+    				status = NO_ERROR;
+    			else
+    				status = ERROR_SERVER;
+            }                
             else
+            {
                 result = "Did not work!";
+            	status = ERROR_CLIENT;
+            }
  
         } catch (Exception e) {
             Log.d("InputStream", e.getLocalizedMessage());
+            status = ERROR_CLIENT;
         }
  
         // 11. return result
@@ -125,6 +130,14 @@ public class SendReport extends AsyncTask<Report, Void, String>{
 	@Override
 	protected void onPostExecute(String result) {
 		Log.d("sendReport", result);
+		if (status == NO_ERROR)
+		{
+			Toast.makeText(context, context.getString(R.string.send_report_succes), Toast.LENGTH_SHORT).show();
+		}
+		else
+		{
+			Toast.makeText(context, context.getString(R.string.send_report_error), Toast.LENGTH_SHORT).show();			
+		}
 	}
 	
 	

@@ -41,7 +41,7 @@ public class ReportTools {
 	public static Bitmap image;
 	public static final int REQUEST_IMAGE_CAPTURE = 1;
 	
-	public static Report addReport(final Reportable reportable, final Activity activity, final Fragment fragment)
+	public static Report addReport(final Reportable reportable, final Activity activity, final Fragment fragment, final ReportsAdapter reportsAdapter)
 	{
 		final Report report;
 		final long date = Calendar.getInstance().getTimeInMillis();
@@ -115,6 +115,7 @@ public class ReportTools {
 
 				reportable.addReport(report);
 				new SendReport(activity).execute(report);
+				reportsAdapter.add(report);
 			}
 		});
 		builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()

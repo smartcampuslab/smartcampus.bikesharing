@@ -235,8 +235,9 @@ public class Station implements Parcelable, Reportable
 	@Override
 	public void addReport(Report report)
 	{
-		reports.add(report);
-		
+		if (reports == null)
+			reports = new ArrayList<Report>();
+		reports.add(report);		
 	}
 
 

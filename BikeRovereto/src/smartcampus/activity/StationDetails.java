@@ -197,7 +197,7 @@ public class StationDetails extends Fragment
 			getFragmentManager().popBackStack();
 			break;
 		case R.id.action_add_report:
-			ReportTools.addReport(station, getActivity(), this);
+			ReportTools.addReport(station, getActivity(), this, adapter);
 			break;
 		case R.id.action_settings:
 			break;

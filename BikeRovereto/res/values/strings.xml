@@ -59,5 +59,7 @@
     <string name="bikes">Bikes</string>
 	<string name="Slots">Slots</string>
     <string name="problems">Problems in:</string>
+   	<string name="send_report_succes">Report sended correctly</string>
+   	<string name="send_report_error">Error sending the report</string>
 
 </resources>

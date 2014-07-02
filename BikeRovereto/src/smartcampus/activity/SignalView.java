@@ -127,7 +127,7 @@ public class SignalView extends Fragment implements AsyncReportsResponse
 			getFragmentManager().popBackStack();
 			break;
 		case R.id.action_add_report:
-			ReportTools.addReport(bike, getActivity(), this);
+			ReportTools.addReport(bike, getActivity(), this, adapter);
 			break;
 		case R.id.action_settings:
 			break;
