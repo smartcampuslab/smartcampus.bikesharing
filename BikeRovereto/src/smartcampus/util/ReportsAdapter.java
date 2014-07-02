@@ -17,8 +17,7 @@ public class ReportsAdapter extends ArrayAdapter<Report>
 
 	ArrayList<Report> mReports;
 
-	public ReportsAdapter(Context context, int resource,
-			ArrayList<Report> reports)
+	public ReportsAdapter(Context context, int resource, ArrayList<Report> reports)
 	{
 		super(context, resource, reports);
 		mReports = reports;
@@ -30,43 +29,48 @@ public class ReportsAdapter extends ArrayAdapter<Report>
 		ViewHolder viewHolder;
 		if (convertView == null)
 		{
-			LayoutInflater inflater = ((Activity) getContext())
-					.getLayoutInflater();
-			convertView = inflater.inflate(R.layout.report_model,
-					parent, false);
+			LayoutInflater inflater = ((Activity) getContext()).getLayoutInflater();
+			convertView = inflater.inflate(R.layout.report_model, parent, false);
 
 			viewHolder = new ViewHolder();
-			viewHolder.type = (TextView) convertView
-					.findViewById(R.id.type);
-			viewHolder.summary = (TextView) convertView
-					.findViewById(R.id.summary);
-			viewHolder.problems = (TextView) convertView
-					.findViewById(R.id.problems);
+			viewHolder.type = (TextView) convertView.findViewById(R.id.type);
+
+			viewHolder.problems = (TextView) convertView.findViewById(R.id.problems);
+			viewHolder.summary = (TextView) convertView.findViewById(R.id.summary);
 			convertView.setTag(viewHolder);
 		}
 		else
 		{
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
+		
 		viewHolder.type.setText(mReports.get(position).getType().toHumanString(getContext()));
-		viewHolder.summary.setText(mReports.get(position).getDetails());
+		
 		if (mReports.get(position).getType() == Report.Type.WARNING)
 		{
 			viewHolder.problems.setVisibility(View.VISIBLE);
-			viewHolder.problems.setText(getContext().getString(R.string.problems) + " " + mReports.get(position).getWarningsHumanReadable(getContext()));
+			viewHolder.problems.setText(getContext().getString(R.string.problems) + " "
+					+ mReports.get(position).getWarningsHumanReadable(getContext()));
 		}
 		else
 		{
 			viewHolder.problems.setVisibility(View.GONE);
 		}
-		
-		
+		if(!mReports.get(position).getDetails().equals(""))
+		{
+			viewHolder.summary.setText(mReports.get(position).getDetails());
+		}
+		else
+		{
+			viewHolder.summary.setVisibility(View.GONE);
+		}
 		return convertView;
 
 	}
-	
+
 	@Override
-	public int getCount() {
+	public int getCount()
+	{
 		return mReports.size();
 	}
 

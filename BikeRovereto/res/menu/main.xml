@@ -9,6 +9,7 @@
         android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/only_e_motion"
         android:titleCondensed="e-motion"/>
+    
     <item
         android:id="@+id/bt_refresh"
         android:icon="@drawable/ic_action_refresh"
