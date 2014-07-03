@@ -233,7 +233,6 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 					break;
 				case 3:
 					Intent i = new Intent(getBaseContext(), SettingsActivity.class);
-					i.putParcelableArrayListExtra("stations", stations);
 					startActivity(i);
 					break;
 				case 4:
@@ -255,7 +254,6 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	{
 		super.onPostCreate(savedInstanceState);
 		mDrawerToggle.syncState();
-		new NotificationReceiver().registerAlarm(this, Calendar.getInstance(), 789754, "1148");
 	}
 
 	@Override

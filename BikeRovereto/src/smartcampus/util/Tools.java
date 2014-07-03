@@ -4,6 +4,7 @@ import org.osmdroid.util.GeoPoint;
 
 import smartcampus.model.Station;
 import android.content.Context;
+import android.preference.Preference;
 import android.util.TypedValue;
 
 public class Tools
@@ -19,7 +20,7 @@ public class Tools
 	public static final String REPORTS_REQUEST = "reports/";
 	public static final String REPORT_REQUEST = "report/";
 	public static final String CAP_ROVERETO = "5061/";
-	
+
 	
 	public static int convertDpToPixel(Context context, int dp)
 	{

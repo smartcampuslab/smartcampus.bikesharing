@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -36,6 +37,7 @@ public class NotificationReceiver extends BroadcastReceiver
 		alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(context, NotificationReceiver.class);
 		intent.putExtra("stationID", stationID);
+		intent.putExtra("uniqueID", uniqueID);
 		alarmIntent = PendingIntent.getBroadcast(context, uniqueID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
 		// wait 10 seconds and notify
@@ -45,7 +47,6 @@ public class NotificationReceiver extends BroadcastReceiver
 		// notify at the exact time
 		// alarmMgr.set(AlarmManager.RTC_WAKEUP, when.getTimeInMillis(),
 		// alarmIntent);
-		Log.d("prova", stationID);
 		alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, when.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
 	}
 
@@ -69,6 +70,12 @@ public class NotificationReceiver extends BroadcastReceiver
 	@Override
 	public void onReceive(Context context, Intent intent)
 	{
+
+		if(!PreferenceManager.getDefaultSharedPreferences(context).getBoolean("keep_update", true))
+		{
+			return;
+		}
+
 		Station station = null;
 		String stationID = intent.getStringExtra("stationID");
 		Intent intentToDetails = new Intent(context, MainActivity.class);
@@ -107,7 +114,8 @@ public class NotificationReceiver extends BroadcastReceiver
 			// the
 			// code below
 			mNotification.flags |= Notification.FLAG_AUTO_CANCEL;
-			notificationManager.notify(0, mNotification);
+			Log.w("provaGetIntent", "" + intent.getIntExtra("uniqueID", 0));
+			notificationManager.notify(intent.getIntExtra("uniqueID", 0), mNotification);
 
 		}
 		catch (InterruptedException e)

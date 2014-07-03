@@ -4,9 +4,9 @@
         android:key="keep_update"
         android:title="@string/pref_keep_update"
         android:summary="@string/pref_keep_update_summary"
-        android:defaultValue="false" />
-	<Preference 
-	    android:key="update_list"
-	    android:title="@string/pref_keep_list"
-	    android:dependency="keep_update"/>
+        android:defaultValue="true" />
+<!-- 	<Preference  -->
+<!-- 	    android:key="update_list" -->
+<!-- 	    android:title="@string/pref_keep_list" -->
+<!-- 	    android:dependency="keep_update"/> -->
 </PreferenceScreen>

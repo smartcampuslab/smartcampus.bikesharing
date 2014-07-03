@@ -37,7 +37,7 @@ public class NotificationBlock implements Serializable
 		upDateCalendar();
 		this.stationID = stationID;
 		NotificationReceiver mr = new NotificationReceiver();
-		uniqueID = (int) (calendar.getTimeInMillis() & 0xfffffff);
+		uniqueID = (int) (calendar.getTimeInMillis());
 		mr.registerAlarm(context, calendar, uniqueID, stationID);
 	}
 
