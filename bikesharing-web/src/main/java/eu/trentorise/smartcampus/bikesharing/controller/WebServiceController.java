@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,8 +37,10 @@ public class WebServiceController
 	private FeedbackManager feedBackManager;
 	
 	@RequestMapping(value = "/stations/{cityId:.*}/{stationId:.*}", method = RequestMethod.GET)
-    public @ResponseBody Container<Station> stationService(@PathVariable String cityId, @PathVariable String stationId)
+    public @ResponseBody Container<Station> stationService(HttpServletRequest request, @PathVariable String cityId, @PathVariable String stationId)
     {
+		printRequest(request);
+		
 		int httpStatus = HttpStatus.OK.value();
 		String errorString =  "";
 		Station station = null;
@@ -67,8 +72,10 @@ public class WebServiceController
     }
 	
 	@RequestMapping(value = "/stations/{cityId:.*}", method = RequestMethod.GET)
-    public @ResponseBody Container<Object[]> stationsService(@PathVariable String cityId)
+    public @ResponseBody Container<Object[]> stationsService(HttpServletRequest request, @PathVariable String cityId)
     {
+    	printRequest(request);
+		
 		int httpStatus = HttpStatus.OK.value();
 		String errorString = "";
 		Map<String, Station> stations = null;
@@ -94,8 +101,10 @@ public class WebServiceController
     }
 	
 	@RequestMapping(value = "/bikes/{cityId:.*}", method = RequestMethod.GET)
-    public @ResponseBody Container<Object[]> anarchicBikesService(@PathVariable String cityId)
+    public @ResponseBody Container<Object[]> anarchicBikesService(HttpServletRequest request, @PathVariable String cityId)
     {
+    	printRequest(request);
+		
 		int httpStatus = HttpStatus.OK.value();
 		String errorString =  "";
 		Map<String, AnarchicBike> bikes = null;
@@ -121,8 +130,10 @@ public class WebServiceController
     }
     
     @RequestMapping(value = "/report", method = RequestMethod.POST)
-    public @ResponseBody Container<Integer> reportService(@RequestParam(value = "body") String feedback, @RequestParam(required=false,value="file") MultipartFile file)
+    public @ResponseBody Container<Integer> reportService(HttpServletRequest request, @RequestParam(value = "body") String feedback, @RequestParam(required=false,value="file") MultipartFile file)
     {
+    	printRequest(request);
+		
 		int httpStatus = HttpStatus.OK.value();
 		String errorString = "";
 		
@@ -146,6 +157,12 @@ public class WebServiceController
 		{
 			feedBackManager.addNewFeedback(feedback, byteArray);
 		}
+		catch (DataAccessResourceFailureException e)
+		{
+			e.printStackTrace();
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorString = HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase() + ": Disconnected database, " + e.getMessage();
+		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
@@ -157,8 +174,10 @@ public class WebServiceController
     }
     
     @RequestMapping(value = "/stations/{cityId:.*}/{stationId:.*}/reports")
-    public @ResponseBody Container<Feedback[]> stationsReportService(@PathVariable String cityId, @PathVariable String stationId)
+    public @ResponseBody Container<Feedback[]> stationsReportService(HttpServletRequest request, @PathVariable String cityId, @PathVariable String stationId)
     {
+    	printRequest(request);
+		
 		int httpStatus = HttpStatus.OK.value();
 		String errorString = "";
 		
@@ -168,13 +187,24 @@ public class WebServiceController
     }
     
     @RequestMapping(value = "/bikes/{cityId:.*}/{bikeId:.*}/reports")
-    public @ResponseBody Container<Feedback[]> anarchicBikesReportService(@PathVariable String cityId, @PathVariable String bikeId)
+    public @ResponseBody Container<Feedback[]> anarchicBikesReportService(HttpServletRequest request, @PathVariable String cityId, @PathVariable String bikeId)
     {
+    	printRequest(request);
+		
 		int httpStatus = HttpStatus.OK.value();
 		String errorString = "";
 		
 		List<Feedback> res = feedBackManager.getBikeFeedbacks(cityId, bikeId);
 
         return new Container<Feedback[]>(httpStatus, errorString, res.toArray(new Feedback[res.size()]));
+    }
+    
+    private void printRequest(HttpServletRequest request)
+    {
+    	System.out.println("IP: " + request.getRemoteAddr());
+		System.out.println("HOST: " + request.getRemoteHost());
+		System.out.println("PORT: " + request.getRemotePort());
+		System.out.println("URI: " + request.getRequestURI());
+		System.out.println();
     }
 }
