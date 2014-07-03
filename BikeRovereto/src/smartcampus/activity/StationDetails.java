@@ -3,13 +3,11 @@ package smartcampus.activity;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 
 import org.osmdroid.util.GeoPoint;
 
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
 import smartcampus.asynctask.GetReportsTask;
-import smartcampus.asynctask.GetStationsTask;
 import smartcampus.asynctask.GetReportsTask.AsyncReportsResponse;
 import smartcampus.model.NotificationBlock;
 import smartcampus.model.Report;
@@ -38,7 +36,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -218,15 +215,16 @@ public class StationDetails extends Fragment
 	{
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		final TimePicker picker = new TimePicker(getActivity());
-		final Calendar c = Calendar.getInstance(Locale.ITALIAN);
-		//Log.d("dai", c.getTime().getHours() + " " + c.getTime().getMinutes());
+		picker.setIs24HourView(true);
+	    final Calendar calendar = Calendar.getInstance();
+		picker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
 		builder.setTitle(getString(R.string.add_reminder));
 		builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
 		{
 			public void onClick(DialogInterface dialogI, int id)
 			{
-				((MainActivity) getActivity()).addReminderForStation(new NotificationBlock(new GregorianCalendar(c.get(Calendar.YEAR), c
-						.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), picker.getCurrentHour(), picker.getCurrentMinute(), 0), station.getId(),
+				((MainActivity) getActivity()).addReminderForStation(new NotificationBlock(new GregorianCalendar(calendar.get(Calendar.YEAR), calendar
+						.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), picker.getCurrentHour(), picker.getCurrentMinute(), 0), station.getId(),
 						getActivity())
 
 				);
