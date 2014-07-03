@@ -15,7 +15,7 @@ http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd">
 
 	<mvc:annotation-driven />
 
-	<context:component-scan base-package="eu.trentorise.smartcampus.bikesharing" />
+	<context:component-scan base-package="eu.trentorise.smartcampus.bikesharing." />
 
 	<context:property-placeholder location="classpath:bikesharing.properties" />
 
@@ -25,16 +25,13 @@ http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd">
 		<property name="suffix" value=".jsp" />
 	</bean>
 	<bean id="multipartResolver"
-	class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-<!-- 	<property name="maxUploadSize"> -->
-<!-- 	<value>1000</value> -->
-<!-- 	</property> -->
-<!-- 	<property name="maxInMemorySize"> -->
-<!-- 	<value>1000</value> -->
-<!-- 	</property> -->
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 	</bean>
-
-<!-- 	<bean id="multipartResolver" -->
-<!-- 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" /> -->
-    <mongo:mongo host="localhost" port="27017"/>
+	
+	<mongo:mongo host="localhost" port="27017" />
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+		<constructor-arg ref="mongo" />
+		<constructor-arg value="LocalDB" />
+	</bean>
+	<mongo:repositories base-package="eu.trentorise.smartcampus.bikesharing.db" />
 </beans>

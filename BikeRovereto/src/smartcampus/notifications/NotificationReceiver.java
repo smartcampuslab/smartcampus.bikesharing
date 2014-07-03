@@ -38,6 +38,7 @@ public class NotificationReceiver extends BroadcastReceiver
 		Intent intent = new Intent(context, NotificationReceiver.class);
 		intent.putExtra("stationID", stationID);
 		intent.putExtra("uniqueID", uniqueID);
+		Log.w("provaRegisterAlarm", "" + intent.getIntExtra("uniqueID", 0));
 		alarmIntent = PendingIntent.getBroadcast(context, uniqueID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
 		// wait 10 seconds and notify
@@ -70,7 +71,7 @@ public class NotificationReceiver extends BroadcastReceiver
 	@Override
 	public void onReceive(Context context, Intent intent)
 	{
-
+		Log.w("provaGetIntent", "" + intent.getIntExtra("uniqueID", 0));
 		if(!PreferenceManager.getDefaultSharedPreferences(context).getBoolean("keep_update", true))
 		{
 			return;
@@ -114,7 +115,6 @@ public class NotificationReceiver extends BroadcastReceiver
 			// the
 			// code below
 			mNotification.flags |= Notification.FLAG_AUTO_CANCEL;
-			Log.w("provaGetIntent", "" + intent.getIntExtra("uniqueID", 0));
 			notificationManager.notify(intent.getIntExtra("uniqueID", 0), mNotification);
 
 		}

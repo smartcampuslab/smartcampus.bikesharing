@@ -12,6 +12,7 @@ public class Station
 	private int nBrokenBikes;
 	private double latitude;
 	private double longitude;
+	private int reportsNumber;
 	
 	public Station(String details) throws WebServiceErrorException
 	{
@@ -36,6 +37,7 @@ public class Station
 		nBikes = 0;
 		maxSlots = 0;
 		nBrokenBikes = 0;
+		
 		for (char c : attributes[6].toCharArray())
 		{
 			if(c == '4')
@@ -56,63 +58,90 @@ public class Station
 		}
 	}
 
-	
-	
 	public Station()
 	{
-		
+		super();
 	}
 
-
-
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
-	public String getStreet()
-	{
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getStreet() {
 		return street;
 	}
 
-	public String getId()
-	{
+	public void setStreet(String street) {
+		this.street = street;
+	}
+
+	public String getId() {
 		return id;
 	}
 
-	public int getnBikes()
-	{
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public int getnBikes() {
 		return nBikes;
 	}
 
-	public int getMaxSlots()
-	{
+	public void setnBikes(int nBikes) {
+		this.nBikes = nBikes;
+	}
+
+	public int getMaxSlots() {
 		return maxSlots;
 	}
 
-	public double getLatitude()
-	{
-		return latitude;
+	public void setMaxSlots(int maxSlots) {
+		this.maxSlots = maxSlots;
 	}
 
-	public double getLongitude()
-	{
-		return longitude;
-	}
-
-	public int getnBrokenBikes()
-	{
+	public int getnBrokenBikes() {
 		return nBrokenBikes;
 	}
 
-	public void setnBrokenBikes(int nBrokenBikes)
-	{
+	public void setnBrokenBikes(int nBrokenBikes) {
 		this.nBrokenBikes = nBrokenBikes;
 	}
 
-	@Override
-	public String toString()
-	{
-		return "\nStation [name=" + name + ", street=" + street + ", id=" + id + ", nBikes=" + nBikes + ", maxSlots=" + maxSlots + ", nBrokenBikes=" + nBrokenBikes + ", latitude=" + latitude + ", longitude=" + longitude + "]";
+	public double getLatitude() {
+		return latitude;
 	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+
+	public int getReportsNumber() {
+		return reportsNumber;
+	}
+
+	public void setReportsNumber(int reportsNumber) {
+		this.reportsNumber = reportsNumber;
+	}
+
+	@Override
+	public String toString() {
+		return "Station [name=" + name + ", street=" + street + ", id=" + id
+				+ ", nBikes=" + nBikes + ", maxSlots=" + maxSlots
+				+ ", nBrokenBikes=" + nBrokenBikes + ", latitude=" + latitude
+				+ ", longitude=" + longitude + ", reportsNumber="
+				+ reportsNumber + "]";
+	}
+
 }

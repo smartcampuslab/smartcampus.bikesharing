@@ -2,9 +2,7 @@ package eu.trentorise.smartcampus.bikesharing.feedback;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -26,20 +24,23 @@ public class FeedbackFileManager
 	
 	public String storeNewFile(byte[] file)
 	{
-		String name = UUID.randomUUID().toString();
-		try
+		String name = "";
+		if(file != null)
 		{
-			BufferedOutputStream outFile = new BufferedOutputStream(new FileOutputStream(new File(path + name + "." + format)));
-			outFile.write(file);
-			outFile.close();
-		}
-		catch (FileNotFoundException e)
-		{
-			e.printStackTrace();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
+			name = path + UUID.randomUUID().toString() + "." + format;
+			
+			try
+			{
+				BufferedOutputStream outFile = new BufferedOutputStream(new FileOutputStream(new File(name)));
+				outFile.write(file);
+				outFile.close();
+				
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				name = "";
+			}
 		}
 		return name;
 	}

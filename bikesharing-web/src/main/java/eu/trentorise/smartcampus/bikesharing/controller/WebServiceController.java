@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,17 +36,18 @@ public class WebServiceController
 	@Autowired
 	private FeedbackManager feedBackManager;
 	
-	private ObjectMapper mapper = new ObjectMapper();
-	
-	@RequestMapping(value = "/stations/{cityID:.*}/{stationID:.*}")
-    public @ResponseBody Container<Station> stationService(@PathVariable String cityID, @PathVariable String stationID)
+	@RequestMapping(value = "/stations/{cityId:.*}/{stationId:.*}", method = RequestMethod.GET)
+    public @ResponseBody Container<Station> stationService(HttpServletRequest request, @PathVariable String cityId, @PathVariable String stationId)
     {
+		printRequest(request);
+		
 		int httpStatus = HttpStatus.OK.value();
 		String errorString =  "";
 		Station station = null;
+		
 		try
 		{
-			station = dataManager.getStation(cityID, stationID);
+			station = dataManager.getStation(cityId, stationId);
 		}
 		catch (InvalidCityIDException e)
 		{
@@ -70,16 +71,18 @@ public class WebServiceController
         return new Container<Station>(httpStatus, errorString, station);
     }
 	
-	@RequestMapping(value = "/stations/{cityID:.*}")
-    public @ResponseBody Container<Object[]> stationsService(@PathVariable String cityID)
+	@RequestMapping(value = "/stations/{cityId:.*}", method = RequestMethod.GET)
+    public @ResponseBody Container<Object[]> stationsService(HttpServletRequest request, @PathVariable String cityId)
     {
+    	printRequest(request);
+		
 		int httpStatus = HttpStatus.OK.value();
 		String errorString = "";
 		Map<String, Station> stations = null;
 		
 		try
 		{
-			stations = dataManager.getStations(cityID);
+			stations = dataManager.getStations(cityId);
 		}
 		catch (InvalidCityIDException e)
 		{
@@ -97,16 +100,18 @@ public class WebServiceController
         return new Container<Object[]>(httpStatus, errorString, stations.values().toArray());
     }
 	
-	@RequestMapping(value = "/bikes/{cityID:.*}")
-    public @ResponseBody Container<Object[]> anarchicBikesService(@PathVariable String cityID)
+	@RequestMapping(value = "/bikes/{cityId:.*}", method = RequestMethod.GET)
+    public @ResponseBody Container<Object[]> anarchicBikesService(HttpServletRequest request, @PathVariable String cityId)
     {
+    	printRequest(request);
+		
 		int httpStatus = HttpStatus.OK.value();
 		String errorString =  "";
 		Map<String, AnarchicBike> bikes = null;
 		
 		try
 		{
-			bikes = dataManager.getAnarchicBikes(cityID);
+			bikes = dataManager.getAnarchicBikes(cityId);
 		}
 		catch (InvalidCityIDException e)
 		{
@@ -125,67 +130,81 @@ public class WebServiceController
     }
     
     @RequestMapping(value = "/report", method = RequestMethod.POST)
-    public @ResponseBody Container<Integer> reportService(@RequestParam("body") String body, @RequestParam(required=false,value="file") MultipartFile file)
+    public @ResponseBody Container<Integer> reportService(HttpServletRequest request, @RequestParam(value = "body") String feedback, @RequestParam(required=false,value="file") MultipartFile file)
     {
+    	printRequest(request);
+		
 		int httpStatus = HttpStatus.OK.value();
 		String errorString = "";
 		
-
+		byte[] byteArray = null;
+		
+		if(file != null)
+		{
+			try
+			{
+				byteArray = file.getBytes();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+				httpStatus = HttpStatus.NOT_ACCEPTABLE.value();
+				errorString = HttpStatus.NOT_ACCEPTABLE.getReasonPhrase() + ": Cannot read image, " + e.getMessage();
+			}
+		}
+		
 		try
 		{
-			feedBackManager.addNewFeedback(mapper.readValue(body, Feedback.class), file.getBytes());
+			feedBackManager.addNewFeedback(feedback, byteArray);
+		}
+		catch (DataAccessResourceFailureException e)
+		{
+			e.printStackTrace();
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorString = HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase() + ": Disconnected database, " + e.getMessage();
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 			httpStatus = HttpStatus.NOT_ACCEPTABLE.value();
-			errorString = HttpStatus.NOT_ACCEPTABLE.getReasonPhrase() + ": " + e.getMessage();
+			errorString = HttpStatus.NOT_ACCEPTABLE.getReasonPhrase() + ": Wrong json format, " + e.getMessage();
 		}
 		
 		return new Container<Integer>(httpStatus, errorString, 0);
     }
     
-    @RequestMapping(value = "/stations/{cityID:.*}/{stationID:.*}/report")
-    public @ResponseBody Container<Feedback[]> stationsReportService(@PathVariable String cityID, @PathVariable String stationID)
+    @RequestMapping(value = "/stations/{cityId:.*}/{stationId:.*}/reports")
+    public @ResponseBody Container<Feedback[]> stationsReportService(HttpServletRequest request, @PathVariable String cityId, @PathVariable String stationId)
     {
+    	printRequest(request);
+		
 		int httpStatus = HttpStatus.OK.value();
 		String errorString = "";
-		List<Feedback> res = null;
 		
-		try
-		{
-			res = feedBackManager.getStationFeedback(cityID, stationID);
-		}
-		catch(Exception e)
-		{
-			
-		}
+		List<Feedback> res = feedBackManager.getStationFeedbacks(cityId, stationId);
 		
-        return new Container<Feedback[]>(httpStatus, errorString, (Feedback[]) res.toArray());
+        return new Container<Feedback[]>(httpStatus, errorString, res.toArray(new Feedback[res.size()]));
     }
     
-    @RequestMapping(value = "/bikes/{cityID:.*}/{bikeID:.*}/report")
-    public @ResponseBody Container<Feedback[]> anarchicBikesReportService(@PathVariable String cityID, @PathVariable String bikeID)
+    @RequestMapping(value = "/bikes/{cityId:.*}/{bikeId:.*}/reports")
+    public @ResponseBody Container<Feedback[]> anarchicBikesReportService(HttpServletRequest request, @PathVariable String cityId, @PathVariable String bikeId)
     {
+    	printRequest(request);
+		
 		int httpStatus = HttpStatus.OK.value();
 		String errorString = "";
-		List<Feedback> res = null;
 		
-		try
-		{
-			res = feedBackManager.getBikeFeedback(cityID, bikeID);
-	    }
-		catch(Exception e)
-		{
-			
-		}
-		
-        return new Container<Feedback[]>(httpStatus, errorString, (Feedback[]) res.toArray());
+		List<Feedback> res = feedBackManager.getBikeFeedbacks(cityId, bikeId);
+
+        return new Container<Feedback[]>(httpStatus, errorString, res.toArray(new Feedback[res.size()]));
     }
     
-    @RequestMapping(value = "/feedback")
-    public @ResponseBody Feedback feedback()
+    private void printRequest(HttpServletRequest request)
     {
-        return new Feedback();
+    	System.out.println("IP: " + request.getRemoteAddr());
+		System.out.println("HOST: " + request.getRemoteHost());
+		System.out.println("PORT: " + request.getRemotePort());
+		System.out.println("URI: " + request.getRequestURI());
+		System.out.println();
     }
 }

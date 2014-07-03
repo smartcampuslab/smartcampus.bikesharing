@@ -18,6 +18,8 @@ import java.util.GregorianCalendar;
 
 import smartcampus.notifications.NotificationReceiver;
 import android.content.Context;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class NotificationBlock implements Serializable
@@ -30,14 +32,14 @@ public class NotificationBlock implements Serializable
 	private GregorianCalendar calendar;
 	private String stationID;
 	private int uniqueID;
-
 	public NotificationBlock(GregorianCalendar calendar, String stationID, Context context)
 	{
 		this.calendar = calendar;
 		upDateCalendar();
 		this.stationID = stationID;
 		NotificationReceiver mr = new NotificationReceiver();
-		uniqueID = (int) (calendar.getTimeInMillis());
+
+		
 		mr.registerAlarm(context, calendar, uniqueID, stationID);
 	}
 

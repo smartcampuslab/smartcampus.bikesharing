@@ -2,6 +2,7 @@ package smartcampus.activity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,7 +18,6 @@ import smartcampus.model.Station;
 import smartcampus.notifications.NotificationReceiver;
 import smartcampus.util.NavigationDrawerAdapter;
 import smartcampus.util.Tools;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -254,6 +254,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	{
 		super.onPostCreate(savedInstanceState);
 		mDrawerToggle.syncState();
+		addReminderForStation(new NotificationBlock((GregorianCalendar) GregorianCalendar.getInstance(), "1148", getApplicationContext()));
 	}
 
 	@Override

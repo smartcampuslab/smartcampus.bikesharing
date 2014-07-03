@@ -40,7 +40,7 @@ public class DataManager
 			             }
 			           });
 		
-		anarchicBikesCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.SECONDS).build(
+		anarchicBikesCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build(
 			           new CacheLoader<String,  Map<String, AnarchicBike>>()
 			           {
 			             public Map<String, AnarchicBike> load(String key) throws WebServiceErrorException
@@ -108,7 +108,7 @@ public class DataManager
 		
 		if (res == null)
 		{
-			throw new WebServiceErrorException("No data for cityID: ");
+			throw new WebServiceErrorException("No data for cityID: " + cityID);
 		}
 		
 		return res;
