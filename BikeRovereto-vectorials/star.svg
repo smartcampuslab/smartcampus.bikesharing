@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="100.77966"
+   height="31.008751"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="star.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="7.9195959"
+     inkscape:cx="40.777702"
+     inkscape:cy="7.6159169"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="1134"
+     inkscape:window-x="1920"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-318.30347,-473.15193)">
+    <path
+       inkscape:connector-curvature="0"
+       id="star_checked"
+       style="fill:#ffd42a;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       d="m 402.78188,473.15193 4.5975,10.81125 11.70375,1.0325 -8.86,7.71375 2.6325,11.45125 -10.07375,-6.045 -10.075,6.045 2.63375,-11.45125 -8.86125,-7.71375 11.70375,-1.0325 4.59875,-10.81125 z"
+       inkscape:export-filename="/home/andrea/git/smartcampus.bikesharing/BikeRovereto/res/drawable-xxhdpi/star_selected.png"
+       inkscape:export-xdpi="332"
+       inkscape:export-ydpi="332" />
+    <path
+       inkscape:connector-curvature="0"
+       id="star"
+       style="fill:#ffe680;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       d="m 334.54597,473.20693 -4.58125,10.77375 -11.66125,1.0275 8.82875,7.6875 -2.62625,11.41 10.04,-6.0225 10.04,6.0225 -2.62375,-11.41 8.8275,-7.6875 -11.66125,-1.0275 -4.5825,-10.77375 z m 0,3.03625 3.49,8.2025 0.27875,0.655 0.71,0.0625 8.88,0.78375 -6.72375,5.85375 -0.5375,0.4675 0.16,0.695 1.9975,8.68625 -7.64375,-4.585 -0.61125,-0.36625 -0.61125,0.36625 -7.64375,4.585 1.99875,-8.68625 0.16,-0.695 -0.5375,-0.4675 -6.7225,-5.85375 8.88,-0.78375 0.70875,-0.0625 0.28,-0.655 3.4875,-8.2025 z"
+       inkscape:export-filename="/home/andrea/git/smartcampus.bikesharing/BikeRovereto/res/drawable-xxhdpi/star_normal.png"
+       inkscape:export-xdpi="332.44833"
+       inkscape:export-ydpi="332.44833" />
+    <g
+       id="star_pressed">
+      <path
+         inkscape:export-ydpi="332"
+         inkscape:export-xdpi="332"
+         inkscape:export-filename="/home/andrea/git/smartcampus.bikesharing/BikeRovereto/res/drawable-xxhdpi/star_pressed.png"
+         transform="translate(315.0111,465.07071)"
+         id="path5374"
+         d="m 53.65625,11.1875 -3.5,8.1875 -0.28125,0.65625 -0.6875,0.0625 -8.90625,0.78125 6.75,5.84375 0.53125,0.46875 -0.15625,0.71875 -2,8.6875 L 53.03125,32 53.65625,31.625 54.25,32 l 7.65625,4.59375 -2,-8.6875 L 59.75,27.1875 60.28125,26.71875 67,20.875 l -8.875,-0.78125 -0.71875,-0.0625 -0.25,-0.65625 -3.5,-8.1875 z"
+         style="fill:#e1e1e1;fill-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         inkscape:export-ydpi="332.44833"
+         inkscape:export-xdpi="332.44833"
+         inkscape:export-filename="/home/andrea/git/smartcampus.bikesharing/BikeRovereto/res/drawable-xxhdpi/star_pressed.png"
+         id="path5359"
+         transform="translate(315.0111,465.07071)"
+         d="M 53.65625,8.125 49.0625,18.90625 37.40625,19.9375 46.25,27.625 43.625,39.03125 53.65625,33 63.6875,39.03125 61.0625,27.625 69.90625,19.9375 58.25,18.90625 53.65625,8.125 z m 0,3.0625 3.5,8.1875 0.25,0.65625 0.71875,0.0625 L 67,20.875 60.28125,26.71875 59.75,27.1875 l 0.15625,0.71875 2,8.6875 L 54.25,32 53.65625,31.625 53.03125,32 l -7.625,4.59375 2,-8.6875 0.15625,-0.71875 -0.53125,-0.46875 -6.75,-5.84375 8.90625,-0.78125 0.6875,-0.0625 0.28125,-0.65625 3.5,-8.1875 z"
+         style="fill:#ffdd55;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         inkscape:connector-curvature="0" />
+    </g>
+  </g>
+</svg>
