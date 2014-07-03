@@ -116,7 +116,7 @@ public class StationDetails extends Fragment
 				adapter.addAll(mReports);
 				adapter.notifyDataSetChanged();
 				Log.d("stationDetails", "mReports size"+mReports.size());
-				if (status != GetReportsTask.NO_ERROR)
+				if (status != GetReportsTask.NO_ERROR && !isDetached())
 				{
 					Toast.makeText(getActivity(), getString(R.string.error_reports), Toast.LENGTH_SHORT).show();
 				}

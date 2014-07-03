@@ -85,7 +85,7 @@ public class NotificationReceiver extends BroadcastReceiver
 			station = new GetStationsTask(context).execute(stationID).get(10000, TimeUnit.MILLISECONDS).get(0);
 			intentToDetails.putExtra("station", station);
 			intentToDetails.putExtra(INTENT_FROM_NOTIFICATION, true);
-			PendingIntent pendingIntentToDetails = PendingIntent.getActivity(context, 0, intentToDetails, PendingIntent.FLAG_UPDATE_CURRENT);
+			PendingIntent pendingIntentToDetails = PendingIntent.getActivity(context, intent.getIntExtra("uniqueID", 0), intentToDetails, PendingIntent.FLAG_UPDATE_CURRENT);
 			// define sound URI, the sound to be played when there's a
 			// notification
 			Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

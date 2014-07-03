@@ -254,7 +254,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	{
 		super.onPostCreate(savedInstanceState);
 		mDrawerToggle.syncState();
-		addReminderForStation(new NotificationBlock((GregorianCalendar) GregorianCalendar.getInstance(), "1148", getApplicationContext()));
+		//addReminderForStation(new NotificationBlock((GregorianCalendar) GregorianCalendar.getInstance(), "1148", getApplicationContext()));
 	}
 
 	@Override

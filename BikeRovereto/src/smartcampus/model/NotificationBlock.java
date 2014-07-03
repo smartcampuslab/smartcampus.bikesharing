@@ -39,7 +39,7 @@ public class NotificationBlock implements Serializable
 		this.stationID = stationID;
 		NotificationReceiver mr = new NotificationReceiver();
 
-		
+		this.uniqueID = readArrayListFromFile("notificationBlockDB", context).size();
 		mr.registerAlarm(context, calendar, uniqueID, stationID);
 	}
 
