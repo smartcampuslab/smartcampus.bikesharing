@@ -19,6 +19,7 @@ import org.osmdroid.util.GeoPoint;
 
 import smartcampus.model.Bike;
 import smartcampus.model.Station;
+import smartcampus.util.Tools;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -28,7 +29,8 @@ public class GetAnarchicBikesTask extends AsyncTask<Void, Void, ArrayList<Bike>>
 	private static final String BIKE_ID = "id";
 	private static final String BIKE_LATITUDE = "latitude";
 	private static final String BIKE_LONGITUDE = "longitude";
-
+    private static final String REPORTS_NUMBER = "reportsNumber";
+	
 	public static final int NO_ERROR = 0;
 	public static final int ERROR_SERVER = 1;
 	public static final int ERROR_CLIENT = 2;
@@ -45,8 +47,7 @@ public class GetAnarchicBikesTask extends AsyncTask<Void, Void, ArrayList<Bike>>
 	@Override
 	protected ArrayList<Bike> doInBackground(Void... data)
 	{
-		HttpGet httpg = new HttpGet("http://192.168.41.154:8080/bikesharing-web/bikes/5061/");
-		Log.d("prova", httpg.getURI().toString());
+		HttpGet httpg = new HttpGet(Tools.SERVICE_URL + Tools.BIKES_REQUEST + Tools.CAP_ROVERETO);
 		String responseJSON;
 		ArrayList<Bike> bikes = new ArrayList<Bike>();
 		try
@@ -89,7 +90,8 @@ public class GetAnarchicBikesTask extends AsyncTask<Void, Void, ArrayList<Bike>>
 				Double latitude = bikesJSON.getDouble(BIKE_LATITUDE);
 				Double longitude = bikesJSON.getDouble(BIKE_LONGITUDE);
 				Bike bike = new Bike(new GeoPoint(latitude, longitude), id);
-		
+				int reportsNumber = bikesJSON.getInt(REPORTS_NUMBER);
+				bike.thereAreReports(reportsNumber > 0);
 				bikes.add(bike);
 			}
 

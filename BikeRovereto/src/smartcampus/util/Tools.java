@@ -13,11 +13,17 @@ public class Tools
 	public static final float LOCATION_REFRESH_DISTANCE = 100;
 	public static final String STATION_PREFIX = "sta";
 	
-
+	public static final String SERVICE_URL = "http://192.168.41.154:8080/bikesharing-web/";
+	public static final String STATIONS_REQUEST = "stations/";
+	public static final String BIKES_REQUEST = "bikes/";
+	public static final String REPORTS_REQUEST = "reports/";
+	public static final String REPORT_REQUEST = "report/";
+	public static final String CAP_ROVERETO = "5061/";
+	
+	
 	public static int convertDpToPixel(Context context, int dp)
 	{
-		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
-				context.getResources().getDisplayMetrics());
+		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
 	}
 
 	public static String formatDistance(int distance)
@@ -28,27 +34,27 @@ public class Tools
 			return distance + " m";
 		else
 			return Math.round(distance / 100) / 10.0 + " KM";
-	}	
-	
+	}
+
 	public static String getPathString(GeoPoint start, GeoPoint end)
 	{
 		String toRtn = "http://maps.google.com/maps?";
 
-		if(start != null)
+		if (start != null)
 		{
-			toRtn += "saddr=" + start.getLatitudeE6() / 1E6 + "," + start.getLongitudeE6() / 1E6 ;  
+			toRtn += "saddr=" + start.getLatitudeE6() / 1E6 + "," + start.getLongitudeE6() / 1E6;
 			toRtn += "&";
 		}
-		if(end != null)
+		if (end != null)
 		{
-			toRtn += "daddr=" + end.getLatitudeE6() / 1E6 + "," + end.getLongitudeE6() / 1E6 ;  
+			toRtn += "daddr=" + end.getLatitudeE6() / 1E6 + "," + end.getLongitudeE6() / 1E6;
 		}
 		toRtn += "&dirflg=w";
 		return toRtn;
-	}	
-	
-	public static boolean isRuntimeAfterHoneycomb(){
-		return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB;
 	}
 
+	public static boolean isRuntimeAfterHoneycomb()
+	{
+		return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB;
+	}
 }

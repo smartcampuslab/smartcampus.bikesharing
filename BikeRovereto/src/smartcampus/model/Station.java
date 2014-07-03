@@ -8,16 +8,14 @@ import org.osmdroid.util.GeoPoint;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
-public class Station implements Parcelable
+public class Station implements Parcelable, Reportable
 {
 	private GeoPoint position;
 	private String name, street;
 
 	private String id;
 
-	
 	private int nBikes;
 	private int maxSlots;
 	private int brokenBikes;
@@ -27,9 +25,10 @@ public class Station implements Parcelable
 	public static final int DISTANCE_NOT_VALID = -1;
 	private int distance = DISTANCE_NOT_VALID; // >=0 only when distance is
 												// initialized
+	private boolean thereAreReports;
 
-	//TODO: implement brokenSlots
-	
+	// TODO: implement brokenSlots
+
 	public Station(GeoPoint position, String name, String street, int maxSlots, int nBikes, int brokenBikes, String id)
 	{
 		this.position = position;
@@ -86,6 +85,7 @@ public class Station implements Parcelable
 		brokenBikes = source.readInt();
 		source.readList(reports, List.class.getClassLoader());
 		id = source.readString();
+		thereAreReports = source.readInt() > 0;
 	}
 
 	public static final Parcelable.Creator<Station> CREATOR = new Creator<Station>()
@@ -127,8 +127,8 @@ public class Station implements Parcelable
 		dest.writeInt(brokenBikes);
 		dest.writeList(reports);
 		dest.writeString(id);
-		
-		
+		dest.writeInt(thereAreReports ? 1 : 0);
+
 	}
 
 	// getters and setters
@@ -164,7 +164,7 @@ public class Station implements Parcelable
 
 	public int getUnavailableSlots()
 	{
-		return brokenBikes; 
+		return brokenBikes;
 	}
 
 	public double getBikesPresentPercentage()
@@ -185,7 +185,7 @@ public class Station implements Parcelable
 		}
 		this.nBikes = usedSlots;
 	}
-	
+
 	public void setBrokenSlots(int brokenSlots)
 	{
 		this.brokenBikes = brokenSlots;
@@ -201,28 +201,6 @@ public class Station implements Parcelable
 		return maxSlots - (nBikes); // Bici mancanti nella stazione
 	}
 
-	public void addReport(Report report)
-	{
-		reports.add(report);
-	}
-
-	public Report getReport(int position)
-	{
-		return reports.get(position);
-	}
-
-	public int getNReports()
-	{
-		return reports.size();
-	}
-
-	public ArrayList<Report> getReports()
-	{
-		if (reports == null)
-			return new ArrayList<Report>(); //for safety!
-		return reports;
-	}
-
 	public int getDistance()
 	{
 		return distance;
@@ -232,18 +210,65 @@ public class Station implements Parcelable
 	{
 		this.distance = distance;
 	}
-	
+
 	public void setFavourite(boolean fav)
 	{
-		this.favourite=fav;
+		this.favourite = fav;
 	}
-	
+
 	public boolean getFavourite()
 	{
 		return favourite;
 	}
+
 	public String getId()
 	{
 		return id;
+	}
+
+	@Override
+	public String getType()
+	{
+		return Report.STATION;
+	}
+
+	@Override
+	public void addReport(Report report)
+	{
+		if (reports == null)
+			reports = new ArrayList<Report>();
+		reports.add(report);
+		thereAreReports = true;
+	}
+
+	@Override
+	public int getNReports()
+	{
+		return reports.size();
+	}
+
+	@Override
+	public ArrayList<Report> getReports()
+	{
+
+		if (reports == null)
+			return new ArrayList<Report>(); // for safety!
+		return reports;
+	}
+
+	@Override
+	public Report getReport(int index)
+	{
+		return reports.get(index);
+	}
+
+	public void thereAreReports(boolean b)
+	{
+		this.thereAreReports = b;
+	}
+
+	public boolean areThereReports()
+	{
+		return thereAreReports;
 	}
 }

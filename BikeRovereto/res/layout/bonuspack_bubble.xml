@@ -13,22 +13,23 @@
         android:visibility="gone" />
 
     <LinearLayout
+        android:id="@+id/main_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minWidth="150dp"
         android:orientation="vertical"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp" >
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp" >
 
         <TextView
             android:id="@+id/bubble_title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dip"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:maxEms="17"
-            android:text="Title"
-            android:textColor="#666666" />
+            android:textColor="#666666"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/bubble_description"
@@ -36,26 +37,26 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:maxEms="17"
-            android:text="Description"
             android:textColor="#ff9200"
             android:textSize="12sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/bubble_subdescription"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:maxEms="17"
-            android:text="Address"
             android:textColor="#000000"
             android:textSize="10sp"
-            android:visibility="invisible" />
+            android:visibility="gone" />
 
         <LinearLayout
+            android:id="@+id/images_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="5dp"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:visibility="gone" >
 
             <ImageView
                 android:id="@+id/green_bike"
@@ -63,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:layout_weight="1"
-                android:src="@drawable/green_bike"
+                android:src="@drawable/bike_available"
                 android:visibility="gone" />
 
             <ImageView
@@ -72,15 +73,16 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:layout_weight="1"
-                android:src="@drawable/black_bike"
+                android:src="@drawable/bike_to_return"
                 android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/numbers_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="5dp"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:visibility="gone" >
 
             <TextView
                 android:id="@+id/txt_available"
@@ -105,18 +107,36 @@
                 android:visibility="gone" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/btToDetails"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background= "#4f3333"
-            android:text="@string/to_details"
-            android:layout_margin="5dp"
-            android:gravity="center"
-            android:padding="4dp"
-            android:textColor="#ffffff"
-            android:textSize="15sp" />
-   
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:visibility="visible" >
+
+            <TextView
+                android:id="@+id/btToDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="3dp"
+                android:layout_marginLeft="3dp"
+                android:layout_weight="10"
+                android:background="#4f3333"
+                android:gravity="center|bottom"
+                android:text="@string/to_details"
+                android:textColor="#ffffff"
+                android:textSize="15sp" />
+
+            <ImageView
+                android:id="@+id/image_warnings"
+                android:layout_width="wrap_content"
+                android:layout_height="21dp"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:src="@drawable/ic_action_warning"
+                android:visibility="gone" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

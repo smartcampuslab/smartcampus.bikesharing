@@ -19,7 +19,9 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.RemoteViews;
 import eu.trentorise.smartcampus.bikerovereto.R;
 
 public class NotificationReceiver extends BroadcastReceiver
@@ -46,12 +48,12 @@ public class NotificationReceiver extends BroadcastReceiver
 		Log.d("prova", stationID);
 		alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, when.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
 	}
-	
+
 	public void updateAlarm(Context context, NotificationBlock notificationBlock, String stationID)
 	{
 		registerAlarm(context, notificationBlock.getCalendar(), notificationBlock.getUniqueID(), stationID);
 	}
-	
+
 	public void cancelAlarm(Context context, int uniqueID, String stationID)
 	{
 		Intent intent = new Intent(context, NotificationReceiver.class);
@@ -79,21 +81,25 @@ public class NotificationReceiver extends BroadcastReceiver
 			// define sound URI, the sound to be played when there's a
 			// notification
 			Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
+			
+			
+			
 			// this is it, we'll build the notification!
 			// in the addAction method, if you don't want any icon, just set the
 			// first param to 0
 			Resources res = context.getResources();
-			Notification mNotification = new Notification.Builder(context)
-				.setContentTitle(res.getText(R.string.station) + " " + station.getName().toUpperCase())
-				.setContentText(res.getText(R.string.sort_available_bikes) + ": "
-								+ station.getNBikesPresent() + " - " 
-								+ res.getText(R.string.sort_available_slots) 
-								+ ": " + station.getNSlotsEmpty())
-				.setSmallIcon(R.drawable.ic_launcher)
-				.setContentIntent(pendingIntentToDetails)
-				.setSound(soundUri)
-				.build();
+
+			RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.custom_notification);
+			
+			remoteViews.setTextViewText(R.id.text_title, station.getName());
+			remoteViews.setTextViewText(R.id.text_available_bikes, Integer.toString(station.getNBikesPresent()));
+			remoteViews.setTextViewText(R.id.text_available_slots, Integer.toString(station.getNSlotsEmpty()));
+			
+			Notification mNotification = new NotificationCompat.Builder(context).setContentTitle(
+					station.getName().toUpperCase()).setContentText(
+					res.getText(R.string.bikes) + ": " + station.getNBikesPresent() + "  -   "
+							+ res.getText(R.string.Slots) + ": " + station.getNSlotsEmpty()).setSmallIcon(R.drawable.ic_launcher)
+					.setContentIntent(pendingIntentToDetails).setSound(soundUri).setContent(remoteViews).build();
 
 			NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 

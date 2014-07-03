@@ -14,19 +14,14 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.osmdroid.util.GeoPoint;
 
 import smartcampus.model.Report;
-import smartcampus.model.Station;
-import android.content.Context;
-import android.content.SharedPreferences;
+import smartcampus.util.Tools;
 import android.os.AsyncTask;
+import android.util.Log;
 
 public class GetReportsTask extends AsyncTask<String, Void, ArrayList<Report>>
 {
-	private static final String KEY = "name";
-	private static final String KEY2 = "street";
-
 	public static final String BIKE = "bikes";
 	public static final String STATION = "stations";
 	
@@ -37,18 +32,19 @@ public class GetReportsTask extends AsyncTask<String, Void, ArrayList<Report>>
 	
 	private int currentStatus;	
 	
-	public interface AsyncStationResponse
+	public interface AsyncReportsResponse
 	{
-	    void processFinish();
+	    void processFinish(ArrayList<Report> reports, int status);
 	}
-	public AsyncStationResponse delegate = null;
+	public AsyncReportsResponse delegate = null;
 
 	//data[0] is BIKE or STATION
 	//data[1] is the stationID or the bikeID
 	@Override
 	protected ArrayList<Report> doInBackground(String... data)
 	{
-		HttpGet httpg = new HttpGet("http://192.168.41.154:8080/bikesharing-web/" + data[0] + "/5061/reports/"+data[1]);
+		HttpGet httpg = new HttpGet(Tools.SERVICE_URL + data[0] + "/" + Tools.CAP_ROVERETO + data[1] + "/" + Tools.REPORTS_REQUEST);
+		Log.d("getReportsTask", httpg.getURI().toString());
 		String responseJSON;
 		
 		ArrayList<Report> reports = new ArrayList<Report>();
@@ -88,11 +84,27 @@ public class GetReportsTask extends AsyncTask<String, Void, ArrayList<Report>>
 			else
 				currentStatus = ERROR_SERVER;
 			String errorString = container.getString("errorString");
-			JSONArray stationsArrayJSON = container.getJSONArray("data");
-			for (int i = 0; i < stationsArrayJSON.length(); i++)
+			JSONArray reportsArrayJSON = container.getJSONArray("data");
+			Log.d("getReportsTask", reportsArrayJSON.length()+"");
+			for (int i = 0; i < reportsArrayJSON.length(); i++)
 			{
-				JSONObject stationJSON = stationsArrayJSON.getJSONObject(i);
-				// TODO: creation of the object Report
+				JSONObject reportJSON = reportsArrayJSON.getJSONObject(i);
+				 
+				Report.Type reportType = Report.Type.stringToType(reportJSON.getString("reportType"));				
+				String details = reportJSON.getString("report");
+				JSONArray jsonArray = reportJSON.getJSONArray("warnings");
+				ArrayList<String> warnings = new ArrayList<String>();
+				for (int j=0; j<jsonArray.length(); j++) {
+					warnings.add(jsonArray.getString(j));
+				}
+				Log.d("getReportsTask",warnings.toString());
+				String objectType = reportJSON.getString("objectType");
+				String objectId = reportJSON.getString("objectId");
+				long date = reportJSON.getLong("date");
+
+				Report report = new Report(reportType, details, objectType, objectId, date);
+				report.addAllWarnings(warnings);
+				reports.add(report);
 			}			
 			
 		}
@@ -106,8 +118,9 @@ public class GetReportsTask extends AsyncTask<String, Void, ArrayList<Report>>
 
 	@Override
 	protected void onPostExecute(ArrayList<Report> result) {
+		Log.d("getReportsTask", "finished with "+result.size()+" reports");
 		if (delegate!=null)
-			delegate.processFinish();
+			delegate.processFinish(result, currentStatus);
 	}
 	
 }

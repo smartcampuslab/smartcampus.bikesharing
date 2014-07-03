@@ -1,13 +1,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.openstreetmap.MainActivity" >
-	
- 	<item android:id="@+id/switch_bikes_tipe" 
-         android:titleCondensed="e-motion"
-         android:title="@string/only_e_motion" 
-         android:icon="@android:drawable/ic_menu_preferences" 
-         android:checkable="true" />
- 	
- 	    
- 	</menu>
+    tools:context="com.example.openstreetmap.MainActivity">
+
+    <item
+        android:id="@+id/switch_bikes_tipe"
+        android:checkable="true"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="@string/only_e_motion"
+        android:titleCondensed="e-motion"/>
+    
+    <item
+        android:id="@+id/bt_refresh"
+        android:icon="@drawable/ic_action_refresh"
+        android:title="@string/refresh"/>
+
+</menu>

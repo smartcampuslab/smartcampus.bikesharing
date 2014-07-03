@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
@@ -17,13 +16,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
-import smartcampus.activity.MainActivity;
+import smartcampus.model.Report;
 import smartcampus.model.Station;
 import smartcampus.util.Tools;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.util.Log;
 
 public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 {
@@ -36,7 +34,8 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 	private static final String AVAILABLE_BIKES = "nBikes";
 	private static final String MAX_SLOTS = "maxSlots";
 	private static final String BROKEN_SLOTS = "nBrokenBikes";
-	private static final String STATION_ID = "id";	
+	private static final String STATION_ID = "id";
+    private static final String REPORTS_NUMBER = "reportsNumber";
 	
 	public static final int NO_ERROR = 0;
 	public static final int ERROR_SERVER = 1;
@@ -62,7 +61,7 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 	@Override
 	protected ArrayList<Station> doInBackground(String... data)
 	{
-		HttpGet httpg = new HttpGet("http://192.168.41.154:8080/bikesharing-web/stations/5061/"+data[0]);
+		HttpGet httpg = new HttpGet(Tools.SERVICE_URL + Tools.STATIONS_REQUEST + Tools.CAP_ROVERETO + data[0]);
 		String responseJSON;
 		
 		ArrayList<Station> stations = new ArrayList<Station>();
@@ -117,11 +116,13 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 					int availableBikes = stationJSON.getInt(AVAILABLE_BIKES);
 					int maxSlots = stationJSON.getInt(MAX_SLOTS);
 					int brokenSlots = stationJSON.getInt(BROKEN_SLOTS);
+					int reportsNumber = stationJSON.getInt(REPORTS_NUMBER);
 					String id = stationJSON.getString(STATION_ID);
 					Station station = new Station(new GeoPoint(latitude, longitude), name, street, maxSlots, availableBikes, brokenSlots, id);
 					boolean fav = pref.getBoolean(Tools.STATION_PREFIX + id, false);
 					station.setFavourite(fav);
 					station.setUsedSlots(availableBikes);
+					station.thereAreReports(reportsNumber > 0);
 					stations.add(station);
 					if (fav)
 						favStations.add(station);
@@ -137,11 +138,13 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 				int availableBikes = stationJSON.getInt(AVAILABLE_BIKES);
 				int maxSlots = stationJSON.getInt(MAX_SLOTS);
 				int brokenSlots = stationJSON.getInt(BROKEN_SLOTS);
+				int reportsNumber = stationJSON.getInt(REPORTS_NUMBER);
 				String id = stationJSON.getString(STATION_ID);
 				Station station = new Station(new GeoPoint(latitude, longitude), name, street, maxSlots, availableBikes, brokenSlots, id);
 				boolean fav = pref.getBoolean(Tools.STATION_PREFIX + id, false);
 				station.setFavourite(fav);
 				station.setUsedSlots(availableBikes);
+				station.thereAreReports(reportsNumber > 0);
 				stations.add(station);
 			}
 			

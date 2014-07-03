@@ -7,7 +7,7 @@
     <string name="toMap">OSM</string>
     <string name="title_activity_stations">Stations</string>
     <string name="to_details">Details</string>
-    <string name="sort">Sort by...</string>
+    <string name="sort">Sort by&#8230;</string>
     <string name="sort_distance">Distance</string>
     <string name="sort_available_bikes">Available bikes</string>
     <string name="sort_available_slots">Available slots</string>
@@ -39,6 +39,7 @@
     <string name="station">station</string>
     <string name="error">Stations aren\'t available</string>
     <string name="error_bikes">Bikes aren\'t available</string>
+    <string name="error_reports">Reports aren\'t available</string>  
     <string name="choose1">Advice</string>
     <string name="choose2">Complaint</string>
     <string name="choose3">Warning</string>
@@ -51,4 +52,14 @@
     <string name="gears">Gears</string>
     <string name="anarchich_bike">Anarchich bike</string>
     <string name="id">ID: </string>
+    <string name="about">About</string>
+    <string name="title_activity_about">AboutActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="credits">Credits</string>
+    <string name="bikes">Bikes</string>
+	<string name="Slots">Slots</string>
+    <string name="problems">Problems in:</string>
+   	<string name="send_report_succes">Report sended correctly</string>
+   	<string name="send_report_error">Error sending the report</string>
+
 </resources>
