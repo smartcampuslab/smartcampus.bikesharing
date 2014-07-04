@@ -43,7 +43,7 @@ public class GetReportsTask extends AsyncTask<String, Void, ArrayList<Report>>
 	@Override
 	protected ArrayList<Report> doInBackground(String... data)
 	{
-		HttpGet httpg = new HttpGet(Tools.SERVICE_URL + data[0] + "/" + Tools.CAP_ROVERETO + data[1] + "/" + Tools.REPORTS_REQUEST);
+		HttpGet httpg = new HttpGet(Tools.SERVICE_URL + data[0] + "/" + Tools.CITY_CODE  + "/" + data[1] + "/" + Tools.REPORTS_REQUEST);
 		Log.d("getReportsTask", httpg.getURI().toString());
 		String responseJSON;
 		

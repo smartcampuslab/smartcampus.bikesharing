@@ -1,7 +1,6 @@
 package smartcampus.activity;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -19,6 +18,9 @@ import smartcampus.notifications.NotificationReceiver;
 import smartcampus.util.NavigationDrawerAdapter;
 import smartcampus.util.Tools;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -36,7 +38,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
-import eu.trentorise.smartcampus.bikerovereto.R;
+import eu.trentorise.smartcampus.bikesharing.R;
 
 public class MainActivity extends ActionBarActivity implements StationsListFragment.OnStationSelectListener,
 		FavouriteFragment.OnStationSelectListener
@@ -128,7 +130,22 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		try {
+			ApplicationInfo app = getPackageManager().getApplicationInfo(this.getPackageName(), PackageManager.GET_ACTIVITIES|PackageManager.GET_META_DATA);			 
+	        Bundle metaData = app.metaData; 
+	        if(metaData == null || metaData.get("eu.trentorise.smartcampus.bikerovereto.CITY_CODE") == null || (metaData.get("eu.trentorise.smartcampus.bikerovereto.CITY_CODE")+"").equals("")) {
+        		Toast.makeText(this, "City code in manifest not setted!", Toast.LENGTH_LONG).show();
+        		finish();
+	        }
+	        else {
+	            String value = metaData.get("eu.trentorise.smartcampus.bikerovereto.CITY_CODE") + "";
+	            Tools.CITY_CODE = value;
+	        }
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		
 		getStation();
 		getBikes();
 
@@ -254,7 +271,6 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	{
 		super.onPostCreate(savedInstanceState);
 		mDrawerToggle.syncState();
-		//addReminderForStation(new NotificationBlock((GregorianCalendar) GregorianCalendar.getInstance(), "1148", getApplicationContext()));
 	}
 
 	@Override

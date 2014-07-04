@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.concurrent.TimeUnit;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.http.HttpResponse;
@@ -31,7 +32,7 @@ import android.graphics.Bitmap.CompressFormat;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
-import eu.trentorise.smartcampus.bikerovereto.R;
+import eu.trentorise.smartcampus.bikesharing.R;
 //TODO: not tested and fix keys!
 
 public class SendReport extends AsyncTask<Report, Void, String>{
@@ -71,12 +72,11 @@ public class SendReport extends AsyncTask<Report, Void, String>{
 				jsonObject.accumulate("warnings", jsonArray);
 				jsonObject.accumulate("objectType", reports[0].getReportOfType());
 				jsonObject.accumulate("objectId", reports[0].getID());
-				jsonObject.accumulate("cityId", "5061"); //Code of the city
+				jsonObject.accumulate("cityId", Tools.CITY_CODE); //Code of the city
 				jsonObject.accumulate("date", reports[0].getDate());
 				jsonObject.accumulate("fieldId", null);
 				// 4. convert JSONObject to JSON to String
 				json = jsonObject.toString();
- 
             
 				// 5. set json
 				MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);

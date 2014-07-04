@@ -28,7 +28,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
-import eu.trentorise.smartcampus.bikerovereto.R;
+import eu.trentorise.smartcampus.bikesharing.R;
 
 public class StationsListFragment extends ListFragment
 {
@@ -231,27 +231,29 @@ public class StationsListFragment extends ListFragment
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
 		item.setChecked(!item.isChecked());
-		switch (item.getItemId())
+		if (item.getItemId() == R.id.sort_distance)
 		{
-		case R.id.sort_distance:
 			sortByDistance(true);
-			break;
-		case R.id.sort_available_bikes:
+		}
+		else if (item.getItemId() == R.id.sort_available_bikes)
+		{
 			sortByAvailableBikes(true);
-			break;
-		case R.id.sort_available_slots:
+		}
+		else if (item.getItemId() == R.id.sort_available_slots)
+		{
 			sortByAvailableSlots(true);
-			break;
-		case R.id.sort_name:
+		}
+		else if (item.getItemId() == R.id.sort_name)
+		{
 			sortByName(true);
-			break;
-		case R.id.refresh:
+		}
+		else if (item.getItemId() == R.id.refresh)
+		{
 			if (!mSwipeRefreshLayout.isRefreshing()) {
                 mSwipeRefreshLayout.setRefreshing(true);
                 refreshDatas();
             }
             Toast.makeText(getActivity(), getString(R.string.refresh_hint), Toast.LENGTH_SHORT).show();
-			break;
 		}
 		return true;
 	}

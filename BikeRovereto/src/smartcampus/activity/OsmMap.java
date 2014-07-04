@@ -41,7 +41,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import eu.trentorise.smartcampus.bikerovereto.R;
+import eu.trentorise.smartcampus.bikesharing.R;
 
 public class OsmMap extends Fragment
 {
@@ -187,9 +187,8 @@ public class OsmMap extends Fragment
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
 		super.onOptionsItemSelected(item);
-		switch (item.getItemId())
+		if (item.getItemId() == R.id.switch_bikes_tipe)
 		{
-		case R.id.switch_bikes_tipe:
 			item.setChecked(!item.isChecked());
 			if (item.isChecked())
 			{
@@ -206,13 +205,12 @@ public class OsmMap extends Fragment
 				mapView.getOverlays().add(bikesMarkersOverlay);
 			}
 			mapView.invalidate();
-			break;
-		case R.id.bt_refresh:
+		}
+		else if (item.getItemId() == R.id.bt_refresh) 
+		{
 			((MainActivity)getActivity()).stopTimer();
 			((MainActivity)getActivity()).startTimer();
-			break;
 		}
-
 		return true;
 	}
 

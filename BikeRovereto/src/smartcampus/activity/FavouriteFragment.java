@@ -2,7 +2,7 @@ package smartcampus.activity;
 
 import java.util.ArrayList;
 
-import eu.trentorise.smartcampus.bikerovereto.R;
+import eu.trentorise.smartcampus.bikesharing.R;
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
 import smartcampus.asynctask.GetStationsTask;
 import smartcampus.asynctask.GetStationsTask.AsyncStationResponse;

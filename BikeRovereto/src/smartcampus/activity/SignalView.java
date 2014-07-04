@@ -33,7 +33,7 @@ import android.widget.ImageView.ScaleType;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import eu.trentorise.smartcampus.bikerovereto.R;
+import eu.trentorise.smartcampus.bikesharing.R;
 
 public class SignalView extends Fragment implements AsyncReportsResponse
 {
@@ -140,17 +140,14 @@ public class SignalView extends Fragment implements AsyncReportsResponse
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
 		int id = item.getItemId();
-		switch (id)
+		if (id == android.R.id.home)
 		{
-		case android.R.id.home:
-			getFragmentManager().popBackStack();
-			break;
-		case R.id.action_add_report:
-			ReportTools.addReport(bike, getActivity(), this, adapter);
-			break;
-		case R.id.action_settings:
-			break;
+			getFragmentManager().popBackStack();			
 		}
+		else if (id == R.id.action_add_report)
+		{
+			ReportTools.addReport(bike, getActivity(), this, adapter);
+		}		
 		return super.onOptionsItemSelected(item);
 	}
 

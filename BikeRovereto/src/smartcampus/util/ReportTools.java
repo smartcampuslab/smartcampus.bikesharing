@@ -30,7 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
-import eu.trentorise.smartcampus.bikerovereto.R;
+import eu.trentorise.smartcampus.bikesharing.R;
 
 public class ReportTools {
 
@@ -111,9 +111,10 @@ public class ReportTools {
 
 				report.setPhoto(image);
 
-				//reportable.addReport(report);
+				
 				new SendReport(activity).execute(report);
-				reportsAdapter.add(report);
+//				reportable.addReport(report);
+//				reportsAdapter.add(report);
 			}
 		});
 		builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
