@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.concurrent.TimeUnit;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.http.HttpResponse;
@@ -76,7 +77,6 @@ public class SendReport extends AsyncTask<Report, Void, String>{
 				jsonObject.accumulate("fieldId", null);
 				// 4. convert JSONObject to JSON to String
 				json = jsonObject.toString();
- 
             
 				// 5. set json
 				MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);

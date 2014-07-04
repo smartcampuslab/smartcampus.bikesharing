@@ -111,9 +111,10 @@ public class ReportTools {
 
 				report.setPhoto(image);
 
-				//reportable.addReport(report);
+				
 				new SendReport(activity).execute(report);
-				reportsAdapter.add(report);
+//				reportable.addReport(report);
+//				reportsAdapter.add(report);
 			}
 		});
 		builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
