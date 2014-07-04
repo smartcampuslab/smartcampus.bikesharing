@@ -42,10 +42,7 @@ public class FeedbackManager
 		feedback.setFileId(feedBackFileManager.storeNewFile(file));
 		
 		//store "feedback" inside Mongo
-
 		feedbackRepository.save(feedback);
-		
-		System.out.println(feedback);
 	}
 
 	public List<Feedback> getStationFeedbacks(String cityId, String stationId)

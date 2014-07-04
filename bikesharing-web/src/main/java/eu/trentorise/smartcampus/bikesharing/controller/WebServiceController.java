@@ -22,6 +22,7 @@ import eu.trentorise.smartcampus.bikesharing.exceptions.InvalidStationIDExceptio
 import eu.trentorise.smartcampus.bikesharing.exceptions.WebServiceErrorException;
 import eu.trentorise.smartcampus.bikesharing.feedback.Feedback;
 import eu.trentorise.smartcampus.bikesharing.feedback.FeedbackManager;
+import eu.trentorise.smartcampus.bikesharing.log.Log;
 import eu.trentorise.smartcampus.bikesharing.managers.Container;
 import eu.trentorise.smartcampus.bikesharing.managers.DataManager;
 import eu.trentorise.smartcampus.bikesharing.model.AnarchicBike;
@@ -31,6 +32,9 @@ import eu.trentorise.smartcampus.bikesharing.model.Station;
 public class WebServiceController
 {
 	@Autowired
+	private Log requestsLog;
+	
+	@Autowired
 	private DataManager dataManager;
 	
 	@Autowired
@@ -39,8 +43,6 @@ public class WebServiceController
 	@RequestMapping(value = "/stations/{cityId:.*}/{stationId:.*}", method = RequestMethod.GET)
     public @ResponseBody Container<Station> stationService(HttpServletRequest request, @PathVariable String cityId, @PathVariable String stationId)
     {
-		printRequest(request);
-		
 		int httpStatus = HttpStatus.OK.value();
 		String errorString =  "";
 		Station station = null;
@@ -68,14 +70,14 @@ public class WebServiceController
 			errorString =  HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase() + ": " + e.getMessage();
 		}
 		
+		requestsLog.printRequest(request, errorString);
+
         return new Container<Station>(httpStatus, errorString, station);
     }
 	
 	@RequestMapping(value = "/stations/{cityId:.*}", method = RequestMethod.GET)
     public @ResponseBody Container<Object[]> stationsService(HttpServletRequest request, @PathVariable String cityId)
     {
-    	printRequest(request);
-		
 		int httpStatus = HttpStatus.OK.value();
 		String errorString = "";
 		Map<String, Station> stations = null;
@@ -97,14 +99,14 @@ public class WebServiceController
 			errorString =  HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase() + ": " + e.getMessage();
 		}
 		
+		requestsLog.printRequest(request, errorString);
+
         return new Container<Object[]>(httpStatus, errorString, stations.values().toArray());
     }
 	
 	@RequestMapping(value = "/bikes/{cityId:.*}", method = RequestMethod.GET)
     public @ResponseBody Container<Object[]> anarchicBikesService(HttpServletRequest request, @PathVariable String cityId)
     {
-    	printRequest(request);
-		
 		int httpStatus = HttpStatus.OK.value();
 		String errorString =  "";
 		Map<String, AnarchicBike> bikes = null;
@@ -126,14 +128,14 @@ public class WebServiceController
 			errorString =  HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase() + ": " + e.getMessage();
 		}
 		
+		requestsLog.printRequest(request, errorString);
+		
 		return new Container<Object[]>(httpStatus, errorString, bikes.values().toArray());
     }
     
     @RequestMapping(value = "/report", method = RequestMethod.POST)
     public @ResponseBody Container<Integer> reportService(HttpServletRequest request, @RequestParam(value = "body") String feedback, @RequestParam(required=false,value="file") MultipartFile file)
     {
-    	printRequest(request);
-		
 		int httpStatus = HttpStatus.OK.value();
 		String errorString = "";
 		
@@ -170,41 +172,34 @@ public class WebServiceController
 			errorString = HttpStatus.NOT_ACCEPTABLE.getReasonPhrase() + ": Wrong json format, " + e.getMessage();
 		}
 		
+		requestsLog.printRequest(request, errorString);
+
 		return new Container<Integer>(httpStatus, errorString, 0);
     }
     
     @RequestMapping(value = "/stations/{cityId:.*}/{stationId:.*}/reports")
     public @ResponseBody Container<Feedback[]> stationsReportService(HttpServletRequest request, @PathVariable String cityId, @PathVariable String stationId)
     {
-    	printRequest(request);
-		
 		int httpStatus = HttpStatus.OK.value();
 		String errorString = "";
 		
 		List<Feedback> res = feedBackManager.getStationFeedbacks(cityId, stationId);
 		
+		requestsLog.printRequest(request, errorString);
+
         return new Container<Feedback[]>(httpStatus, errorString, res.toArray(new Feedback[res.size()]));
     }
     
     @RequestMapping(value = "/bikes/{cityId:.*}/{bikeId:.*}/reports")
     public @ResponseBody Container<Feedback[]> anarchicBikesReportService(HttpServletRequest request, @PathVariable String cityId, @PathVariable String bikeId)
     {
-    	printRequest(request);
-		
 		int httpStatus = HttpStatus.OK.value();
 		String errorString = "";
 		
 		List<Feedback> res = feedBackManager.getBikeFeedbacks(cityId, bikeId);
 
+		requestsLog.printRequest(request, errorString);
+		
         return new Container<Feedback[]>(httpStatus, errorString, res.toArray(new Feedback[res.size()]));
-    }
-    
-    private void printRequest(HttpServletRequest request)
-    {
-    	System.out.println("IP: " + request.getRemoteAddr());
-		System.out.println("HOST: " + request.getRemoteHost());
-		System.out.println("PORT: " + request.getRemotePort());
-		System.out.println("URI: " + request.getRequestURI());
-		System.out.println();
     }
 }
