@@ -40,7 +40,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import eu.trentorise.smartcampus.bikerovereto.R;
+import eu.trentorise.smartcampus.bikesharing.R;
 
 public class StationDetails extends Fragment
 {
@@ -188,16 +188,13 @@ public class StationDetails extends Fragment
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
 		int id = item.getItemId();
-		switch (id)
+		if (id == android.R.id.home)
 		{
-		case android.R.id.home:
-			getFragmentManager().popBackStack();
-			break;
-		case R.id.action_add_report:
+			getFragmentManager().popBackStack();			
+		}
+		else if (id == R.id.action_add_report)
+		{
 			ReportTools.addReport(station, getActivity(), this, adapter);
-			break;
-		case R.id.action_settings:
-			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}

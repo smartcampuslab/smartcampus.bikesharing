@@ -47,7 +47,7 @@ public class GetAnarchicBikesTask extends AsyncTask<Void, Void, ArrayList<Bike>>
 	@Override
 	protected ArrayList<Bike> doInBackground(Void... data)
 	{
-		HttpGet httpg = new HttpGet(Tools.SERVICE_URL + Tools.BIKES_REQUEST + Tools.CAP_ROVERETO);
+		HttpGet httpg = new HttpGet(Tools.SERVICE_URL + Tools.BIKES_REQUEST + Tools.CITY_CODE);
 		String responseJSON;
 		ArrayList<Bike> bikes = new ArrayList<Bike>();
 		try

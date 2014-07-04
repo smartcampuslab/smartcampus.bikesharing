@@ -61,7 +61,7 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 	@Override
 	protected ArrayList<Station> doInBackground(String... data)
 	{
-		HttpGet httpg = new HttpGet(Tools.SERVICE_URL + Tools.STATIONS_REQUEST + Tools.CAP_ROVERETO + data[0]);
+		HttpGet httpg = new HttpGet(Tools.SERVICE_URL + Tools.STATIONS_REQUEST + Tools.CITY_CODE + "/" + data[0]);
 		String responseJSON;
 		
 		ArrayList<Station> stations = new ArrayList<Station>();

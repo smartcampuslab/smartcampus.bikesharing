@@ -32,7 +32,7 @@ import android.graphics.Bitmap.CompressFormat;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
-import eu.trentorise.smartcampus.bikerovereto.R;
+import eu.trentorise.smartcampus.bikesharing.R;
 //TODO: not tested and fix keys!
 
 public class SendReport extends AsyncTask<Report, Void, String>{
@@ -72,7 +72,7 @@ public class SendReport extends AsyncTask<Report, Void, String>{
 				jsonObject.accumulate("warnings", jsonArray);
 				jsonObject.accumulate("objectType", reports[0].getReportOfType());
 				jsonObject.accumulate("objectId", reports[0].getID());
-				jsonObject.accumulate("cityId", "5061"); //Code of the city
+				jsonObject.accumulate("cityId", Tools.CITY_CODE); //Code of the city
 				jsonObject.accumulate("date", reports[0].getDate());
 				jsonObject.accumulate("fieldId", null);
 				// 4. convert JSONObject to JSON to String
