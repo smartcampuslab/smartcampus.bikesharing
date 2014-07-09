@@ -30,7 +30,6 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,8 +42,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import eu.trentorise.smartcampus.bikesharing.R;
 
-public class OsmMap extends Fragment
-{
+public class OsmMap extends Fragment {
 	// the view where the map is showed
 	private MapView mapView;
 	// overlya for current Location
@@ -68,8 +66,7 @@ public class OsmMap extends Fragment
 	// default bounding box
 	private static final BoundingBoxE6 defaultBoundingBox = new BoundingBoxE6(45.911087, 11.065997, 45.86311, 11.00263);
 
-	public static OsmMap newInstance(ArrayList<Station> stations, ArrayList<Bike> bikes)
-	{
+	public static OsmMap newInstance(ArrayList<Station> stations, ArrayList<Bike> bikes) {
 		OsmMap fragment = new OsmMap();
 		Bundle bundle = new Bundle();
 
@@ -81,8 +78,7 @@ public class OsmMap extends Fragment
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
+	public void onCreate(Bundle savedInstanceState) {
 		stations = getArguments().getParcelableArrayList("stations");
 		bikes = getArguments().getParcelableArrayList("bikes");
 
@@ -94,8 +90,7 @@ public class OsmMap extends Fragment
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-	{
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.activity_osm_map, container, false);
 		// get the mapView
 		mapView = (MapView) rootView.findViewById(R.id.map_view);
@@ -141,26 +136,21 @@ public class OsmMap extends Fragment
 	}
 
 	@Override
-	public void onStart()
-	{
+	public void onStart() {
 		super.onStart();
 		((MainActivity) getActivity()).startTimer();
 	}
 
 	@Override
-	public void onResume()
-	{
+	public void onResume() {
 		super.onResume();
 		mLocationOverlay.enableMyLocation();
-		mapView.post(new Runnable()
-		{
+		mapView.post(new Runnable() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				// cycle because the zoomToBoundingBox must be called 3 times to
 				// take effect (osm bug?)
-				for (int i = 0; i < 3; i++)
-				{
+				for (int i = 0; i < 3; i++) {
 					mapView.zoomToBoundingBox(currentBoundingBox);
 				}
 			}
@@ -168,8 +158,7 @@ public class OsmMap extends Fragment
 	}
 
 	@Override
-	public void onPause()
-	{
+	public void onPause() {
 		super.onPause();
 		mLocationOverlay.disableMyLocation();
 		currentBoundingBox = mapView.getBoundingBox();
@@ -177,45 +166,35 @@ public class OsmMap extends Fragment
 	}
 
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-	{
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.main, menu);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
+	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
-		if (item.getItemId() == R.id.switch_bikes_tipe)
-		{
+		if (item.getItemId() == R.id.switch_bikes_tipe) {
 			item.setChecked(!item.isChecked());
-			if (item.isChecked())
-			{
-				for (Overlay o : bikesMarkersOverlay.getItems())
-				{
+			if (item.isChecked()) {
+				for (Overlay o : bikesMarkersOverlay.getItems()) {
 					((BikeMarker) o).hideInfoWindow();
 				}
 
 				// remove the anarchic bikes
 				mapView.getOverlays().remove(bikesMarkersOverlay);
-			}
-			else
-			{
+			} else {
 				mapView.getOverlays().add(bikesMarkersOverlay);
 			}
 			mapView.invalidate();
-		}
-		else if (item.getItemId() == R.id.bt_refresh) 
-		{
-			((MainActivity)getActivity()).stopTimer();
-			((MainActivity)getActivity()).startTimer();
+		} else if (item.getItemId() == R.id.bt_refresh) {
+			((MainActivity) getActivity()).stopTimer();
+			((MainActivity) getActivity()).startTimer();
 		}
 		return true;
 	}
 
-	private void addBikesMarkers()
-	{
+	private void addBikesMarkers() {
 		if (!this.isAdded())
 			return;
 		Resources res = getResources();
@@ -226,8 +205,7 @@ public class OsmMap extends Fragment
 		Drawable markerImage = res.getDrawable(R.drawable.marker_bike);
 
 		BikeInfoWindow customInfoWindow = new BikeInfoWindow(mapView, getFragmentManager());
-		for (Bike b : bikes)
-		{
+		for (Bike b : bikes) {
 			BikeMarker marker = new BikeMarker(mapView, b);
 
 			marker.setPosition(b.getPosition());
@@ -241,8 +219,7 @@ public class OsmMap extends Fragment
 		bikesMarkersOverlay.setGridSize(100);
 	}
 
-	private void addStationsMarkers()
-	{
+	private void addStationsMarkers() {
 		if (!this.isAdded())
 			return;
 
@@ -251,15 +228,13 @@ public class OsmMap extends Fragment
 		mapView.getOverlays().add(stationsMarkersOverlay);
 		Drawable markerImage = null;
 		StationInfoWindow customInfoWindow = new StationInfoWindow(mapView, getFragmentManager());
-		for (Station s : stations)
-		{
+		for (Station s : stations) {
 			StationMarker marker = new StationMarker(mapView, s);
 			marker.setTitle(s.getName());
 			marker.setSnippet(s.getStreet());
 			marker.setPosition(s.getPosition());
 
-			switch ((int) Math.round(s.getBikesPresentPercentage() * 10))
-			{
+			switch ((int) Math.round(s.getBikesPresentPercentage() * 10)) {
 			case 0:
 				markerImage = res.getDrawable(R.drawable.marker_0);
 				break;
@@ -307,22 +282,18 @@ public class OsmMap extends Fragment
 
 	//
 
-	private class CustomLocationProvider extends GpsMyLocationProvider
-	{
+	private class CustomLocationProvider extends GpsMyLocationProvider {
 		private boolean firstTime = true;
 
-		public CustomLocationProvider(Context context)
-		{
+		public CustomLocationProvider(Context context) {
 			super(context);
 		}
 
 		@Override
-		public void onLocationChanged(Location location)
-		{
+		public void onLocationChanged(Location location) {
 			super.onLocationChanged(location);
 			((MainActivity) getActivity()).setCurrentLocation(new GeoPoint(location));
-			if (firstTime)
-			{
+			if (firstTime) {
 				if (stations == null || stations.size() == 0)
 					mapView.getController().animateTo(new GeoPoint(location));
 				firstTime = false;
@@ -330,47 +301,35 @@ public class OsmMap extends Fragment
 		}
 	}
 
-	private void setBtToMyLoc()
-	{
+	private void setBtToMyLoc() {
 		toMyLoc.setBackgroundResource(R.drawable.to_my_loc_image);
-		toMyLoc.setOnClickListener(new OnClickListener()
-		{
+		toMyLoc.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View arg0)
-			{
+			public void onClick(View arg0) {
 				// myLoc.enableFollowLocation();
-				if (mLocationOverlay.getMyLocation() != null)
-				{
+				if (mLocationOverlay.getMyLocation() != null) {
 					mapView.getController().animateTo(mLocationOverlay.getMyLocation());
 				}
 			}
 		});
 	}
 
-	private void setMapListener()
-	{
-		mapView.setOnTouchListener(new OnTouchListener()
-		{
+	private void setMapListener() {
+		mapView.setOnTouchListener(new OnTouchListener() {
 			float x, y;
 
 			@Override
-			public boolean onTouch(View v, MotionEvent event)
-			{
-				if (event.getAction() == event.ACTION_DOWN)
-				{
+			public boolean onTouch(View v, MotionEvent event) {
+				if (event.getAction() == event.ACTION_DOWN) {
 					x = event.getX();// InternalCompassOrientationProvider iCOP
 										// = new
 
 					y = event.getY();
-				}
-				else if (event.getAction() == event.ACTION_UP)
-				{
-					if ((Math.abs(event.getX() - x) <= 10) && (Math.abs(event.getY() - y) <= 10))
-					{
+				} else if (event.getAction() == event.ACTION_UP) {
+					if ((Math.abs(event.getX() - x) <= 10) && (Math.abs(event.getY() - y) <= 10)) {
 						boolean toRtn = false;
-						for (InfoWindow i : InfoWindow.getOpenedInfoWindowsOn(mapView))
-						{
+						for (InfoWindow i : InfoWindow.getOpenedInfoWindowsOn(mapView)) {
 							i.close();
 							toRtn = true;
 						}
@@ -382,10 +341,8 @@ public class OsmMap extends Fragment
 		});
 	}
 
-	private void refreshBikesMarkers()
-	{
-		if (bikesMarkersOverlay == null)
-		{
+	private void refreshBikesMarkers() {
+		if (bikesMarkersOverlay == null) {
 			bikesMarkersOverlay = new GridMarkerClustererBikes(getActivity());
 		}
 		if (bikesMarkersOverlay.getItems() != null)
@@ -396,8 +353,7 @@ public class OsmMap extends Fragment
 		Drawable markerImage = res.getDrawable(R.drawable.marker_bike);
 
 		BikeInfoWindow customInfoWindow = new BikeInfoWindow(mapView, getFragmentManager());
-		for (Bike b : bikes)
-		{
+		for (Bike b : bikes) {
 			BikeMarker marker = new BikeMarker(mapView, b);
 
 			marker.setPosition(b.getPosition());
@@ -411,10 +367,8 @@ public class OsmMap extends Fragment
 		bikesMarkersOverlay.invalidate();
 	}
 
-	private void refreshStationsMarkers()
-	{
-		if (stationsMarkersOverlay == null)
-		{
+	private void refreshStationsMarkers() {
+		if (stationsMarkersOverlay == null) {
 			stationsMarkersOverlay = new GridMarkerClustererStation(getActivity());
 		}
 		if (stationsMarkersOverlay.getItems() != null)
@@ -423,15 +377,13 @@ public class OsmMap extends Fragment
 
 		Drawable markerImage = null;
 		StationInfoWindow customInfoWindow = new StationInfoWindow(mapView, getFragmentManager());
-		for (Station s : stations)
-		{
+		for (Station s : stations) {
 			StationMarker marker = new StationMarker(mapView, s);
 			marker.setTitle(s.getName());
 			marker.setSnippet(s.getStreet());
 			marker.setPosition(s.getPosition());
 
-			switch ((int) Math.round(s.getBikesPresentPercentage() * 10))
-			{
+			switch ((int) Math.round(s.getBikesPresentPercentage() * 10)) {
 			case 0:
 				markerImage = res.getDrawable(R.drawable.marker_0);
 				break;
@@ -477,8 +429,7 @@ public class OsmMap extends Fragment
 		stationsMarkersOverlay.invalidate();
 	}
 
-	private void setMarkers()
-	{
+	private void setMarkers() {
 		if (stations != null)
 			addStationsMarkers();
 		if (bikes != null)
@@ -486,58 +437,45 @@ public class OsmMap extends Fragment
 
 	}
 
-	private void setCallBackListeners()
-	{
-		((MainActivity) getActivity()).setOnStationsAquiredListener(new OnStationsAquired()
-		{
+	private void setCallBackListeners() {
+		((MainActivity) getActivity()).setOnStationsAquiredListener(new OnStationsAquired() {
 
 			@Override
-			public void stationsAquired(ArrayList<Station> sta)
-			{
+			public void stationsAquired(ArrayList<Station> sta) {
 				stations = sta;
 				addStationsMarkers();
-				if (stations.size() > 0)
-				{
-					for (int i = 0; i < 3; i++)
-					{
+				if (stations.size() > 0) {
+					for (int i = 0; i < 3; i++) {
 						mapView.zoomToBoundingBox(Station.getBoundingBox(stations));
 					}
 				}
 			}
 		});
 
-		((MainActivity) getActivity()).setOnBikesAquiredListener(new OnBikesAquired()
-		{
+		((MainActivity) getActivity()).setOnBikesAquiredListener(new OnBikesAquired() {
 			@Override
-			public void bikesAquired(ArrayList<Bike> b)
-			{
+			public void bikesAquired(ArrayList<Bike> b) {
 				bikes = b;
 				addBikesMarkers();
 			}
 		});
 
-		((MainActivity) getActivity()).setOnStationRefresh(new OnStationRefresh()
-		{
+		((MainActivity) getActivity()).setOnStationRefresh(new OnStationRefresh() {
 
 			@Override
-			public void stationsRefreshed(ArrayList<Station> sta)
-			{
-				if (sta.size() > 0)
-				{
+			public void stationsRefreshed(ArrayList<Station> sta) {
+				if (sta.size() > 0) {
 					stations = sta;
 					refreshStationsMarkers();
 				}
 			}
 		});
 
-		((MainActivity) getActivity()).setOnBikesRefresh(new OnBikesRefresh()
-		{
+		((MainActivity) getActivity()).setOnBikesRefresh(new OnBikesRefresh() {
 
 			@Override
-			public void bikesRefreshed(ArrayList<Bike> b)
-			{
-				if (b.size() > 0)
-				{
+			public void bikesRefreshed(ArrayList<Bike> b) {
+				if (b.size() > 0) {
 					bikes = b;
 					refreshBikesMarkers();
 				}
@@ -546,8 +484,7 @@ public class OsmMap extends Fragment
 	}
 
 	@Override
-	public void onDetach()
-	{
+	public void onDetach() {
 		super.onDetach();
 		((MainActivity) getActivity()).setOnStationRefresh(null);
 		((MainActivity) getActivity()).setOnBikesRefresh(null);

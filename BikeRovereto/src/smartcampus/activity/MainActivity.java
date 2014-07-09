@@ -1,7 +1,6 @@
 package smartcampus.activity;
 
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -41,8 +40,7 @@ import android.widget.Toast;
 import eu.trentorise.smartcampus.bikesharing.R;
 
 public class MainActivity extends ActionBarActivity implements StationsListFragment.OnStationSelectListener,
-		FavouriteFragment.OnStationSelectListener
-{
+		FavouriteFragment.OnStationSelectListener {
 
 	private String[] navTitles;
 	private int[] navIcons;
@@ -72,80 +70,91 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	public static final String FILENOTIFICATIONDB = "notificationBlockDB";
 	public static final String FRAGMENT_ABOUT = "about";
 
-
-	public interface OnPositionAquiredListener
-	{
+	public interface OnPositionAquiredListener {
 		public void onPositionAquired();
 	}
 
 	// stations
-	public interface OnStationsAquired
-	{
+	public interface OnStationsAquired {
 		public void stationsAquired(ArrayList<Station> stations);
 	}
 
-	public interface OnStationRefresh
-	{
+	public interface OnStationRefresh {
 		public void stationsRefreshed(ArrayList<Station> stations);
 	}
 
 	// bikes
-	public interface OnBikesAquired
-	{
+	public interface OnBikesAquired {
 		public void bikesAquired(ArrayList<Bike> bikes);
 	}
 
-	public interface OnBikesRefresh
-	{
+	public interface OnBikesRefresh {
 		public void bikesRefreshed(ArrayList<Bike> bikes);
 	}
 
-	public void setOnPositionAquiredListener(OnPositionAquiredListener onPositionAquiredListener)
-	{
+	public void setOnPositionAquiredListener(OnPositionAquiredListener onPositionAquiredListener) {
 		this.mCallback = onPositionAquiredListener;
 	}
 
-	public void setOnStationRefresh(OnStationRefresh onStationRefresh)
-	{
+	public void setOnStationRefresh(OnStationRefresh onStationRefresh) {
 		this.mCallbackStationRefreshed = onStationRefresh;
 	}
 
-	public void setOnStationsAquiredListener(OnStationsAquired onStationsAquired)
-	{
+	public void setOnStationsAquiredListener(OnStationsAquired onStationsAquired) {
 		this.mCallbackStationsAquired = onStationsAquired;
 	}
 
-	public void setOnBikesAquiredListener(OnBikesAquired onBikesAquired)
-	{
+	public void setOnBikesAquiredListener(OnBikesAquired onBikesAquired) {
 		this.mCallbackBikesAquired = onBikesAquired;
 	}
 
-	public void setOnBikesRefresh(OnBikesRefresh onBikesRefresh)
-	{
+	public void setOnBikesRefresh(OnBikesRefresh onBikesRefresh) {
 		this.mCallbackBikesRefreshed = onBikesRefresh;
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		try {
-			ApplicationInfo app = getPackageManager().getApplicationInfo(this.getPackageName(), PackageManager.GET_ACTIVITIES|PackageManager.GET_META_DATA);			 
-	        Bundle metaData = app.metaData; 
-	        if(metaData == null || metaData.get("eu.trentorise.smartcampus.bikerovereto.CITY_CODE") == null || (metaData.get("eu.trentorise.smartcampus.bikerovereto.CITY_CODE")+"").equals("")) {
-        		Toast.makeText(this, "City code in manifest not setted!", Toast.LENGTH_LONG).show();
-        		finish();
-	        }
-	        else {
-	            String value = metaData.get("eu.trentorise.smartcampus.bikerovereto.CITY_CODE") + "";
-	            Tools.CITY_CODE = value;
-	        }
+			ApplicationInfo app = getPackageManager().getApplicationInfo(this.getPackageName(),
+					PackageManager.GET_ACTIVITIES | PackageManager.GET_META_DATA);
+			Bundle metaData = app.metaData;
+
+			String errorString = null;
+
+			if (metaData == null) {
+				errorString = "Metadata not configured!";
+			} else if (metaData.get(Tools.METADATA_SERVICE_URL) == null
+					|| (metaData.get(Tools.METADATA_SERVICE_URL) + "").equals("")) {
+				errorString = "Metadata: service URL not configured!";
+			} else if (metaData.get(Tools.METADATA_CITY_CODE) == null
+					|| (metaData.get(Tools.METADATA_CITY_CODE) + "").equals("")) {
+				errorString = "Metadata: city code not configured!";
+			} else if (metaData.get(Tools.METADATA_BIKE_TYPES) == null
+					|| (metaData.get(Tools.METADATA_BIKE_TYPES) + "").equals("")) {
+				errorString = "Metadata: bike types not configured!";
+			}
+
+			if (errorString != null) {
+				Toast.makeText(this, errorString, Toast.LENGTH_LONG).show();
+				Log.e("BIKESHARING", errorString);
+				finish();
+			} else {
+				String serviceUrl = "" + metaData.get(Tools.METADATA_SERVICE_URL);
+				Tools.SERVICE_URL = serviceUrl;
+				String cityCode = "" + metaData.get(Tools.METADATA_CITY_CODE);
+				Tools.CITY_CODE = cityCode;
+				String bikeTypesString = "" + metaData.get(Tools.METADATA_BIKE_TYPES);
+				Tools.BIKE_TYPES = bikeTypesString.split("|");
+
+				Log.e("BIKESHARING", "EVERYTHING SEEMS TO BE RIGHT!\n" + Tools.SERVICE_URL + "\n" + Tools.CITY_CODE + "\n"
+						+ bikeTypesString);
+			}
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();
 		}
-		
-		
+
 		getStation();
 		getBikes();
 
@@ -153,17 +162,14 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 		transaction.add(R.id.content_frame, mainFragment, FRAGMENT_MAP);
 		transaction.commit();
-		if (getIntent().getBooleanExtra(NotificationReceiver.INTENT_FROM_NOTIFICATION, false))
-		{
+		if (getIntent().getBooleanExtra(NotificationReceiver.INTENT_FROM_NOTIFICATION, false)) {
 			onStationSelected((Station) getIntent().getParcelableExtra("station"), false);
 		}
 
 		navTitles = getResources().getStringArray(R.array.navTitles);
-		navIcons = new int[]
-		{ R.drawable.nav_map, R.drawable.nav_station, R.drawable.nav_favourite };
+		navIcons = new int[] { R.drawable.nav_map, R.drawable.nav_station, R.drawable.nav_favourite };
 		navExtraTitles = getResources().getStringArray(R.array.navExtraTitles);
-		navExtraIcons = new int[]
-		{ R.drawable.nav_settings, R.drawable.ic_action_about };
+		navExtraIcons = new int[] { R.drawable.nav_settings, R.drawable.ic_action_about };
 
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -175,16 +181,13 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		R.drawable.ic_drawer, /* nav drawer icon to replace 'Up' caret */
 		R.string.drawer_open, /* "open drawer" description */
 		R.string.drawer_close /* "close drawer" description */
-		)
-		{
-			public void onDrawerClosed(View view)
-			{
+		) {
+			public void onDrawerClosed(View view) {
 				super.onDrawerClosed(view);
 				supportInvalidateOptionsMenu();
 			}
 
-			public void onDrawerOpened(View drawerView)
-			{
+			public void onDrawerOpened(View drawerView) {
 				super.onDrawerOpened(drawerView);
 				supportInvalidateOptionsMenu();
 			}
@@ -199,20 +202,17 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		mDrawerList.setAdapter(navAdapter);
 
 		// Set the list's click listener
-		mDrawerList.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener()
-		{
+		mDrawerList.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3)
-			{
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
 				Fragment currentFragment;
 				FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-				transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
-				switch (position)
-				{
+				transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in,
+						android.R.anim.fade_out);
+				switch (position) {
 				case 0:
 					currentFragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_MAP);
-					if (currentFragment == null || !currentFragment.isVisible())
-					{
+					if (currentFragment == null || !currentFragment.isVisible()) {
 						OsmMap mapFragment = OsmMap.newInstance(stations, bikes);
 						transaction.replace(R.id.content_frame, mapFragment, FRAGMENT_MAP);
 						transaction.commit();
@@ -224,8 +224,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 					break;
 				case 1:
 					currentFragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_STATIONS);
-					if (currentFragment == null || !currentFragment.isVisible())
-					{
+					if (currentFragment == null || !currentFragment.isVisible()) {
 						StationsListFragment stationsFragment = StationsListFragment.newInstance(stations);
 						transaction.replace(R.id.content_frame, stationsFragment, FRAGMENT_STATIONS);
 						transaction.commit();
@@ -237,8 +236,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 					break;
 				case 2:
 					currentFragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_FAVOURITE);
-					if (currentFragment == null || !currentFragment.isVisible())
-					{
+					if (currentFragment == null || !currentFragment.isVisible()) {
 						FavouriteFragment stationsFragment = FavouriteFragment.newInstance(favStations);
 						transaction.replace(R.id.content_frame, stationsFragment, FRAGMENT_FAVOURITE);
 						transaction.commit();
@@ -257,7 +255,6 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 					startActivity(i2);
 					overridePendingTransition(R.anim.slide_up, R.anim.slide_up_slower);
 					break;
-
 				}
 				mDrawerLayout.closeDrawers();
 			}
@@ -267,15 +264,13 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	}
 
 	@Override
-	protected void onPostCreate(Bundle savedInstanceState)
-	{
+	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 		mDrawerToggle.syncState();
 	}
 
 	@Override
-	public boolean onPrepareOptionsMenu(Menu menu)
-	{
+	public boolean onPrepareOptionsMenu(Menu menu) {
 		// If the nav drawer is open, hide action items related to the content
 		// view
 		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
@@ -283,73 +278,62 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		return super.onPrepareOptionsMenu(menu);
 	}
 
-	private void hideMenuItems(Menu menu, boolean visible)
-	{
-		for (int i = 0; i < menu.size(); i++)
-		{
+	private void hideMenuItems(Menu menu, boolean visible) {
+		for (int i = 0; i < menu.size(); i++) {
 			menu.getItem(i).setVisible(visible);
 		}
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		if (mDrawerToggle.onOptionsItemSelected(item))
-		{
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
-	public void onStationSelected(Station station, boolean animation)
-	{
+	public void onStationSelected(Station station, boolean animation) {
 		Log.d("station selected", station.getName());
 		StationDetails detailsFragment = StationDetails.newInstance(station);
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-		if (animation)
+		if (animation) {
 			transaction.setCustomAnimations(R.anim.slide_left, R.anim.alpha_out, R.anim.alpha_in, R.anim.slide_right);
+		}
 		transaction.replace(R.id.content_frame, detailsFragment);
 		transaction.addToBackStack(null);
 		transaction.commit();
 	}
 
 	@Override
-	protected void onStart()
-	{
+	protected void onStart() {
 		super.onStart();
-		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Tools.LOCATION_REFRESH_TIME, Tools.LOCATION_REFRESH_DISTANCE,
-				mLocationListener);
-
+		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Tools.LOCATION_REFRESH_TIME,
+				Tools.LOCATION_REFRESH_DISTANCE, mLocationListener);
 	}
 
 	@Override
-	protected void onPause()
-	{
+	protected void onPause() {
 		super.onPause();
 		mLocationManager.removeUpdates(mLocationListener);
 		stopTimer();
 	}
 
-	public void updateDistances()
-	{
-		if (stations != null)
-			for (Station station : stations)
-			{
+	public void updateDistances() {
+		if (stations != null) {
+			for (Station station : stations) {
 				station.setDistance(myLocation.distanceTo(station.getPosition()));
 			}
-		if (bikes != null)
-			for (Bike bike : bikes)
-			{
+		}
+		if (bikes != null) {
+			for (Bike bike : bikes) {
 				bike.setDistance(myLocation.distanceTo(bike.getPosition()));
 			}
+		}
 	}
 
-	private final LocationListener mLocationListener = new LocationListener()
-	{
-
-		public void onLocationChanged(final Location location)
-		{
+	private final LocationListener mLocationListener = new LocationListener() {
+		public void onLocationChanged(final Location location) {
 			myLocation = new GeoPoint(location);
 			updateDistances();
 			if (mCallback != null)
@@ -357,52 +341,41 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		}
 
 		@Override
-		public void onProviderDisabled(String arg0)
-		{
+		public void onProviderDisabled(String arg0) {
 		}
 
 		@Override
-		public void onProviderEnabled(String arg0)
-		{
+		public void onProviderEnabled(String arg0) {
 		}
 
 		@Override
-		public void onStatusChanged(String arg0, int arg1, Bundle arg2)
-		{
+		public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
 		}
 	};
 
-	public GeoPoint getCurrentLocation()
-	{
+	public GeoPoint getCurrentLocation() {
 		return myLocation;
 	}
 
-	public void setCurrentLocation(GeoPoint newPositon)
-	{
+	public void setCurrentLocation(GeoPoint newPositon) {
 		myLocation = newPositon;
 		updateDistances();
-		if (mCallback != null)
+		if (mCallback != null) {
 			mCallback.onPositionAquired();
+		}
 	}
 
-	private void getStation()
-	{
+	private void getStation() {
 		favStations = new ArrayList<Station>();
 		GetStationsTask getStationsTask = new GetStationsTask(this);
-		getStationsTask.delegate = new AsyncStationResponse()
-		{
-
+		getStationsTask.delegate = new AsyncStationResponse() {
 			@Override
-			public void processFinish(ArrayList<Station> result, ArrayList<Station> favs, int status)
-			{
+			public void processFinish(ArrayList<Station> result, ArrayList<Station> favs, int status) {
 				stations = result;
 				favStations = favs;
-				if (status != GetStationsTask.NO_ERROR)
-				{
+				if (status != GetStationsTask.NO_ERROR) {
 					Toast.makeText(getApplicationContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
-				}
-				else
-				{
+				} else {
 					if (myLocation != null)
 						updateDistances();
 					mCallbackStationsAquired.stationsAquired(stations);
@@ -410,26 +383,19 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 			}
 		};
 		getStationsTask.execute("");
-
 	}
 
-	private void getBikes()
-	{
+	private void getBikes() {
 		GetAnarchicBikesTask getBikesTask = new GetAnarchicBikesTask();
-		getBikesTask.delegate = new AsyncBikesResponse()
-		{
 
+		getBikesTask.delegate = new AsyncBikesResponse() {
 			@Override
-			public void processFinish(ArrayList<Bike> result, int status)
-			{
+			public void processFinish(ArrayList<Bike> result, int status) {
 
 				bikes = result;
-				if (status != GetAnarchicBikesTask.NO_ERROR)
-				{
+				if (status != GetAnarchicBikesTask.NO_ERROR) {
 					Toast.makeText(getApplicationContext(), getString(R.string.error_bikes), Toast.LENGTH_SHORT).show();
-				}
-				else
-				{
+				} else {
 					mCallbackBikesAquired.bikesAquired(bikes);
 				}
 			}
@@ -437,61 +403,46 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		getBikesTask.execute();
 	}
 
-	public void setStations(ArrayList<Station> stations)
-	{
+	public void setStations(ArrayList<Station> stations) {
 		this.stations.clear();
 		this.stations.addAll(stations);
 	}
 
-	public void setFavStations(ArrayList<Station> favStations)
-	{
+	public void setFavStations(ArrayList<Station> favStations) {
 		this.favStations.clear();
 		this.favStations.addAll(favStations);
 	}
 
-	public void addFavouriteStation(Station station)
-	{
+	public void addFavouriteStation(Station station) {
 		favStations.add(station);
 	}
 
-	public void removeFavouriteStation(Station station)
-	{
+	public void removeFavouriteStation(Station station) {
 		favStations.remove(station);
 	}
 
-	public void addReminderForStation(NotificationBlock nb)
-	{
+	public void addReminderForStation(NotificationBlock nb) {
 		notificationBlock = NotificationBlock.readArrayListFromFile(FILENOTIFICATIONDB, this);
 		notificationBlock.add(nb);
 		NotificationBlock.saveArrayListToFile(notificationBlock, FILENOTIFICATIONDB, getApplicationContext());
 	}
 
-	private void setUpdateTimer()
-	{
+	private void setUpdateTimer() {
 		final Handler handler = new Handler();
 		timer = new Timer();
-		TimerTask doAsynchronousTask = new TimerTask()
-		{
+		TimerTask doAsynchronousTask = new TimerTask() {
 			@Override
-			public void run()
-			{
-				handler.post(new Runnable()
-				{
-					@SuppressWarnings("unchecked")
-					public void run()
-					{
-						try
-						{
+			public void run() {
+				handler.post(new Runnable() {
+					public void run() {
+						try {
 							GetAnarchicBikesTask getBikesTask = new GetAnarchicBikesTask();
-							getBikesTask.delegate = new AsyncBikesResponse()
-							{
+							getBikesTask.delegate = new AsyncBikesResponse() {
 
 								@Override
-								public void processFinish(ArrayList<Bike> result, int status)
-								{
+								public void processFinish(ArrayList<Bike> result, int status) {
 									bikes = result;
-									if (mCallbackBikesRefreshed != null)
-									{
+									if (mCallbackBikesRefreshed != null) {
 										mCallbackBikesRefreshed.bikesRefreshed(bikes);
 									}
 								}
@@ -500,16 +451,13 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 
 							favStations = new ArrayList<Station>();
 							GetStationsTask getStationsTask = new GetStationsTask(getApplicationContext());
-							getStationsTask.delegate = new AsyncStationResponse()
-							{
+							getStationsTask.delegate = new AsyncStationResponse() {
 
 								@Override
-								public void processFinish(ArrayList<Station> result, ArrayList<Station> favs, int status)
-								{
+								public void processFinish(ArrayList<Station> result, ArrayList<Station> favs, int status) {
 									stations = result;
 									favStations = favs;
-									if (mCallbackStationRefreshed != null)
-									{
+									if (mCallbackStationRefreshed != null) {
 										mCallbackStationRefreshed.stationsRefreshed(stations);
 									}
 								}
@@ -518,9 +466,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 
 							updateDistances();
 
-						}
-						catch (Exception e)
-						{
+						} catch (Exception e) {
 						}
 					}
 				});
@@ -529,28 +475,26 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		timer.schedule(doAsynchronousTask, 0, 40000);
 	}
 
-	public void stopTimer()
-	{
-		if (timer != null)
+	public void stopTimer() {
+		if (timer != null) {
 			timer.cancel();
+		}
 	}
 
-	public void startTimer()
-	{
+	public void startTimer() {
 		setUpdateTimer();
 	}
 
 	@Override
-	public void onBackPressed()
-	{
-			if (mDrawerLayout.isDrawerOpen(mDrawerList))
-				mDrawerLayout.closeDrawer(mDrawerList);
-			else
-				super.onBackPressed();
+	public void onBackPressed() {
+		if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
+			mDrawerLayout.closeDrawer(mDrawerList);
+		} else {
+			super.onBackPressed();
+		}
 	}
 
-	public ArrayList<Station> getStations()
-	{
+	public ArrayList<Station> getStations() {
 		return stations;
 	}
 }

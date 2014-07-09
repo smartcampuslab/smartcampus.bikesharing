@@ -24,10 +24,18 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-                
+        
+        <meta-data
+            android:name="eu.trentorise.smartcampus.bikerovereto.SERVICE_URL"
+            android:value="http://192.168.33.212:8080/smartcampus.bikesharing-web/" />
+        
         <meta-data
             android:name="eu.trentorise.smartcampus.bikerovereto.CITY_CODE"
             android:value="5061" />
+        
+        <meta-data
+            android:name="eu.trentorise.smartcampus.bikerovereto.BIKE_TYPES"
+            android:value="emotion|anarchic" />
         
         <activity
             android:name="smartcampus.activity.MainActivity"
