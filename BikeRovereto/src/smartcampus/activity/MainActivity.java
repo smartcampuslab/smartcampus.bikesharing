@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.osmdroid.util.GeoPoint;
 
 import smartcampus.asynctask.GetAnarchicBikesTask;
@@ -146,7 +147,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 				String cityCode = "" + metaData.get(Tools.METADATA_CITY_CODE);
 				Tools.CITY_CODE = cityCode;
 				String bikeTypesString = "" + metaData.get(Tools.METADATA_BIKE_TYPES);
-				Tools.BIKE_TYPES = bikeTypesString.split("|");
+				Tools.BIKE_TYPES = bikeTypesString.split(";");
 
 				Log.e("BIKESHARING", "EVERYTHING SEEMS TO BE RIGHT!\n" + Tools.SERVICE_URL + "\n" + Tools.CITY_CODE + "\n"
 						+ bikeTypesString);
@@ -168,6 +169,12 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 
 		navTitles = getResources().getStringArray(R.array.navTitles);
 		navIcons = new int[] { R.drawable.nav_map, R.drawable.nav_station, R.drawable.nav_favourite };
+
+		if (!Tools.bikeTypesContains(Tools.METADATA_BIKE_TYPE_EMOTION)) {
+			navTitles = ArrayUtils.remove(navTitles, 1);
+			navIcons = ArrayUtils.remove(navIcons, 1);
+		}
+
 		navExtraTitles = getResources().getStringArray(R.array.navExtraTitles);
 		navExtraIcons = new int[] { R.drawable.nav_settings, R.drawable.ic_action_about };
 

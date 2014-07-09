@@ -30,7 +30,6 @@
     <string name="add_photo">Add photo</string>
     <string name="refresh">Refresh</string>
     <string name="refresh_hint">Pull down to refresh</string>
-    <string name="only_e_motion">Only e-motion</string>
     <string name="add_reminder">Add reminder</string>
     <string name="edit_reminder">Edit reminder</string>
     <string name="no_favourites">No favourite stations</string>
@@ -61,5 +60,7 @@
     <string name="problems">Problems in:</string>
    	<string name="send_report_succes">Report sended correctly</string>
    	<string name="send_report_error">Error sending the report</string>
+   	<string name="bike_type_menu_emotion">e-motion</string>
+   	<string name="bike_type_menu_anarchic">anarchic</string>
 
 </resources>

@@ -24,6 +24,7 @@ import smartcampus.util.BikeInfoWindow;
 import smartcampus.util.BikeMarker;
 import smartcampus.util.StationInfoWindow;
 import smartcampus.util.StationMarker;
+import smartcampus.util.Tools;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -167,27 +168,52 @@ public class OsmMap extends Fragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.main, menu);
+		if (Tools.bikeTypesContains(Tools.METADATA_BIKE_TYPE_EMOTION)) {
+			menu.add(Menu.NONE, R.id.bike_type_emotion, Menu.NONE, R.string.bike_type_menu_emotion).setCheckable(true)
+					.setChecked(true);
+			// .setIcon(android.R.drawable.ic_menu_preferences);
+		}
+
+		if (Tools.bikeTypesContains(Tools.METADATA_BIKE_TYPE_ANARCHIC)) {
+			menu.add(Menu.NONE, R.id.bike_type_anarchic, Menu.NONE, R.string.bike_type_menu_anarchic).setCheckable(true)
+					.setChecked(true);
+			// .setIcon(android.R.drawable.ic_menu_preferences);
+		}
+
+		menu.add(Menu.NONE, R.id.map_refresh, Menu.NONE, R.string.refresh);
+
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
-		if (item.getItemId() == R.id.switch_bikes_tipe) {
+
+		if (item.getItemId() == R.id.bike_type_emotion) {
 			item.setChecked(!item.isChecked());
 			if (item.isChecked()) {
+				mapView.getOverlays().add(stationsMarkersOverlay);
+			} else {
+				for (Overlay o : stationsMarkersOverlay.getItems()) {
+					((StationMarker) o).hideInfoWindow();
+				}
+				// remove the e-motion bikes
+				mapView.getOverlays().remove(stationsMarkersOverlay);
+			}
+			mapView.invalidate();
+		} else if (item.getItemId() == R.id.bike_type_anarchic) {
+			item.setChecked(!item.isChecked());
+			if (item.isChecked()) {
+				mapView.getOverlays().add(bikesMarkersOverlay);
+			} else {
 				for (Overlay o : bikesMarkersOverlay.getItems()) {
 					((BikeMarker) o).hideInfoWindow();
 				}
-
 				// remove the anarchic bikes
 				mapView.getOverlays().remove(bikesMarkersOverlay);
-			} else {
-				mapView.getOverlays().add(bikesMarkersOverlay);
 			}
 			mapView.invalidate();
-		} else if (item.getItemId() == R.id.bt_refresh) {
+		} else if (item.getItemId() == R.id.map_refresh) {
 			((MainActivity) getActivity()).stopTimer();
 			((MainActivity) getActivity()).startTimer();
 		}
@@ -195,8 +221,10 @@ public class OsmMap extends Fragment {
 	}
 
 	private void addBikesMarkers() {
-		if (!this.isAdded())
+		if (!this.isAdded() || bikes == null || !Tools.bikeTypesContains(Tools.METADATA_BIKE_TYPE_ANARCHIC)) {
 			return;
+		}
+
 		Resources res = getResources();
 
 		bikesMarkersOverlay = new GridMarkerClustererBikes(getActivity());
@@ -207,21 +235,19 @@ public class OsmMap extends Fragment {
 		BikeInfoWindow customInfoWindow = new BikeInfoWindow(mapView, getFragmentManager());
 		for (Bike b : bikes) {
 			BikeMarker marker = new BikeMarker(mapView, b);
-
 			marker.setPosition(b.getPosition());
-
 			marker.setIcon(markerImage);
-
 			marker.setInfoWindow(customInfoWindow);
-
 			bikesMarkersOverlay.add(marker);
 		}
+
 		bikesMarkersOverlay.setGridSize(100);
 	}
 
 	private void addStationsMarkers() {
-		if (!this.isAdded())
+		if (!this.isAdded() || stations == null || !Tools.bikeTypesContains(Tools.METADATA_BIKE_TYPE_EMOTION)) {
 			return;
+		}
 
 		Resources res = getResources();
 		stationsMarkersOverlay = new GridMarkerClustererStation(getActivity());
@@ -280,8 +306,6 @@ public class OsmMap extends Fragment {
 		stationsMarkersOverlay.setGridSize(100);
 	}
 
-	//
-
 	private class CustomLocationProvider extends GpsMyLocationProvider {
 		private boolean firstTime = true;
 
@@ -304,7 +328,6 @@ public class OsmMap extends Fragment {
 	private void setBtToMyLoc() {
 		toMyLoc.setBackgroundResource(R.drawable.to_my_loc_image);
 		toMyLoc.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View arg0) {
 				// myLoc.enableFollowLocation();
@@ -322,9 +345,8 @@ public class OsmMap extends Fragment {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				if (event.getAction() == event.ACTION_DOWN) {
-					x = event.getX();// InternalCompassOrientationProvider iCOP
-										// = new
-
+					x = event.getX();
+					// InternalCompassOrientationProvider iCOP = new
 					y = event.getY();
 				} else if (event.getAction() == event.ACTION_UP) {
 					if ((Math.abs(event.getX() - x) <= 10) && (Math.abs(event.getY() - y) <= 10)) {
@@ -345,8 +367,9 @@ public class OsmMap extends Fragment {
 		if (bikesMarkersOverlay == null) {
 			bikesMarkersOverlay = new GridMarkerClustererBikes(getActivity());
 		}
-		if (bikesMarkersOverlay.getItems() != null)
+		if (bikesMarkersOverlay.getItems() != null) {
 			bikesMarkersOverlay.getItems().clear();
+		}
 
 		Resources res = getResources();
 
@@ -355,13 +378,9 @@ public class OsmMap extends Fragment {
 		BikeInfoWindow customInfoWindow = new BikeInfoWindow(mapView, getFragmentManager());
 		for (Bike b : bikes) {
 			BikeMarker marker = new BikeMarker(mapView, b);
-
 			marker.setPosition(b.getPosition());
-
 			marker.setIcon(markerImage);
-
 			marker.setInfoWindow(customInfoWindow);
-
 			bikesMarkersOverlay.add(marker);
 		}
 		bikesMarkersOverlay.invalidate();
@@ -430,16 +449,12 @@ public class OsmMap extends Fragment {
 	}
 
 	private void setMarkers() {
-		if (stations != null)
-			addStationsMarkers();
-		if (bikes != null)
-			addBikesMarkers();
-
+		addStationsMarkers();
+		addBikesMarkers();
 	}
 
 	private void setCallBackListeners() {
 		((MainActivity) getActivity()).setOnStationsAquiredListener(new OnStationsAquired() {
-
 			@Override
 			public void stationsAquired(ArrayList<Station> sta) {
 				stations = sta;
@@ -461,7 +476,6 @@ public class OsmMap extends Fragment {
 		});
 
 		((MainActivity) getActivity()).setOnStationRefresh(new OnStationRefresh() {
-
 			@Override
 			public void stationsRefreshed(ArrayList<Station> sta) {
 				if (sta.size() > 0) {

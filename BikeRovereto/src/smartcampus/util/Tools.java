@@ -11,6 +11,9 @@ public class Tools {
 	public static final String METADATA_CITY_CODE = "eu.trentorise.smartcampus.bikerovereto.CITY_CODE";
 	public static final String METADATA_BIKE_TYPES = "eu.trentorise.smartcampus.bikerovereto.BIKE_TYPES";
 
+	public static final String METADATA_BIKE_TYPE_EMOTION = "e-motion";
+	public static final String METADATA_BIKE_TYPE_ANARCHIC = "anarchic";
+
 	public static final long LOCATION_REFRESH_TIME = 60000;
 	public static final float LOCATION_REFRESH_DISTANCE = 100;
 	public static final String STATION_PREFIX = "sta";
@@ -54,4 +57,14 @@ public class Tools {
 	public static boolean isRuntimeAfterHoneycomb() {
 		return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB;
 	}
+
+	public static boolean bikeTypesContains(String bikeType) {
+		for (int i = 0; i < Tools.BIKE_TYPES.length; i++) {
+			if (bikeType.equalsIgnoreCase(Tools.BIKE_TYPES[i])) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

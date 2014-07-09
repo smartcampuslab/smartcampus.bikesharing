@@ -30,7 +30,6 @@
     <string name="add_photo">Aggiungi foto</string>
     <string name="refresh">Aggiorna</string>
     <string name="refresh_hint">Trascina verso il basso per aggiornare</string>
-    <string name="only_e_motion">Solo e-motion</string>
     <string name="add_reminder">Aggiungi promemoria</string>
     <string name="edit_reminder">Modifica promemoria</string>
     <string name="no_favourites">Nessuna stazione prefererita</string>
@@ -39,7 +38,7 @@
     <string name="station">stazione</string>
     <string name="error">Stazioni non disponibili</string>
     <string name="error_bikes">Bici non disponibili</string>
-    <string name="error_reports">Segnalazioni non disponibili</string>    
+    <string name="error_reports">Segnalazioni non disponibili</string>
     <string name="choose1">Suggerimento</string>
     <string name="choose2">Reclamo</string>
     <string name="choose3">Segnalazione</string>
@@ -52,11 +51,14 @@
     <string name="gears">Cambio</string>
     <string name="anarchich_bike">Bici anarchica</string>
     <string name="id">ID: </string>
-	<string name="about">About</string>
-	<string name="credits">Credits</string>
-	<string name="bikes">Bici</string>
-	<string name="Slots">Slot</string>
+    <string name="about">About</string>
+    <string name="credits">Credits</string>
+    <string name="bikes">Bici</string>
+    <string name="Slots">Slot</string>
     <string name="problems">Problemi a:</string>
-   	<string name="send_report_succes">Segnalazione inviata correttamente</string>
-   	<string name="send_report_error">Errore mandando la segnalazione</string>
+    <string name="send_report_succes">Segnalazione inviata correttamente</string>
+    <string name="send_report_error">Errore mandando la segnalazione</string>
+    <string name="bike_type_menu_emotion">e-motion</string>
+    <string name="bike_type_menu_anarchic">anarchiche</string>
+
 </resources>

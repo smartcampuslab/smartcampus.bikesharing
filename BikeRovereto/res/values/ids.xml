@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="bike_type_emotion" type="id"/>
+    <item name="bike_type_anarchic" type="id"/>
+    <item name="map_refresh" type="id"/>
+
+</resources>
