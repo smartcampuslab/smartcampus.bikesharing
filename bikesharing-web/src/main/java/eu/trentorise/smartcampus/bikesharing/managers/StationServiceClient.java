@@ -1,69 +1,88 @@
 package eu.trentorise.smartcampus.bikesharing.managers;
 
+import it.sayservice.platform.smartplanner.data.message.otpbeans.Parking;
+
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import c.inetub.wwwroot.webservice.service.TOBikeUtente;
-import c.inetub.wwwroot.webservice.service.TOBikeUtenteSoap;
 import eu.trentorise.smartcampus.bikesharing.exceptions.WebServiceErrorException;
 import eu.trentorise.smartcampus.bikesharing.feedback.FeedbackManager;
 import eu.trentorise.smartcampus.bikesharing.model.Station;
+import eu.trentorise.smartcampus.mobilityservice.MobilityDataService;
+import eu.trentorise.smartcampus.mobilityservice.MobilityServiceException;
 
 @Component
 public class StationServiceClient
 {
-	private TOBikeUtente service;
-	private TOBikeUtenteSoap port;
-	
-	@Value("${tobike.username}")
-	private String username;
-	@Value("${tobike.password}")
-	private String password;
-	
 	@Autowired
 	private FeedbackManager feedBackManager;
+
+	@Autowired
+	@Value("${core.mobility.url}")
+	private String mobilityUrl;
 	
-	public StationServiceClient()
-	{
-		service = new TOBikeUtente();
-		port = service.getTOBikeUtenteSoap();
+	@Autowired
+	@Value("${agencies}")
+	private String agencies;
+	
+	private MobilityDataService mobilityDataService;
+
+	private Map<String,String> agencyMap = new HashMap<String, String>();
+	
+	@PostConstruct
+	public void init() {
+		mobilityDataService = new MobilityDataService(mobilityUrl);
+		String[] agencyPairs = agencies.split(",");
+		for (String pairStr : agencyPairs) {
+			String[] pair = pairStr.split(":");
+			agencyMap.put(pair[0].trim(), pair[1].trim());
+		}
 	}
 
-	public TOBikeUtente getService()
-	{
-		return service;
-	}
-	
-	public TOBikeUtenteSoap getPort()
-	{
-		return port;
-	}
-	
 	public Map<String, Station> getElencoStazioniPerComuneJSON(String cityId) throws WebServiceErrorException
 	{
+		String agencyId = agencyMap.get(cityId);
+		if (agencyId == null) return Collections.emptyMap();
+		List<Parking> bikeSharings = null;
+		try {
+			bikeSharings = mobilityDataService.getBikeSharings(agencyId, null);
+		} catch (MobilityServiceException e) {
+			throw new WebServiceErrorException(e.getMessage());
+		}
 		
 		Map<String, Station> stations = new HashMap<String, Station>();
 		
-		String strStations = port.elencoStazioniPerComuneJSON(username, password, cityId);
+		if(bikeSharings == null || bikeSharings.isEmpty()) throw new WebServiceErrorException("No data for ID: " + cityId);
 		
-		if(strStations == null) throw new WebServiceErrorException("No data for ID: " + cityId);
-		if(strStations.equals("")) throw new WebServiceErrorException("No data for ID: " + cityId);
-		
-		String[] strArrStations = strStations.replace("\"","").split("\\|");
-		
-		for(int i = 0; i < strArrStations.length; i++)
+		for(Parking parking : bikeSharings)
 		{
 			//create the station from the string
-			Station s = new Station(strArrStations[i]);
+			Station s = new Station();
+			s.setName(parking.getName());
+			s.setId(parking.getName());
+			s.setLatitude(parking.getPosition()[0]);
+			s.setLongitude(parking.getPosition()[1]);
+			if (parking.isMonitored()) {
+				s.setMaxSlots(parking.getSlotsTotal());
+				s.setnBikes((Integer)parking.getExtra().get("bikes"));
+				s.setnBrokenBikes(Math.max(s.getMaxSlots() - s.getnBikes()-parking.getSlotsAvailable(), 0));
+			} else {
+				s.setMaxSlots(0);
+				s.setnBikes(0);
+				s.setnBrokenBikes(0);
+			}
 			
-			//Android application needs to know how many reports have been made for every station
+			s.setStreet(parking.getDescription());
 			s.setReportsNumber(feedBackManager.getStationFeedbacks(cityId, s.getId()).size());
 			
-			//put "station" inside "stations" map
 			stations.put(s.getId(), s);
 		}
 		return stations;

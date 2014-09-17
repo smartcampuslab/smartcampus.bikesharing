@@ -7,13 +7,10 @@ import java.util.concurrent.Semaphore;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-@Component
+//@Component
 public class Log
 {
-	@Value("${logPath}")
+//	@Value("${logPath}")
 	private String logPath;
 	
 	private int requestNumber = 0;
