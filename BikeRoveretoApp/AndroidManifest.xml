@@ -27,15 +27,15 @@
         
         <meta-data
             android:name="eu.trentorise.smartcampus.bikerovereto.SERVICE_URL"
-            android:value="" />
+            android:value="https://tn.smartcampuslab.it/bikesharing/" />
         
         <meta-data
             android:name="eu.trentorise.smartcampus.bikerovereto.CITY_CODE"
-            android:value="5061" />
+            android:value="rovereto" />
         
         <meta-data
             android:name="eu.trentorise.smartcampus.bikerovereto.BIKE_TYPES"
-            android:value="e-motion;anarchic" />
+            android:value="e-motion" />
         
         <activity
             android:name="smartcampus.activity.MainActivity"

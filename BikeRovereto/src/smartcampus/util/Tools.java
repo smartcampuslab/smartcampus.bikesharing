@@ -59,7 +59,7 @@ public class Tools {
 	}
 
 	public static boolean bikeTypesContains(String bikeType) {
-		for (int i = 0; i < Tools.BIKE_TYPES.length; i++) {
+		for (int i = 0; i < BIKE_TYPES.length; i++) {
 			if (bikeType.equalsIgnoreCase(Tools.BIKE_TYPES[i])) {
 				return true;
 			}

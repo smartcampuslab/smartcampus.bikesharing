@@ -170,7 +170,7 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		navTitles = getResources().getStringArray(R.array.navTitles);
 		navIcons = new int[] { R.drawable.nav_map, R.drawable.nav_station, R.drawable.nav_favourite };
 
-		if (!Tools.bikeTypesContains(Tools.METADATA_BIKE_TYPE_EMOTION)) {
+		if (Tools.BIKE_TYPES!=null && !Tools.bikeTypesContains(Tools.METADATA_BIKE_TYPE_EMOTION)) {
 			navTitles = ArrayUtils.remove(navTitles, 1);
 			navIcons = ArrayUtils.remove(navIcons, 1);
 		}
