@@ -13,7 +13,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -265,12 +267,23 @@ public class ReportTools {
 	    ContentResolver cr = context.getContentResolver();
 	    try
 	    {
-	        return android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
+	        return decodeSampledBitmapFromFile(mImageUri.toString(), 100);
 	    }
 	    catch (Exception e)
 	    {
-	        Log.d("REPORT", "Failed to load", e);
+	        Log.e("REPORT", "Failed to load", e);
 	        return null;
 	    }
+	}
+	
+	public static Bitmap decodeSampledBitmapFromFile(String path, int size) 
+	{
+	  
+	    final BitmapFactory.Options options = new BitmapFactory.Options();
+	    options.inPreferredConfig = Bitmap.Config.RGB_565;
+	    options.inSampleSize = size;
+	    options.inJustDecodeBounds = false;
+	 
+	    return BitmapFactory.decodeFile(mImageUri.getPath(), options);
 	}
 }
