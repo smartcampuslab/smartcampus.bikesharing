@@ -1,6 +1,8 @@
 package smartcampus.asynctask;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
@@ -23,9 +25,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
-public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
-{
-	
+public class GetStationsTask extends
+		AsyncTask<String, Void, ArrayList<Station>> {
 
 	private static final String STATION_NAME = "name";
 	private static final String STATION_STREET = "street";
@@ -35,67 +36,66 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 	private static final String MAX_SLOTS = "maxSlots";
 	private static final String BROKEN_SLOTS = "nBrokenBikes";
 	private static final String STATION_ID = "id";
-    private static final String REPORTS_NUMBER = "reportsNumber";
-	
+	private static final String REPORTS_NUMBER = "reportsNumber";
+
 	public static final int NO_ERROR = 0;
 	public static final int ERROR_SERVER = 1;
 	public static final int ERROR_CLIENT = 2;
-	
+
 	private int currentStatus;
 	private ArrayList<Station> favStations;
-	
 
 	private Context context;
 
-	public GetStationsTask(Context context)
-	{
+	public GetStationsTask(Context context) {
 		this.context = context;
 	}
-	public interface AsyncStationResponse
-	{
-	    void processFinish(ArrayList<Station> stations, ArrayList<Station> favStations, int status);
+
+	public interface AsyncStationResponse {
+		void processFinish(ArrayList<Station> stations,
+				ArrayList<Station> favStations, int status);
 	}
+
 	public AsyncStationResponse delegate = null;
 
-
 	@Override
-	protected ArrayList<Station> doInBackground(String... data)
-	{
-		HttpGet httpg = new HttpGet(Tools.SERVICE_URL + Tools.STATIONS_REQUEST + Tools.CITY_CODE + "/" + data[0]);
+	protected ArrayList<Station> doInBackground(String... data) {
+
 		String responseJSON;
-		
+
 		ArrayList<Station> stations = new ArrayList<Station>();
 		favStations = new ArrayList<Station>();
-		try
-		{
+		try {
+			HttpGet httpg;
+			httpg = new HttpGet(Tools.SERVICE_URL + Tools.STATIONS_REQUEST
+					+ Tools.CITY_CODE + "/"
+					+ URLEncoder.encode(data[0], "utf-8"));
 			HttpParams httpParameters = new BasicHttpParams();
-			// Set the timeout in milliseconds until a connection is established.
-			// The default value is zero, that means the timeout is not used. 
+			// Set the timeout in milliseconds until a connection is
+			// established.
+			// The default value is zero, that means the timeout is not used.
 			int timeoutConnection = 3000;
-			HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
-			// Set the default socket timeout (SO_TIMEOUT) 
+			HttpConnectionParams.setConnectionTimeout(httpParameters,
+					timeoutConnection);
+			// Set the default socket timeout (SO_TIMEOUT)
 			// in milliseconds which is the timeout for waiting for data.
 			int timeoutSocket = 5000;
 			HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 
 			DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
-			
+
 			HttpResponse response = httpClient.execute(httpg);
 			responseJSON = EntityUtils.toString(response.getEntity());
-		}
-		catch (ClientProtocolException e)
-		{
+		} catch (ClientProtocolException e) {
+			currentStatus = ERROR_CLIENT;
+			return stations;
+		} catch (IOException e) {
 			currentStatus = ERROR_CLIENT;
 			return stations;
 		}
-		catch (IOException e)
-		{
-			currentStatus = ERROR_CLIENT;
-			return stations;
-		}
-		try
-		{
-			SharedPreferences pref = context.getSharedPreferences("favStations", Context.MODE_PRIVATE);
+		try {
+			SharedPreferences pref = context.getSharedPreferences(
+					"favStations", Context.MODE_PRIVATE);
 			JSONObject container = new JSONObject(responseJSON);
 			int httpStatus = container.getInt("httpStatus");
 			if (httpStatus == 200)
@@ -103,11 +103,9 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 			else
 				currentStatus = ERROR_SERVER;
 			String errorString = container.getString("errorString");
-			if(data[0] == "")
-			{
+			if (data[0] == "") {
 				JSONArray stationsArrayJSON = container.getJSONArray("data");
-				for (int i = 0; i < stationsArrayJSON.length(); i++)
-				{
+				for (int i = 0; i < stationsArrayJSON.length(); i++) {
 					JSONObject stationJSON = stationsArrayJSON.getJSONObject(i);
 					String name = stationJSON.getString(STATION_NAME);
 					String street = stationJSON.getString(STATION_STREET);
@@ -118,8 +116,11 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 					int brokenSlots = stationJSON.getInt(BROKEN_SLOTS);
 					int reportsNumber = stationJSON.getInt(REPORTS_NUMBER);
 					String id = stationJSON.getString(STATION_ID);
-					Station station = new Station(new GeoPoint(latitude, longitude), name, street, maxSlots, availableBikes, brokenSlots, id);
-					boolean fav = pref.getBoolean(Tools.STATION_PREFIX + id, false);
+					Station station = new Station(new GeoPoint(latitude,
+							longitude), name, street, maxSlots, availableBikes,
+							brokenSlots, id);
+					boolean fav = pref.getBoolean(Tools.STATION_PREFIX + id,
+							false);
 					station.setFavourite(fav);
 					station.setUsedSlots(availableBikes);
 					station.thereAreReports(reportsNumber > 0);
@@ -127,9 +128,7 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 					if (fav)
 						favStations.add(station);
 				}
-			}
-			else
-			{
+			} else {
 				JSONObject stationJSON = container.getJSONObject("data");
 				String name = stationJSON.getString(STATION_NAME);
 				String street = stationJSON.getString(STATION_STREET);
@@ -140,17 +139,17 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 				int brokenSlots = stationJSON.getInt(BROKEN_SLOTS);
 				int reportsNumber = stationJSON.getInt(REPORTS_NUMBER);
 				String id = stationJSON.getString(STATION_ID);
-				Station station = new Station(new GeoPoint(latitude, longitude), name, street, maxSlots, availableBikes, brokenSlots, id);
+				Station station = new Station(
+						new GeoPoint(latitude, longitude), name, street,
+						maxSlots, availableBikes, brokenSlots, id);
 				boolean fav = pref.getBoolean(Tools.STATION_PREFIX + id, false);
 				station.setFavourite(fav);
 				station.setUsedSlots(availableBikes);
 				station.thereAreReports(reportsNumber > 0);
 				stations.add(station);
 			}
-			
-		}
-		catch (JSONException e)
-		{
+
+		} catch (JSONException e) {
 			e.printStackTrace();
 			return stations;
 		}
@@ -159,8 +158,8 @@ public class GetStationsTask extends AsyncTask<String, Void, ArrayList<Station>>
 
 	@Override
 	protected void onPostExecute(ArrayList<Station> result) {
-		if (delegate!=null)
+		if (delegate != null)
 			delegate.processFinish(result, favStations, currentStatus);
 	}
-	
+
 }

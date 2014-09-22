@@ -16,11 +16,11 @@ import eu.trentorise.smartcampus.bikesharing.R;
 
 public class GridMarkerClustererStation extends GridMarkerClusterer
 {
-	Context ctx;
+	private Context mContext;
 	public GridMarkerClustererStation(Context ctx)
 	{
 		super(ctx);
-		this.ctx = ctx;
+		this.mContext=ctx;
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class GridMarkerClustererStation extends GridMarkerClusterer
 			totalPercentage += ((StationMarker) cluster.getItem(i)).getStation().getBikesPresentPercentage();
 		}
 		totalPercentage /= cluster.getSize();
-		Resources res = ctx.getResources();
+		Resources res = mContext.getResources();
 		Drawable drawableImage = null;
 		switch ((int) (totalPercentage * 10))
 		{
@@ -83,9 +83,9 @@ public class GridMarkerClustererStation extends GridMarkerClusterer
 			drawableImage = res.getDrawable(R.drawable.marker_100);
 			break;
 		default:
+			drawableImage = res.getDrawable(R.drawable.marker_0);
 			break;
 		}
-		
 		mClusterIcon = ((BitmapDrawable)drawableImage).getBitmap();
 		Bitmap finalIcon = Bitmap.createBitmap(mClusterIcon.getWidth(), mClusterIcon.getHeight(), mClusterIcon.getConfig());
 
