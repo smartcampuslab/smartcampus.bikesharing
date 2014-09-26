@@ -55,9 +55,9 @@ public class OsmMap extends Fragment {
 	private ArrayList<Bike> bikes;
 
 	// marker for stations
-	private GridMarkerClustererStation stationsMarkersOverlay;
+	private ArrayList<StationMarker> stationsMarkersOverlay;
 	// marker for the bikes
-	private GridMarkerClustererBikes bikesMarkersOverlay;
+	private ArrayList<BikeMarker> bikesMarkersOverlay;
 
 	// button for animating to my position
 	private Button toMyLoc;
@@ -98,22 +98,6 @@ public class OsmMap extends Fragment {
 
 		mapView.setMultiTouchControls(true);
 
-		// stuff for my
-		// Location********************************************************************************
-		// GpsMyLocationProvider gpsMLC = new
-		// GpsMyLocationProvider(getActivity()
-		// .getApplicationContext());
-		// mLocationOverlay = new
-		// MyLocationNewOverlay(getActivity().getApplicationContext(),
-		// gpsMLC, mapView);
-		// InternalCompassOrientationProvider iCOP = new
-		// InternalCompassOrientationProvider(
-		// getActivity().getApplicationContext());
-		// CompassOverlay compassOverlay = new CompassOverlay(getActivity()
-		// .getApplicationContext(), iCOP, mapView);
-		// compassOverlay.enableCompass(iCOP);
-		// END stuff for my
-		// Location********************************************************************************
 
 		// my LOCATION stuff
 		mLocationOverlay = new MyLocationNewOverlay(getActivity(), new CustomLocationProvider(getActivity()), mapView);
@@ -192,9 +176,9 @@ public class OsmMap extends Fragment {
 		if (item.getItemId() == R.id.bike_type_emotion) {
 			item.setChecked(!item.isChecked());
 			if (item.isChecked()) {
-				mapView.getOverlays().add(stationsMarkersOverlay);
+				mapView.getOverlays().addAll(stationsMarkersOverlay);
 			} else {
-				for (Overlay o : stationsMarkersOverlay.getItems()) {
+				for (Overlay o : stationsMarkersOverlay) {
 					((StationMarker) o).hideInfoWindow();
 				}
 				// remove the e-motion bikes
@@ -204,9 +188,9 @@ public class OsmMap extends Fragment {
 		} else if (item.getItemId() == R.id.bike_type_anarchic) {
 			item.setChecked(!item.isChecked());
 			if (item.isChecked()) {
-				mapView.getOverlays().add(bikesMarkersOverlay);
+				mapView.getOverlays().addAll(bikesMarkersOverlay);
 			} else {
-				for (Overlay o : bikesMarkersOverlay.getItems()) {
+				for (Overlay o : bikesMarkersOverlay) {
 					((BikeMarker) o).hideInfoWindow();
 				}
 				// remove the anarchic bikes
@@ -227,21 +211,8 @@ public class OsmMap extends Fragment {
 
 		Resources res = getResources();
 
-		bikesMarkersOverlay = new GridMarkerClustererBikes(getActivity());
-		mapView.getOverlays().add(bikesMarkersOverlay);
-
-		Drawable markerImage = res.getDrawable(R.drawable.marker_bike);
-
-		BikeInfoWindow customInfoWindow = new BikeInfoWindow(mapView, getFragmentManager());
-		for (Bike b : bikes) {
-			BikeMarker marker = new BikeMarker(mapView, b);
-			marker.setPosition(b.getPosition());
-			marker.setIcon(markerImage);
-			marker.setInfoWindow(customInfoWindow);
-			bikesMarkersOverlay.add(marker);
-		}
-
-		bikesMarkersOverlay.setGridSize(100);
+		bikesMarkersOverlay = new ArrayList<BikeMarker>();
+		loadBikesMarkers();
 	}
 
 	private void addStationsMarkers() {
@@ -250,60 +221,8 @@ public class OsmMap extends Fragment {
 		}
 
 		Resources res = getResources();
-		stationsMarkersOverlay = new GridMarkerClustererStation(getActivity());
-		mapView.getOverlays().add(stationsMarkersOverlay);
-		Drawable markerImage = null;
-		StationInfoWindow customInfoWindow = new StationInfoWindow(mapView, getFragmentManager());
-		for (Station s : stations) {
-			StationMarker marker = new StationMarker(mapView, s);
-			marker.setTitle(s.getName());
-			marker.setSnippet(s.getStreet());
-			marker.setPosition(s.getPosition());
-
-			switch ((int) Math.round(s.getBikesPresentPercentage() * 10)) {
-			case 0:
-				markerImage = res.getDrawable(R.drawable.marker_0);
-				break;
-			case 1:
-				markerImage = res.getDrawable(R.drawable.marker_10);
-				break;
-			case 2:
-				markerImage = res.getDrawable(R.drawable.marker_20);
-				break;
-			case 3:
-				markerImage = res.getDrawable(R.drawable.marker_30);
-				break;
-			case 4:
-				markerImage = res.getDrawable(R.drawable.marker_40);
-				break;
-			case 5:
-				markerImage = res.getDrawable(R.drawable.marker_50);
-				break;
-			case 6:
-				markerImage = res.getDrawable(R.drawable.marker_60);
-				break;
-			case 7:
-				markerImage = res.getDrawable(R.drawable.marker_70);
-				break;
-			case 8:
-				markerImage = res.getDrawable(R.drawable.marker_80);
-				break;
-			case 9:
-				markerImage = res.getDrawable(R.drawable.marker_90);
-				break;
-			case 10:
-				markerImage = res.getDrawable(R.drawable.marker_100);
-				break;
-			default:
-				break;
-			}
-
-			marker.setIcon(markerImage);
-			marker.setInfoWindow(customInfoWindow);
-			marker.setAnchor(0, 1);
-			stationsMarkersOverlay.add(marker);
-		}
-		stationsMarkersOverlay.setGridSize(100);
+		stationsMarkersOverlay = new ArrayList<StationMarker>();
+	    refreshStationsMarkers();
 	}
 
 	private class CustomLocationProvider extends GpsMyLocationProvider {
@@ -363,12 +282,9 @@ public class OsmMap extends Fragment {
 		});
 	}
 
-	private void refreshBikesMarkers() {
+	private void loadBikesMarkers() {
 		if (bikesMarkersOverlay == null) {
-			bikesMarkersOverlay = new GridMarkerClustererBikes(getActivity());
-		}
-		if (bikesMarkersOverlay.getItems() != null) {
-			bikesMarkersOverlay.getItems().clear();
+			bikesMarkersOverlay = new ArrayList<BikeMarker>();
 		}
 
 		Resources res = getResources();
@@ -383,15 +299,13 @@ public class OsmMap extends Fragment {
 			marker.setInfoWindow(customInfoWindow);
 			bikesMarkersOverlay.add(marker);
 		}
-		bikesMarkersOverlay.invalidate();
+		mapView.getOverlays().addAll(bikesMarkersOverlay);
 	}
 
 	private void refreshStationsMarkers() {
 		if (stationsMarkersOverlay == null) {
-			stationsMarkersOverlay = new GridMarkerClustererStation(getActivity());
+			stationsMarkersOverlay = new ArrayList<StationMarker>();
 		}
-		if (stationsMarkersOverlay.getItems() != null)
-			stationsMarkersOverlay.getItems().clear();
 		Resources res = getResources();
 
 		Drawable markerImage = null;
@@ -445,10 +359,12 @@ public class OsmMap extends Fragment {
 			marker.setAnchor(0, 1);
 			stationsMarkersOverlay.add(marker);
 		}
-		stationsMarkersOverlay.invalidate();
+		mapView.getOverlays().addAll(stationsMarkersOverlay);
 	}
 
 	private void setMarkers() {
+		if(mapView!=null && mapView.getOverlays()!=null)
+			mapView.getOverlays().clear();
 		addStationsMarkers();
 		addBikesMarkers();
 	}
@@ -491,7 +407,7 @@ public class OsmMap extends Fragment {
 			public void bikesRefreshed(ArrayList<Bike> b) {
 				if (b.size() > 0) {
 					bikes = b;
-					refreshBikesMarkers();
+					loadBikesMarkers();
 				}
 			}
 		});
@@ -505,72 +421,4 @@ public class OsmMap extends Fragment {
 
 	}
 
-	// private BoundingBoxE6 getBoundingBox(boolean addCurrentPosition)
-	// {
-	// BoundingBoxE6 toRtn;
-	// BoundingBoxE6 stationsBoundingBox = null;
-	// int north, south, west, east;
-	// if (stations != null && stations.size() > 0)
-	// {
-	// stationsBoundingBox = Station.getBoundingBox(stations);
-	// north = stationsBoundingBox.getLatNorthE6();
-	// south = stationsBoundingBox.getLatSouthE6();
-	// west = stationsBoundingBox.getLonWestE6();
-	// east = stationsBoundingBox.getLonEastE6();
-	// }
-	// else
-	// {
-	// north = (int) (45.911087 * 1E6);
-	// south = (int) (45.86311 * 1E6);
-	// east = (int) (11.065997 * 1E6);
-	// west = (int) (11.002632 * 1E6);
-	// }
-	//
-	// // if (stationsBoundingBox != null && bikesBoundingBox != null)
-	// // {
-	// // north = stationsBoundingBox.getLatNorthE6() >
-	// // bikesBoundingBox.getLatNorthE6() ?
-	// // stationsBoundingBox.getLatNorthE6() :
-	// // bikesBoundingBox.getLatNorthE6();
-	// //
-	// // east = stationsBoundingBox.getLonEastE6() >
-	// // bikesBoundingBox.getLonEastE6() ? stationsBoundingBox.getLonEastE6()
-	// // : bikesBoundingBox.getLonEastE6();
-	// //
-	// // south = stationsBoundingBox.getLatSouthE6() <
-	// // bikesBoundingBox.getLatSouthE6() ?
-	// // stationsBoundingBox.getLatSouthE6() :
-	// // bikesBoundingBox.getLatSouthE6();
-	// //
-	// // west = stationsBoundingBox.getLonWestE6() <
-	// // bikesBoundingBox.getLonWestE6() ? stationsBoundingBox.getLonWestE6()
-	// // : bikesBoundingBox.getLonWestE6();
-	// // }
-	// //
-	// // if (addCurrentPosition && mLocationOverlay.getMyLocation() != null)
-	// // {
-	// // GeoPoint mPosition = new
-	// // GeoPoint(mLocationOverlay.getMyLocation().getLatitudeE6(),
-	// // mLocationOverlay.getMyLocation().getLongitudeE6());
-	// // if (mPosition.getLatitudeE6() > north)
-	// // {
-	// // north = mPosition.getLatitudeE6();
-	// // }
-	// // if (mPosition.getLatitudeE6() > east)
-	// // {
-	// // east = mPosition.getLongitudeE6();
-	// // }
-	// // if (mPosition.getLatitudeE6() < west)
-	// // {
-	// // west = mPosition.getLongitudeE6();
-	// // }
-	// // if (mPosition.getLatitudeE6() < south)
-	// // {
-	// // south = mPosition.getLatitudeE6();
-	// // }
-	// // }
-	//
-	// toRtn = new BoundingBoxE6(north, east, south, west);
-	// return toRtn;
-	// }
 }
