@@ -311,7 +311,8 @@ public class MainActivity extends ActionBarActivity implements
 		OsmMap mainFragment = OsmMap.newInstance(stations, bikes);
 		FragmentTransaction transaction = getSupportFragmentManager()
 				.beginTransaction();
-		transaction.add(R.id.content_frame, mainFragment, FRAGMENT_MAP);
+		transaction.replace(R.id.content_frame, mainFragment, FRAGMENT_MAP);
+		transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 		transaction.commit();
 		if (getIntent().getBooleanExtra(
 				NotificationReceiver.INTENT_FROM_NOTIFICATION, false)) {
@@ -456,12 +457,12 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	public void updateDistances() {
-		if (stations != null) {
+		if (stations != null && myLocation != null) {
 			for (Station station : stations) {
 				station.setDistance(myLocation.distanceTo(station.getPosition()));
 			}
 		}
-		if (bikes != null) {
+		if (bikes != null && myLocation != null) {
 			for (Bike bike : bikes) {
 				bike.setDistance(myLocation.distanceTo(bike.getPosition()));
 			}

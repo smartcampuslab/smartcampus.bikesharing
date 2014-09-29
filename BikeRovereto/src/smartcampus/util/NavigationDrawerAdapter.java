@@ -32,10 +32,10 @@ public class NavigationDrawerAdapter extends ArrayAdapter<String> {
 		
 		if (convertView == null){
 			LayoutInflater inflater = LayoutInflater.from(getContext());
-			if (getItemViewType(position)==0)
+//			if (getItemViewType(position)==0)
 				convertView = inflater.inflate(R.layout.navigation_drawer_model, parent, false);
-			else
-				convertView = inflater.inflate(R.layout.navigation_drawer_model_extra, parent, false);
+//			else
+//				convertView = inflater.inflate(R.layout.navigation_drawer_model_extra, parent, false);
 			viewHolder = new ViewHolder();
 			viewHolder.title=(TextView)convertView.findViewById(R.id.text);
 			viewHolder.icon=(ImageView)convertView.findViewById(R.id.icon);
@@ -50,11 +50,11 @@ public class NavigationDrawerAdapter extends ArrayAdapter<String> {
 			viewHolder.icon.setImageDrawable(getContext().getResources().getDrawable(images[position]));
 			if (position==selectedItem)
 			{
-				convertView.setBackgroundColor(getContext().getResources().getColor(R.color.nav_backcolor_selected));
+				convertView.setBackgroundColor(getContext().getResources().getColor(R.color.nav_pressed));
 			}
 			else
 			{
-				convertView.setBackgroundColor(getContext().getResources().getColor(R.color.nav_backcolor_normal));			
+				convertView.setBackgroundColor(getContext().getResources().getColor(R.color.nav_background));			
 			}
 		}
 		else

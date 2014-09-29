@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="background">#ffd0d0d0</color>
-    <color name="action_bar_color">#ff16a085</color>
-    <color name="actionbar_text">#f0ffffff</color>
-    <color name="nav_backcolor_normal">#00000000</color>
-    <color name="nav_backcolor_selected">#ff3498db</color>
-    <color name="pressed">#99eaeaea</color>
-    <color name="swipe_color_1">#2980b9</color>
-    <color name="swipe_color_2">#e74c3c</color>
-    <color name="swipe_color_3">#8e44ad</color>
-    <color name="swipe_color_4">#f1c40f</color>
+    <color name="nav_background">#f2f2f2</color>
+    <color name="nav_pressed">#ccc</color>
+    <color name="base_green">#266456</color>
+    <color name="darker_green">#003426</color>
+    <color name="light_green">#76b3a4</color>
 </resources>

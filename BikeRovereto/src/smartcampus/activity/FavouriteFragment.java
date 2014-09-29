@@ -98,19 +98,6 @@ public class FavouriteFragment extends ListFragment{
 		setListAdapter(adapter);		
 		View rootView = inflater.inflate(R.layout.fav_stations, null);
 		empty = (TextView)rootView.findViewById(android.R.id.empty);
-		// Retrieve the SwipeRefreshLayout and ListView instances
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh);
- 
-        // Set the color scheme of the SwipeRefreshLayout by providing 4 color resource ids
-        mSwipeRefreshLayout.setColorScheme(
-                R.color.swipe_color_1, R.color.swipe_color_2,
-                R.color.swipe_color_3, R.color.swipe_color_4);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-            	refreshDatas();
-            }
-        });
 		return rootView;
 	}
 	
