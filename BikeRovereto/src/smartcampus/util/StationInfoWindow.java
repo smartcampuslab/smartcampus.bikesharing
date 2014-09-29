@@ -36,12 +36,6 @@ public class StationInfoWindow extends MarkerInfoWindow
 		{
 			public void onClick(View v)
 			{
-				// Intent detailsIntent = new Intent(mContext,
-				// StationDetails.class);
-				// detailsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				// detailsIntent.putExtra("station", station);
-				//
-				// mContext.startActivity(detailsIntent);
 
 				StationDetails detailsFragment = StationDetails.newInstance(station);
 				FragmentTransaction transaction1 = fragmentManager.beginTransaction();
@@ -54,13 +48,6 @@ public class StationInfoWindow extends MarkerInfoWindow
 	}
 
 	@Override
-	public void open(Object object, GeoPoint position, int offsetX, int offsetY)
-	{
-		// super.open(object, position, offsetX + 15, offsetY + 80);
-		super.open(object, position, offsetX, offsetY);
-	}
-
-	@Override
 	public void onOpen(Object item)
 	{
 		super.onOpen(item);
@@ -68,8 +55,6 @@ public class StationInfoWindow extends MarkerInfoWindow
 		StationMarker sItem = (StationMarker) item;
 
 		station = sItem.getStation();
-		mView.findViewById(R.id.green_bike).setVisibility(View.VISIBLE);
-		mView.findViewById(R.id.black_bike).setVisibility(View.VISIBLE);
 
 		TextView tAvailable = (TextView) mView.findViewById(R.id.txt_available);
 		TextView tEmpty = (TextView) mView.findViewById(R.id.txt_empty);
@@ -78,29 +63,21 @@ public class StationInfoWindow extends MarkerInfoWindow
 		tAvailable.setVisibility(View.VISIBLE);
 		tEmpty.setVisibility(View.VISIBLE);
 
-		mView.findViewById(R.id.bubble_title).setVisibility(View.VISIBLE);
-		mView.findViewById(R.id.bubble_description).setVisibility(View.VISIBLE);
+		TextView title = (TextView) mView.findViewById(R.id.bubble_title);
+		title.setVisibility(View.VISIBLE);
+		title.setText(sItem.getTitle().split("-")[0]);
+//		mView.findViewById(R.id.bubble_description).setVisibility(View.VISIBLE);
 
-		mView.findViewById(R.id.numbers_layout).setVisibility(View.VISIBLE);
 		mView.findViewById(R.id.images_layout).setVisibility(View.VISIBLE);
 
-		LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mView.findViewById(R.id.main_layout).getLayoutParams();
-		params.setMargins(0, 0, 0, 5);
-		mView.findViewById(R.id.main_layout).setLayoutParams(params);
 
-		if (station.areThereReports())
-		{
-			mView.findViewById(R.id.image_warnings).setVisibility(View.VISIBLE);
-		}
-		else
-		{
-			mView.findViewById(R.id.image_warnings).setVisibility(View.GONE);
-		}
-	}
-
-	@Override
-	public void close()
-	{
-		super.close();
+//		if (station.areThereReports())
+//		{
+//			mView.findViewById(R.id.image_warnings).setVisibility(View.VISIBLE);
+//		}
+//		else
+//		{
+//			mView.findViewById(R.id.image_warnings).setVisibility(View.GONE);
+//		}
 	}
 }

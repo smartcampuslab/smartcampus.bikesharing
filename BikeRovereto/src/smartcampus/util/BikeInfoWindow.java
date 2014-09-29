@@ -35,13 +35,6 @@ public class BikeInfoWindow extends MarkerInfoWindow
 		{
 			public void onClick(View v)
 			{
-//				Intent detailsIntent = new Intent(mContext,
-//						SignalActivity.class);
-//				detailsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//
-//				detailsIntent.putExtra("bike", bike);
-//
-//				mContext.startActivity(detailsIntent);
 				
 				SignalView detailsFragment = SignalView.newInstance(bike);
 				FragmentTransaction transaction1 = fragmentManager.beginTransaction();
@@ -54,12 +47,6 @@ public class BikeInfoWindow extends MarkerInfoWindow
 		});
 	}
 
-
-	@Override
-	public void open(Object object, GeoPoint position, int offsetX, int offsetY)
-	{
-		super.open(object, position, offsetX, offsetY);
-	}
 	
 	@Override
 	public void onOpen(Object item)
@@ -67,19 +54,14 @@ public class BikeInfoWindow extends MarkerInfoWindow
 		super.onOpen(item);
 		BikeMarker sItem = (BikeMarker) item;
 		bike = sItem.getBike();
-		if(bike.areThereReports())
-		{
-			mView.findViewById(R.id.image_warnings).setVisibility(View.VISIBLE);
-		}
-		else
-		{
-			mView.findViewById(R.id.image_warnings).setVisibility(View.GONE);
-		}
+//		if(bike.areThereReports())
+//		{
+//			mView.findViewById(R.id.image_warnings).setVisibility(View.VISIBLE);
+//		}
+//		else
+//		{
+//			mView.findViewById(R.id.image_warnings).setVisibility(View.GONE);
+//		}
 	}
 
-	@Override
-	public void close()
-	{
-		super.close();
-	}
 }

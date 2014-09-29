@@ -370,7 +370,6 @@ public class OsmMap extends Fragment {
 
 			marker.setIcon(markerImage);
 			marker.setInfoWindow(customInfoWindow);
-			marker.setAnchor(0, 1);
 			stationsMarkersOverlay.add(marker);
 		}
 		mapView.getOverlays().addAll(stationsMarkersOverlay);
