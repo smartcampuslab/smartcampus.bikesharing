@@ -38,6 +38,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -203,7 +204,7 @@ public class OsmMap extends Fragment {
 				mapView.getOverlays().remove(bikesMarkersOverlay);
 			}
 			mapView.invalidate();
-		} else if (item.getItemId() == R.id.map_refresh) {
+		} else if (item.getItemId() == R.id.action_refresh || item.getItemId() == R.id.map_refresh) {
 			((MainActivity) getActivity()).stopTimer();
 			((MainActivity) getActivity()).startTimer();
 		}

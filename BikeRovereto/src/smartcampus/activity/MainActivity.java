@@ -306,6 +306,7 @@ public class MainActivity extends ActionBarActivity implements
 				});
 		navAdapter.setItemChecked(0);
 	}
+	
 
 	private void insertMap() {
 		OsmMap mainFragment = OsmMap.newInstance(stations, bikes);

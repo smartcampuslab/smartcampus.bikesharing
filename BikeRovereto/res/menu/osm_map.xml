@@ -6,6 +6,10 @@
         android:icon="@drawable/ic_action_refresh"
         app:showAsAction="always" />
     
+<!--     <item android:id="@+id/action_stations"
+        android:title="@string/stations"
+        app:showAsAction="always" /> -->
+    
 <!-- USELESS unless more providers are added -->
 <!--     <item -->
 <!--         android:id="@+id/menu_overflow" -->
