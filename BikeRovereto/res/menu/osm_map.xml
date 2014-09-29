@@ -1,12 +1,33 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.openstreetmap.OsmMap" >
-
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never"/>
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+    
+    <item android:id="@+id/action_refresh"
+        android:title="@string/refresh"
+        app:showAsAction="always" />
+    
+<!-- USELESS unless more providers are added -->
+<!--     <item -->
+<!--         android:id="@+id/menu_overflow" -->
+<!--         android:icon="@drawable/abc_ic_menu_moreoverflow_normal_holo_dark" -->
+<!--         android:orderInCategory="11111" -->
+<!--         app:showAsAction="always" -->
+<!--         android:visible="false"> -->
+<!--         <menu> -->
+<!--             <item -->
+<!--                 android:id="@+id/action_emotion" -->
+<!--                 android:title="@string/bike_type_menu_emotion" -->
+<!--                 android:checkable="true" -->
+<!--                 android:checked="true" -->
+<!--                 app:showAsAction="always" -->
+<!--                 android:visible="false"/> -->
+<!--             <item -->
+<!--                 android:id="@+id/action_anarchic" -->
+<!--                 android:title="@string/bike_type_menu_anarchic" -->
+<!--                 android:checkable="true" -->
+<!--                 android:checked="false" -->
+<!--                 android:visible="false" -->
+<!--                 app:showAsAction="always"/> -->
+<!--         </menu> -->
+<!--     </item> -->
 
 </menu>

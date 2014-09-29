@@ -38,6 +38,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -158,21 +159,18 @@ public class OsmMap extends Fragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		if (Tools.bikeTypesContains(Tools.METADATA_BIKE_TYPE_EMOTION)) {
-			menu.add(Menu.NONE, R.id.bike_type_emotion, Menu.NONE,
-					R.string.bike_type_menu_emotion).setCheckable(true)
-					.setChecked(true);
-			// .setIcon(android.R.drawable.ic_menu_preferences);
-		}
-
-		if (Tools.bikeTypesContains(Tools.METADATA_BIKE_TYPE_ANARCHIC)) {
-			menu.add(Menu.NONE, R.id.bike_type_anarchic, Menu.NONE,
-					R.string.bike_type_menu_anarchic).setCheckable(true)
-					.setChecked(true);
-			// .setIcon(android.R.drawable.ic_menu_preferences);
-		}
-
-		menu.add(Menu.NONE, R.id.map_refresh, Menu.NONE, R.string.refresh);
+		inflater.inflate(R.menu.osm_map,menu);
+		
+//		THIS IS USELESS, unless other bikes providers are added
+//		if (Tools.bikeTypesContains(Tools.METADATA_BIKE_TYPE_EMOTION)) {
+//			menu.getItem(1).setVisible(true);
+//			menu.getItem(1).getSubMenu().getItem(0).setVisible(true);
+//		}
+//
+//		if (Tools.bikeTypesContains(Tools.METADATA_BIKE_TYPE_ANARCHIC)) {
+//			menu.getItem(1).setVisible(true);
+//			menu.getItem(1).getSubMenu().getItem(1).setVisible(true);
+//		}
 
 		super.onCreateOptionsMenu(menu, inflater);
 	}
@@ -182,7 +180,7 @@ public class OsmMap extends Fragment {
 		super.onOptionsItemSelected(item);
 
 		if (item.getItemId() == R.id.bike_type_emotion) {
-			item.setChecked(!item.isChecked());
+			//item.setChecked(!item.isChecked());
 			if (item.isChecked()) {
 				mapView.getOverlays().addAll(stationsMarkersOverlay);
 			} else {

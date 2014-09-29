@@ -171,11 +171,11 @@ public class MainActivity extends ActionBarActivity implements
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-		if( activeNetwork == null)
+		if (activeNetwork == null)
 			return DISCONNECTED;
-		if(activeNetwork.isConnected())
+		if (activeNetwork.isConnected())
 			return CONNECTED;
-		if(activeNetwork.isConnectedOrConnecting())
+		if (activeNetwork.isConnectedOrConnecting())
 			return CONNECTING;
 		return DISCONNECTED;
 	}
@@ -420,20 +420,21 @@ public class MainActivity extends ActionBarActivity implements
 				mLocationListener);
 
 	}
-	
-	private Handler mHandler = new Handler(){
+
+	private Handler mHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			setSupportProgressBarIndeterminateVisibility(false);
 			int status = checkConnection();
-			if (checkConnection()==CONNECTED) {
+			if (checkConnection() == CONNECTED) {
 				insertMap();
 				getStation();
-//				getBikes();
-			} else if(status== CONNECTING) {
+				getBikes();
+				updateDistances();
+			} else if (status == CONNECTING) {
 				setSupportProgressBarIndeterminateVisibility(true);
 				mHandler.sendEmptyMessageDelayed(0, 120);
-			}else{
+			} else {
 				showNoInternetDialog();
 			}
 		}
@@ -524,23 +525,25 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private void getBikes() {
-		GetAnarchicBikesTask getBikesTask = new GetAnarchicBikesTask();
+		if (Tools.bikeTypesContains(Tools.METADATA_BIKE_TYPE_ANARCHIC)) {
+			GetAnarchicBikesTask getBikesTask = new GetAnarchicBikesTask();
 
-		getBikesTask.delegate = new AsyncBikesResponse() {
-			@Override
-			public void processFinish(ArrayList<Bike> result, int status) {
+			getBikesTask.delegate = new AsyncBikesResponse() {
+				@Override
+				public void processFinish(ArrayList<Bike> result, int status) {
 
-				bikes = result;
-				if (status != GetAnarchicBikesTask.NO_ERROR) {
-					Toast.makeText(getApplicationContext(),
-							getString(R.string.error_bikes), Toast.LENGTH_SHORT)
-							.show();
-				} else {
-					mCallbackBikesAquired.bikesAquired(bikes);
+					bikes = result;
+					if (status != GetAnarchicBikesTask.NO_ERROR) {
+						Toast.makeText(getApplicationContext(),
+								getString(R.string.error_bikes),
+								Toast.LENGTH_SHORT).show();
+					} else {
+						mCallbackBikesAquired.bikesAquired(bikes);
+					}
 				}
-			}
-		};
-		getBikesTask.execute();
+			};
+			getBikesTask.execute();
+		}
 	}
 
 	public void setStations(ArrayList<Station> stations) {
@@ -578,40 +581,8 @@ public class MainActivity extends ActionBarActivity implements
 				handler.post(new Runnable() {
 					public void run() {
 						try {
-							GetAnarchicBikesTask getBikesTask = new GetAnarchicBikesTask();
-							getBikesTask.delegate = new AsyncBikesResponse() {
-
-								@Override
-								public void processFinish(
-										ArrayList<Bike> result, int status) {
-									bikes = result;
-									if (mCallbackBikesRefreshed != null) {
-										mCallbackBikesRefreshed
-												.bikesRefreshed(bikes);
-									}
-								}
-							};
-							getBikesTask.execute();
-
-							favStations = new ArrayList<Station>();
-							GetStationsTask getStationsTask = new GetStationsTask(
-									getApplicationContext());
-							getStationsTask.delegate = new AsyncStationResponse() {
-
-								@Override
-								public void processFinish(
-										ArrayList<Station> result,
-										ArrayList<Station> favs, int status) {
-									stations = result;
-									favStations = favs;
-									if (mCallbackStationRefreshed != null) {
-										mCallbackStationRefreshed
-												.stationsRefreshed(stations);
-									}
-								}
-							};
-							getStationsTask.execute("");
-
+							getBikes();
+							getStation();
 							updateDistances();
 
 						} catch (Exception e) {
