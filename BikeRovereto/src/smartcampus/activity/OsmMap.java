@@ -113,6 +113,7 @@ public class OsmMap extends Fragment {
 		// my LOCATION stuff
 		mLocationOverlay = new MyLocationNewOverlay(getActivity(),
 				new CustomLocationProvider(getActivity()), mapView);
+		mapView.setTileSource(TileSourceFactory.getTileSource("MapquestOSM"));
 		mapView.getOverlays().add(mLocationOverlay);
 
 		toMyLoc = (Button) rootView.findViewById(R.id.bt_to_my_loc);
