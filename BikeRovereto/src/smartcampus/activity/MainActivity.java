@@ -17,6 +17,9 @@ import smartcampus.model.Station;
 import smartcampus.notifications.NotificationReceiver;
 import smartcampus.util.NavigationDrawerAdapter;
 import smartcampus.util.Tools;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -24,6 +27,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -40,7 +45,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 import eu.trentorise.smartcampus.bikesharing.R;
 
-public class MainActivity extends ActionBarActivity implements StationsListFragment.OnStationSelectListener,
+public class MainActivity extends ActionBarActivity implements
+		StationsListFragment.OnStationSelectListener,
 		FavouriteFragment.OnStationSelectListener {
 
 	private String[] navTitles;
@@ -93,7 +99,8 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		public void bikesRefreshed(ArrayList<Bike> bikes);
 	}
 
-	public void setOnPositionAquiredListener(OnPositionAquiredListener onPositionAquiredListener) {
+	public void setOnPositionAquiredListener(
+			OnPositionAquiredListener onPositionAquiredListener) {
 		this.mCallback = onPositionAquiredListener;
 	}
 
@@ -117,71 +124,75 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		try {
-			ApplicationInfo app = getPackageManager().getApplicationInfo(this.getPackageName(),
-					PackageManager.GET_ACTIVITIES | PackageManager.GET_META_DATA);
-			Bundle metaData = app.metaData;
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
 
-			String errorString = null;
+		checkManifestConfiguration();
 
-			if (metaData == null) {
-				errorString = "Metadata not configured!";
-			} else if (metaData.get(Tools.METADATA_SERVICE_URL) == null
-					|| (metaData.get(Tools.METADATA_SERVICE_URL) + "").equals("")) {
-				errorString = "Metadata: service URL not configured!";
-			} else if (metaData.get(Tools.METADATA_CITY_CODE) == null
-					|| (metaData.get(Tools.METADATA_CITY_CODE) + "").equals("")) {
-				errorString = "Metadata: city code not configured!";
-			} else if (metaData.get(Tools.METADATA_BIKE_TYPES) == null
-					|| (metaData.get(Tools.METADATA_BIKE_TYPES) + "").equals("")) {
-				errorString = "Metadata: bike types not configured!";
-			}
+		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-			if (errorString != null) {
-				Toast.makeText(this, errorString, Toast.LENGTH_LONG).show();
-				Log.e("BIKESHARING", errorString);
-				finish();
-			} else {
-				String serviceUrl = "" + metaData.get(Tools.METADATA_SERVICE_URL);
-				Tools.SERVICE_URL = serviceUrl;
-				String cityCode = "" + metaData.get(Tools.METADATA_CITY_CODE);
-				Tools.CITY_CODE = cityCode;
-				String bikeTypesString = "" + metaData.get(Tools.METADATA_BIKE_TYPES);
-				Tools.BIKE_TYPES = bikeTypesString.split(";");
-
-				Log.e("BIKESHARING", "EVERYTHING SEEMS TO BE RIGHT!\n" + Tools.SERVICE_URL + "\n" + Tools.CITY_CODE + "\n"
-						+ bikeTypesString);
-			}
-		} catch (NameNotFoundException e) {
-			e.printStackTrace();
+		if (checkConnection()) {
+			insertMap();
+			getStation();
+			getBikes();
+		}
+		else{
+			showNoInternetDialog();
 		}
 
-		getStation();
-		getBikes();
+		prepareNavigationDrawer();
 
-		OsmMap mainFragment = OsmMap.newInstance(stations, bikes);
-		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-		transaction.add(R.id.content_frame, mainFragment, FRAGMENT_MAP);
-		transaction.commit();
-		if (getIntent().getBooleanExtra(NotificationReceiver.INTENT_FROM_NOTIFICATION, false)) {
-			onStationSelected((Station) getIntent().getParcelableExtra("station"), false);
-		}
+	}
 
+	private void showNoInternetDialog() {
+		AlertDialog.Builder build = new AlertDialog.Builder(this);
+		build.setTitle(R.string.dialog_title_no_internet)
+			.setMessage(R.string.dialog_msg_no_internet)
+			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface arg0, int arg1) {
+					Intent intent = new Intent(Intent.ACTION_MAIN);
+					intent.setClassName("com.android.phone", "com.android.phone.NetworkSetting");
+					startActivity(intent);
+				}
+			})
+			.setNeutralButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface arg0, int arg1) {
+					MainActivity.this.finish();
+				}
+			})
+			.create().show();
+	}
+
+	private boolean checkConnection() {
+		ConnectivityManager cm =
+		        (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+		 
+		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+		return activeNetwork != null &&
+		                      activeNetwork.isConnected();
+	}
+
+	private void prepareNavigationDrawer() {
 		navTitles = getResources().getStringArray(R.array.navTitles);
-		navIcons = new int[] { R.drawable.nav_map, R.drawable.nav_station, R.drawable.nav_favourite };
+		navIcons = new int[] { R.drawable.nav_map, R.drawable.nav_station,
+				R.drawable.nav_favourite };
 
-		if (Tools.BIKE_TYPES!=null && !Tools.bikeTypesContains(Tools.METADATA_BIKE_TYPE_EMOTION)) {
+		if (Tools.BIKE_TYPES != null
+				&& !Tools.bikeTypesContains(Tools.METADATA_BIKE_TYPE_EMOTION)) {
 			navTitles = ArrayUtils.remove(navTitles, 1);
 			navIcons = ArrayUtils.remove(navIcons, 1);
 		}
 
 		navExtraTitles = getResources().getStringArray(R.array.navExtraTitles);
-		navExtraIcons = new int[] { R.drawable.nav_settings, R.drawable.ic_action_about };
+		navExtraIcons = new int[] { R.drawable.nav_settings,
+				R.drawable.ic_action_about };
 
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setHomeButtonEnabled(true);
 
 		mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
 		mDrawerLayout, /* DrawerLayout object */
@@ -202,72 +213,155 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		// Set the drawer toggle as the DrawerListener
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setHomeButtonEnabled(true);
 		// Set the adapter for the list view
-		navAdapter = new NavigationDrawerAdapter(this, navTitles, navIcons, navExtraTitles, navExtraIcons);
+		navAdapter = new NavigationDrawerAdapter(this, navTitles, navIcons,
+				navExtraTitles, navExtraIcons);
 		mDrawerList.setAdapter(navAdapter);
 
 		// Set the list's click listener
-		mDrawerList.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-				Fragment currentFragment;
-				FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-				transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in,
-						android.R.anim.fade_out);
-				switch (position) {
-				case 0:
-					currentFragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_MAP);
-					if (currentFragment == null || !currentFragment.isVisible()) {
-						OsmMap mapFragment = OsmMap.newInstance(stations, bikes);
-						transaction.replace(R.id.content_frame, mapFragment, FRAGMENT_MAP);
-						transaction.commit();
+		mDrawerList
+				.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
+					@Override
+					public void onItemClick(AdapterView<?> arg0, View arg1,
+							int position, long arg3) {
+						Fragment currentFragment;
+						FragmentTransaction transaction = getSupportFragmentManager()
+								.beginTransaction();
+						transaction
+								.setCustomAnimations(android.R.anim.fade_in,
+										android.R.anim.fade_out,
+										android.R.anim.fade_in,
+										android.R.anim.fade_out);
+						switch (position) {
+						case 0:
+							currentFragment = getSupportFragmentManager()
+									.findFragmentByTag(FRAGMENT_MAP);
+							if (currentFragment == null
+									|| !currentFragment.isVisible()) {
+								OsmMap mapFragment = OsmMap.newInstance(
+										stations, bikes);
+								transaction.replace(R.id.content_frame,
+										mapFragment, FRAGMENT_MAP);
+								transaction.commit();
+							}
+							// Highlight the selected item, update the title,
+							// and close
+							// the drawer
+							navAdapter.setItemChecked(position);
+							navAdapter.notifyDataSetChanged();
+							break;
+						case 1:
+							currentFragment = getSupportFragmentManager()
+									.findFragmentByTag(FRAGMENT_STATIONS);
+							if (currentFragment == null
+									|| !currentFragment.isVisible()) {
+								StationsListFragment stationsFragment = StationsListFragment
+										.newInstance(stations);
+								transaction.replace(R.id.content_frame,
+										stationsFragment, FRAGMENT_STATIONS);
+								transaction.commit();
+							}
+							// Highlight the selected item, update the title,
+							// and close
+							// the drawer
+							navAdapter.setItemChecked(position);
+							navAdapter.notifyDataSetChanged();
+							break;
+						case 2:
+							currentFragment = getSupportFragmentManager()
+									.findFragmentByTag(FRAGMENT_FAVOURITE);
+							if (currentFragment == null
+									|| !currentFragment.isVisible()) {
+								FavouriteFragment stationsFragment = FavouriteFragment
+										.newInstance(favStations);
+								transaction.replace(R.id.content_frame,
+										stationsFragment, FRAGMENT_FAVOURITE);
+								transaction.commit();
+							}
+							// Highlight the selected item, update the title,
+							// and close
+							// the drawer
+							navAdapter.setItemChecked(position);
+							navAdapter.notifyDataSetChanged();
+							break;
+						case 3:
+							Intent i = new Intent(getBaseContext(),
+									SettingsActivity.class);
+							startActivity(i);
+							break;
+						case 4:
+							Intent i2 = new Intent(getBaseContext(),
+									About.class);
+							startActivity(i2);
+							overridePendingTransition(R.anim.slide_up,
+									R.anim.slide_up_slower);
+							break;
+						}
+						mDrawerLayout.closeDrawers();
 					}
-					// Highlight the selected item, update the title, and close
-					// the drawer
-					navAdapter.setItemChecked(position);
-					navAdapter.notifyDataSetChanged();
-					break;
-				case 1:
-					currentFragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_STATIONS);
-					if (currentFragment == null || !currentFragment.isVisible()) {
-						StationsListFragment stationsFragment = StationsListFragment.newInstance(stations);
-						transaction.replace(R.id.content_frame, stationsFragment, FRAGMENT_STATIONS);
-						transaction.commit();
-					}
-					// Highlight the selected item, update the title, and close
-					// the drawer
-					navAdapter.setItemChecked(position);
-					navAdapter.notifyDataSetChanged();
-					break;
-				case 2:
-					currentFragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_FAVOURITE);
-					if (currentFragment == null || !currentFragment.isVisible()) {
-						FavouriteFragment stationsFragment = FavouriteFragment.newInstance(favStations);
-						transaction.replace(R.id.content_frame, stationsFragment, FRAGMENT_FAVOURITE);
-						transaction.commit();
-					}
-					// Highlight the selected item, update the title, and close
-					// the drawer
-					navAdapter.setItemChecked(position);
-					navAdapter.notifyDataSetChanged();
-					break;
-				case 3:
-					Intent i = new Intent(getBaseContext(), SettingsActivity.class);
-					startActivity(i);
-					break;
-				case 4:
-					Intent i2 = new Intent(getBaseContext(), About.class);
-					startActivity(i2);
-					overridePendingTransition(R.anim.slide_up, R.anim.slide_up_slower);
-					break;
-				}
-				mDrawerLayout.closeDrawers();
-			}
-		});
+				});
 		navAdapter.setItemChecked(0);
-		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+	}
+
+	private void insertMap() {
+		OsmMap mainFragment = OsmMap.newInstance(stations, bikes);
+		FragmentTransaction transaction = getSupportFragmentManager()
+				.beginTransaction();
+		transaction.add(R.id.content_frame, mainFragment, FRAGMENT_MAP);
+		transaction.commit();
+		if (getIntent().getBooleanExtra(
+				NotificationReceiver.INTENT_FROM_NOTIFICATION, false)) {
+			onStationSelected(
+					(Station) getIntent().getParcelableExtra("station"), false);
+		}
+	}
+
+	private void checkManifestConfiguration() {
+		try {
+			ApplicationInfo app = getPackageManager().getApplicationInfo(
+					this.getPackageName(),
+					PackageManager.GET_ACTIVITIES
+							| PackageManager.GET_META_DATA);
+			Bundle metaData = app.metaData;
+
+			String errorString = null;
+
+			if (metaData == null) {
+				errorString = "Metadata not configured!";
+			} else if (metaData.get(Tools.METADATA_SERVICE_URL) == null
+					|| (metaData.get(Tools.METADATA_SERVICE_URL) + "")
+							.equals("")) {
+				errorString = "Metadata: service URL not configured!";
+			} else if (metaData.get(Tools.METADATA_CITY_CODE) == null
+					|| (metaData.get(Tools.METADATA_CITY_CODE) + "").equals("")) {
+				errorString = "Metadata: city code not configured!";
+			} else if (metaData.get(Tools.METADATA_BIKE_TYPES) == null
+					|| (metaData.get(Tools.METADATA_BIKE_TYPES) + "")
+							.equals("")) {
+				errorString = "Metadata: bike types not configured!";
+			}
+
+			if (errorString != null) {
+				Toast.makeText(this, errorString, Toast.LENGTH_LONG).show();
+				Log.e("BIKESHARING", errorString);
+				finish();
+			} else {
+				String serviceUrl = ""
+						+ metaData.get(Tools.METADATA_SERVICE_URL);
+				Tools.SERVICE_URL = serviceUrl;
+				String cityCode = "" + metaData.get(Tools.METADATA_CITY_CODE);
+				Tools.CITY_CODE = cityCode;
+				String bikeTypesString = ""
+						+ metaData.get(Tools.METADATA_BIKE_TYPES);
+				Tools.BIKE_TYPES = bikeTypesString.split(";");
+
+				Log.e("BIKESHARING", "EVERYTHING SEEMS TO BE RIGHT!\n"
+						+ Tools.SERVICE_URL + "\n" + Tools.CITY_CODE + "\n"
+						+ bikeTypesString);
+			}
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -303,9 +397,11 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	public void onStationSelected(Station station, boolean animation) {
 		Log.d("station selected", station.getName());
 		StationDetails detailsFragment = StationDetails.newInstance(station);
-		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+		FragmentTransaction transaction = getSupportFragmentManager()
+				.beginTransaction();
 		if (animation) {
-			transaction.setCustomAnimations(R.anim.slide_left, R.anim.alpha_out, R.anim.alpha_in, R.anim.slide_right);
+			transaction.setCustomAnimations(R.anim.slide_left,
+					R.anim.alpha_out, R.anim.alpha_in, R.anim.slide_right);
 		}
 		transaction.replace(R.id.content_frame, detailsFragment);
 		transaction.addToBackStack(null);
@@ -315,8 +411,9 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	@Override
 	protected void onStart() {
 		super.onStart();
-		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Tools.LOCATION_REFRESH_TIME,
-				Tools.LOCATION_REFRESH_DISTANCE, mLocationListener);
+		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+				Tools.LOCATION_REFRESH_TIME, Tools.LOCATION_REFRESH_DISTANCE,
+				mLocationListener);
 	}
 
 	@Override
@@ -377,11 +474,14 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 		GetStationsTask getStationsTask = new GetStationsTask(this);
 		getStationsTask.delegate = new AsyncStationResponse() {
 			@Override
-			public void processFinish(ArrayList<Station> result, ArrayList<Station> favs, int status) {
+			public void processFinish(ArrayList<Station> result,
+					ArrayList<Station> favs, int status) {
 				stations = result;
 				favStations = favs;
 				if (status != GetStationsTask.NO_ERROR) {
-					Toast.makeText(getApplicationContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(),
+							getString(R.string.error), Toast.LENGTH_SHORT)
+							.show();
 				} else {
 					if (myLocation != null)
 						updateDistances();
@@ -401,7 +501,9 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 
 				bikes = result;
 				if (status != GetAnarchicBikesTask.NO_ERROR) {
-					Toast.makeText(getApplicationContext(), getString(R.string.error_bikes), Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(),
+							getString(R.string.error_bikes), Toast.LENGTH_SHORT)
+							.show();
 				} else {
 					mCallbackBikesAquired.bikesAquired(bikes);
 				}
@@ -429,9 +531,11 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 	}
 
 	public void addReminderForStation(NotificationBlock nb) {
-		notificationBlock = NotificationBlock.readArrayListFromFile(FILENOTIFICATIONDB, this);
+		notificationBlock = NotificationBlock.readArrayListFromFile(
+				FILENOTIFICATIONDB, this);
 		notificationBlock.add(nb);
-		NotificationBlock.saveArrayListToFile(notificationBlock, FILENOTIFICATIONDB, getApplicationContext());
+		NotificationBlock.saveArrayListToFile(notificationBlock,
+				FILENOTIFICATIONDB, getApplicationContext());
 	}
 
 	private void setUpdateTimer() {
@@ -447,25 +551,31 @@ public class MainActivity extends ActionBarActivity implements StationsListFragm
 							getBikesTask.delegate = new AsyncBikesResponse() {
 
 								@Override
-								public void processFinish(ArrayList<Bike> result, int status) {
+								public void processFinish(
+										ArrayList<Bike> result, int status) {
 									bikes = result;
 									if (mCallbackBikesRefreshed != null) {
-										mCallbackBikesRefreshed.bikesRefreshed(bikes);
+										mCallbackBikesRefreshed
+												.bikesRefreshed(bikes);
 									}
 								}
 							};
 							getBikesTask.execute();
 
 							favStations = new ArrayList<Station>();
-							GetStationsTask getStationsTask = new GetStationsTask(getApplicationContext());
+							GetStationsTask getStationsTask = new GetStationsTask(
+									getApplicationContext());
 							getStationsTask.delegate = new AsyncStationResponse() {
 
 								@Override
-								public void processFinish(ArrayList<Station> result, ArrayList<Station> favs, int status) {
+								public void processFinish(
+										ArrayList<Station> result,
+										ArrayList<Station> favs, int status) {
 									stations = result;
 									favStations = favs;
 									if (mCallbackStationRefreshed != null) {
-										mCallbackStationRefreshed.stationsRefreshed(stations);
+										mCallbackStationRefreshed
+												.stationsRefreshed(stations);
 									}
 								}
 							};

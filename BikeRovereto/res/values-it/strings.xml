@@ -60,5 +60,8 @@
     <string name="send_report_error">Errore mandando la segnalazione</string>
     <string name="bike_type_menu_emotion">e-motion</string>
     <string name="bike_type_menu_anarchic">anarchiche</string>
+    
+    <string name="dialog_title_no_internet">Vuoi connetterti ad Internet?</string>
+    <string name="dialog_msg_no_internet">L\' applicazione richiede una connessione ad internet attiva, premi ok per andare alle Impostazioni.</string>
 
 </resources>
