@@ -12,7 +12,7 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-        <item name="android:windowBackground">@android:color/background_light</item>
+    <!--      <item name="android:windowBackground">@color/nav_background</item>-->
         
     </style>
 
