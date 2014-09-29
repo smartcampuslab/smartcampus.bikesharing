@@ -56,12 +56,10 @@
         </receiver>
 
         <activity
-            android:name="eu.trentorise.smartcampus.bikerovereto.AboutActivity"
-            android:label="@string/title_activity_about" >
+            android:name="eu.trentorise.smartcampus.bikerovereto.AboutActivity" >
         </activity>
         <activity
-            android:name="smartcampus.activity.About"
-            android:label="@string/title_activity_about" >
+            android:name="smartcampus.activity.About" >
         </activity>
     </application>
 

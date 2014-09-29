@@ -31,6 +31,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
+import android.provider.Settings;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -40,6 +42,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -76,6 +79,9 @@ public class MainActivity extends ActionBarActivity implements
 	private static final String FRAGMENT_FAVOURITE = "favourite";
 	public static final String FILENOTIFICATIONDB = "notificationBlockDB";
 	public static final String FRAGMENT_ABOUT = "about";
+	private static final int DISCONNECTED = 0;
+	private static final int CONNECTED = 1;
+	private static final int CONNECTING = 2;
 
 	public interface OnPositionAquiredListener {
 		public void onPositionAquired();
@@ -123,6 +129,9 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
 		setContentView(R.layout.activity_main);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
@@ -131,15 +140,6 @@ public class MainActivity extends ActionBarActivity implements
 
 		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-		if (checkConnection()) {
-			insertMap();
-			getStation();
-			getBikes();
-		}
-		else{
-			showNoInternetDialog();
-		}
-
 		prepareNavigationDrawer();
 
 	}
@@ -147,33 +147,37 @@ public class MainActivity extends ActionBarActivity implements
 	private void showNoInternetDialog() {
 		AlertDialog.Builder build = new AlertDialog.Builder(this);
 		build.setTitle(R.string.dialog_title_no_internet)
-			.setMessage(R.string.dialog_msg_no_internet)
-			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface arg0, int arg1) {
-					Intent intent = new Intent(Intent.ACTION_MAIN);
-					intent.setClassName("com.android.phone", "com.android.phone.NetworkSetting");
-					startActivity(intent);
-				}
-			})
-			.setNeutralButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface arg0, int arg1) {
-					MainActivity.this.finish();
-				}
-			})
-			.create().show();
+				.setMessage(R.string.dialog_msg_no_internet)
+				.setPositiveButton(R.string.dialog_msg_settings_button,
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface arg0, int arg1) {
+								startActivity(new Intent(
+										Settings.ACTION_SETTINGS));
+							}
+						})
+				.setNeutralButton(android.R.string.cancel,
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface arg0, int arg1) {
+								MainActivity.this.finish();
+							}
+						}).create().show();
 	}
 
-	private boolean checkConnection() {
-		ConnectivityManager cm =
-		        (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-		 
+	private int checkConnection() {
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-		return activeNetwork != null &&
-		                      activeNetwork.isConnected();
+		if( activeNetwork == null)
+			return DISCONNECTED;
+		if(activeNetwork.isConnected())
+			return CONNECTED;
+		if(activeNetwork.isConnectedOrConnecting())
+			return CONNECTING;
+		return DISCONNECTED;
 	}
 
 	private void prepareNavigationDrawer() {
@@ -414,6 +418,33 @@ public class MainActivity extends ActionBarActivity implements
 		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
 				Tools.LOCATION_REFRESH_TIME, Tools.LOCATION_REFRESH_DISTANCE,
 				mLocationListener);
+
+	}
+	
+	private Handler mHandler = new Handler(){
+		@Override
+		public void handleMessage(Message msg) {
+			setSupportProgressBarIndeterminateVisibility(false);
+			int status = checkConnection();
+			if (checkConnection()==CONNECTED) {
+				insertMap();
+				getStation();
+//				getBikes();
+			} else if(status== CONNECTING) {
+				setSupportProgressBarIndeterminateVisibility(true);
+				mHandler.sendEmptyMessageDelayed(0, 120);
+			}else{
+				showNoInternetDialog();
+			}
+		}
+	};
+
+	@Override
+	protected void onPostResume() {
+
+		super.onPostResume();
+		setSupportProgressBarIndeterminateVisibility(true);
+		mHandler.sendEmptyMessage(0);
 	}
 
 	@Override
