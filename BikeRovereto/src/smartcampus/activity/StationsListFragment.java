@@ -43,7 +43,6 @@ public class StationsListFragment extends ListFragment
 	private static final int SORTED_BY_AVAILABLE_SLOTS = 4;
 	
 	OnStationSelectListener mCallback;
-	private SwipeRefreshLayout mSwipeRefreshLayout;
 
 	// Container Activity must implement this interface
 	public interface OnStationSelectListener
@@ -118,14 +117,8 @@ public class StationsListFragment extends ListFragment
 	{
 		View rootView = inflater.inflate(R.layout.stations_main, container,
 				false);
-		// Retrieve the SwipeRefreshLayout and ListView instances
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh);
- 
-        // Set the color scheme of the SwipeRefreshLayout by providing 4 color resource ids
-        mSwipeRefreshLayout.setColorScheme(
-                R.color.swipe_color_1, R.color.swipe_color_2,
-                R.color.swipe_color_3, R.color.swipe_color_4);
-		
+
+
 		emptyView = rootView.findViewById(android.R.id.empty);
 		stationsAdapter = new StationsAdapter(getActivity(), 0, mStations, ((MainActivity)getActivity()).getCurrentLocation());
 		setListAdapter(stationsAdapter);
@@ -151,14 +144,7 @@ public class StationsListFragment extends ListFragment
 				mCallback.onStationSelected(mStations.get(position), true);
 			}
 		});
-		mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                Log.i("STR", "onRefresh called from SwipeRefreshLayout");
-                refreshDatas();
-            }
 
-        });
 	}
 
 	private void refreshDatas() {
@@ -201,8 +187,6 @@ public class StationsListFragment extends ListFragment
 			sortByAvailableSlots(true);
 			break;
 		}
-        // Stop the refreshing indicator
-        mSwipeRefreshLayout.setRefreshing(false);
     }
 	 
 	@Override
@@ -249,10 +233,6 @@ public class StationsListFragment extends ListFragment
 		}
 		else if (item.getItemId() == R.id.refresh)
 		{
-			if (!mSwipeRefreshLayout.isRefreshing()) {
-                mSwipeRefreshLayout.setRefreshing(true);
-                refreshDatas();
-            }
             Toast.makeText(getActivity(), getString(R.string.refresh_hint), Toast.LENGTH_SHORT).show();
 		}
 		return true;

@@ -1,31 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent">
-	    
-	<android.support.v4.widget.SwipeRefreshLayout
-	      android:id="@+id/swiperefresh"
-	      android:layout_width="match_parent"
-	      android:layout_height="match_parent">
-	      
-	      <ListView
-			    android:layout_width="match_parent"
-			    android:layout_height="match_parent"
-			    android:padding="10dp"
-			    android:id="@android:id/list"
-			    android:fadingEdge="none"
-			    android:cacheColorHint="#00000000"
-			    android:clipToPadding="false"
-			    android:scrollbarStyle="outsideOverlay" />
-	      
-	</android.support.v4.widget.SwipeRefreshLayout>
-       	
-    	<TextView 
-	        android:id="@android:id/empty"
-	        android:layout_width="match_parent"
-		    android:layout_height="match_parent"
-		    android:textSize="20sp"
-		    android:text="@string/no_stations"
-		    android:clickable="true"
-		    android:gravity="center" />
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:cacheColorHint="#00000000"
+        android:clipToPadding="false"
+        android:fadingEdge="none"
+        android:padding="10dp"
+        android:scrollbarStyle="outsideOverlay" />
+
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:gravity="center"
+        android:text="@string/no_stations"
+        android:textSize="20sp" />
+
 </FrameLayout>
