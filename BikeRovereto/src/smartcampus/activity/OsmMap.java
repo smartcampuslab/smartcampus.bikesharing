@@ -111,6 +111,7 @@ public class OsmMap extends Fragment {
 
 		mapView.setMultiTouchControls(true);
 		mapView.setBuiltInZoomControls(true);
+		mapView.setMinZoomLevel(5);
 
 		// my LOCATION stuff
 		mLocationOverlay = new MyLocationNewOverlay(getActivity(),
@@ -160,18 +161,18 @@ public class OsmMap extends Fragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.osm_map,menu);
-		
-//		THIS IS USELESS, unless other bikes providers are added
-//		if (Tools.bikeTypesContains(Tools.METADATA_BIKE_TYPE_EMOTION)) {
-//			menu.getItem(1).setVisible(true);
-//			menu.getItem(1).getSubMenu().getItem(0).setVisible(true);
-//		}
-//
-//		if (Tools.bikeTypesContains(Tools.METADATA_BIKE_TYPE_ANARCHIC)) {
-//			menu.getItem(1).setVisible(true);
-//			menu.getItem(1).getSubMenu().getItem(1).setVisible(true);
-//		}
+		inflater.inflate(R.menu.osm_map, menu);
+
+		// THIS IS USELESS, unless other bikes providers are added
+		// if (Tools.bikeTypesContains(Tools.METADATA_BIKE_TYPE_EMOTION)) {
+		// menu.getItem(1).setVisible(true);
+		// menu.getItem(1).getSubMenu().getItem(0).setVisible(true);
+		// }
+		//
+		// if (Tools.bikeTypesContains(Tools.METADATA_BIKE_TYPE_ANARCHIC)) {
+		// menu.getItem(1).setVisible(true);
+		// menu.getItem(1).getSubMenu().getItem(1).setVisible(true);
+		// }
 
 		super.onCreateOptionsMenu(menu, inflater);
 	}
@@ -181,7 +182,7 @@ public class OsmMap extends Fragment {
 		super.onOptionsItemSelected(item);
 
 		if (item.getItemId() == R.id.bike_type_emotion) {
-			//item.setChecked(!item.isChecked());
+			// item.setChecked(!item.isChecked());
 			if (item.isChecked()) {
 				mapView.getOverlays().addAll(stationsMarkersOverlay);
 			} else {
@@ -204,7 +205,8 @@ public class OsmMap extends Fragment {
 				mapView.getOverlays().remove(bikesMarkersOverlay);
 			}
 			mapView.invalidate();
-		} else if (item.getItemId() == R.id.action_refresh || item.getItemId() == R.id.map_refresh) {
+		} else if (item.getItemId() == R.id.action_refresh
+				|| item.getItemId() == R.id.map_refresh) {
 			((MainActivity) getActivity()).stopTimer();
 			((MainActivity) getActivity()).startTimer();
 		}
@@ -304,7 +306,7 @@ public class OsmMap extends Fragment {
 
 		Drawable markerImage = res.getDrawable(R.drawable.marker_bike);
 
-		BikeInfoWindow customInfoWindow = new BikeInfoWindow(getActivity(), mapView,
+		BikeInfoWindow customInfoWindow = new BikeInfoWindow(mapView,
 				getFragmentManager());
 		for (Bike b : bikes) {
 			BikeMarker marker = new BikeMarker(mapView, b);
@@ -323,7 +325,7 @@ public class OsmMap extends Fragment {
 		Resources res = getResources();
 
 		Drawable markerImage = null;
-		StationInfoWindow customInfoWindow = new StationInfoWindow(getActivity(),mapView,
+		StationInfoWindow customInfoWindow = new StationInfoWindow(mapView,
 				getFragmentManager());
 		for (Station s : stations) {
 			StationMarker marker = new StationMarker(mapView, s);
@@ -333,7 +335,7 @@ public class OsmMap extends Fragment {
 
 			switch ((int) Math.round(s.getBikesPresentPercentage() * 10)) {
 			case 0:
-				markerImage = res.getDrawable(R.drawable.marker_0);
+				markerImage = res.getDrawable(R.drawable.marker_grey);
 				break;
 			case 1:
 				markerImage = res.getDrawable(R.drawable.marker_10);
@@ -366,6 +368,7 @@ public class OsmMap extends Fragment {
 				markerImage = res.getDrawable(R.drawable.marker_100);
 				break;
 			default:
+				markerImage = res.getDrawable(R.drawable.marker_grey);
 				break;
 			}
 

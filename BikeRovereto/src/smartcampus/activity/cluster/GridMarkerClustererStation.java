@@ -50,7 +50,7 @@ public class GridMarkerClustererStation extends GridMarkerClusterer
 		switch ((int) (totalPercentage * 10))
 		{
 		case 0:
-			drawableImage = res.getDrawable(R.drawable.marker_0);
+			drawableImage = res.getDrawable(R.drawable.marker_grey);
 			break;
 		case 1:
 			drawableImage = res.getDrawable(R.drawable.marker_10);
@@ -83,7 +83,7 @@ public class GridMarkerClustererStation extends GridMarkerClusterer
 			drawableImage = res.getDrawable(R.drawable.marker_100);
 			break;
 		default:
-			drawableImage = res.getDrawable(R.drawable.marker_0);
+			drawableImage = res.getDrawable(R.drawable.marker_grey);
 			break;
 		}
 		mClusterIcon = ((BitmapDrawable)drawableImage).getBitmap();

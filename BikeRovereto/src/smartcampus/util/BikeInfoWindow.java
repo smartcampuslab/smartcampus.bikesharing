@@ -1,18 +1,15 @@
 package smartcampus.util;
 
 
-//import org.osmdroid.bonuspack.overlays.DefaultInfoWindow;
-//import org.osmdroid.bonuspack.overlays.ExtendedOverlayItem;
-//import org.osmdroid.util.GeoPoint;
-//import org.osmdroid.views.MapView;
-
 import org.osmdroid.bonuspack.overlays.MarkerInfoWindow;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.Projection;
 
 import smartcampus.activity.SignalView;
 import smartcampus.model.Bike;
 import android.content.Context;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -22,17 +19,14 @@ import eu.trentorise.smartcampus.bikesharing.R;
 
 public class BikeInfoWindow extends MarkerInfoWindow
 {
-	private Context mContext;
 	private MapView myMapView;
 	private BikeMarker mItem;
-	private Drawable mOldIcon;
 	private Bike mBike;
 
-	public BikeInfoWindow(Context ctx, MapView mapView, final FragmentManager fragmentManager)
+	public BikeInfoWindow(MapView mapView, final FragmentManager fragmentManager)
 	{
 		super(R.layout.bonuspack_bubble, mapView);
 		myMapView = mapView;
-		mContext = ctx;
 		TextView btn = (TextView) (mView.findViewById(R.id.btToDetails));
 		btn.setOnClickListener(new View.OnClickListener()
 		{
@@ -56,9 +50,9 @@ public class BikeInfoWindow extends MarkerInfoWindow
 	{
 		super.onOpen(item);
 		mItem = (BikeMarker) item;
-		mOldIcon = mItem.getIcon();
-		mItem.setIcon(mContext.getResources().getDrawable(R.drawable.marker_grey));
 		mBike = mItem.getBike();
+		
+		
 //		if(bike.areThereReports())
 //		{
 //			mView.findViewById(R.id.image_warnings).setVisibility(View.VISIBLE);
@@ -69,11 +63,5 @@ public class BikeInfoWindow extends MarkerInfoWindow
 //		}
 	}
 	
-	@Override
-	public void onClose() {
-		super.onClose();
-		if(mItem!=null)
-			mItem.setIcon(mOldIcon);
-	}
 
 }
