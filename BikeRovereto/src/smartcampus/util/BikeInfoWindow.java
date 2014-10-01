@@ -13,6 +13,7 @@ import org.osmdroid.views.MapView;
 import smartcampus.activity.SignalView;
 import smartcampus.model.Bike;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
@@ -21,22 +22,24 @@ import eu.trentorise.smartcampus.bikesharing.R;
 
 public class BikeInfoWindow extends MarkerInfoWindow
 {
-	Context mContext;
-	MapView myMapView;
-	Bike bike;
+	private Context mContext;
+	private MapView myMapView;
+	private BikeMarker mItem;
+	private Drawable mOldIcon;
+	private Bike mBike;
 
-	public BikeInfoWindow(MapView mapView, final FragmentManager fragmentManager)
+	public BikeInfoWindow(Context ctx, MapView mapView, final FragmentManager fragmentManager)
 	{
 		super(R.layout.bonuspack_bubble, mapView);
 		myMapView = mapView;
-		
+		mContext = ctx;
 		TextView btn = (TextView) (mView.findViewById(R.id.btToDetails));
 		btn.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
 			{
 				
-				SignalView detailsFragment = SignalView.newInstance(bike);
+				SignalView detailsFragment = SignalView.newInstance(mBike);
 				FragmentTransaction transaction1 = fragmentManager.beginTransaction();
 				transaction1.setCustomAnimations(R.anim.slide_left, R.anim.alpha_out,
 						R.anim.alpha_in, R.anim.slide_right);
@@ -52,8 +55,10 @@ public class BikeInfoWindow extends MarkerInfoWindow
 	public void onOpen(Object item)
 	{
 		super.onOpen(item);
-		BikeMarker sItem = (BikeMarker) item;
-		bike = sItem.getBike();
+		mItem = (BikeMarker) item;
+		mOldIcon = mItem.getIcon();
+		mItem.setIcon(mContext.getResources().getDrawable(R.drawable.marker_grey));
+		mBike = mItem.getBike();
 //		if(bike.areThereReports())
 //		{
 //			mView.findViewById(R.id.image_warnings).setVisibility(View.VISIBLE);
@@ -62,6 +67,13 @@ public class BikeInfoWindow extends MarkerInfoWindow
 //		{
 //			mView.findViewById(R.id.image_warnings).setVisibility(View.GONE);
 //		}
+	}
+	
+	@Override
+	public void onClose() {
+		super.onClose();
+		if(mItem!=null)
+			mItem.setIcon(mOldIcon);
 	}
 
 }

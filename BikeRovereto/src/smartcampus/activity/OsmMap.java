@@ -304,7 +304,7 @@ public class OsmMap extends Fragment {
 
 		Drawable markerImage = res.getDrawable(R.drawable.marker_bike);
 
-		BikeInfoWindow customInfoWindow = new BikeInfoWindow(mapView,
+		BikeInfoWindow customInfoWindow = new BikeInfoWindow(getActivity(), mapView,
 				getFragmentManager());
 		for (Bike b : bikes) {
 			BikeMarker marker = new BikeMarker(mapView, b);
@@ -323,7 +323,7 @@ public class OsmMap extends Fragment {
 		Resources res = getResources();
 
 		Drawable markerImage = null;
-		StationInfoWindow customInfoWindow = new StationInfoWindow(mapView,
+		StationInfoWindow customInfoWindow = new StationInfoWindow(getActivity(),mapView,
 				getFragmentManager());
 		for (Station s : stations) {
 			StationMarker marker = new StationMarker(mapView, s);

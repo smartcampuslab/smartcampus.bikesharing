@@ -6,30 +6,32 @@ package smartcampus.util;
 //import org.osmdroid.views.MapView;
 
 import org.osmdroid.bonuspack.overlays.MarkerInfoWindow;
-import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
 import smartcampus.activity.StationDetails;
 import smartcampus.model.Station;
+import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikesharing.R;
 
 public class StationInfoWindow extends MarkerInfoWindow
 {
-	// Context mContext;
-	MapView myMapView;
-	Station station;
+	private Context mContext;
+	private MapView myMapView;
+	private Station station;
+	private StationMarker mItem;
+	private Drawable mOldIcon;
 
 	// GeoPoint currentLocation;
 
-	public StationInfoWindow(MapView mapView, final FragmentManager fragmentManager)
+	public StationInfoWindow(Context ctx, MapView mapView, final FragmentManager fragmentManager)
 	{
 		super(R.layout.bonuspack_bubble, mapView);
-		// mContext = context;
+		mContext = ctx;
 		myMapView = mapView;
 		TextView btn = (TextView) (mView.findViewById(R.id.btToDetails));
 		btn.setOnClickListener(new View.OnClickListener()
@@ -52,25 +54,28 @@ public class StationInfoWindow extends MarkerInfoWindow
 	{
 		super.onOpen(item);
 
-		StationMarker sItem = (StationMarker) item;
+		mItem = (StationMarker) item;
+		
+		mOldIcon = mItem.getIcon();
+		mItem.setIcon(mContext.getResources().getDrawable(R.drawable.marker_grey));
 
-		station = sItem.getStation();
+		station = mItem.getStation();
 
 		TextView tAvailable = (TextView) mView.findViewById(R.id.txt_available);
 		TextView tEmpty = (TextView) mView.findViewById(R.id.txt_empty);
-		tAvailable.setText(Integer.toString(sItem.getStation().getNBikesPresent()));
-		tEmpty.setText(Integer.toString(sItem.getStation().getNSlotsEmpty()));
+		tAvailable.setText(Integer.toString(mItem.getStation().getNBikesPresent()));
+		tEmpty.setText(Integer.toString(mItem.getStation().getNSlotsEmpty()));
 		tAvailable.setVisibility(View.VISIBLE);
 		tEmpty.setVisibility(View.VISIBLE);
 
 		TextView title = (TextView) mView.findViewById(R.id.bubble_title);
 		title.setVisibility(View.VISIBLE);
-		title.setText(sItem.getTitle().split("-")[0]);
+		title.setText(mItem.getTitle().split("-")[0]);
 //		mView.findViewById(R.id.bubble_description).setVisibility(View.VISIBLE);
 
 		mView.findViewById(R.id.images_layout).setVisibility(View.VISIBLE);
 
-
+//USELESS untile reprts must be displayed
 //		if (station.areThereReports())
 //		{
 //			mView.findViewById(R.id.image_warnings).setVisibility(View.VISIBLE);
@@ -79,5 +84,13 @@ public class StationInfoWindow extends MarkerInfoWindow
 //		{
 //			mView.findViewById(R.id.image_warnings).setVisibility(View.GONE);
 //		}
+	}
+	
+	@Override
+	public void onClose() {
+		super.onClose();
+		if(mItem!=null)
+			mItem.setIcon(mOldIcon);
+		
 	}
 }

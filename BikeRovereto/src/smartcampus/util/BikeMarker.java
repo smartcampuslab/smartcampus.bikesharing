@@ -3,6 +3,7 @@ package smartcampus.util;
 import org.osmdroid.bonuspack.overlays.Marker;
 import org.osmdroid.views.MapView;
 
+import android.graphics.drawable.Drawable;
 import smartcampus.model.Bike;
 
 public class BikeMarker extends Marker
@@ -20,5 +21,9 @@ public class BikeMarker extends Marker
 	public Bike getBike()
 	{
 		return bike;
+	}
+
+	public Drawable getIcon() {
+		return this.mIcon;
 	}
 }

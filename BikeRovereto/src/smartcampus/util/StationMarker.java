@@ -3,6 +3,7 @@ package smartcampus.util;
 import org.osmdroid.bonuspack.overlays.Marker;
 import org.osmdroid.views.MapView;
 
+import android.graphics.drawable.Drawable;
 import smartcampus.model.Station;
 
 public class StationMarker extends Marker
@@ -20,6 +21,8 @@ public class StationMarker extends Marker
 		return station;
 	}
 	
-	
+	public Drawable getIcon(){
+		return this.mIcon;
+	}
 
 }
