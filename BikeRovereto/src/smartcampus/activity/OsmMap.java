@@ -110,8 +110,6 @@ public class OsmMap extends Fragment {
 		mapView = (MapView) rootView.findViewById(R.id.map_view);
 
 		mapView.setMultiTouchControls(true);
-		mapView.setBuiltInZoomControls(true);
-		mapView.setMinZoomLevel(5);
 
 		// my LOCATION stuff
 		mLocationOverlay = new MyLocationNewOverlay(getActivity(),
@@ -333,43 +331,10 @@ public class OsmMap extends Fragment {
 			marker.setSnippet(s.getStreet());
 			marker.setPosition(s.getPosition());
 
-			switch ((int) Math.round(s.getBikesPresentPercentage() * 10)) {
-			case 0:
+			if (s.getNBikesPresent() == 0 && s.getNSlotsEmpty() == 0) {
 				markerImage = res.getDrawable(R.drawable.marker_grey);
-				break;
-			case 1:
-				markerImage = res.getDrawable(R.drawable.marker_10);
-				break;
-			case 2:
-				markerImage = res.getDrawable(R.drawable.marker_20);
-				break;
-			case 3:
-				markerImage = res.getDrawable(R.drawable.marker_30);
-				break;
-			case 4:
-				markerImage = res.getDrawable(R.drawable.marker_40);
-				break;
-			case 5:
-				markerImage = res.getDrawable(R.drawable.marker_50);
-				break;
-			case 6:
-				markerImage = res.getDrawable(R.drawable.marker_60);
-				break;
-			case 7:
-				markerImage = res.getDrawable(R.drawable.marker_70);
-				break;
-			case 8:
-				markerImage = res.getDrawable(R.drawable.marker_80);
-				break;
-			case 9:
-				markerImage = res.getDrawable(R.drawable.marker_90);
-				break;
-			case 10:
-				markerImage = res.getDrawable(R.drawable.marker_100);
-				break;
-			default:
-				markerImage = res.getDrawable(R.drawable.marker_grey);
-				break;
+			} else {
+				markerImage = selectImage(res, s);
 			}
 
 			marker.setIcon(markerImage);
@@ -377,6 +342,49 @@ public class OsmMap extends Fragment {
 			stationsMarkersOverlay.add(marker);
 		}
 		mapView.getOverlays().addAll(stationsMarkersOverlay);
+	}
+
+	private Drawable selectImage(Resources res, Station s) {
+		Drawable markerImage;
+		switch ((int) Math.round(s.getBikesPresentPercentage() * 10)) {
+		case 0:
+			markerImage = res.getDrawable(R.drawable.marker_0);
+			break;
+		case 1:
+			markerImage = res.getDrawable(R.drawable.marker_10);
+			break;
+		case 2:
+			markerImage = res.getDrawable(R.drawable.marker_20);
+			break;
+		case 3:
+			markerImage = res.getDrawable(R.drawable.marker_30);
+			break;
+		case 4:
+			markerImage = res.getDrawable(R.drawable.marker_40);
+			break;
+		case 5:
+			markerImage = res.getDrawable(R.drawable.marker_50);
+			break;
+		case 6:
+			markerImage = res.getDrawable(R.drawable.marker_60);
+			break;
+		case 7:
+			markerImage = res.getDrawable(R.drawable.marker_70);
+			break;
+		case 8:
+			markerImage = res.getDrawable(R.drawable.marker_80);
+			break;
+		case 9:
+			markerImage = res.getDrawable(R.drawable.marker_90);
+			break;
+		case 10:
+			markerImage = res.getDrawable(R.drawable.marker_100);
+			break;
+		default:
+			markerImage = res.getDrawable(R.drawable.marker_grey);
+			break;
+		}
+		return markerImage;
 	}
 
 	private void setMarkers() {

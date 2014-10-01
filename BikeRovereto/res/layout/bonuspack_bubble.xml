@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="#fff"
     android:orientation="vertical"
-    android:minWidth="160dp"
+    android:minWidth="180dp"
     android:gravity="center_horizontal" >
 
     <ImageView
@@ -24,13 +24,14 @@
         android:text="@string/app_name"
         android:layout_gravity="left"
         android:gravity="left"
+        android:textColor="@color/base_green"
         android:visibility="invisible" />
     
     <View android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_below="@+id/bubble_title"
         android:layout_marginBottom="12dp"
-        android:background="@android:color/background_dark" />
+        android:background="@color/base_green" />
 
     <TextView
         android:id="@+id/bubble_description"
@@ -63,7 +64,7 @@
             android:layout_gravity="left"
             android:layout_weight="1"
             android:drawableTop="@drawable/bike_available"
-            android:layout_marginRight="18dp"
+            android:layout_marginRight="22dp"
             android:text="@integer/abc_max_action_buttons"
             android:gravity="center_horizontal"
             android:visibility="visible" />
@@ -86,7 +87,9 @@
         android:layout_height="wrap_content"
         android:minWidth="48dp"
         android:minHeight="48dp"
-        android:padding="3dp"
+        android:layout_margin="3dp"
+        android:background="@drawable/details_background"
+        android:textColor="@android:color/white"
         android:text="@string/to_details" />
 
 </LinearLayout>
