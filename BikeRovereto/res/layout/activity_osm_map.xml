@@ -14,36 +14,34 @@
         <!-- android:layerType="software" > -->
     </org.osmdroid.views.MapView>
 
-    <Button
+    <ImageView
         android:id="@+id/bt_to_my_loc"
-        android:layout_width="@dimen/button_size"
-        android:layout_height="@dimen/button_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_margin="8dp"
-        android:background="@drawable/to_my_loc"
-        android:minHeight="48dp"
-        android:minWidth="48dp" />
+        android:src="@drawable/to_my_loc" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="8dp"
-        android:orientation="horizontal" >
+        android:layout_alignParentRight="true"
+        android:layout_margin="8dp"
+        android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/btn_zoom_out"
-            android:layout_width="@dimen/button_size"
-            android:layout_height="@dimen/button_size"
-            android:background="@drawable/zoom_out_background" />
-
-        <Button
+        <ImageView
             android:id="@+id/btn_zoom_in"
-            android:layout_width="@dimen/button_size"
-            android:layout_height="@dimen/button_size"
-            android:background="@drawable/zoom_in_background" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/zoom_in_background" />
+
+        <ImageView
+            android:id="@+id/btn_zoom_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/zoom_out_background" />
     </LinearLayout>
 
 </RelativeLayout>

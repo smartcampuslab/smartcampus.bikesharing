@@ -70,10 +70,10 @@ public class OsmMap extends Fragment {
 	private ArrayList<BikeMarker> bikesMarkersOverlay;
 
 	// button for animating to my position
-	private Button toMyLoc;
+	private ImageView toMyLoc;
 
-	private Button mZoomIn;
-	private Button mZoomOut;
+	private ImageView mZoomIn;
+	private ImageView mZoomOut;
 
 	// current BoundingBoxE6 shown
 	private BoundingBoxE6 currentBoundingBox;
@@ -121,11 +121,11 @@ public class OsmMap extends Fragment {
 		mapView.setTileSource(TileSourceFactory.getTileSource("MapquestOSM"));
 		mapView.getOverlays().add(mLocationOverlay);
 
-		toMyLoc = (Button) rootView.findViewById(R.id.bt_to_my_loc);
+		toMyLoc = (ImageView) rootView.findViewById(R.id.bt_to_my_loc);
 		setBtToMyLoc();
 
-		mZoomIn = (Button) rootView.findViewById(R.id.btn_zoom_in);
-		mZoomOut = (Button) rootView.findViewById(R.id.btn_zoom_out);
+		mZoomIn = (ImageView) rootView.findViewById(R.id.btn_zoom_in);
+		mZoomOut = (ImageView) rootView.findViewById(R.id.btn_zoom_out);
 		setZoomBtns();
 
 		setMarkers();

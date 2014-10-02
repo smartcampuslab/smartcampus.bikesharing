@@ -242,11 +242,7 @@ public class MainActivity extends ActionBarActivity implements
 									.findFragmentByTag(FRAGMENT_MAP);
 							if (currentFragment == null
 									|| !currentFragment.isVisible()) {
-								OsmMap mapFragment = OsmMap.newInstance(
-										stations, bikes);
-								transaction.replace(R.id.content_frame,
-										mapFragment, FRAGMENT_MAP);
-								transaction.commit();
+								insertMap();
 							}
 							// Highlight the selected item, update the title,
 							// and close
@@ -306,19 +302,22 @@ public class MainActivity extends ActionBarActivity implements
 				});
 		navAdapter.setItemChecked(0);
 	}
-	
 
 	private void insertMap() {
-		OsmMap mainFragment = OsmMap.newInstance(stations, bikes);
-		FragmentTransaction transaction = getSupportFragmentManager()
-				.beginTransaction();
-		transaction.replace(R.id.content_frame, mainFragment, FRAGMENT_MAP);
-		transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-		transaction.commit();
-		if (getIntent().getBooleanExtra(
-				NotificationReceiver.INTENT_FROM_NOTIFICATION, false)) {
-			onStationSelected(
-					(Station) getIntent().getParcelableExtra("station"), false);
+		if (getSupportFragmentManager().findFragmentById(R.id.content_frame) == null) {
+			OsmMap mainFragment = OsmMap.newInstance(stations, bikes);
+			FragmentTransaction transaction = getSupportFragmentManager()
+					.beginTransaction();
+			transaction.replace(R.id.content_frame, mainFragment, FRAGMENT_MAP);
+			transaction
+					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+			transaction.commit();
+			if (getIntent().getBooleanExtra(
+					NotificationReceiver.INTENT_FROM_NOTIFICATION, false)) {
+				onStationSelected(
+						(Station) getIntent().getParcelableExtra("station"),
+						false);
+			}
 		}
 	}
 
