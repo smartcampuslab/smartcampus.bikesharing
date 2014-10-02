@@ -50,6 +50,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import eu.trentorise.smartcampus.bikesharing.R;
 
 public class OsmMap extends Fragment {
@@ -70,6 +71,9 @@ public class OsmMap extends Fragment {
 
 	// button for animating to my position
 	private Button toMyLoc;
+
+	private Button mZoomIn;
+	private Button mZoomOut;
 
 	// current BoundingBoxE6 shown
 	private BoundingBoxE6 currentBoundingBox;
@@ -120,11 +124,32 @@ public class OsmMap extends Fragment {
 		toMyLoc = (Button) rootView.findViewById(R.id.bt_to_my_loc);
 		setBtToMyLoc();
 
+		mZoomIn = (Button) rootView.findViewById(R.id.btn_zoom_in);
+		mZoomOut = (Button) rootView.findViewById(R.id.btn_zoom_out);
+		setZoomBtns();
+
 		setMarkers();
 		setMapListener();
 
 		setHasOptionsMenu(true);
 		return rootView;
+	}
+
+	private void setZoomBtns() {
+		mZoomIn.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				mapView.getController().zoomIn();
+			}
+		});
+		mZoomOut.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				mapView.getController().zoomOut();
+			}
+		});
 	}
 
 	@Override

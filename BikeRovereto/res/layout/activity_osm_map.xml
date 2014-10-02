@@ -9,28 +9,41 @@
     <org.osmdroid.views.MapView
         android:id="@+id/map_view"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-<!--         android:layerType="software" > -->
+        android:layout_height="fill_parent" >
+
+        <!-- android:layerType="software" > -->
     </org.osmdroid.views.MapView>
 
     <Button
         android:id="@+id/bt_to_my_loc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_width="@dimen/button_size"
+        android:layout_height="@dimen/button_size"
         android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
         android:layout_margin="8dp"
         android:background="@drawable/to_my_loc"
         android:minHeight="48dp"
         android:minWidth="48dp" />
 
-    <!-- <ImageView
-        android:id="@+id/imageView1"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_zoom"
-        android:layout_marginBottom="8dp"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true" /> -->
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_zoom_out"
+            android:layout_width="@dimen/button_size"
+            android:layout_height="@dimen/button_size"
+            android:background="@drawable/zoom_out_background" />
+
+        <Button
+            android:id="@+id/btn_zoom_in"
+            android:layout_width="@dimen/button_size"
+            android:layout_height="@dimen/button_size"
+            android:background="@drawable/zoom_in_background" />
+    </LinearLayout>
 
 </RelativeLayout>
