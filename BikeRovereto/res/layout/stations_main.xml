@@ -10,6 +10,7 @@
         android:cacheColorHint="#00000000"
         android:clipToPadding="false"
         android:fadingEdge="none"
+        android:animateLayoutChanges="true"
         android:padding="10dp"
         android:scrollbarStyle="outsideOverlay" />
 

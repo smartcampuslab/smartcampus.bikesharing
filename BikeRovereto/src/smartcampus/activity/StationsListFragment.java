@@ -148,12 +148,13 @@ public class StationsListFragment extends ListFragment
 	}
 
 	private void refreshDatas() {
+		getActivity().setProgressBarIndeterminateVisibility(true);
 		GetStationsTask getStationsTask = new GetStationsTask(getActivity());
+		mStations.clear();
         getStationsTask.delegate=new AsyncStationResponse() {
 			
 			@Override
 			public void processFinish(ArrayList<Station> stations, ArrayList<Station> favStations, int status) {
-				mStations.clear();
 				mStations.addAll(stations);
 				((MainActivity)getActivity()).setStations(stations);
 				((MainActivity)getActivity()).setFavStations(favStations);
@@ -172,6 +173,7 @@ public class StationsListFragment extends ListFragment
 	
 	private void onRefreshComplete() {
         Log.i("STR", "onRefreshComplete");
+        getActivity().setProgressBarIndeterminateVisibility(false);
         //Reorder the arraylist in the previous order
         switch (sortedBy) {
 		case SORTED_BY_DISTANCE:
@@ -233,7 +235,7 @@ public class StationsListFragment extends ListFragment
 		}
 		else if (item.getItemId() == R.id.refresh)
 		{
-            Toast.makeText(getActivity(), getString(R.string.refresh_hint), Toast.LENGTH_SHORT).show();
+            refreshDatas();
 		}
 		return true;
 	}

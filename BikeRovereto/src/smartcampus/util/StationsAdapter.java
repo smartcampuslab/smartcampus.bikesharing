@@ -1,5 +1,6 @@
 package smartcampus.util;
 
+import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 
 import org.osmdroid.util.GeoPoint;
@@ -15,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -27,6 +29,7 @@ public class StationsAdapter extends ArrayAdapter<Station>
 	private GeoPoint currentLocation;
 	private SharedPreferences pref;
 	private boolean isFavouriteAdapter = false;
+	private int mLastPosition=-1;
 	
 	public StationsAdapter(Context context, int resource,
 			ArrayList<Station> stations, GeoPoint currentLocation)
@@ -41,6 +44,7 @@ public class StationsAdapter extends ArrayAdapter<Station>
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
 		ViewHolder viewHolder;
+
 
 		if (convertView == null)
 		{
@@ -103,8 +107,22 @@ public class StationsAdapter extends ArrayAdapter<Station>
 					notifyDataSetChanged();
 			}
 		});
+		if(position>mLastPosition){
+			convertView.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.slide_up));
+			mLastPosition = position;
+		}
 		return convertView;
 
+	}
+	@Override
+	public void notifyDataSetChanged() {
+		super.notifyDataSetChanged();
+		mLastPosition=-1;
+	}
+	@Override
+	public void notifyDataSetInvalidated() {
+		super.notifyDataSetInvalidated();
+		mLastPosition=-1;
 	}
 
 	private static class ViewHolder

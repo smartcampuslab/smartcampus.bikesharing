@@ -82,6 +82,7 @@ public class MainActivity extends ActionBarActivity implements
 	private static final int DISCONNECTED = 0;
 	private static final int CONNECTED = 1;
 	private static final int CONNECTING = 2;
+	protected static final long CONNECTING_TIME = 120;
 
 	public interface OnPositionAquiredListener {
 		public void onPositionAquired();
@@ -238,17 +239,7 @@ public class MainActivity extends ActionBarActivity implements
 										android.R.anim.fade_out);
 						switch (position) {
 						case 0:
-							currentFragment = getSupportFragmentManager()
-									.findFragmentByTag(FRAGMENT_MAP);
-							if (currentFragment == null
-									|| !currentFragment.isVisible()) {
-								insertMap();
-							}
-							// Highlight the selected item, update the title,
-							// and close
-							// the drawer
-							navAdapter.setItemChecked(position);
-							navAdapter.notifyDataSetChanged();
+							insertMap();
 							break;
 						case 1:
 							currentFragment = getSupportFragmentManager()
@@ -304,7 +295,9 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private void insertMap() {
-		if (getSupportFragmentManager().findFragmentById(R.id.content_frame) == null) {
+		Fragment currentFragment = getSupportFragmentManager()
+				.findFragmentByTag(FRAGMENT_MAP);
+		if (currentFragment == null || !currentFragment.isVisible()) {
 			OsmMap mainFragment = OsmMap.newInstance(stations, bikes);
 			FragmentTransaction transaction = getSupportFragmentManager()
 					.beginTransaction();
@@ -312,13 +305,20 @@ public class MainActivity extends ActionBarActivity implements
 			transaction
 					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 			transaction.commit();
-			if (getIntent().getBooleanExtra(
-					NotificationReceiver.INTENT_FROM_NOTIFICATION, false)) {
+			if (getIntent().hasExtra(
+					NotificationReceiver.INTENT_FROM_NOTIFICATION)
+					&& getIntent().getBooleanExtra(
+							NotificationReceiver.INTENT_FROM_NOTIFICATION,
+							false)) {
 				onStationSelected(
 						(Station) getIntent().getParcelableExtra("station"),
 						false);
+
 			}
+			navAdapter.setItemChecked(0);
+			navAdapter.notifyDataSetChanged();
 		}
+
 	}
 
 	private void checkManifestConfiguration() {
@@ -413,15 +413,6 @@ public class MainActivity extends ActionBarActivity implements
 		transaction.commit();
 	}
 
-	@Override
-	protected void onStart() {
-		super.onStart();
-		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-				Tools.LOCATION_REFRESH_TIME, Tools.LOCATION_REFRESH_DISTANCE,
-				mLocationListener);
-
-	}
-
 	private Handler mHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -434,7 +425,7 @@ public class MainActivity extends ActionBarActivity implements
 				updateDistances();
 			} else if (status == CONNECTING) {
 				setSupportProgressBarIndeterminateVisibility(true);
-				mHandler.sendEmptyMessageDelayed(0, 120);
+				mHandler.sendEmptyMessageDelayed(0, CONNECTING_TIME);
 			} else {
 				showNoInternetDialog();
 			}
@@ -442,10 +433,11 @@ public class MainActivity extends ActionBarActivity implements
 	};
 
 	@Override
-	protected void onPostResume() {
-
-		super.onPostResume();
-		setSupportProgressBarIndeterminateVisibility(true);
+	protected void onStart() {
+		super.onStart();
+		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+				Tools.LOCATION_REFRESH_TIME, Tools.LOCATION_REFRESH_DISTANCE,
+				mLocationListener);
 		mHandler.sendEmptyMessage(0);
 	}
 
@@ -518,7 +510,9 @@ public class MainActivity extends ActionBarActivity implements
 				} else {
 					if (myLocation != null)
 						updateDistances();
-					mCallbackStationsAquired.stationsAquired(stations);
+					if (mCallbackStationsAquired != null && stations != null
+							&& stations.size() > 0)
+						mCallbackStationsAquired.stationsAquired(stations);
 				}
 			}
 		};
