@@ -247,7 +247,7 @@ public class MainActivity extends ActionBarActivity implements
 							if (currentFragment == null
 									|| !currentFragment.isVisible()) {
 								StationsListFragment stationsFragment = StationsListFragment
-										.newInstance(stations);
+										.newInstance(stations,favStations);
 								transaction.replace(R.id.content_frame,
 										stationsFragment, FRAGMENT_STATIONS);
 								transaction.commit();

@@ -34,6 +34,7 @@ public class StationsListFragment extends ListFragment
 {
 
 	private ArrayList<Station> mStations;
+	private ArrayList<Station> mFav;
 	private View emptyView;
 	private StationsAdapter stationsAdapter;
 	private int sortedBy;
@@ -50,11 +51,12 @@ public class StationsListFragment extends ListFragment
 		public void onStationSelected(Station station, boolean animation);
 	}
 
-	public static StationsListFragment newInstance(ArrayList<Station> stations)
+	public static StationsListFragment newInstance(ArrayList<Station> stations,ArrayList<Station> fav)
 	{
 		StationsListFragment fragment = new StationsListFragment();
 		Bundle bundle = new Bundle();
 		bundle.putParcelableArrayList("stations", stations);
+		bundle.putParcelableArrayList("fav", fav);
 		fragment.setArguments(bundle);
 		return fragment;
 	}
@@ -83,6 +85,8 @@ public class StationsListFragment extends ListFragment
 	{
 		super.onCreate(savedInstanceState);
 		mStations = getArguments().getParcelableArrayList("stations");
+		mFav = getArguments().getParcelableArrayList("fav");
+		mStations.removeAll(mFav);
 		((MainActivity) getActivity())
 				.setOnPositionAquiredListener(new OnPositionAquiredListener()
 				{
@@ -156,6 +160,8 @@ public class StationsListFragment extends ListFragment
 			@Override
 			public void processFinish(ArrayList<Station> stations, ArrayList<Station> favStations, int status) {
 				mStations.addAll(stations);
+				mFav.addAll(favStations);
+				mStations.removeAll(mFav);
 				((MainActivity)getActivity()).setStations(stations);
 				((MainActivity)getActivity()).setFavStations(favStations);
 				if (((MainActivity)getActivity()).getCurrentLocation() != null)
@@ -246,7 +252,10 @@ public class StationsListFragment extends ListFragment
 
 	private void sortByDistance(boolean updateList)
 	{
+		mStations.removeAll(mFav);
 		Collections.sort(mStations, new DistanceComparator());
+		Collections.sort(mFav, new DistanceComparator());
+		mStations.addAll(0, mFav);
 		sortedBy = SORTED_BY_DISTANCE;
 		if (updateList)
 			stationsAdapter.notifyDataSetChanged();
@@ -254,7 +263,10 @@ public class StationsListFragment extends ListFragment
 
 	private void sortByName(boolean updateList)
 	{
+		mStations.removeAll(mFav);
 		Collections.sort(mStations, new NameComparator());
+		Collections.sort(mFav, new NameComparator());
+		mStations.addAll(0, mFav);
 		sortedBy = SORTED_BY_NAME;
 		if (updateList)
 			stationsAdapter.notifyDataSetChanged();
@@ -262,7 +274,10 @@ public class StationsListFragment extends ListFragment
 
 	private void sortByAvailableSlots(boolean updateList)
 	{
+		mStations.removeAll(mFav);
 		Collections.sort(mStations, new AvailableSlotsComparator());
+		Collections.sort(mFav, new AvailableSlotsComparator());
+		mStations.addAll(0, mFav);
 		sortedBy = SORTED_BY_AVAILABLE_SLOTS;
 		if (updateList)
 			stationsAdapter.notifyDataSetChanged();
@@ -270,7 +285,10 @@ public class StationsListFragment extends ListFragment
 
 	private void sortByAvailableBikes(boolean updateList)
 	{
+		mStations.removeAll(mFav);
 		Collections.sort(mStations, new AvailableBikesComparator());
+		Collections.sort(mFav, new AvailableBikesComparator());
+		mStations.addAll(0, mFav);
 		sortedBy = SORTED_BY_AVAILABLE_BIKES;
 		if (updateList)
 			stationsAdapter.notifyDataSetChanged();
@@ -304,6 +322,12 @@ public class StationsListFragment extends ListFragment
 		@Override
 		public int compare(Station station0, Station station1)
 		{
+			if(mFav.contains(station0) && mFav.contains(station1))
+				return station0.getDistance() - station1.getDistance();
+			if(mFav.contains(station0))
+				return 1;
+			if(mFav.contains(station1))
+				return 1;
 			return station0.getDistance() - station1.getDistance();
 		}
 		

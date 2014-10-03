@@ -86,6 +86,7 @@ public class Station implements Parcelable, Reportable
 		source.readList(reports, List.class.getClassLoader());
 		id = source.readString();
 		thereAreReports = source.readInt() > 0;
+		favourite = source.readInt()>0;
 	}
 
 	public static final Parcelable.Creator<Station> CREATOR = new Creator<Station>()
@@ -128,6 +129,7 @@ public class Station implements Parcelable, Reportable
 		dest.writeList(reports);
 		dest.writeString(id);
 		dest.writeInt(thereAreReports ? 1 : 0);
+		dest.writeInt(favourite? 1:0);
 
 	}
 
