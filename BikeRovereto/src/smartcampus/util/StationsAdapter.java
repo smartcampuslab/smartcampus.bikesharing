@@ -40,12 +40,11 @@ public class StationsAdapter extends ArrayAdapter<Station> {
 				.getSharedPreferences("favStations", Context.MODE_PRIVATE);
 	}
 
-	public int getSelectionPos() {
-		return mSelection;
-	}
-
 	public void setSelectionPos(int mSelection) {
 		this.mSelection = mSelection;
+	}
+	public void cancelSelection(){
+		this.mSelection=-1;
 	}
 
 	@Override

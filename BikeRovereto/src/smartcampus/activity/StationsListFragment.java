@@ -84,10 +84,11 @@ public class StationsListFragment extends ListFragment {
 		// Called when the user exits the action mode
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
-			mActionMode = null;
 			getListView()
 					.getChildAt(Integer.parseInt(mode.getTag().toString()))
 					.setSelected(false);
+			stationsAdapter.cancelSelection();
+			mActionMode = null;
 		}
 	};
 
@@ -355,7 +356,7 @@ public class StationsListFragment extends ListFragment {
 		Intent i = new Intent(Intent.ACTION_SEND);
 		i.setType("message/rfc822");
 		// TODO mettere le cose giuste.
-		i.putExtra(Intent.EXTRA_EMAIL, new String[]{"asdasd@gmail.com"});
+		i.putExtra(Intent.EXTRA_EMAIL, new String[] { "asdasd@gmail.com" });
 		i.putExtra(Intent.EXTRA_SUBJECT, "bike sharing report");
 		i.putExtra(Intent.EXTRA_TEXT, "Asda\n asd\n");
 		startActivity(Intent.createChooser(i,
@@ -394,13 +395,26 @@ public class StationsListFragment extends ListFragment {
 
 		@Override
 		public int compare(Station station0, Station station1) {
-			if (mFav.contains(station0) && mFav.contains(station1))
+			if (mFav.contains(station0) && mFav.contains(station1)) {
+				if (station0.getDistance() > -1){
+					return station0.getDistance() - station1.getDistance();
+				}
+				else{
+					return new NameComparator().compare(station0, station1);
+				}
+			}
+			if (mFav.contains(station0)) {
+				return 1;
+			}
+			if (mFav.contains(station1)) {
+				return 1;
+			}
+			if (station0.getDistance() > -1) {
 				return station0.getDistance() - station1.getDistance();
-			if (mFav.contains(station0))
-				return 1;
-			if (mFav.contains(station1))
-				return 1;
-			return station0.getDistance() - station1.getDistance();
+			} else {
+				return new NameComparator().compare(station0, station1);
+			}
+
 		}
 
 	}
