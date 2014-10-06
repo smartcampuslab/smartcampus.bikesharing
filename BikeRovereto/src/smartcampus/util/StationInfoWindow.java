@@ -6,19 +6,14 @@ package smartcampus.util;
 //import org.osmdroid.views.MapView;
 
 import org.osmdroid.bonuspack.overlays.MarkerInfoWindow;
-import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
-import smartcampus.activity.StationDetails;
+import smartcampus.activity.StationsListFragment;
 import smartcampus.model.Station;
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff.Mode;
-import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikesharing.R;
@@ -45,7 +40,7 @@ public class StationInfoWindow extends MarkerInfoWindow {
 		btn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				StationDetails detailsFragment = StationDetails
+				StationsListFragment detailsFragment = StationsListFragment
 						.newInstance(station);
 				FragmentTransaction transaction1 = fragmentManager
 						.beginTransaction();

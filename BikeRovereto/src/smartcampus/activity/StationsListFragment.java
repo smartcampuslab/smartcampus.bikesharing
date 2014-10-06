@@ -26,6 +26,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -35,6 +36,7 @@ public class StationsListFragment extends ListFragment {
 
 	private ArrayList<Station> mStations;
 	private ArrayList<Station> mFav;
+	private String mStationId;
 	private View emptyView;
 	private StationsAdapter stationsAdapter;
 	private int sortedBy;
@@ -82,10 +84,13 @@ public class StationsListFragment extends ListFragment {
 		// Called when the user exits the action mode
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
-			getListView()
-					.getChildAt(Integer.parseInt(mode.getTag().toString()))
-					.setSelected(false);
+			View v = getListView().getChildAt(
+					Integer.parseInt(mode.getTag().toString()));
 			stationsAdapter.cancelSelection();
+			if (v != null)
+				v.setSelected(false);
+			else
+				stationsAdapter.notifyDataSetChanged();
 			mActionMode = null;
 		}
 	};
@@ -101,6 +106,14 @@ public class StationsListFragment extends ListFragment {
 		Bundle bundle = new Bundle();
 		bundle.putParcelableArrayList("stations", stations);
 		bundle.putParcelableArrayList("fav", fav);
+		fragment.setArguments(bundle);
+		return fragment;
+	}
+
+	public static StationsListFragment newInstance(Station station) {
+		StationsListFragment fragment = new StationsListFragment();
+		Bundle bundle = new Bundle();
+		bundle.putString("stationid", station.getId());
 		fragment.setArguments(bundle);
 		return fragment;
 	}
@@ -122,8 +135,13 @@ public class StationsListFragment extends ListFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mStations = getArguments().getParcelableArrayList("stations");
-		mFav = getArguments().getParcelableArrayList("fav");
+		if (getArguments().containsKey("stations")
+				&& getArguments().containsKey("stations")) {
+			mStations = getArguments().getParcelableArrayList("stations");
+			mFav = getArguments().getParcelableArrayList("fav");
+		} else if (getArguments().containsKey("stationid")) {
+			mStationId = getArguments().getString("stationid");
+		}
 		((MainActivity) getActivity())
 				.setOnPositionAquiredListener(new OnPositionAquiredListener() {
 
@@ -137,13 +155,14 @@ public class StationsListFragment extends ListFragment {
 
 		if (mStations == null) {
 			mStations = new ArrayList<Station>();
-			return;
+			mFav = new ArrayList<Station>();
+			refreshDatas();
 		}
 
 		// If the distance is already defined the list is sorted by distance,
 		// otherwise
 		// is sorted by available bikes
-		if (mStations.size() >= 1) {
+		if (mStations.size() > 1) {
 			// if (mStations.get(0).getDistance() == Station.DISTANCE_NOT_VALID)
 			// sortByAvailableBikes(false);
 			// else
@@ -219,7 +238,9 @@ public class StationsListFragment extends ListFragment {
 	private void refreshDatas() {
 		getActivity().setProgressBarIndeterminateVisibility(true);
 		GetStationsTask getStationsTask = new GetStationsTask(getActivity());
+
 		mStations.clear();
+		mFav.clear();
 		getStationsTask.delegate = new AsyncStationResponse() {
 
 			@Override
@@ -237,6 +258,9 @@ public class StationsListFragment extends ListFragment {
 							Toast.LENGTH_SHORT).show();
 				}
 				Log.d("Server call finished", "status code: " + status);
+				if (mStationId != null) {
+					setSelectionOnStation();
+				}
 			}
 		};
 		getStationsTask.execute("");
@@ -263,6 +287,29 @@ public class StationsListFragment extends ListFragment {
 			sortByFavourites(true);
 			break;
 		}
+	}
+
+	private void setSelectionOnStation() {
+		getListView().postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				int i = 0;
+				for (Station s : mStations) {
+					if (s.getId().equals(mStationId)) {
+						View v = getListView().getChildAt(i);
+						mActionMode = ((ActionBarActivity) getActivity()).startSupportActionMode(mActionModeCallback);
+						mActionMode.setTag(i);
+						stationsAdapter.setSelectionPos(i);
+						if (v != null) {
+							v.setSelected(true);
+						}
+						getListView().smoothScrollToPosition(i);
+					}
+					i++;
+				}
+			}
+		}, 50);
 	}
 
 	@Override
@@ -303,14 +350,14 @@ public class StationsListFragment extends ListFragment {
 		} else if (item.getItemId() == R.id.sort_name) {
 			sortByName(true);
 		} else if (item.getItemId() == R.id.action_map) {
-			OsmMap mainFragment = OsmMap.newInstance(mStations,null);
-			FragmentTransaction transaction = getActivity().getSupportFragmentManager()
-					.beginTransaction();
+			OsmMap mainFragment = OsmMap.newInstance(mStations, null);
+			FragmentTransaction transaction = getActivity()
+					.getSupportFragmentManager().beginTransaction();
 			transaction.replace(R.id.content_frame, mainFragment, "map");
 			transaction
 					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 			transaction.commit();
-			((MainActivity)getActivity()).setDrawerIndicator(0);
+			((MainActivity) getActivity()).setDrawerIndicator(0);
 		} else if (item.getItemId() == R.id.refresh) {
 			refreshDatas();
 		}
@@ -403,10 +450,9 @@ public class StationsListFragment extends ListFragment {
 		@Override
 		public int compare(Station station0, Station station1) {
 			if (mFav.contains(station0) && mFav.contains(station1)) {
-				if (station0.getDistance() > -1){
+				if (station0.getDistance() > -1) {
 					return station0.getDistance() - station1.getDistance();
-				}
-				else{
+				} else {
 					return new NameComparator().compare(station0, station1);
 				}
 			}

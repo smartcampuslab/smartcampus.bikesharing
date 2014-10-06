@@ -412,20 +412,6 @@ public class MainActivity extends ActionBarActivity implements
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override
-	public void onStationSelected(Station station, boolean animation) {
-		Log.d("station selected", station.getName());
-		StationDetails detailsFragment = StationDetails.newInstance(station);
-		FragmentTransaction transaction = getSupportFragmentManager()
-				.beginTransaction();
-		if (animation) {
-			transaction.setCustomAnimations(R.anim.slide_left,
-					R.anim.alpha_out, R.anim.alpha_in, R.anim.slide_right);
-		}
-		transaction.replace(R.id.content_frame, detailsFragment);
-		transaction.addToBackStack(null);
-		transaction.commit();
-	}
 
 	private Handler mHandler = new Handler() {
 		@Override
@@ -624,5 +610,11 @@ public class MainActivity extends ActionBarActivity implements
 
 	public ArrayList<Station> getStations() {
 		return stations;
+	}
+
+	@Override
+	public void onStationSelected(Station station, boolean animation) {
+		// TODO Auto-generated method stub
+		
 	}
 }
