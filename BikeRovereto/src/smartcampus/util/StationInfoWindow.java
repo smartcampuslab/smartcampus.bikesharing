@@ -8,6 +8,7 @@ package smartcampus.util;
 import org.osmdroid.bonuspack.overlays.MarkerInfoWindow;
 import org.osmdroid.views.MapView;
 
+import smartcampus.activity.MainActivity;
 import smartcampus.activity.StationsListFragment;
 import smartcampus.model.Station;
 import android.graphics.Color;
@@ -49,6 +50,7 @@ public class StationInfoWindow extends MarkerInfoWindow {
 				transaction1.replace(R.id.content_frame, detailsFragment);
 				transaction1.addToBackStack(null);
 				transaction1.commit();
+				((MainActivity)myMapView.getContext()).setDrawerIndicator(1);
 			}
 		});
 	}

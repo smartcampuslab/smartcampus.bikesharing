@@ -87,8 +87,9 @@ public class StationsListFragment extends ListFragment {
 			View v = getListView().getChildAt(
 					Integer.parseInt(mode.getTag().toString()));
 			stationsAdapter.cancelSelection();
-			if (v != null)
+			if (v != null){
 				v.setSelected(false);
+			}
 			else
 				stationsAdapter.notifyDataSetChanged();
 			mActionMode = null;

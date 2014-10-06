@@ -408,6 +408,7 @@ public class MainActivity extends ActionBarActivity implements
 					stationsFragment, FRAGMENT_STATIONS);
 			transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 			transaction.commit();
+			setDrawerIndicator(1);
 		}
 		return super.onOptionsItemSelected(item);
 	}
