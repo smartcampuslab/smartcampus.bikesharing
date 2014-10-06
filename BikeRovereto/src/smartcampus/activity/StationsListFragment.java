@@ -11,11 +11,14 @@ import smartcampus.model.Station;
 import smartcampus.util.StationsAdapter;
 import smartcampus.util.Tools;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.view.ActionMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -43,7 +46,50 @@ public class StationsListFragment extends ListFragment {
 	private static final int SORTED_BY_AVAILABLE_BIKES = 3;
 	private static final int SORTED_BY_AVAILABLE_SLOTS = 4;
 
-	OnStationSelectListener mCallback;
+	private ActionMode mActionMode;
+
+	private OnStationSelectListener mCallback;
+
+	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+		// Called when the action mode is created; startActionMode() was called
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			// Inflate a menu resource providing context menu items
+			MenuInflater inflater = mode.getMenuInflater();
+			inflater.inflate(R.menu.station_details, menu);
+			return true;
+		}
+
+		// Called each time the action mode is shown. Always called after
+		// onCreateActionMode, but
+		// may be called multiple times if the mode is invalidated.
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return false; // Return false if nothing is done
+		}
+
+		// Called when the user selects a contextual menu item
+		@Override
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			if (item.getItemId() == R.id.action_add_report) {
+				if (Integer.parseInt(mode.getTag().toString()) > -1)
+					sendReport();
+				mode.finish();
+				return true;
+			}
+			return false;
+		}
+
+		// Called when the user exits the action mode
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			mActionMode = null;
+			getListView()
+					.getChildAt(Integer.parseInt(mode.getTag().toString()))
+					.setSelected(false);
+		}
+	};
 
 	// Container Activity must implement this interface
 	public interface OnStationSelectListener {
@@ -99,10 +145,10 @@ public class StationsListFragment extends ListFragment {
 		// otherwise
 		// is sorted by available bikes
 		if (mStations.size() >= 1) {
-//			if (mStations.get(0).getDistance() == Station.DISTANCE_NOT_VALID)
-//				sortByAvailableBikes(false);
-//			else
-//				sortByDistance(false);
+			// if (mStations.get(0).getDistance() == Station.DISTANCE_NOT_VALID)
+			// sortByAvailableBikes(false);
+			// else
+			// sortByDistance(false);
 			sortByFavourites(true);
 		}
 	}
@@ -124,21 +170,51 @@ public class StationsListFragment extends ListFragment {
 	}
 
 	@Override
+	public void onPause() {
+		super.onPause();
+		if (mActionMode != null)
+			mActionMode.finish();
+	}
+
+	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		getListView().setDivider(new ColorDrawable(Color.TRANSPARENT));
 		getListView()
 				.setDividerHeight(Tools.convertDpToPixel(getActivity(), 5));
 		getListView().setEmptyView(emptyView);
-		getListView().setOnItemClickListener(new OnItemClickListener() {
+		getListView().setOnItemLongClickListener(
+				new AdapterView.OnItemLongClickListener() {
 
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				mCallback.onStationSelected(mStations.get(position), true);
-			}
-		});
+					@Override
+					public boolean onItemLongClick(AdapterView<?> adapter,
+							View v, int position, long id) {
+						if (mActionMode != null) {
+							return false;
+						}
 
+						// Start the CAB using the ActionMode.Callback defined
+						// above
+						mActionMode = ((ActionBarActivity) getActivity())
+								.startSupportActionMode(mActionModeCallback);
+						v.setSelected(true);
+						mActionMode.setTag(position);
+						stationsAdapter.setSelectionPos(position);
+						return true;
+					}
+				});
+		getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+	}
+
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+		if (mActionMode != null) {
+			v.setSelected(true);
+			mActionMode.setTag(position);
+			stationsAdapter.setSelectionPos(position);
+		}
 	}
 
 	private void refreshDatas() {
@@ -219,10 +295,9 @@ public class StationsListFragment extends ListFragment {
 		item.setChecked(!item.isChecked());
 		if (item.getItemId() == R.id.sort_fav) {
 			sortByFavourites(true);
-		}
-		else if (item.getItemId() == R.id.sort_distance) {
+		} else if (item.getItemId() == R.id.sort_distance) {
 			sortByDistance(true);
-		}else if (item.getItemId() == R.id.sort_available_bikes) {
+		} else if (item.getItemId() == R.id.sort_available_bikes) {
 			sortByAvailableBikes(true);
 		} else if (item.getItemId() == R.id.sort_available_slots) {
 			sortByAvailableSlots(true);
@@ -272,8 +347,20 @@ public class StationsListFragment extends ListFragment {
 		Collections.sort(mFav, new FavouriteComparator());
 		mStations.addAll(0, mFav);
 		sortedBy = SORTED_BY_FAVOURITES;
-		if (updateList && stationsAdapter!=null)
+		if (updateList && stationsAdapter != null)
 			stationsAdapter.notifyDataSetChanged();
+	}
+
+	private void sendReport() {
+		Intent i = new Intent(Intent.ACTION_SEND);
+		i.setType("message/rfc822");
+		// TODO mettere le cose giuste.
+		i.putExtra(Intent.EXTRA_EMAIL, new String[]{"asdasd@gmail.com"});
+		i.putExtra(Intent.EXTRA_SUBJECT, "bike sharing report");
+		i.putExtra(Intent.EXTRA_TEXT, "Asda\n asd\n");
+		startActivity(Intent.createChooser(i,
+				getString(R.string.action_add_report)));
+
 	}
 
 	private class AvailableSlotsComparator implements Comparator<Station> {
@@ -302,6 +389,7 @@ public class StationsListFragment extends ListFragment {
 		}
 
 	}
+
 	private class FavouriteComparator implements Comparator<Station> {
 
 		@Override

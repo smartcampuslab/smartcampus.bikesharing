@@ -22,32 +22,37 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikesharing.R;
 
-public class StationsAdapter extends ArrayAdapter<Station>
-{
+public class StationsAdapter extends ArrayAdapter<Station> {
 
 	private ArrayList<Station> mStations;
 	private GeoPoint currentLocation;
 	private SharedPreferences pref;
 	private boolean isFavouriteAdapter = false;
-	private int mLastPosition=-1;
-	
+	private int mLastPosition = -1;
+	private int mSelection = -1;
+
 	public StationsAdapter(Context context, int resource,
-			ArrayList<Station> stations, GeoPoint currentLocation)
-	{
+			ArrayList<Station> stations, GeoPoint currentLocation) {
 		super(context, resource, stations);
 		mStations = stations;
 		this.currentLocation = currentLocation;
-		pref = context.getSharedPreferences("favStations", Context.MODE_PRIVATE);
+		pref = context
+				.getSharedPreferences("favStations", Context.MODE_PRIVATE);
+	}
+
+	public int getSelectionPos() {
+		return mSelection;
+	}
+
+	public void setSelectionPos(int mSelection) {
+		this.mSelection = mSelection;
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent)
-	{
+	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder viewHolder;
 
-
-		if (convertView == null)
-		{
+		if (convertView == null) {
 			LayoutInflater inflater = ((Activity) getContext())
 					.getLayoutInflater();
 			convertView = inflater.inflate(R.layout.stations_model, parent,
@@ -66,9 +71,7 @@ public class StationsAdapter extends ArrayAdapter<Station>
 			viewHolder.favouriteBtn = (CheckBox) convertView
 					.findViewById(R.id.favourites_btn);
 			convertView.setTag(viewHolder);
-		}
-		else
-		{
+		} else {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 		final Station thisStation = mStations.get(position);
@@ -80,53 +83,57 @@ public class StationsAdapter extends ArrayAdapter<Station>
 		viewHolder.distance.setText(Tools.formatDistance(thisStation
 				.getDistance()));
 		viewHolder.favouriteBtn.setChecked(thisStation.getFavourite());
-		viewHolder.distance.setOnClickListener(new OnClickListener()
-		{
+		viewHolder.distance.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View v)
-			{
-				Intent i = new Intent(Intent.ACTION_VIEW, Uri
-						.parse(Tools.getPathString(currentLocation, thisStation.getPosition())));
+			public void onClick(View v) {
+				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(Tools
+						.getPathString(currentLocation,
+								thisStation.getPosition())));
 				getContext().startActivity(i);
 			}
 		});
 		viewHolder.favouriteBtn.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View arg0) {
 				thisStation.setFavourite(!thisStation.getFavourite());
 				SharedPreferences.Editor editor = pref.edit();
-				editor.putBoolean(Tools.STATION_PREFIX+thisStation.getId(), thisStation.getFavourite());
+				editor.putBoolean(Tools.STATION_PREFIX + thisStation.getId(),
+						thisStation.getFavourite());
 				editor.apply();
 				if (thisStation.getFavourite())
-					((MainActivity)getContext()).addFavouriteStation(thisStation);
+					((MainActivity) getContext())
+							.addFavouriteStation(thisStation);
 				else
-					((MainActivity)getContext()).removeFavouriteStation(thisStation);
+					((MainActivity) getContext())
+							.removeFavouriteStation(thisStation);
 				if (isFavouriteAdapter)
 					notifyDataSetChanged();
 			}
 		});
-		if(position>mLastPosition){
-			convertView.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.slide_up));
+		if (position > mLastPosition) {
+			convertView.startAnimation(AnimationUtils.loadAnimation(
+					getContext(), R.anim.slide_up));
 			mLastPosition = position;
 		}
 		return convertView;
 
 	}
+
 	@Override
 	public void notifyDataSetChanged() {
 		super.notifyDataSetChanged();
-		mLastPosition=-1;
+		mLastPosition = -1;
 	}
+
 	@Override
 	public void notifyDataSetInvalidated() {
 		super.notifyDataSetInvalidated();
-		mLastPosition=-1;
+		mLastPosition = -1;
 	}
 
-	private static class ViewHolder
-	{
+	private static class ViewHolder {
 		TextView name;
 		TextView street;
 		TextView availableBike, availableSlots;
@@ -134,9 +141,8 @@ public class StationsAdapter extends ArrayAdapter<Station>
 		CheckBox favouriteBtn;
 
 	}
-	
-	public void setIsFavouriteAdapter(boolean isFavAdapter)
-	{
+
+	public void setIsFavouriteAdapter(boolean isFavAdapter) {
 		isFavouriteAdapter = isFavAdapter;
 	}
 
