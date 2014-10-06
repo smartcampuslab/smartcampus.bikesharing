@@ -15,8 +15,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.view.ActionMode;
 import android.util.Log;
@@ -26,9 +26,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 import eu.trentorise.smartcampus.bikesharing.R;
@@ -304,6 +302,15 @@ public class StationsListFragment extends ListFragment {
 			sortByAvailableSlots(true);
 		} else if (item.getItemId() == R.id.sort_name) {
 			sortByName(true);
+		} else if (item.getItemId() == R.id.action_map) {
+			OsmMap mainFragment = OsmMap.newInstance(mStations,null);
+			FragmentTransaction transaction = getActivity().getSupportFragmentManager()
+					.beginTransaction();
+			transaction.replace(R.id.content_frame, mainFragment, "map");
+			transaction
+					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+			transaction.commit();
+			((MainActivity)getActivity()).setDrawerIndicator(0);
 		} else if (item.getItemId() == R.id.refresh) {
 			refreshDatas();
 		}

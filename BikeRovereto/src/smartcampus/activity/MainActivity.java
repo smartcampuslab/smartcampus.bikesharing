@@ -320,6 +320,11 @@ public class MainActivity extends ActionBarActivity implements
 		}
 
 	}
+	
+	public void setDrawerIndicator(int position){
+		navAdapter.setItemChecked(position);
+		navAdapter.notifyDataSetChanged();
+	}
 
 	private void checkManifestConfiguration() {
 		try {
@@ -394,6 +399,15 @@ public class MainActivity extends ActionBarActivity implements
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
+		}
+		else if(item.getItemId() == R.id.action_stations){
+			StationsListFragment stationsFragment = StationsListFragment
+					.newInstance(stations,favStations);
+			FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+			transaction.replace(R.id.content_frame,
+					stationsFragment, FRAGMENT_STATIONS);
+			transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+			transaction.commit();
 		}
 		return super.onOptionsItemSelected(item);
 	}
