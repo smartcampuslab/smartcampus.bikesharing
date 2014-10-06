@@ -351,14 +351,7 @@ public class StationsListFragment extends ListFragment {
 		} else if (item.getItemId() == R.id.sort_name) {
 			sortByName(true);
 		} else if (item.getItemId() == R.id.action_map) {
-			OsmMap mainFragment = OsmMap.newInstance(mStations, null);
-			FragmentTransaction transaction = getActivity()
-					.getSupportFragmentManager().beginTransaction();
-			transaction.replace(R.id.content_frame, mainFragment, "map");
-			transaction
-					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-			transaction.commit();
-			((MainActivity) getActivity()).setDrawerIndicator(0);
+			((MainActivity) getActivity()).insertMap();
 		} else if (item.getItemId() == R.id.refresh) {
 			refreshDatas();
 		}

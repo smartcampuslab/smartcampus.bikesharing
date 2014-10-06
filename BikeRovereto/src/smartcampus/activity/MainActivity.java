@@ -73,6 +73,8 @@ public class MainActivity extends ActionBarActivity implements
 	private OnBikesRefresh mCallbackBikesRefreshed;
 	private NavigationDrawerAdapter navAdapter;
 
+	private ArrayList<Fragment> frags;
+
 	private Timer timer;
 	private static final String FRAGMENT_MAP = "map";
 	private static final String FRAGMENT_STATIONS = "stations";
@@ -142,6 +144,11 @@ public class MainActivity extends ActionBarActivity implements
 		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
 		prepareNavigationDrawer();
+
+		frags = new ArrayList<Fragment>(3);
+		frags.add(OsmMap.newInstance(stations, bikes));
+		frags.add(StationsListFragment.newInstance(stations, favStations));
+		frags.add(FavouriteFragment.newInstance(favStations));
 
 	}
 
@@ -229,51 +236,15 @@ public class MainActivity extends ActionBarActivity implements
 					@Override
 					public void onItemClick(AdapterView<?> arg0, View arg1,
 							int position, long arg3) {
-						Fragment currentFragment;
-						FragmentTransaction transaction = getSupportFragmentManager()
-								.beginTransaction();
-						transaction
-								.setCustomAnimations(android.R.anim.fade_in,
-										android.R.anim.fade_out,
-										android.R.anim.fade_in,
-										android.R.anim.fade_out);
 						switch (position) {
 						case 0:
 							insertMap();
 							break;
 						case 1:
-							currentFragment = getSupportFragmentManager()
-									.findFragmentByTag(FRAGMENT_STATIONS);
-							if (currentFragment == null
-									|| !currentFragment.isVisible()) {
-								StationsListFragment stationsFragment = StationsListFragment
-										.newInstance(stations,favStations);
-								transaction.replace(R.id.content_frame,
-										stationsFragment, FRAGMENT_STATIONS);
-								transaction.commit();
-							}
-							// Highlight the selected item, update the title,
-							// and close
-							// the drawer
-							navAdapter.setItemChecked(position);
-							navAdapter.notifyDataSetChanged();
+							replaceFragment(frags.get(1), FRAGMENT_STATIONS);
 							break;
 						case 2:
-							currentFragment = getSupportFragmentManager()
-									.findFragmentByTag(FRAGMENT_FAVOURITE);
-							if (currentFragment == null
-									|| !currentFragment.isVisible()) {
-								FavouriteFragment stationsFragment = FavouriteFragment
-										.newInstance(favStations);
-								transaction.replace(R.id.content_frame,
-										stationsFragment, FRAGMENT_FAVOURITE);
-								transaction.commit();
-							}
-							// Highlight the selected item, update the title,
-							// and close
-							// the drawer
-							navAdapter.setItemChecked(position);
-							navAdapter.notifyDataSetChanged();
+							replaceFragment(frags.get(2), FRAGMENT_FAVOURITE);
 							break;
 						case 3:
 							Intent i = new Intent(getBaseContext(),
@@ -288,40 +259,39 @@ public class MainActivity extends ActionBarActivity implements
 									R.anim.slide_up_slower);
 							break;
 						}
+						setDrawerIndicator(position);
 						mDrawerLayout.closeDrawers();
 					}
 				});
 		navAdapter.setItemChecked(0);
 	}
 
-	private void insertMap() {
-		Fragment currentFragment = getSupportFragmentManager()
-				.findFragmentByTag(FRAGMENT_MAP);
-		if (currentFragment == null || !currentFragment.isVisible()) {
-			OsmMap mainFragment = OsmMap.newInstance(stations, bikes);
-			FragmentTransaction transaction = getSupportFragmentManager()
-					.beginTransaction();
-			transaction.replace(R.id.content_frame, mainFragment, FRAGMENT_MAP);
-			transaction
-					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-			transaction.commit();
-			if (getIntent().hasExtra(
-					NotificationReceiver.INTENT_FROM_NOTIFICATION)
-					&& getIntent().getBooleanExtra(
-							NotificationReceiver.INTENT_FROM_NOTIFICATION,
-							false)) {
-				onStationSelected(
-						(Station) getIntent().getParcelableExtra("station"),
-						false);
+	public void insertMap() {
+		replaceFragment(frags.get(0), FRAGMENT_MAP);
+		if (getIntent().hasExtra(NotificationReceiver.INTENT_FROM_NOTIFICATION)
+				&& getIntent().getBooleanExtra(
+						NotificationReceiver.INTENT_FROM_NOTIFICATION, false)) {
+			onStationSelected(
+					(Station) getIntent().getParcelableExtra("station"), false);
 
-			}
-			navAdapter.setItemChecked(0);
-			navAdapter.notifyDataSetChanged();
 		}
 
 	}
-	
-	public void setDrawerIndicator(int position){
+
+	private void replaceFragment(Fragment f, String tag) {
+		Fragment currentFragment = getSupportFragmentManager()
+				.findFragmentByTag(tag);
+		if (currentFragment == null || !currentFragment.isVisible()) {
+			FragmentTransaction transaction = getSupportFragmentManager()
+					.beginTransaction();
+			transaction.replace(R.id.content_frame, f, tag);
+			transaction
+					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+			transaction.commit();
+		}
+	}
+
+	public void setDrawerIndicator(int position) {
 		navAdapter.setItemChecked(position);
 		navAdapter.notifyDataSetChanged();
 	}
@@ -399,20 +369,20 @@ public class MainActivity extends ActionBarActivity implements
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
-		}
-		else if(item.getItemId() == R.id.action_stations){
+		} else if (item.getItemId() == R.id.action_stations) {
 			StationsListFragment stationsFragment = StationsListFragment
-					.newInstance(stations,favStations);
-			FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-			transaction.replace(R.id.content_frame,
-					stationsFragment, FRAGMENT_STATIONS);
-			transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+					.newInstance(stations, favStations);
+			FragmentTransaction transaction = getSupportFragmentManager()
+					.beginTransaction();
+			transaction.replace(R.id.content_frame, stationsFragment,
+					FRAGMENT_STATIONS);
+			transaction
+					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 			transaction.commit();
 			setDrawerIndicator(1);
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
 
 	private Handler mHandler = new Handler() {
 		@Override
@@ -616,6 +586,6 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void onStationSelected(Station station, boolean animation) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

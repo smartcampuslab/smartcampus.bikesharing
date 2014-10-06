@@ -30,7 +30,6 @@ public class FavouriteFragment extends ListFragment{
 	private TextView empty;
 	
 	private OnStationSelectListener mCallback;
-	private SwipeRefreshLayout mSwipeRefreshLayout;
 	// Container Activity must implement this interface
 	public interface OnStationSelectListener
 	{
@@ -47,6 +46,15 @@ public class FavouriteFragment extends ListFragment{
 		return fragment;
 	}
 	
+
+	public void setFavStations(ArrayList<Station> favStations) {
+		this.favStations = favStations;
+		if(adapter!=null)
+			adapter.notifyDataSetChanged();
+	}
+
+
+
 	@Override
 	public void onAttach(Activity activity)
 	{
@@ -87,6 +95,7 @@ public class FavouriteFragment extends ListFragment{
 			sortByAvailableBikes(false);
 		else
 			sortByDistance(false);*/
+		refreshDatas();
 		super.onCreate(savedInstanceState);
 	}
 	
@@ -129,7 +138,6 @@ public class FavouriteFragment extends ListFragment{
         Log.i("STR", "onRefreshComplete");
         adapter.notifyDataSetChanged();
         // Stop the refreshing indicator
-        mSwipeRefreshLayout.setRefreshing(false);
     }
 	
 	

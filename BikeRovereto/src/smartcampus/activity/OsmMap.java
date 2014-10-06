@@ -244,7 +244,12 @@ public class OsmMap extends Fragment {
 
 		Resources res = getResources();
 
-		bikesMarkersOverlay = new ArrayList<BikeMarker>();
+		if(bikesMarkersOverlay==null){
+			bikesMarkersOverlay = new ArrayList<BikeMarker>();
+		}
+		else{
+			bikesMarkersOverlay.clear();
+		}
 		loadBikesMarkers();
 	}
 
@@ -255,7 +260,12 @@ public class OsmMap extends Fragment {
 		}
 
 		Resources res = getResources();
-		stationsMarkersOverlay = new ArrayList<StationMarker>();
+		if(stationsMarkersOverlay==null){
+			stationsMarkersOverlay = new ArrayList<StationMarker>();
+		}
+		else{
+			stationsMarkersOverlay.clear();
+		}
 		refreshStationsMarkers();
 	}
 
@@ -324,6 +334,9 @@ public class OsmMap extends Fragment {
 		if (bikesMarkersOverlay == null) {
 			bikesMarkersOverlay = new ArrayList<BikeMarker>();
 		}
+		else{
+			bikesMarkersOverlay.clear();
+		}
 
 		Resources res = getResources();
 
@@ -344,6 +357,8 @@ public class OsmMap extends Fragment {
 	private void refreshStationsMarkers() {
 		if (stationsMarkersOverlay == null) {
 			stationsMarkersOverlay = new ArrayList<StationMarker>();
+		}else{
+			stationsMarkersOverlay.clear(); 
 		}
 		Resources res = getResources();
 
