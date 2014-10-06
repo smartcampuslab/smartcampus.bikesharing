@@ -112,6 +112,19 @@ public class StationsAdapter extends ArrayAdapter<Station> {
 					notifyDataSetChanged();
 			}
 		});
+		
+		//ATTENTION this is a cheat to avoid an Android bug.
+		if (position == mSelection) {
+			final View row = convertView;
+			convertView.postDelayed(new Runnable() {
+				
+				@Override
+				public void run() {
+					row.setSelected(true);
+				}
+			}, 50);
+			
+		}
 		if (position > mLastPosition) {
 			convertView.startAnimation(AnimationUtils.loadAnimation(
 					getContext(), R.anim.slide_up));
