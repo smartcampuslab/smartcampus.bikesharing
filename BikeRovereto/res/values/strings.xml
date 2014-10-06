@@ -9,6 +9,7 @@
     <string name="to_details">Dettagli</string>
     <string name="sort">Ordina per&#8230;</string>
     <string name="sort_distance">Distanza</string>
+    <string name="sort_fav">Favoriti</string>
     <string name="sort_available_bikes">Bici disponibili</string>
     <string name="sort_available_slots">Slot disponibili</string>
     <string name="sort_name">Nome</string>

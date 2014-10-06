@@ -11,6 +11,9 @@
         <menu>
             <group android:checkableBehavior="single">
                 <item
+			        android:id="@+id/sort_fav"
+			        android:title="@string/sort_fav"  />
+                <item
 			        android:id="@+id/sort_distance"
 			        android:title="@string/sort_distance"  />
 			    <item

@@ -30,29 +30,28 @@ import android.widget.ListView;
 import android.widget.Toast;
 import eu.trentorise.smartcampus.bikesharing.R;
 
-public class StationsListFragment extends ListFragment
-{
+public class StationsListFragment extends ListFragment {
 
 	private ArrayList<Station> mStations;
 	private ArrayList<Station> mFav;
 	private View emptyView;
 	private StationsAdapter stationsAdapter;
 	private int sortedBy;
+	private static final int SORTED_BY_FAVOURITES = 0;
 	private static final int SORTED_BY_DISTANCE = 1;
 	private static final int SORTED_BY_NAME = 2;
 	private static final int SORTED_BY_AVAILABLE_BIKES = 3;
 	private static final int SORTED_BY_AVAILABLE_SLOTS = 4;
-	
+
 	OnStationSelectListener mCallback;
 
 	// Container Activity must implement this interface
-	public interface OnStationSelectListener
-	{
+	public interface OnStationSelectListener {
 		public void onStationSelected(Station station, boolean animation);
 	}
 
-	public static StationsListFragment newInstance(ArrayList<Station> stations,ArrayList<Station> fav)
-	{
+	public static StationsListFragment newInstance(ArrayList<Station> stations,
+			ArrayList<Station> fav) {
 		StationsListFragment fragment = new StationsListFragment();
 		Bundle bundle = new Bundle();
 		bundle.putParcelableArrayList("stations", stations);
@@ -61,90 +60,81 @@ public class StationsListFragment extends ListFragment
 		return fragment;
 	}
 
-	
 	@Override
-	public void onAttach(Activity activity)
-	{
+	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 
 		// This makes sure that the container activity has implemented
 		// the callback interface. If not, it throws an exception
-		try
-		{
+		try {
 			mCallback = (OnStationSelectListener) activity;
-		}
-		catch (ClassCastException e)
-		{
+		} catch (ClassCastException e) {
 			throw new ClassCastException(activity.toString()
 					+ " must implement OnStationSelectListener");
 		}
 	}
-	
+
 	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mStations = getArguments().getParcelableArrayList("stations");
 		mFav = getArguments().getParcelableArrayList("fav");
-		mStations.removeAll(mFav);
 		((MainActivity) getActivity())
-				.setOnPositionAquiredListener(new OnPositionAquiredListener()
-				{
+				.setOnPositionAquiredListener(new OnPositionAquiredListener() {
 
 					@Override
-					public void onPositionAquired()
-					{
+					public void onPositionAquired() {
 						stationsAdapter.notifyDataSetChanged();
 					}
 				});
-		//If the app still waiting the server response, initiliaze the arraylist to prevent crash for nullpointer
+		// If the app still waiting the server response, initiliaze the
+		// arraylist to prevent crash for nullpointer
 
-		if (mStations == null){
+		if (mStations == null) {
 			mStations = new ArrayList<Station>();
 			return;
 		}
-				
-		//If the distance is already defined the list is sorted by distance, otherwise
-		//is sorted by available bikes
-		if (mStations.size() >= 1)
-		{
-			if (mStations.get(0).getDistance()==Station.DISTANCE_NOT_VALID)
-				sortByAvailableBikes(false);
-			else
-				sortByDistance(false);
-		}		
+
+		// If the distance is already defined the list is sorted by distance,
+		// otherwise
+		// is sorted by available bikes
+		if (mStations.size() >= 1) {
+//			if (mStations.get(0).getDistance() == Station.DISTANCE_NOT_VALID)
+//				sortByAvailableBikes(false);
+//			else
+//				sortByDistance(false);
+			sortByFavourites(true);
+		}
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState)
-	{
+			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.stations_main, container,
 				false);
 
-
 		emptyView = rootView.findViewById(android.R.id.empty);
-		stationsAdapter = new StationsAdapter(getActivity(), 0, mStations, ((MainActivity)getActivity()).getCurrentLocation());
+		stationsAdapter = new StationsAdapter(getActivity(), 0, mStations,
+				((MainActivity) getActivity()).getCurrentLocation());
 		setListAdapter(stationsAdapter);
-		
+
 		setHasOptionsMenu(true);
-		
+
 		return rootView;
 	}
-	
+
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		getListView().setDivider(new ColorDrawable(Color.TRANSPARENT));
-		getListView().setDividerHeight(Tools.convertDpToPixel(getActivity(), 5));
+		getListView()
+				.setDividerHeight(Tools.convertDpToPixel(getActivity(), 5));
 		getListView().setEmptyView(emptyView);
-		getListView().setOnItemClickListener(new OnItemClickListener()
-		{
+		getListView().setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id)
-			{					
+					int position, long id) {
 				mCallback.onStationSelected(mStations.get(position), true);
 			}
 		});
@@ -155,33 +145,33 @@ public class StationsListFragment extends ListFragment
 		getActivity().setProgressBarIndeterminateVisibility(true);
 		GetStationsTask getStationsTask = new GetStationsTask(getActivity());
 		mStations.clear();
-        getStationsTask.delegate=new AsyncStationResponse() {
-			
+		getStationsTask.delegate = new AsyncStationResponse() {
+
 			@Override
-			public void processFinish(ArrayList<Station> stations, ArrayList<Station> favStations, int status) {
+			public void processFinish(ArrayList<Station> stations,
+					ArrayList<Station> favStations, int status) {
 				mStations.addAll(stations);
 				mFav.addAll(favStations);
-				mStations.removeAll(mFav);
-				((MainActivity)getActivity()).setStations(stations);
-				((MainActivity)getActivity()).setFavStations(favStations);
-				if (((MainActivity)getActivity()).getCurrentLocation() != null)
-					((MainActivity)getActivity()).updateDistances();
-				onRefreshComplete();	
-				if (status != GetStationsTask.NO_ERROR)
-				{
-					Toast.makeText(getActivity(), getString(R.string.error), Toast.LENGTH_SHORT).show();
+				((MainActivity) getActivity()).setStations(stations);
+				((MainActivity) getActivity()).setFavStations(favStations);
+				if (((MainActivity) getActivity()).getCurrentLocation() != null)
+					((MainActivity) getActivity()).updateDistances();
+				onRefreshComplete();
+				if (status != GetStationsTask.NO_ERROR) {
+					Toast.makeText(getActivity(), getString(R.string.error),
+							Toast.LENGTH_SHORT).show();
 				}
 				Log.d("Server call finished", "status code: " + status);
 			}
 		};
 		getStationsTask.execute("");
 	}
-	
+
 	private void onRefreshComplete() {
-        Log.i("STR", "onRefreshComplete");
-        getActivity().setProgressBarIndeterminateVisibility(false);
-        //Reorder the arraylist in the previous order
-        switch (sortedBy) {
+		Log.i("STR", "onRefreshComplete");
+		getActivity().setProgressBarIndeterminateVisibility(false);
+		// Reorder the arraylist in the previous order
+		switch (sortedBy) {
 		case SORTED_BY_DISTANCE:
 			sortByDistance(true);
 			break;
@@ -194,15 +184,20 @@ public class StationsListFragment extends ListFragment
 		case SORTED_BY_AVAILABLE_SLOTS:
 			sortByAvailableSlots(true);
 			break;
+		default:
+			sortByFavourites(true);
+			break;
 		}
-    }
-	 
+	}
+
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-	{
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.stations, menu);
-		//Set the sorting order at the start of the list
+		// Set the sorting order at the start of the list
 		switch (sortedBy) {
+		case SORTED_BY_FAVOURITES:
+			menu.findItem(R.id.sort_fav).setChecked(true);
+			break;
 		case SORTED_BY_DISTANCE:
 			menu.findItem(R.id.sort_distance).setChecked(true);
 			break;
@@ -218,131 +213,117 @@ public class StationsListFragment extends ListFragment
 		}
 		super.onCreateOptionsMenu(menu, inflater);
 	}
-	
+
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
+	public boolean onOptionsItemSelected(MenuItem item) {
 		item.setChecked(!item.isChecked());
-		if (item.getItemId() == R.id.sort_distance)
-		{
+		if (item.getItemId() == R.id.sort_fav) {
+			sortByFavourites(true);
+		}
+		else if (item.getItemId() == R.id.sort_distance) {
 			sortByDistance(true);
-		}
-		else if (item.getItemId() == R.id.sort_available_bikes)
-		{
+		}else if (item.getItemId() == R.id.sort_available_bikes) {
 			sortByAvailableBikes(true);
-		}
-		else if (item.getItemId() == R.id.sort_available_slots)
-		{
+		} else if (item.getItemId() == R.id.sort_available_slots) {
 			sortByAvailableSlots(true);
-		}
-		else if (item.getItemId() == R.id.sort_name)
-		{
+		} else if (item.getItemId() == R.id.sort_name) {
 			sortByName(true);
-		}
-		else if (item.getItemId() == R.id.refresh)
-		{
-            refreshDatas();
+		} else if (item.getItemId() == R.id.refresh) {
+			refreshDatas();
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Sorter and comparator
 	 */
 
-	private void sortByDistance(boolean updateList)
-	{
-		mStations.removeAll(mFav);
+	private void sortByDistance(boolean updateList) {
 		Collections.sort(mStations, new DistanceComparator());
-		Collections.sort(mFav, new DistanceComparator());
-		mStations.addAll(0, mFav);
 		sortedBy = SORTED_BY_DISTANCE;
 		if (updateList)
 			stationsAdapter.notifyDataSetChanged();
 	}
 
-	private void sortByName(boolean updateList)
-	{
-		mStations.removeAll(mFav);
+	private void sortByName(boolean updateList) {
 		Collections.sort(mStations, new NameComparator());
-		Collections.sort(mFav, new NameComparator());
-		mStations.addAll(0, mFav);
 		sortedBy = SORTED_BY_NAME;
 		if (updateList)
 			stationsAdapter.notifyDataSetChanged();
 	}
 
-	private void sortByAvailableSlots(boolean updateList)
-	{
-		mStations.removeAll(mFav);
+	private void sortByAvailableSlots(boolean updateList) {
 		Collections.sort(mStations, new AvailableSlotsComparator());
-		Collections.sort(mFav, new AvailableSlotsComparator());
-		mStations.addAll(0, mFav);
 		sortedBy = SORTED_BY_AVAILABLE_SLOTS;
 		if (updateList)
 			stationsAdapter.notifyDataSetChanged();
 	}
 
-	private void sortByAvailableBikes(boolean updateList)
-	{
-		mStations.removeAll(mFav);
+	private void sortByAvailableBikes(boolean updateList) {
 		Collections.sort(mStations, new AvailableBikesComparator());
-		Collections.sort(mFav, new AvailableBikesComparator());
-		mStations.addAll(0, mFav);
 		sortedBy = SORTED_BY_AVAILABLE_BIKES;
 		if (updateList)
 			stationsAdapter.notifyDataSetChanged();
 	}
 
-	private class AvailableSlotsComparator implements Comparator<Station>
-	{
+	private void sortByFavourites(boolean updateList) {
+		mStations.removeAll(mFav);
+		Collections.sort(mStations, new FavouriteComparator());
+		Collections.sort(mFav, new FavouriteComparator());
+		mStations.addAll(0, mFav);
+		sortedBy = SORTED_BY_FAVOURITES;
+		if (updateList && stationsAdapter!=null)
+			stationsAdapter.notifyDataSetChanged();
+	}
+
+	private class AvailableSlotsComparator implements Comparator<Station> {
 
 		@Override
-		public int compare(Station station0, Station station1)
-		{
+		public int compare(Station station0, Station station1) {
 			return station1.getNSlotsEmpty() - station0.getNSlotsEmpty();
 		}
 
 	}
 
-	private class AvailableBikesComparator implements Comparator<Station>
-	{
+	private class AvailableBikesComparator implements Comparator<Station> {
 
 		@Override
-		public int compare(Station station0, Station station1)
-		{
+		public int compare(Station station0, Station station1) {
 			return station1.getNBikesPresent() - station0.getNBikesPresent();
 		}
 
 	}
 
-	private class DistanceComparator implements Comparator<Station>
-	{
+	private class DistanceComparator implements Comparator<Station> {
 
 		@Override
-		public int compare(Station station0, Station station1)
-		{
-			if(mFav.contains(station0) && mFav.contains(station1))
+		public int compare(Station station0, Station station1) {
+			return station0.getDistance() - station1.getDistance();
+		}
+
+	}
+	private class FavouriteComparator implements Comparator<Station> {
+
+		@Override
+		public int compare(Station station0, Station station1) {
+			if (mFav.contains(station0) && mFav.contains(station1))
 				return station0.getDistance() - station1.getDistance();
-			if(mFav.contains(station0))
+			if (mFav.contains(station0))
 				return 1;
-			if(mFav.contains(station1))
+			if (mFav.contains(station1))
 				return 1;
 			return station0.getDistance() - station1.getDistance();
 		}
-		
+
 	}
 
-	private class NameComparator implements Comparator<Station>
-	{
+	private class NameComparator implements Comparator<Station> {
 
 		@Override
-		public int compare(Station station0, Station station1)
-		{
+		public int compare(Station station0, Station station1) {
 			return station0.getName().compareToIgnoreCase(station1.getName());
 		}
-		
-	}
 
+	}
 
 }
