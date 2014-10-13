@@ -44,7 +44,6 @@
         <receiver
             android:name="smartcampus.notifications.NotificationReceiver"
             android:enabled="true" >
-
         </receiver>
         <receiver
             android:name="smartcampus.notifications.BootReceiver"
@@ -55,11 +54,13 @@
 >
         </receiver>
 
-        <activity
-            android:name="eu.trentorise.smartcampus.bikerovereto.AboutActivity" >
+        <activity android:name="eu.trentorise.smartcampus.bikerovereto.AboutActivity" >
+        </activity>
+        <activity android:name="smartcampus.activity.About" >
         </activity>
         <activity
-            android:name="smartcampus.activity.About" >
+            android:name="smartcampus.activity.DetailsActivity"
+            android:label="@string/title_activity_details" >
         </activity>
     </application>
 

@@ -163,7 +163,11 @@ public class StationsListFragment extends ListFragment implements
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		// TODO implement details activity
+		Station s = (Station) l.getItemAtPosition(position);
+		Intent i = new Intent(getActivity(),DetailsActivity.class);
+		i.putExtra(DetailsActivity.EXTRA_STATION, s);
+		startActivity(i);
+		getActivity().overridePendingTransition(R.anim.alpha_in,R.anim.alpha_out);
 	}
 
 	private void refreshDatas() {
@@ -313,11 +317,12 @@ public class StationsListFragment extends ListFragment implements
 		i.putExtra(Intent.EXTRA_TEXT, "Asda\n asd\n");
 		startActivity(Intent.createChooser(i,
 				getString(R.string.action_add_report)));
-		
-//		Intent intent = new Intent(Intent.ACTION_VIEW);
-//		Uri data = Uri.parse("mailto:asdasd@gmail.com?subject=" + "bike sharing report" + "&body=" + "Asda asd");
-//		intent.setData(data);
-//		startActivity(intent);
+
+		// Intent intent = new Intent(Intent.ACTION_VIEW);
+		// Uri data = Uri.parse("mailto:asdasd@gmail.com?subject=" +
+		// "bike sharing report" + "&body=" + "Asda asd");
+		// intent.setData(data);
+		// startActivity(intent);
 
 	}
 

@@ -104,8 +104,7 @@ public class OsmMap extends Fragment implements onBackListener {
 
 		setCallBackListeners();
 		super.onCreate(savedInstanceState);
-		
-		
+
 	}
 
 	@Override
@@ -176,7 +175,6 @@ public class OsmMap extends Fragment implements onBackListener {
 			}
 		});
 		getActivity().getActionBar().setTitle(getString(R.string.app_name));
-		
 	}
 
 	@Override
@@ -249,10 +247,9 @@ public class OsmMap extends Fragment implements onBackListener {
 
 		Resources res = getResources();
 
-		if(bikesMarkersOverlay==null){
+		if (bikesMarkersOverlay == null) {
 			bikesMarkersOverlay = new ArrayList<BikeMarker>();
-		}
-		else{
+		} else {
 			bikesMarkersOverlay.clear();
 		}
 		loadBikesMarkers();
@@ -265,10 +262,9 @@ public class OsmMap extends Fragment implements onBackListener {
 		}
 
 		Resources res = getResources();
-		if(stationsMarkersOverlay==null){
+		if (stationsMarkersOverlay == null) {
 			stationsMarkersOverlay = new ArrayList<StationMarker>();
-		}
-		else{
+		} else {
 			stationsMarkersOverlay.clear();
 		}
 		refreshStationsMarkers();
@@ -338,8 +334,7 @@ public class OsmMap extends Fragment implements onBackListener {
 	private void loadBikesMarkers() {
 		if (bikesMarkersOverlay == null) {
 			bikesMarkersOverlay = new ArrayList<BikeMarker>();
-		}
-		else{
+		} else {
 			bikesMarkersOverlay.clear();
 		}
 
@@ -362,8 +357,8 @@ public class OsmMap extends Fragment implements onBackListener {
 	private void refreshStationsMarkers() {
 		if (stationsMarkersOverlay == null) {
 			stationsMarkersOverlay = new ArrayList<StationMarker>();
-		}else{
-			stationsMarkersOverlay.clear(); 
+		} else {
+			stationsMarkersOverlay.clear();
 		}
 		Resources res = getResources();
 
@@ -497,7 +492,7 @@ public class OsmMap extends Fragment implements onBackListener {
 
 	@Override
 	public void onBackPressed() {
-		if(getFragmentManager().getBackStackEntryCount()>1)
+		if (getFragmentManager().getBackStackEntryCount() > 1)
 			getFragmentManager().popBackStack();
 		else
 			getActivity().finish();

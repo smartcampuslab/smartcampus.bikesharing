@@ -138,7 +138,7 @@ public class MainActivity extends ActionBarActivity implements
 		super.onCreate(savedInstanceState);
 
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-
+		
 		setContentView(R.layout.activity_main);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
@@ -153,6 +153,8 @@ public class MainActivity extends ActionBarActivity implements
 		frags.add(OsmMap.newInstance(stations, bikes));
 		frags.add(StationsListFragment.newInstance(stations, favStations));
 		frags.add(FavouriteFragment.newInstance(favStations));
+		
+		mHandler.sendEmptyMessage(0);
 
 	}
 
@@ -410,7 +412,6 @@ public class MainActivity extends ActionBarActivity implements
 		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
 				Tools.LOCATION_REFRESH_TIME, Tools.LOCATION_REFRESH_DISTANCE,
 				mLocationListener);
-		mHandler.sendEmptyMessage(0);
 	}
 
 	@Override
