@@ -108,6 +108,10 @@ public class MainActivity extends ActionBarActivity implements
 		public void bikesRefreshed(ArrayList<Bike> bikes);
 	}
 
+	public interface onBackListener {
+		public void onBackPressed();
+	}
+
 	public void setOnPositionAquiredListener(
 			OnPositionAquiredListener onPositionAquiredListener) {
 		this.mCallback = onPositionAquiredListener;
@@ -156,7 +160,7 @@ public class MainActivity extends ActionBarActivity implements
 		AlertDialog.Builder build = new AlertDialog.Builder(this);
 		build.setTitle(R.string.dialog_title_no_internet)
 				.setMessage(R.string.dialog_msg_no_internet)
-				.setPositiveButton(R.string.dialog_msg_settings_button,
+				.setPositiveButton(R.string.settings,
 						new DialogInterface.OnClickListener() {
 
 							@Override
@@ -200,8 +204,7 @@ public class MainActivity extends ActionBarActivity implements
 		}
 
 		navExtraTitles = getResources().getStringArray(R.array.navExtraTitles);
-		navExtraIcons = new int[] { R.drawable.nav_settings,
-				R.drawable.ic_action_about };
+		navExtraIcons = new int[] { R.drawable.ic_action_about };
 
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -241,22 +244,19 @@ public class MainActivity extends ActionBarActivity implements
 							insertMap();
 							break;
 						case 1:
-							replaceFragment(frags.get(1), FRAGMENT_STATIONS);
+							replaceFragment(frags.get(position),
+									FRAGMENT_STATIONS, position);
 							break;
 						case 2:
-							replaceFragment(frags.get(2), FRAGMENT_FAVOURITE);
+							replaceFragment(frags.get(position),
+									FRAGMENT_FAVOURITE, position);
 							break;
 						case 3:
-							Intent i = new Intent(getBaseContext(),
-									SettingsActivity.class);
-							startActivity(i);
-							break;
-						case 4:
 							Intent i2 = new Intent(getBaseContext(),
 									About.class);
 							startActivity(i2);
-							overridePendingTransition(R.anim.slide_up,
-									R.anim.slide_up_slower);
+							overridePendingTransition(R.anim.alpha_in,
+									R.anim.alpha_out);
 							break;
 						}
 						setDrawerIndicator(position);
@@ -267,7 +267,7 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	public void insertMap() {
-		replaceFragment(frags.get(0), FRAGMENT_MAP);
+		replaceFragment(frags.get(0), FRAGMENT_MAP, 0);
 		if (getIntent().hasExtra(NotificationReceiver.INTENT_FROM_NOTIFICATION)
 				&& getIntent().getBooleanExtra(
 						NotificationReceiver.INTENT_FROM_NOTIFICATION, false)) {
@@ -278,7 +278,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	}
 
-	private void replaceFragment(Fragment f, String tag) {
+	private void replaceFragment(Fragment f, String tag, int position) {
 		Fragment currentFragment = getSupportFragmentManager()
 				.findFragmentByTag(tag);
 		if (currentFragment == null || !currentFragment.isVisible()) {
@@ -287,6 +287,7 @@ public class MainActivity extends ActionBarActivity implements
 			transaction.replace(R.id.content_frame, f, tag);
 			transaction
 					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+			transaction.addToBackStack(tag);
 			transaction.commit();
 		}
 	}
@@ -575,7 +576,13 @@ public class MainActivity extends ActionBarActivity implements
 		if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
 			mDrawerLayout.closeDrawer(mDrawerList);
 		} else {
-			super.onBackPressed();
+			Fragment cf = getSupportFragmentManager().findFragmentById(
+					R.id.content_frame);
+			if (cf instanceof onBackListener) {
+				((onBackListener) cf).onBackPressed();
+			} else {
+				super.onBackPressed();
+			}
 		}
 	}
 

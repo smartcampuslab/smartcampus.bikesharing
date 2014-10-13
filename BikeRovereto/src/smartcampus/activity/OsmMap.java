@@ -23,6 +23,7 @@ import smartcampus.activity.MainActivity.OnBikesAquired;
 import smartcampus.activity.MainActivity.OnBikesRefresh;
 import smartcampus.activity.MainActivity.OnStationRefresh;
 import smartcampus.activity.MainActivity.OnStationsAquired;
+import smartcampus.activity.MainActivity.onBackListener;
 import smartcampus.activity.cluster.GridMarkerClustererBikes;
 import smartcampus.activity.cluster.GridMarkerClustererStation;
 import smartcampus.model.Bike;
@@ -53,7 +54,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import eu.trentorise.smartcampus.bikesharing.R;
 
-public class OsmMap extends Fragment {
+public class OsmMap extends Fragment implements onBackListener {
 	// the view where the map is showed
 	private MapView mapView;
 	// overlya for current Location
@@ -103,6 +104,8 @@ public class OsmMap extends Fragment {
 
 		setCallBackListeners();
 		super.onCreate(savedInstanceState);
+		
+		
 	}
 
 	@Override
@@ -172,6 +175,8 @@ public class OsmMap extends Fragment {
 				}
 			}
 		});
+		getActivity().getActionBar().setTitle(getString(R.string.app_name));
+		
 	}
 
 	@Override
@@ -488,6 +493,14 @@ public class OsmMap extends Fragment {
 		((MainActivity) getActivity()).setOnStationRefresh(null);
 		((MainActivity) getActivity()).setOnBikesRefresh(null);
 
+	}
+
+	@Override
+	public void onBackPressed() {
+		if(getFragmentManager().getBackStackEntryCount()>1)
+			getFragmentManager().popBackStack();
+		else
+			getActivity().finish();
 	}
 
 }

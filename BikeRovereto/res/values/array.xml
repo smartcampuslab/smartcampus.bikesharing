@@ -6,7 +6,6 @@
         <item>@string/favourites</item>
     </string-array>
     <string-array name="navExtraTitles">
-        <item>@string/action_settings</item>
         <item>@string/about</item>
     </string-array>
 </resources>

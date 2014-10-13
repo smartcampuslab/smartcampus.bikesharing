@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import eu.trentorise.smartcampus.bikesharing.R;
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
+import smartcampus.activity.MainActivity.onBackListener;
 import smartcampus.asynctask.GetStationsTask;
 import smartcampus.asynctask.GetStationsTask.AsyncStationResponse;
 import smartcampus.model.Station;
@@ -24,7 +25,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 
-public class FavouriteFragment extends ListFragment{
+public class FavouriteFragment extends ListFragment implements onBackListener{
 	private ArrayList<Station> favStations;
 	private StationsAdapter adapter;
 	private TextView empty;
@@ -78,6 +79,9 @@ public class FavouriteFragment extends ListFragment{
 	{
 		favStations = getArguments().getParcelableArrayList("stations");
 		if (favStations == null) favStations = new ArrayList<Station>();
+		
+		getActivity().getActionBar().setTitle(getString(R.string.favourites));
+		
 		((MainActivity) getActivity())
 				.setOnPositionAquiredListener(new OnPositionAquiredListener()
 				{
@@ -97,6 +101,12 @@ public class FavouriteFragment extends ListFragment{
 			sortByDistance(false);*/
 		refreshDatas();
 		super.onCreate(savedInstanceState);
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		getActivity().getActionBar().setTitle(R.string.favourites);
 	}
 	
 	@Override
@@ -155,6 +165,12 @@ public class FavouriteFragment extends ListFragment{
 				mCallback.onStationSelected(favStations.get(position), true);				
 			}
 		});
+	}
+
+
+	@Override
+	public void onBackPressed() {
+		getFragmentManager().popBackStack();
 	}
 	
 }

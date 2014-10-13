@@ -32,7 +32,7 @@ public class Tools {
 
 	public static String formatDistance(int distance) {
 		if (distance == Station.DISTANCE_NOT_VALID) {
-			return "...";
+			return "N/D";
 		} else if (distance < 1000) {
 			return distance + " m";
 		} else {

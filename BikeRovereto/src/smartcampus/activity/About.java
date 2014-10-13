@@ -23,11 +23,6 @@ public class About extends ActionBarActivity
 		setBtClose();
 	}
 	
-	@Override
-	protected void onDestroy()
-	{
-		super.onDestroy();
-	}
 	
 	private void setBtClose()
 	{
@@ -41,10 +36,13 @@ public class About extends ActionBarActivity
 			}
 		});
 	}
+	
 	@Override
 	public void onBackPressed()
 	{
 		finish();
-		overridePendingTransition(R.anim.slide_down_slower, R.anim.slide_down);
+		overridePendingTransition(R.anim.alpha_in,
+				R.anim.alpha_out);
+
 	}
 }

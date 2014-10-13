@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
+import smartcampus.activity.MainActivity.onBackListener;
 import smartcampus.asynctask.GetStationsTask;
 import smartcampus.asynctask.GetStationsTask.AsyncStationResponse;
 import smartcampus.model.Station;
@@ -32,7 +33,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import eu.trentorise.smartcampus.bikesharing.R;
 
-public class StationsListFragment extends ListFragment {
+public class StationsListFragment extends ListFragment implements onBackListener {
 
 	private ArrayList<Station> mStations;
 	private ArrayList<Station> mFav;
@@ -136,6 +137,8 @@ public class StationsListFragment extends ListFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		
 		if (getArguments().containsKey("stations")
 				&& getArguments().containsKey("stations")) {
 			mStations = getArguments().getParcelableArrayList("stations");
@@ -193,6 +196,12 @@ public class StationsListFragment extends ListFragment {
 		super.onPause();
 		if (mActionMode != null)
 			mActionMode.finish();
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		getActivity().getActionBar().setTitle(R.string.stations);
 	}
 
 	@Override
@@ -473,6 +482,11 @@ public class StationsListFragment extends ListFragment {
 			return station0.getName().compareToIgnoreCase(station1.getName());
 		}
 
+	}
+
+	@Override
+	public void onBackPressed() {
+		getFragmentManager().popBackStack();
 	}
 
 }
