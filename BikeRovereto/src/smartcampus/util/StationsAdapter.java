@@ -82,16 +82,16 @@ public class StationsAdapter extends ArrayAdapter<Station> {
 		viewHolder.distance.setText(Tools.formatDistance(thisStation
 				.getDistance()));
 		viewHolder.favouriteBtn.setChecked(thisStation.getFavourite());
-		viewHolder.distance.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(Tools
-						.getPathString(currentLocation,
-								thisStation.getPosition())));
-				getContext().startActivity(i);
-			}
-		});
+//		viewHolder.distance.setOnClickListener(new OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(Tools
+//						.getPathString(currentLocation,
+//								thisStation.getPosition())));
+//				getContext().startActivity(i);
+//			}
+//		});
 		viewHolder.favouriteBtn.setOnClickListener(new OnClickListener() {
 
 			@Override

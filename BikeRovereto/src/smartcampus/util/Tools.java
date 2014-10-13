@@ -4,6 +4,9 @@ import org.osmdroid.util.GeoPoint;
 
 import smartcampus.model.Station;
 import android.content.Context;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.util.TypedValue;
 
 public class Tools {
@@ -30,13 +33,13 @@ public class Tools {
 		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
 	}
 
-	public static String formatDistance(int distance) {
+	public static Spanned formatDistance(int distance) {
 		if (distance == Station.DISTANCE_NOT_VALID) {
-			return "N/D";
+			return new SpannableString("N/D");
 		} else if (distance < 1000) {
-			return distance + " m";
+			return Html.fromHtml("<b>"+distance + "</b> m");
 		} else {
-			return Math.round(distance / 100) / 10.0 + " KM";
+			return Html.fromHtml("<b>"+Math.round(distance / 100) / 10.0 + "</b> KM");
 		}
 	}
 
