@@ -6,6 +6,7 @@ package smartcampus.util;
 //import org.osmdroid.views.MapView;
 
 import org.osmdroid.bonuspack.overlays.MarkerInfoWindow;
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
 import smartcampus.activity.DetailsActivity;
@@ -22,7 +23,7 @@ import android.widget.TextView;
 import eu.trentorise.smartcampus.bikesharing.R;
 
 public class StationInfoWindow extends MarkerInfoWindow {
-	private MapView myMapView;
+	private MapView mMapView;
 	private Station station;
 	private StationMarker mItem;
 	private Paint mPaint;
@@ -32,22 +33,13 @@ public class StationInfoWindow extends MarkerInfoWindow {
 	public StationInfoWindow(MapView mapView,
 			final FragmentManager fragmentManager) {
 		super(R.layout.bonuspack_bubble, mapView);
-		
-		myMapView = mapView;
-		
+
+		mMapView = mapView;
+
 		mPaint = new Paint();
 		mPaint.setColor(Color.WHITE);
 		mPaint.setAntiAlias(true);
-		
-		TextView btn = (TextView) (mView.findViewById(R.id.btToDetails));
-		btn.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
 
-				Intent i = new Intent(myMapView.getContext(),DetailsActivity.class);
-				i.putExtra(DetailsActivity.EXTRA_STATION, mItem.getStation());
-				myMapView.getContext().startActivity(i);
-			}
-		});
 	}
 
 	@Override
@@ -58,8 +50,8 @@ public class StationInfoWindow extends MarkerInfoWindow {
 
 		station = mItem.getStation();
 		mMapView.getController().animateTo(mItem.getPosition());
-		if(mMapView.getZoomLevel()<20)
-			myMapView.getController().setZoom(20);
+		if (mMapView.getZoomLevel() < 20)
+			mMapView.getController().setZoom(20);
 		TextView tAvailable = (TextView) mView.findViewById(R.id.txt_available);
 		TextView tEmpty = (TextView) mView.findViewById(R.id.txt_empty);
 		tAvailable.setText(Integer.toString(mItem.getStation()
@@ -84,6 +76,23 @@ public class StationInfoWindow extends MarkerInfoWindow {
 		// {
 		// mView.findViewById(R.id.image_warnings).setVisibility(View.GONE);
 		// }
+
+		TextView btn = (TextView) (mView.findViewById(R.id.btToDetails));
+		btn.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+
+				Intent i = new Intent(mMapView.getContext(),
+						DetailsActivity.class);
+				i.putExtra(DetailsActivity.EXTRA_STATION, mItem.getStation());
+				GeoPoint p = ((MainActivity) mMapView.getContext())
+						.getCurrentLocation();
+				if (p != null) {
+					i.putExtra(DetailsActivity.EXTRA_POSITION,
+							new double[] { p.getLatitude(), p.getLongitude() });
+				}
+				mMapView.getContext().startActivity(i);
+			}
+		});
 	}
 
 }

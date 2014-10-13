@@ -32,10 +32,9 @@ public class StationsAdapter extends ArrayAdapter<Station> {
 	private int mSelection = -1;
 
 	public StationsAdapter(Context context, int resource,
-			ArrayList<Station> stations, GeoPoint currentLocation) {
+			ArrayList<Station> stations) {
 		super(context, resource, stations);
 		mStations = stations;
-		this.currentLocation = currentLocation;
 		pref = context
 				.getSharedPreferences("favStations", Context.MODE_PRIVATE);
 	}
@@ -82,16 +81,6 @@ public class StationsAdapter extends ArrayAdapter<Station> {
 		viewHolder.distance.setText(Tools.formatDistance(thisStation
 				.getDistance()));
 		viewHolder.favouriteBtn.setChecked(thisStation.getFavourite());
-//		viewHolder.distance.setOnClickListener(new OnClickListener() {
-//
-//			@Override
-//			public void onClick(View v) {
-//				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(Tools
-//						.getPathString(currentLocation,
-//								thisStation.getPosition())));
-//				getContext().startActivity(i);
-//			}
-//		});
 		viewHolder.favouriteBtn.setOnClickListener(new OnClickListener() {
 
 			@Override

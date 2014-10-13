@@ -75,7 +75,6 @@ public class MainActivity extends ActionBarActivity implements
 
 	private ArrayList<Fragment> frags;
 
-	private Timer timer;
 	private static final String FRAGMENT_MAP = "map";
 	private static final String FRAGMENT_STATIONS = "stations";
 	private static final String FRAGMENT_FAVOURITE = "favourite";
@@ -418,7 +417,6 @@ public class MainActivity extends ActionBarActivity implements
 	protected void onPause() {
 		super.onPause();
 		mLocationManager.removeUpdates(mLocationListener);
-		stopTimer();
 	}
 
 	public void updateDistances() {
@@ -540,38 +538,6 @@ public class MainActivity extends ActionBarActivity implements
 				FILENOTIFICATIONDB, getApplicationContext());
 	}
 
-	private void setUpdateTimer() {
-		final Handler handler = new Handler();
-		timer = new Timer();
-		TimerTask doAsynchronousTask = new TimerTask() {
-			@Override
-			public void run() {
-				handler.post(new Runnable() {
-					public void run() {
-						try {
-							getBikes();
-							getStation();
-							updateDistances();
-
-						} catch (Exception e) {
-						}
-					}
-				});
-			}
-		};
-		timer.schedule(doAsynchronousTask, 0, 40000);
-	}
-
-	public void stopTimer() {
-		if (timer != null) {
-			timer.cancel();
-		}
-	}
-
-	public void startTimer() {
-		setUpdateTimer();
-	}
-
 	@Override
 	public void onBackPressed() {
 		if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
@@ -595,5 +561,9 @@ public class MainActivity extends ActionBarActivity implements
 	public void onStationSelected(Station station, boolean animation) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public void refresh() {
+		mHandler.sendEmptyMessage(0);
 	}
 }

@@ -35,7 +35,6 @@
     <string name="edit_reminder">Modifica promemoria</string>
     <string name="no_favourites">Nessuna stazione prefererita</string>
     <string name="no_stations">Nessuna stazione</string>
-    <string name="no_reminders">Nessun promemoria impostato</string>
     <string name="station">stazione</string>
     <string name="error">Stazioni non disponibili</string>
     <string name="error_bikes">Bici non disponibili</string>
@@ -69,5 +68,6 @@
     <string name="available">disponibili</string>
     <string name="notavailable">non disponibili</string>
     <string name="distancedetails">a %1$s dalla tua posizione.</string>
+     <string name="directions">Indicazioni</string>
 
 </resources>

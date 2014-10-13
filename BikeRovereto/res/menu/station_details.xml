@@ -3,11 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="eu.trentorise.smartcampus.bikerovereto.StationDetails" >
 
-     <item
+    <item
+        android:id="@+id/action_favourites"
+        android:title="@string/favourites"
+        android:icon="@drawable/ic_action_favourite"
+        app:showAsAction="always"/>
+    <item
         android:id="@+id/action_add_report"
-        android:orderInCategory="100"
         android:title="@string/action_add_report"
         android:icon="@drawable/ic_action_create_alert"
-        app:showAsAction="ifRoom"/>       
+        app:showAsAction="always"/>
+     <item
+        android:id="@+id/action_navigate"
+        android:title="@string/directions"
+        android:icon="@drawable/ic_action_direction"
+        app:showAsAction="always"/>       
 
 </menu>

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import org.osmdroid.util.GeoPoint;
+
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
 import smartcampus.activity.MainActivity.onBackListener;
 import smartcampus.asynctask.GetStationsTask;
@@ -15,12 +17,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.view.ActionMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,8 +26,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 import eu.trentorise.smartcampus.bikesharing.R;
@@ -135,8 +131,7 @@ public class StationsListFragment extends ListFragment implements
 				false);
 
 		emptyView = rootView.findViewById(android.R.id.empty);
-		stationsAdapter = new StationsAdapter(getActivity(), 0, mStations,
-				((MainActivity) getActivity()).getCurrentLocation());
+		stationsAdapter = new StationsAdapter(getActivity(), 0, mStations);
 		setListAdapter(stationsAdapter);
 
 		setHasOptionsMenu(true);
@@ -164,10 +159,16 @@ public class StationsListFragment extends ListFragment implements
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 		Station s = (Station) l.getItemAtPosition(position);
-		Intent i = new Intent(getActivity(),DetailsActivity.class);
+		GeoPoint p = ((MainActivity) getActivity()).getCurrentLocation();
+		Intent i = new Intent(getActivity(), DetailsActivity.class);
 		i.putExtra(DetailsActivity.EXTRA_STATION, s);
+		if (p != null) {
+			i.putExtra(DetailsActivity.EXTRA_POSITION,
+					new double[] { p.getLatitude(), p.getLongitude() });
+		}
 		startActivity(i);
-		getActivity().overridePendingTransition(R.anim.alpha_in,R.anim.alpha_out);
+		getActivity().overridePendingTransition(R.anim.alpha_in,
+				R.anim.alpha_out);
 	}
 
 	private void refreshDatas() {
@@ -306,24 +307,6 @@ public class StationsListFragment extends ListFragment implements
 		sortedBy = SORTED_BY_FAVOURITES;
 		if (updateList && stationsAdapter != null)
 			stationsAdapter.notifyDataSetChanged();
-	}
-
-	private void sendReport() {
-		Intent i = new Intent(Intent.ACTION_SEND);
-		i.setType("message/rfc822");
-		// TODO mettere le cose giuste.
-		i.putExtra(Intent.EXTRA_EMAIL, new String[] { "asdasd@gmail.com" });
-		i.putExtra(Intent.EXTRA_SUBJECT, "bike sharing report");
-		i.putExtra(Intent.EXTRA_TEXT, "Asda\n asd\n");
-		startActivity(Intent.createChooser(i,
-				getString(R.string.action_add_report)));
-
-		// Intent intent = new Intent(Intent.ACTION_VIEW);
-		// Uri data = Uri.parse("mailto:asdasd@gmail.com?subject=" +
-		// "bike sharing report" + "&body=" + "Asda asd");
-		// intent.setData(data);
-		// startActivity(intent);
-
 	}
 
 	private class AvailableSlotsComparator implements Comparator<Station> {

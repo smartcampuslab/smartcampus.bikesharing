@@ -155,12 +155,6 @@ public class OsmMap extends Fragment implements onBackListener {
 	}
 
 	@Override
-	public void onStart() {
-		super.onStart();
-		((MainActivity) getActivity()).startTimer();
-	}
-
-	@Override
 	public void onResume() {
 		super.onResume();
 		mLocationOverlay.enableMyLocation();
@@ -182,7 +176,6 @@ public class OsmMap extends Fragment implements onBackListener {
 		super.onPause();
 		mLocationOverlay.disableMyLocation();
 		currentBoundingBox = mapView.getBoundingBox();
-		((MainActivity) getActivity()).stopTimer();
 	}
 
 	@Override
@@ -233,8 +226,7 @@ public class OsmMap extends Fragment implements onBackListener {
 			mapView.invalidate();
 		} else if (item.getItemId() == R.id.action_refresh
 				|| item.getItemId() == R.id.map_refresh) {
-			((MainActivity) getActivity()).stopTimer();
-			((MainActivity) getActivity()).startTimer();
+			((MainActivity) getActivity()).refresh();
 		}
 		return true;
 	}

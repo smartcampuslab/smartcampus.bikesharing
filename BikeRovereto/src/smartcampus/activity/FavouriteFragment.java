@@ -112,7 +112,7 @@ public class FavouriteFragment extends ListFragment implements onBackListener{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		adapter = new StationsAdapter(getActivity(), 0, favStations, ((MainActivity)getActivity()).getCurrentLocation());
+		adapter = new StationsAdapter(getActivity(), 0, favStations);
 		adapter.setIsFavouriteAdapter(true);
 		setListAdapter(adapter);		
 		View rootView = inflater.inflate(R.layout.fav_stations, null);
