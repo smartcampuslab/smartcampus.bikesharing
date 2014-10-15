@@ -37,7 +37,7 @@ import android.widget.TextView;
 public class DetailsActivity extends ActionBarActivity {
 
 	public static final String EXTRA_STATION = "station";
-	public static final String EXTRA_POSITION = "station";
+	public static final String EXTRA_POSITION = "position";
 
 	private Station mStation;
 	private GeoPoint mPosition;
