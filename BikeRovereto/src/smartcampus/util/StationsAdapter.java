@@ -1,6 +1,5 @@
 package smartcampus.util;
 
-import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 
 import org.osmdroid.util.GeoPoint;
@@ -9,9 +8,7 @@ import smartcampus.activity.MainActivity;
 import smartcampus.model.Station;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,7 +22,6 @@ import eu.trentorise.smartcampus.bikesharing.R;
 public class StationsAdapter extends ArrayAdapter<Station> {
 
 	private ArrayList<Station> mStations;
-	private GeoPoint currentLocation;
 	private SharedPreferences pref;
 	private boolean isFavouriteAdapter = false;
 	private int mLastPosition = -1;

@@ -9,7 +9,7 @@
     <org.osmdroid.views.MapView
         android:id="@+id/map_view"
         android:layout_width="match_parent"
-        android:layout_height="192dp" >
+        android:layout_height="144dp" >
 
         <!-- android:layerType="software" > -->
     </org.osmdroid.views.MapView>
@@ -20,6 +20,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/map_view"
         android:orientation="vertical"
+        android:gravity="center_vertical"
         android:padding="18dp" >
 
         <TextView
@@ -28,6 +29,7 @@
             android:layout_height="wrap_content"
             android:text="Large Text"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textStyle="bold"
             android:layout_marginBottom="6dp" />
 
         <TextView
@@ -35,17 +37,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Medium Text"
-            
-            android:layout_marginBottom="6dp" />
+            android:layout_marginBottom="18dp" />
 
         <TextView
             android:id="@+id/details_km"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/linearLayout1"
-            android:layout_marginBottom="6dp"
-            android:text="@string/distancenotavail" />
+            android:layout_marginBottom="18dp"
+            android:text="@string/distancedetails" />
 
         <LinearLayout
             android:layout_width="match_parent"

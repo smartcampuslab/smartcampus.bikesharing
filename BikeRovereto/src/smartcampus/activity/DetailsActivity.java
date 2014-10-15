@@ -1,38 +1,25 @@
 package smartcampus.activity;
 
 import org.osmdroid.bonuspack.overlays.Marker;
-import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Overlay;
 
-import eu.trentorise.smartcampus.bikesharing.R;
-import eu.trentorise.smartcampus.bikesharing.R.drawable;
-import eu.trentorise.smartcampus.bikesharing.R.id;
-import eu.trentorise.smartcampus.bikesharing.R.layout;
-import smartcampus.asynctask.SendReport;
 import smartcampus.model.Station;
 import smartcampus.util.StationMarker;
 import smartcampus.util.Tools;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
 import android.widget.TextView;
+import eu.trentorise.smartcampus.bikesharing.R;
 
 public class DetailsActivity extends ActionBarActivity {
 
@@ -111,7 +98,7 @@ public class DetailsActivity extends ActionBarActivity {
 		mAvailTV = (TextView) findViewById(R.id.available_bikes);
 		mNAvailTV = (TextView) findViewById(R.id.available_slots);
 		mMap = (MapView) findViewById(R.id.map_view);
-		mMap.getController().setZoom(17);
+		mMap.getController().setZoom(18);
 	}
 
 	private void getData() {
@@ -130,12 +117,11 @@ public class DetailsActivity extends ActionBarActivity {
 		mStreetTV.setText(mStation.getStreet());
 		mAvailTV.setText(mStation.getNBikesPresent() + "");
 		mNAvailTV.setText(mStation.getNSlotsEmpty() + "");
-		if (mStation.getDistance() > 0)
+		if (mStation.getDistance() > 0) {
 			mDistanceTV.setText(String.format(
 					getString(R.string.distancedetails),
 					Tools.formatDistance(mStation.getDistance())));
-		else
-			mDistanceTV.setVisibility(View.INVISIBLE);
+		}
 
 		mMap.getOverlays().add(createMarker());
 		mMap.postDelayed(new Runnable() {
@@ -239,7 +225,6 @@ public class DetailsActivity extends ActionBarActivity {
 
 	private void toggleFavourite() {
 		mStation.setFavourite(!mStation.getFavourite());
-
 		SharedPreferences.Editor editor = getSharedPreferences("favStations",
 				Context.MODE_PRIVATE).edit();
 		editor.putBoolean(Tools.STATION_PREFIX + mStation.getId(),
