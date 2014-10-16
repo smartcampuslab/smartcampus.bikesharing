@@ -53,6 +53,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 import eu.trentorise.smartcampus.bikesharing.R;
 
 public class OsmMap extends Fragment implements onBackListener {
@@ -129,7 +130,7 @@ public class OsmMap extends Fragment implements onBackListener {
 		setZoomBtns();
 
 		stations = new ArrayList<Station>(StationsHelper.sStations);
-		setMarkers();
+		refresh();
 		setMapListener();
 
 		setHasOptionsMenu(true);
@@ -273,11 +274,11 @@ public class OsmMap extends Fragment implements onBackListener {
 			super.onLocationChanged(location);
 			((MainActivity) getActivity()).setCurrentLocation(new GeoPoint(
 					location));
-			if (firstTime) {
-				if (stations == null || stations.size() == 0)
-					mapView.getController().animateTo(new GeoPoint(location));
-				firstTime = false;
-			}
+//			if (firstTime) {
+//				if (stations == null || stations.size() == 0)
+//					mapView.getController().animateTo(new GeoPoint(location));
+//				firstTime = false;
+//			}
 		}
 	}
 
@@ -290,6 +291,9 @@ public class OsmMap extends Fragment implements onBackListener {
 				if (mLocationOverlay.getMyLocation() != null) {
 					mapView.getController().animateTo(
 							mLocationOverlay.getMyLocation());
+				}
+				else{
+					Toast.makeText(getActivity(), R.string.positionnotavail, Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
@@ -418,11 +422,14 @@ public class OsmMap extends Fragment implements onBackListener {
 		return markerImage;
 	}
 
-	private void setMarkers() {
-		if (mapView != null && mapView.getOverlays() != null)
+	public void refresh() {
+		if (mapView != null && mapView.getOverlays() != null){
 			mapView.getOverlays().clear();
+			mapView.invalidate();
+		}
 		addStationsMarkers();
 		addBikesMarkers();
+		mapView.invalidate();
 	}
 
 	private void setCallBackListeners() {

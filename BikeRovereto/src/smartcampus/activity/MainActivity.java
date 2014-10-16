@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import org.apache.commons.lang3.ArrayUtils;
 import org.osmdroid.util.GeoPoint;
 
-import smartcampus.asynctask.GetAnarchicBikesTask;
-import smartcampus.asynctask.GetAnarchicBikesTask.AsyncBikesResponse;
-import smartcampus.asynctask.GetStationsTask;
 import smartcampus.asynctask.GetStationsTask.AsyncStationResponse;
 import smartcampus.model.Bike;
 import smartcampus.model.NotificationBlock;
@@ -284,8 +281,11 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	public void insertMap() {
-		replaceFragment(frags.get(0), FRAGMENT_MAP, 0);
-
+		if(!replaceFragment(frags.get(0), FRAGMENT_MAP, 0)){
+			OsmMap currentFragment = (OsmMap)getSupportFragmentManager()
+					.findFragmentByTag(FRAGMENT_MAP);
+			currentFragment.refresh();
+		}
 		if (getIntent().hasExtra(NotificationReceiver.INTENT_FROM_NOTIFICATION)
 				&& getIntent().getBooleanExtra(
 						NotificationReceiver.INTENT_FROM_NOTIFICATION, false)) {
@@ -296,7 +296,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	}
 
-	private void replaceFragment(Fragment f, String tag, int position) {
+	private boolean replaceFragment(Fragment f, String tag, int position) {
 		Fragment currentFragment = getSupportFragmentManager()
 				.findFragmentByTag(tag);
 		if (currentFragment == null || !currentFragment.isVisible()) {
@@ -307,7 +307,9 @@ public class MainActivity extends ActionBarActivity implements
 					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 			transaction.addToBackStack(tag);
 			transaction.commit();
+			return true;
 		}
+		return false;
 	}
 
 	public void setDrawerIndicator(int position) {
@@ -527,6 +529,9 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	public void refresh() {
-		mHandler.sendEmptyMessage(0);
+		StationsHelper.sStations.clear();
+		StationsHelper.sFavouriteStations.clear();
+		setSupportProgressBarIndeterminateVisibility(true);
+		initialization();
 	}
 }

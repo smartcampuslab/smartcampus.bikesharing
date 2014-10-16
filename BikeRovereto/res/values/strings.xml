@@ -69,6 +69,6 @@
     <string name="notavailable">non disponibili</string>
     <string name="distancedetails">a %1$s dalla tua posizione.</string>
     <string name="distancenotavail">Distanza non disponibile.</string>
-     <string name="directions">Indicazioni</string>
-
+    <string name="directions">Indicazioni</string>
+    <string name="positionnotavail">La tua posizione non e\' disponibile.</string>
 </resources>
