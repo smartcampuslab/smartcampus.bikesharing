@@ -20,13 +20,14 @@ import org.osmdroid.util.GeoPoint;
 
 import smartcampus.model.Report;
 import smartcampus.model.Station;
+import smartcampus.util.StationsHelper;
 import smartcampus.util.Tools;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Log;
 
-public class GetStationsTask extends
-		AsyncTask<String, Void, ArrayList<Station>> {
+public class GetStationsTask extends AsyncTask<String, Void, Void> {
 
 	private static final String STATION_NAME = "name";
 	private static final String STATION_STREET = "street";
@@ -43,7 +44,6 @@ public class GetStationsTask extends
 	public static final int ERROR_CLIENT = 2;
 
 	private int currentStatus;
-	private ArrayList<Station> favStations;
 
 	private Context context;
 
@@ -52,19 +52,26 @@ public class GetStationsTask extends
 	}
 
 	public interface AsyncStationResponse {
-		void processFinish(ArrayList<Station> stations,
-				ArrayList<Station> favStations, int status);
+		void processFinish(int status);
 	}
 
 	public AsyncStationResponse delegate = null;
 
 	@Override
-	protected ArrayList<Station> doInBackground(String... data) {
+	protected Void doInBackground(String... data) {
 
 		String responseJSON;
-
-		ArrayList<Station> stations = new ArrayList<Station>();
-		favStations = new ArrayList<Station>();
+		if(StationsHelper.sStations==null){
+			StationsHelper.sStations=new ArrayList<Station>();
+		}
+		else{
+			StationsHelper.sStations.clear();
+		}
+		if(StationsHelper.sFavouriteStations==null){
+			StationsHelper.sFavouriteStations=new ArrayList<Station>();
+		}else{
+			StationsHelper.sFavouriteStations.clear();
+		}
 		try {
 			HttpGet httpg;
 			httpg = new HttpGet(Tools.SERVICE_URL + Tools.STATIONS_REQUEST
@@ -88,10 +95,10 @@ public class GetStationsTask extends
 			responseJSON = EntityUtils.toString(response.getEntity());
 		} catch (ClientProtocolException e) {
 			currentStatus = ERROR_CLIENT;
-			return stations;
+			return null;
 		} catch (IOException e) {
 			currentStatus = ERROR_CLIENT;
-			return stations;
+			return null;
 		}
 		try {
 			SharedPreferences pref = context.getSharedPreferences(
@@ -124,9 +131,9 @@ public class GetStationsTask extends
 					station.setFavourite(fav);
 					station.setUsedSlots(availableBikes);
 					station.thereAreReports(reportsNumber > 0);
-					stations.add(station);
+					StationsHelper.sStations.add(station);
 					if (fav)
-						favStations.add(station);
+						StationsHelper.sFavouriteStations.add(station);
 				}
 			} else {
 				JSONObject stationJSON = container.getJSONObject("data");
@@ -146,20 +153,20 @@ public class GetStationsTask extends
 				station.setFavourite(fav);
 				station.setUsedSlots(availableBikes);
 				station.thereAreReports(reportsNumber > 0);
-				stations.add(station);
+				StationsHelper.sStations.add(station);
 			}
 
 		} catch (JSONException e) {
-			e.printStackTrace();
-			return stations;
+			Log.e(this.getClass().getCanonicalName(), e.toString());
 		}
-		return stations;
+		return null;
 	}
 
 	@Override
-	protected void onPostExecute(ArrayList<Station> result) {
+	protected void onPostExecute(Void result) {
 		if (delegate != null)
-			delegate.processFinish(result, favStations, currentStatus);
+			delegate.processFinish(currentStatus);
+
 	}
 
 }

@@ -82,7 +82,7 @@ public class NotificationReceiver extends BroadcastReceiver
 		Intent intentToDetails = new Intent(context, MainActivity.class);
 		try
 		{
-			station = new GetStationsTask(context).execute(stationID).get(10000, TimeUnit.MILLISECONDS).get(0);
+//			station = new GetStationsTask(context).execute(stationID).get(10000, TimeUnit.MILLISECONDS).get(0);
 			intentToDetails.putExtra("station", station);
 			intentToDetails.putExtra(INTENT_FROM_NOTIFICATION, true);
 			PendingIntent pendingIntentToDetails = PendingIntent.getActivity(context, intent.getIntExtra("uniqueID", 0), intentToDetails, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -118,18 +118,18 @@ public class NotificationReceiver extends BroadcastReceiver
 			notificationManager.notify(intent.getIntExtra("uniqueID", 0), mNotification);
 
 		}
-		catch (InterruptedException e)
-		{
-			e.printStackTrace();
-		}
-		catch (ExecutionException e)
-		{
-			e.printStackTrace();
-		}
-		catch (TimeoutException e)
-		{
-			e.printStackTrace();
-		}
+//		catch (InterruptedException e)
+//		{
+//			e.printStackTrace();
+//		}
+//		catch (ExecutionException e)
+//		{
+//			e.printStackTrace();
+//		}
+//		catch (TimeoutException e)
+//		{
+//			e.printStackTrace();
+//		}
 		catch (Exception e)
 		{
 			e.printStackTrace();

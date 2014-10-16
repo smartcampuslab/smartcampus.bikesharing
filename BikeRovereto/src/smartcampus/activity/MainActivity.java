@@ -1,8 +1,6 @@
 package smartcampus.activity;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.osmdroid.util.GeoPoint;
@@ -16,6 +14,7 @@ import smartcampus.model.NotificationBlock;
 import smartcampus.model.Station;
 import smartcampus.notifications.NotificationReceiver;
 import smartcampus.util.NavigationDrawerAdapter;
+import smartcampus.util.StationsHelper;
 import smartcampus.util.Tools;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -137,7 +136,7 @@ public class MainActivity extends ActionBarActivity implements
 		super.onCreate(savedInstanceState);
 
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		
+
 		setContentView(R.layout.activity_main);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
@@ -148,13 +147,30 @@ public class MainActivity extends ActionBarActivity implements
 
 		prepareNavigationDrawer();
 
-		frags = new ArrayList<Fragment>(3);
-		frags.add(OsmMap.newInstance(stations, bikes));
-		frags.add(StationsListFragment.newInstance(stations, favStations));
-		frags.add(FavouriteFragment.newInstance(favStations));
-		
-		mHandler.sendEmptyMessage(0);
+		setProgressBarIndeterminateVisibility(true);
 
+		initialization();
+
+		frags = new ArrayList<Fragment>(3);
+		frags.add(OsmMap.newInstance(bikes));
+		frags.add(new StationsListFragment());
+		frags.add(new FavouriteFragment());
+
+	}
+
+	private void initialization() {
+		if (StationsHelper.isNotInitialized()) {
+			StationsHelper.initialize(getApplicationContext(),
+					new AsyncStationResponse() {
+
+						@Override
+						public void processFinish(int status) {
+							mHandler.sendEmptyMessage(0);
+						}
+					});
+		} else {
+			mHandler.sendEmptyMessage(0);
+		}
 	}
 
 	private void showNoInternetDialog() {
@@ -269,6 +285,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	public void insertMap() {
 		replaceFragment(frags.get(0), FRAGMENT_MAP, 0);
+
 		if (getIntent().hasExtra(NotificationReceiver.INTENT_FROM_NOTIFICATION)
 				&& getIntent().getBooleanExtra(
 						NotificationReceiver.INTENT_FROM_NOTIFICATION, false)) {
@@ -372,16 +389,7 @@ public class MainActivity extends ActionBarActivity implements
 		if (mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
 		} else if (item.getItemId() == R.id.action_stations) {
-			StationsListFragment stationsFragment = StationsListFragment
-					.newInstance(stations, favStations);
-			FragmentTransaction transaction = getSupportFragmentManager()
-					.beginTransaction();
-			transaction.replace(R.id.content_frame, stationsFragment,
-					FRAGMENT_STATIONS);
-			transaction
-					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-			transaction.commit();
-			setDrawerIndicator(1);
+			replaceFragment(frags.get(1), FRAGMENT_STATIONS, 1);
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -393,8 +401,6 @@ public class MainActivity extends ActionBarActivity implements
 			int status = checkConnection();
 			if (checkConnection() == CONNECTED) {
 				insertMap();
-				getStation();
-				getBikes();
 				updateDistances();
 			} else if (status == CONNECTING) {
 				setSupportProgressBarIndeterminateVisibility(true);
@@ -465,70 +471,27 @@ public class MainActivity extends ActionBarActivity implements
 		}
 	}
 
-	private void getStation() {
-		favStations = new ArrayList<Station>();
-		GetStationsTask getStationsTask = new GetStationsTask(this);
-		getStationsTask.delegate = new AsyncStationResponse() {
-			@Override
-			public void processFinish(ArrayList<Station> result,
-					ArrayList<Station> favs, int status) {
-				stations = result;
-				favStations = favs;
-				if (status != GetStationsTask.NO_ERROR) {
-					Toast.makeText(getApplicationContext(),
-							getString(R.string.error), Toast.LENGTH_SHORT)
-							.show();
-				} else {
-					if (myLocation != null)
-						updateDistances();
-					if (mCallbackStationsAquired != null && stations != null
-							&& stations.size() > 0)
-						mCallbackStationsAquired.stationsAquired(stations);
-				}
-			}
-		};
-		getStationsTask.execute("");
-	}
-
-	private void getBikes() {
-		if (Tools.bikeTypesContains(Tools.METADATA_BIKE_TYPE_ANARCHIC)) {
-			GetAnarchicBikesTask getBikesTask = new GetAnarchicBikesTask();
-
-			getBikesTask.delegate = new AsyncBikesResponse() {
-				@Override
-				public void processFinish(ArrayList<Bike> result, int status) {
-
-					bikes = result;
-					if (status != GetAnarchicBikesTask.NO_ERROR) {
-						Toast.makeText(getApplicationContext(),
-								getString(R.string.error_bikes),
-								Toast.LENGTH_SHORT).show();
-					} else {
-						mCallbackBikesAquired.bikesAquired(bikes);
-					}
-				}
-			};
-			getBikesTask.execute();
-		}
-	}
-
-	public void setStations(ArrayList<Station> stations) {
-		this.stations.clear();
-		this.stations.addAll(stations);
-	}
-
-	public void setFavStations(ArrayList<Station> favStations) {
-		this.favStations.clear();
-		this.favStations.addAll(favStations);
-	}
-
-	public void addFavouriteStation(Station station) {
-		favStations.add(station);
-	}
-
-	public void removeFavouriteStation(Station station) {
-		favStations.remove(station);
-	}
+	// private void getBikes() {
+	// if (Tools.bikeTypesContains(Tools.METADATA_BIKE_TYPE_ANARCHIC)) {
+	// GetAnarchicBikesTask getBikesTask = new GetAnarchicBikesTask();
+	//
+	// getBikesTask.delegate = new AsyncBikesResponse() {
+	// @Override
+	// public void processFinish(ArrayList<Bike> result, int status) {
+	//
+	// bikes = result;
+	// if (status != GetAnarchicBikesTask.NO_ERROR) {
+	// Toast.makeText(getApplicationContext(),
+	// getString(R.string.error_bikes),
+	// Toast.LENGTH_SHORT).show();
+	// } else {
+	// mCallbackBikesAquired.bikesAquired(bikes);
+	// }
+	// }
+	// };
+	// getBikesTask.execute();
+	// }
+	// }
 
 	public void addReminderForStation(NotificationBlock nb) {
 		notificationBlock = NotificationBlock.readArrayListFromFile(

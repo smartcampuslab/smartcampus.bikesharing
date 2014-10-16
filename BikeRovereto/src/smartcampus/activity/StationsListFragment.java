@@ -12,6 +12,7 @@ import smartcampus.asynctask.GetStationsTask;
 import smartcampus.asynctask.GetStationsTask.AsyncStationResponse;
 import smartcampus.model.Station;
 import smartcampus.util.StationsAdapter;
+import smartcampus.util.StationsHelper;
 import smartcampus.util.Tools;
 import android.app.Activity;
 import android.content.Intent;
@@ -33,8 +34,6 @@ import eu.trentorise.smartcampus.bikesharing.R;
 public class StationsListFragment extends ListFragment implements
 		onBackListener {
 
-	private ArrayList<Station> mStations;
-	private ArrayList<Station> mFav;
 	private String mStationId;
 	private View emptyView;
 	private StationsAdapter stationsAdapter;
@@ -46,20 +45,11 @@ public class StationsListFragment extends ListFragment implements
 	private static final int SORTED_BY_AVAILABLE_SLOTS = 4;
 
 	private OnStationSelectListener mCallback;
+	private ArrayList<Station> mStations;
 
 	// Container Activity must implement this interface
 	public interface OnStationSelectListener {
 		public void onStationSelected(Station station, boolean animation);
-	}
-
-	public static StationsListFragment newInstance(ArrayList<Station> stations,
-			ArrayList<Station> fav) {
-		StationsListFragment fragment = new StationsListFragment();
-		Bundle bundle = new Bundle();
-		bundle.putParcelableArrayList("stations", stations);
-		bundle.putParcelableArrayList("fav", fav);
-		fragment.setArguments(bundle);
-		return fragment;
 	}
 
 	public static StationsListFragment newInstance(Station station) {
@@ -88,11 +78,8 @@ public class StationsListFragment extends ListFragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		if (getArguments().containsKey("stations")
-				&& getArguments().containsKey("stations")) {
-			mStations = getArguments().getParcelableArrayList("stations");
-			mFav = getArguments().getParcelableArrayList("fav");
-		} else if (getArguments().containsKey("stationid")) {
+		mStations = new ArrayList<Station>(StationsHelper.sStations);
+		if (getArguments() != null && getArguments().containsKey("stationid")) {
 			mStationId = getArguments().getString("stationid");
 		}
 		((MainActivity) getActivity())
@@ -106,16 +93,14 @@ public class StationsListFragment extends ListFragment implements
 		// If the app still waiting the server response, initiliaze the
 		// arraylist to prevent crash for nullpointer
 
-		if (mStations == null) {
-			mStations = new ArrayList<Station>();
-			mFav = new ArrayList<Station>();
-			refreshDatas();
+		if (StationsHelper.isNotInitialized()) {
+			StationsHelper.initialize(getActivity(),null);
 		}
 
 		// If the distance is already defined the list is sorted by distance,
 		// otherwise
 		// is sorted by available bikes
-		if (mStations.size() > 1) {
+		if (StationsHelper.sStations.size() > 1) {
 			// if (mStations.get(0).getDistance() == Station.DISTANCE_NOT_VALID)
 			// sortByAvailableBikes(false);
 			// else
@@ -131,7 +116,8 @@ public class StationsListFragment extends ListFragment implements
 				false);
 
 		emptyView = rootView.findViewById(android.R.id.empty);
-		stationsAdapter = new StationsAdapter(getActivity(), 0, mStations);
+		stationsAdapter = new StationsAdapter(getActivity(), 0,
+				StationsHelper.sStations);
 		setListAdapter(stationsAdapter);
 
 		setHasOptionsMenu(true);
@@ -175,17 +161,13 @@ public class StationsListFragment extends ListFragment implements
 		getActivity().setProgressBarIndeterminateVisibility(true);
 		GetStationsTask getStationsTask = new GetStationsTask(getActivity());
 
-		mStations.clear();
-		mFav.clear();
+		StationsHelper.sStations.clear();
+		StationsHelper.sFavouriteStations.clear();
+
 		getStationsTask.delegate = new AsyncStationResponse() {
 
 			@Override
-			public void processFinish(ArrayList<Station> stations,
-					ArrayList<Station> favStations, int status) {
-				mStations.addAll(stations);
-				mFav.addAll(favStations);
-				((MainActivity) getActivity()).setStations(stations);
-				((MainActivity) getActivity()).setFavStations(favStations);
+			public void processFinish(int status) {
 				if (((MainActivity) getActivity()).getCurrentLocation() != null)
 					((MainActivity) getActivity()).updateDistances();
 				onRefreshComplete();
@@ -200,6 +182,7 @@ public class StationsListFragment extends ListFragment implements
 	}
 
 	private void onRefreshComplete() {
+		mStations = new ArrayList<Station>(StationsHelper.sStations);
 		Log.i("STR", "onRefreshComplete");
 		getActivity().setProgressBarIndeterminateVisibility(false);
 		// Reorder the arraylist in the previous order
@@ -300,10 +283,11 @@ public class StationsListFragment extends ListFragment implements
 	}
 
 	private void sortByFavourites(boolean updateList) {
-		mStations.removeAll(mFav);
+		mStations.removeAll(StationsHelper.sFavouriteStations);
 		Collections.sort(mStations, new FavouriteComparator());
-		Collections.sort(mFav, new FavouriteComparator());
-		mStations.addAll(0, mFav);
+		Collections.sort(StationsHelper.sFavouriteStations,
+				new FavouriteComparator());
+		mStations.addAll(0, StationsHelper.sFavouriteStations);
 		sortedBy = SORTED_BY_FAVOURITES;
 		if (updateList && stationsAdapter != null)
 			stationsAdapter.notifyDataSetChanged();
@@ -340,17 +324,18 @@ public class StationsListFragment extends ListFragment implements
 
 		@Override
 		public int compare(Station station0, Station station1) {
-			if (mFav.contains(station0) && mFav.contains(station1)) {
+			if (StationsHelper.sFavouriteStations.contains(station0)
+					&& StationsHelper.sFavouriteStations.contains(station1)) {
 				if (station0.getDistance() > -1) {
 					return station0.getDistance() - station1.getDistance();
 				} else {
 					return new NameComparator().compare(station0, station1);
 				}
 			}
-			if (mFav.contains(station0)) {
+			if (StationsHelper.sFavouriteStations.contains(station0)) {
 				return 1;
 			}
-			if (mFav.contains(station1)) {
+			if (StationsHelper.sFavouriteStations.contains(station1)) {
 				return 1;
 			}
 			if (station0.getDistance() > -1) {

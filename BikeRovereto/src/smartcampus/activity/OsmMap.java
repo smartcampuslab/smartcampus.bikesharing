@@ -32,6 +32,7 @@ import smartcampus.util.BikeInfoWindow;
 import smartcampus.util.BikeMarker;
 import smartcampus.util.StationInfoWindow;
 import smartcampus.util.StationMarker;
+import smartcampus.util.StationsHelper;
 import smartcampus.util.Tools;
 import android.content.Context;
 import android.content.res.Resources;
@@ -61,7 +62,6 @@ public class OsmMap extends Fragment implements onBackListener {
 	private MyLocationNewOverlay mLocationOverlay;
 
 	// the stations
-	private ArrayList<Station> stations;
 	// the bikes
 	private ArrayList<Bike> bikes;
 
@@ -78,16 +78,15 @@ public class OsmMap extends Fragment implements onBackListener {
 
 	// current BoundingBoxE6 shown
 	private BoundingBoxE6 currentBoundingBox;
+	private ArrayList<Station> stations;
 	// default bounding box
 	private static final BoundingBoxE6 defaultBoundingBox = new BoundingBoxE6(
 			45.911087, 11.065997, 45.86311, 11.00263);
 
-	public static OsmMap newInstance(ArrayList<Station> stations,
-			ArrayList<Bike> bikes) {
+	public static OsmMap newInstance(ArrayList<Bike> bikes) {
 		OsmMap fragment = new OsmMap();
 		Bundle bundle = new Bundle();
 
-		bundle.putParcelableArrayList("stations", stations);
 		bundle.putParcelableArrayList("bikes", bikes);
 
 		fragment.setArguments(bundle);
@@ -96,7 +95,6 @@ public class OsmMap extends Fragment implements onBackListener {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		stations = getArguments().getParcelableArrayList("stations");
 		bikes = getArguments().getParcelableArrayList("bikes");
 
 		// default bounding box
@@ -130,6 +128,7 @@ public class OsmMap extends Fragment implements onBackListener {
 		mZoomOut = (ImageView) rootView.findViewById(R.id.btn_zoom_out);
 		setZoomBtns();
 
+		stations = new ArrayList<Station>(StationsHelper.sStations);
 		setMarkers();
 		setMapListener();
 

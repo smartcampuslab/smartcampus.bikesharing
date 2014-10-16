@@ -38,8 +38,9 @@ public class StationsAdapter extends ArrayAdapter<Station> {
 	public void setSelectionPos(int mSelection) {
 		this.mSelection = mSelection;
 	}
-	public void cancelSelection(){
-		this.mSelection=-1;
+
+	public void cancelSelection() {
+		this.mSelection = -1;
 	}
 
 	@Override
@@ -86,28 +87,29 @@ public class StationsAdapter extends ArrayAdapter<Station> {
 				editor.putBoolean(Tools.STATION_PREFIX + thisStation.getId(),
 						thisStation.getFavourite());
 				editor.apply();
-				if (thisStation.getFavourite())
-					((MainActivity) getContext())
-							.addFavouriteStation(thisStation);
-				else
-					((MainActivity) getContext())
-							.removeFavouriteStation(thisStation);
-				if (isFavouriteAdapter)
+				if (thisStation.getFavourite()){
+					StationsHelper.sStations.add(thisStation);
+				}
+				else{
+					StationsHelper.sFavouriteStations.remove(thisStation);
+				}
+				if (isFavouriteAdapter){
 					notifyDataSetChanged();
+				}
 			}
 		});
-		
-		//ATTENTION this is a cheat to avoid an Android bug.
+
+		// ATTENTION this is a cheat to avoid an Android bug.
 		if (position == mSelection) {
 			final View row = convertView;
 			convertView.postDelayed(new Runnable() {
-				
+
 				@Override
 				public void run() {
 					row.setSelected(true);
 				}
 			}, 50);
-			
+
 		}
 		if (position > mLastPosition) {
 			convertView.startAnimation(AnimationUtils.loadAnimation(
