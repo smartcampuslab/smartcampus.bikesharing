@@ -6,11 +6,12 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import eu.trentorise.smartcampus.bikesharing.R;
 
 public class About extends ActionBarActivity
 {
-	Button close;
+	ImageButton close;
 	Fragment fragment;
 	
 	@Override
@@ -19,7 +20,7 @@ public class About extends ActionBarActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fragment_about);
 		getSupportActionBar().hide();
-		close = (Button) findViewById(R.id.bt_close);
+		close = (ImageButton) findViewById(R.id.close_credits);
 		setBtClose();
 	}
 	

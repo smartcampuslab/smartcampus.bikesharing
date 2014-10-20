@@ -54,7 +54,11 @@
     <string name="id">ID: </string>
     <string name="about">About</string>
     <string name="credits">Credits</string>
+    <string name="project_by">Un progetto di:</string>
     <string name="bikes">Bici</string>
+    <string name="collaboration_with">In collaborazione con:</string>
+    <string name="for_info">Per informazioni:</string>
+    <string name="email"><a href="mailto:bikerovereto@smartcampuslab.it">bikerovereto@smartcampuslab.it</a></string>
     <string name="Slots">Slot</string>
     <string name="problems">Problemi a:</string>
     <string name="send_report_succes">Segnalazione inviata correttamente</string>
