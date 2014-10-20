@@ -83,6 +83,7 @@ public class MailActivity extends ActionBarActivity {
 		String kind = ((RadioButton) findViewById(mKind
 				.getCheckedRadioButtonId())).getText().toString();
 		
+		//MORE general, attachment works
 		Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 		emailIntent.setType("application/image");
 		emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
