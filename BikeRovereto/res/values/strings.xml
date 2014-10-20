@@ -10,7 +10,7 @@
     <string name="to_details">Dettagli</string>
     <string name="sort">Ordina per&#8230;</string>
     <string name="sort_distance">Distanza</string>
-    <string name="sort_fav">Favoriti</string>
+    <string name="sort_fav">Preferiti</string>
     <string name="sort_available_bikes">Bici disponibili</string>
     <string name="sort_available_slots">Slot disponibili</string>
     <string name="sort_name">Nome</string>
@@ -52,7 +52,7 @@
     <string name="gears">Cambio</string>
     <string name="anarchich_bike">Bici anarchica</string>
     <string name="id">ID: </string>
-    <string name="about">About</string>
+    <string name="about">Informazioni</string>
     <string name="credits">Credits</string>
     <string name="project_by">Un progetto di:</string>
     <string name="bikes">Bici</string>
