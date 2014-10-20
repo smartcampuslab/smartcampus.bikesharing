@@ -84,7 +84,6 @@ public class DetailsActivity extends ActionBarActivity {
 			toggleFavourite();
 		} else if (item.getItemId() == R.id.action_add_report) {
 			sendReport();
-
 		} else if (item.getItemId() == R.id.action_navigate) {
 			navigate();
 		}
@@ -208,12 +207,9 @@ public class DetailsActivity extends ActionBarActivity {
 		// startActivity(Intent.createChooser(i,
 		// getString(R.string.action_add_report)));
 
-		Intent intent = new Intent(Intent.ACTION_VIEW);
-		Uri data = Uri.parse("mailto:asdasd@gmail.com?subject="
-				+ "bike sharing report" + "&body=" + "Asda asd");
-		intent.setData(data);
-		startActivity(intent);
-
+		Intent i = new Intent(this, MailActivity.class);
+		startActivity(i);
+		overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
 	}
 
 	private void navigate() {

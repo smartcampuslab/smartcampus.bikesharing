@@ -3,6 +3,7 @@
 
     <string name="app_name">Bike Rovereto</string>
     <string name="action_settings">Impostazioni</string>
+    <string name="action_open_mail">Segnala</string>
     <string name="title_activity_osm_map">OsmMap</string>
     <string name="toMap">OSM</string>
     <string name="title_activity_stations">Stazioni</string>
@@ -71,4 +72,13 @@
     <string name="distancenotavail">Distanza non disponibile.</string>
     <string name="directions">Indicazioni</string>
     <string name="positionnotavail">La tua posizione non e\' disponibile.</string>
+    <string name="mail_info">Invia una email per avvisare l\' ente che si occupa del serivizio direttamente.</string>
+    <string name="suggestion">Suggerimento</string>
+    <string name="complaint">Reclamo</string>
+    <string name="alert">Segnalazione</string>
+    <string name="mail_text_hint">Inserisci qui il tuo messaggio</string>
+    <string name="conset_position">Rileva la mia posizione</string>
+    <string name="add_picture">Aggiungi una foto</string>
+    <string name="send_with">Invia la mail con:</string>
+    <string name="select_image_app">Seleziona la galleria:</string>
 </resources>

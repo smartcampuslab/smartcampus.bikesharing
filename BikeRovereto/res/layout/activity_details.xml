@@ -2,9 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="smartcampus.activity.DetailsActivity"
     android:background="@android:color/white"
-    android:weightSum="1" >
+    android:weightSum="1"
+    tools:context="smartcampus.activity.DetailsActivity" >
 
     <org.osmdroid.views.MapView
         android:id="@+id/map_view"
@@ -26,17 +26,16 @@
             android:id="@+id/details_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
             android:text="Large Text"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_marginBottom="6dp" />
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
             android:id="@+id/details_street"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Medium Text"
-            
-            android:layout_marginBottom="6dp" />
+            android:layout_marginBottom="6dp"
+            android:text="Medium Text" />
 
         <TextView
             android:id="@+id/details_km"
@@ -65,10 +64,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-               	android:layout_marginLeft="6dp"
+                android:layout_marginLeft="6dp"
                 android:text="@string/available"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -92,9 +90,7 @@
                 android:layout_marginLeft="6dp"
                 android:text="@string/notavailable"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
-
         </LinearLayout>
-        
     </LinearLayout>
 
 </RelativeLayout>
