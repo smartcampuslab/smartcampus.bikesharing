@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_horizontal_margin" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mail_info" />
+
+        <RadioGroup
+            android:id="@+id/mail_kind_rdg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical" >
+
+            <RadioButton
+                android:id="@+id/suggestion_rdb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/suggestion" />
+
+            <RadioButton
+                android:id="@+id/complaint_rdb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/complaint" />
+
+            <RadioButton
+                android:id="@+id/alert_rdb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/alert" />
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/Mail_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:gravity="top"
+            android:hint="@string/mail_text_hint"
+            android:inputType="textMultiLine" >
+        </EditText>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/take_picture_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/details_background"
+        android:drawableLeft="@android:drawable/ic_menu_camera"
+        android:drawablePadding="6dp"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:gravity="center"
+        android:text="@string/add_picture"
+        android:textColor="@android:color/white" />
+
+</RelativeLayout>
