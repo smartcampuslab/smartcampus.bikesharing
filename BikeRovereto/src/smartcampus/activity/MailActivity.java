@@ -19,7 +19,7 @@ import android.widget.RadioGroup;
 
 public class MailActivity extends ActionBarActivity {
 
-	private static final String MAIL_ADDR = "bikesharing@asd.it";
+	private static final String MAIL_ADDR = "bikesharing@provincia.tn.it";
 	private static final String MAIL_SUBJ = "[BIKESHARING] ";
 	private static final int PICTURE_CODE = 1234;
 
