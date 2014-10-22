@@ -211,36 +211,36 @@ public class Report implements Parcelable
 		return warnings;
 	}
 
-	public String getWarningsHumanReadable(Context context)
-	{
-		String humanReadable = "";
-		if (warnings.size() == 0 || warnings == null)
-		{
-			return humanReadable;
-		}
-		for (String war : warnings)
-		{
-			Log.d("currentWar", war);
-			if (war.equals(CHAIN))
-			{
-				humanReadable += context.getString(R.string.chain);
-			}
-			else if (war.equals(GEARS))
-			{
-				humanReadable += context.getString(R.string.gears);
-			}
-			else if (war.equals(BRAKES))
-			{
-				humanReadable += context.getString(R.string.brakes);
-			}
-			else if (war.equals(TIRE))
-			{
-				humanReadable += context.getString(R.string.tire);
-			}
-			humanReadable += ", ";
-		}
-		return (String) humanReadable.subSequence(0, humanReadable.length() - 2);
-	}
+//	public String getWarningsHumanReadable(Context context)
+//	{
+//		String humanReadable = "";
+//		if (warnings.size() == 0 || warnings == null)
+//		{
+//			return humanReadable;
+//		}
+//		for (String war : warnings)
+//		{
+//			Log.d("currentWar", war);
+//			if (war.equals(CHAIN))
+//			{
+//				humanReadable += context.getString(R.string.chain);
+//			}
+//			else if (war.equals(GEARS))
+//			{
+//				humanReadable += context.getString(R.string.gears);
+//			}
+//			else if (war.equals(BRAKES))
+//			{
+//				humanReadable += context.getString(R.string.brakes);
+//			}
+//			else if (war.equals(TIRE))
+//			{
+//				humanReadable += context.getString(R.string.tire);
+//			}
+//			humanReadable += ", ";
+//		}
+//		return (String) humanReadable.subSequence(0, humanReadable.length() - 2);
+//	}
 
 	public void addWarning(String war)
 	{

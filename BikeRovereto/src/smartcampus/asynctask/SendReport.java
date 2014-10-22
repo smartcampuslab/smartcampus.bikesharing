@@ -166,14 +166,14 @@ public class SendReport extends AsyncTask<Report, Void, String>{
 	@Override
 	protected void onPostExecute(String result) {
 		Log.d("sendReport", result);
-		if (status == NO_ERROR)
-		{
-			Toast.makeText(context, context.getString(R.string.send_report_succes), Toast.LENGTH_SHORT).show();
-		}
-		else
-		{
-			Toast.makeText(context, context.getString(R.string.send_report_error), Toast.LENGTH_SHORT).show();			
-		}
+//		if (status == NO_ERROR)
+//		{
+//			Toast.makeText(context, context.getString(R.string.send_report_succes), Toast.LENGTH_SHORT).show();
+//		}
+//		else
+//		{
+//			Toast.makeText(context, context.getString(R.string.send_report_error), Toast.LENGTH_SHORT).show();			
+//		}
 	}
 	
 	

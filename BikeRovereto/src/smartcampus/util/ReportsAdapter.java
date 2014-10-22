@@ -62,20 +62,20 @@ public class ReportsAdapter extends ArrayAdapter<Report>
 		
 		viewHolder.type.setText(mReports.get(position).getType().toHumanString(getContext()));
 		
-		switch (layoutCode) {
-		case 0:
-			viewHolder.problems.setText(getContext().getString(R.string.problems) + " "
-					+ mReports.get(position).getWarningsHumanReadable(getContext()));
-			break;
-		case 1:
-			viewHolder.problems.setText(getContext().getString(R.string.problems) + " "
-					+ mReports.get(position).getWarningsHumanReadable(getContext()));
-			viewHolder.summary.setText(mReports.get(position).getDetails());
-			break;
-		default:
-			viewHolder.summary.setText(mReports.get(position).getDetails());			
-			break;
-		}
+//		switch (layoutCode) {
+//		case 0:
+//			viewHolder.problems.setText(getContext().getString(R.string.problems) + " "
+//					+ mReports.get(position).getWarningsHumanReadable(getContext()));
+//			break;
+//		case 1:
+//			viewHolder.problems.setText(getContext().getString(R.string.problems) + " "
+//					+ mReports.get(position).getWarningsHumanReadable(getContext()));
+//			viewHolder.summary.setText(mReports.get(position).getDetails());
+//			break;
+//		default:
+//			viewHolder.summary.setText(mReports.get(position).getDetails());			
+//			break;
+//		}
 		
 		return convertView;
 	}

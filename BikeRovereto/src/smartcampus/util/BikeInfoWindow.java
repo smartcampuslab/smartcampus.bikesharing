@@ -1,19 +1,10 @@
 package smartcampus.util;
 
 import org.osmdroid.bonuspack.overlays.MarkerInfoWindow;
-import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.Projection;
 
-import smartcampus.activity.MainActivity;
-import smartcampus.activity.SignalView;
-import smartcampus.activity.StationsListFragment;
 import smartcampus.model.Bike;
-import android.content.Context;
-import android.graphics.Point;
-import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikesharing.R;
