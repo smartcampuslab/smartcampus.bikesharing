@@ -19,7 +19,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_large"
-                android:layout_marginTop="@dimen/margin_medium"
+                android:layout_marginTop="@dimen/margin_small"
                 android:text="@string/credits" />
 
             <TextView
@@ -99,6 +99,23 @@
                     android:gravity="center_vertical"
                     android:text="Comune di Rovereto\nProvincia di Trento" />
             </LinearLayout>
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_large"
+                android:autoLink="email"
+                android:gravity="center"
+                android:text="@string/partecipation"
+                android:textColor="@color/base_green"
+                android:textColorLink="@android:color/black" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoLink="email"
+                android:gravity="center"
+                android:text="@string/partecipants"/>
 
             <TextView
                 android:layout_width="wrap_content"
