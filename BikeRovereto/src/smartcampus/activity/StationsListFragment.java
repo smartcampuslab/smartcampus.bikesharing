@@ -117,7 +117,7 @@ public class StationsListFragment extends ListFragment implements
 
 		emptyView = rootView.findViewById(android.R.id.empty);
 		stationsAdapter = new StationsAdapter(getActivity(), 0,
-				StationsHelper.sStations);
+				mStations);
 		setListAdapter(stationsAdapter);
 
 		setHasOptionsMenu(true);
