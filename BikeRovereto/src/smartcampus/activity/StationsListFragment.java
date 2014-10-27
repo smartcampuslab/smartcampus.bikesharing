@@ -249,7 +249,7 @@ public class StationsListFragment extends ListFragment implements
 		}
 		return true;
 	}
-
+	
 	/**
 	 * Sorter and comparator
 	 */

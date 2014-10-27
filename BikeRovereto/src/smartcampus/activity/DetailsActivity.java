@@ -1,5 +1,6 @@
 package smartcampus.activity;
 
+import org.osmdroid.ResourceProxy.bitmap;
 import org.osmdroid.bonuspack.overlays.Marker;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -13,12 +14,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import eu.trentorise.smartcampus.bikesharing.R;
 
@@ -37,6 +42,7 @@ public class DetailsActivity extends ActionBarActivity {
 	private TextView mNAvailTV;
 
 	private MapView mMap;
+	private ImageView mImageMap;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +106,7 @@ public class DetailsActivity extends ActionBarActivity {
 		mAvailTV = (TextView) findViewById(R.id.available_bikes);
 		mNAvailTV = (TextView) findViewById(R.id.available_slots);
 		mMap = (MapView) findViewById(R.id.map_view);
-		mMap.getController().setZoom(18);
+		mImageMap = (ImageView) findViewById(R.id.image_map);
 	}
 
 	private void getData() {
@@ -125,14 +131,40 @@ public class DetailsActivity extends ActionBarActivity {
 					Tools.formatDistance(mStation.getDistance())));
 		}
 
+		mMap.getController().setZoom(18);
+		mMap.setDrawingCacheEnabled(true);
 		mMap.getOverlays().add(createMarker());
+		mMap.setClickable(false);
+		mMap.setOnTouchListener(null);
 		mMap.postDelayed(new Runnable() {
 
 			@Override
 			public void run() {
 				mMap.getController().animateTo(mStation.getPosition());
+				mImageMap.postDelayed(new Runnable() {
+					
+					@Override
+					public void run() {
+						mImageMap.setImageBitmap(mMap.getDrawingCache().copy(Bitmap.Config.RGB_565, false));
+						mMap.setVisibility(View.GONE);
+						mImageMap.setVisibility(View.VISIBLE);
+					}
+				}, 1500);
+									
+				
 			}
 		}, 500);
+		mImageMap.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(DetailsActivity.this, MainActivity.class);
+				i.putExtra(EXTRA_STATION, mStation); 
+				startActivity(i);
+				DetailsActivity.this.finish();
+				overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
+			}
+		});
 
 	}
 

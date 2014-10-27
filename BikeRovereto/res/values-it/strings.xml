@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Bike Rovereto</string>
+    <string name="action_settings">Impostazioni</string>
+    <string name="action_open_mail">Segnala</string>
+    <string name="title_activity_stations">Stazioni</string>
+    <string name="title_activity_stations">Dettaglio Stazione</string>
+    <string name="to_details">Dettagli</string>
+    <string name="sort">Ordina per&#8230;</string>
+    <string name="sort_distance">Distanza</string>
+    <string name="sort_fav">Preferiti</string>
+    <string name="sort_available_bikes">Bici disponibili</string>
+    <string name="sort_available_slots">Slot disponibili</string>
+    <string name="sort_name">Nome</string>
+    <string name="title_activity_station_details">Dettagli stazione</string>
+    <string name="action_add_report">Crea segnalazione</string>
+    <string name="drawer_open">Apri</string>
+    <string name="drawer_close">Chiudi</string>
+    <string name="pref_keep_list">Scegli stazioni</string>
+    <string name="add_photo">Allega foto</string>
+    <string name="refresh">Aggiorna</string>
+    <string name="no_favourites">Nessuna stazione prefererita</string>
+    <string name="no_stations">Nessuna stazione</string>
+    <string name="station">stazione</string>
+    <string name="error">Stazioni non disponibili</string>
+    <string name="choose1">Suggerimento</string>
+    <string name="choose2">Reclamo</string>
+    <string name="choose3">Segnalazione</string>
+    <string name="map">Mappa</string>
+    <string name="stations">Stazioni</string>
+    <string name="favourites">Preferiti</string>
+    <string name="id">ID: </string>
+    <string name="about">Informazioni</string>
+    <string name="credits">Credits</string>
+    <string name="project_by">Un progetto di:</string>
+    <string name="bikes">Bici</string>
+    <string name="collaboration_with">In collaborazione con:</string>
+    <string name="for_info">Per informazioni:</string>
+    <string name="email"><a href="mailto:bikerovereto@smartcampuslab.it">bikerovereto@smartcampuslab.it</a></string>
+    <string name="Slots">Slots</string>
+    <string name="problems">Problemi a:</string>
+    <string name="bike_type_menu_emotion">e-motion</string>
+    <string name="bike_type_menu_anarchic">anarchiche</string>
+    <string name="settings">Impostazioni</string>
+    <string name="dialog_title_no_internet">Vuoi connetterti ad Internet?</string>
+    <string name="dialog_msg_no_internet">L\' applicazione richiede una connessione ad internet attiva. </string>
+
+    <string name="available">disponibili</string>
+    <string name="notavailable">non disponibili</string>
+    <string name="distancedetails">a %1$s dalla tua posizione.</string>
+    <string name="distancenotavail">Distanza non disponibile.</string>
+    <string name="directions">Indicazioni</string>
+    <string name="positionnotavail">La tua posizione non e\' disponibile.</string>
+    <string name="mail_info">Invia una email per avvisare l\' ente che si occupa del serivizio direttamente.</string>
+    <string name="suggestion">Suggerimento</string>
+    <string name="complaint">Reclamo</string>
+    <string name="alert">Segnalazione</string>
+    <string name="mail_text_hint">Inserisci qui il tuo messaggio</string>
+    <string name="conset_position">Rileva la mia posizione</string>
+    <string name="add_picture">Aggiungi una foto</string>
+    <string name="send_with">Invia mail con:</string>
+    <string name="select_image_app">Seleziona la galleria:</string>
+
+</resources>

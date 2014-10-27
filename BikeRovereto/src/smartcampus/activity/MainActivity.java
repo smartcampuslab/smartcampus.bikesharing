@@ -70,6 +70,8 @@ public class MainActivity extends ActionBarActivity implements
 	private NavigationDrawerAdapter navAdapter;
 
 	private ArrayList<Fragment> frags;
+	
+	private Station mSelecteStation;
 
 	private static final String FRAGMENT_MAP = "map";
 	private static final String FRAGMENT_STATIONS = "stations";
@@ -147,9 +149,13 @@ public class MainActivity extends ActionBarActivity implements
 		setProgressBarIndeterminateVisibility(true);
 
 		initialization();
+		
+		if(getIntent().getExtras()!=null && getIntent().getExtras().containsKey(DetailsActivity.EXTRA_STATION)){
+			mSelecteStation = (Station) getIntent().getParcelableExtra(DetailsActivity.EXTRA_STATION);
+		}
 
 		frags = new ArrayList<Fragment>(3);
-		frags.add(OsmMap.newInstance(bikes));
+		frags.add(OsmMap.newInstance(bikes,mSelecteStation));
 		frags.add(new StationsListFragment());
 		frags.add(new FavouriteFragment());
 

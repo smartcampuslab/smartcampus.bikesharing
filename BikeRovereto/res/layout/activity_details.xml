@@ -1,18 +1,31 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:weightSum="1"
+    android:orientation="vertical"
     tools:context="smartcampus.activity.DetailsActivity" >
 
     <org.osmdroid.views.MapView
         android:id="@+id/map_view"
         android:layout_width="match_parent"
-        android:layout_height="192dp" >
-
+        android:layout_height="0dp"
+        android:layout_weight="0.7"
+        android:clickable="true"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:drawingCacheQuality="auto"
+        android:visibility="visible" >
         <!-- android:layerType="software" > -->
     </org.osmdroid.views.MapView>
+    <ImageView
+        android:id="@+id/image_map"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.7"
+        android:visibility="gone"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,6 +33,8 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/map_view"
         android:orientation="vertical"
+        android:layout_weight="0.3"
+        android:weightSum="0.3"
         android:padding="18dp" >
 
         <TextView
@@ -35,6 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="6dp"
+            android:visibility="invisible"
             android:text="Medium Text" />
 
         <TextView
@@ -48,7 +64,9 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1"
+            android:gravity="center_vertical" >
 
             <TextView
                 android:id="@+id/available_bikes"
@@ -71,7 +89,9 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1"
+            android:gravity="center_vertical" >
 
             <TextView
                 android:id="@+id/available_slots"
@@ -91,6 +111,7 @@
                 android:text="@string/notavailable"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </LinearLayout>
+
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

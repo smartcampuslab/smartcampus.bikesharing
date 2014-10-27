@@ -2,9 +2,6 @@ package smartcampus.util;
 
 import java.util.ArrayList;
 
-import org.osmdroid.util.GeoPoint;
-
-import smartcampus.activity.MainActivity;
 import smartcampus.model.Station;
 import android.app.Activity;
 import android.content.Context;
@@ -87,13 +84,12 @@ public class StationsAdapter extends ArrayAdapter<Station> {
 				editor.putBoolean(Tools.STATION_PREFIX + thisStation.getId(),
 						thisStation.getFavourite());
 				editor.apply();
-				if (thisStation.getFavourite()){
+				if (thisStation.getFavourite()) {
 					StationsHelper.sStations.add(thisStation);
-				}
-				else{
+				} else {
 					StationsHelper.sFavouriteStations.remove(thisStation);
 				}
-				if (isFavouriteAdapter){
+				if (isFavouriteAdapter) {
 					notifyDataSetChanged();
 				}
 			}

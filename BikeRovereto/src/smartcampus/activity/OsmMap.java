@@ -84,10 +84,12 @@ public class OsmMap extends Fragment implements onBackListener {
 	private static final BoundingBoxE6 defaultBoundingBox = new BoundingBoxE6(
 			45.911087, 11.065997, 45.86311, 11.00263);
 
-	public static OsmMap newInstance(ArrayList<Bike> bikes) {
+	public static OsmMap newInstance(ArrayList<Bike> bikes, Station s) {
 		OsmMap fragment = new OsmMap();
 		Bundle bundle = new Bundle();
-
+		if (s != null) {
+			bundle.putParcelable("station", s);
+		}
 		bundle.putParcelableArrayList("bikes", bikes);
 
 		fragment.setArguments(bundle);
@@ -99,7 +101,12 @@ public class OsmMap extends Fragment implements onBackListener {
 		bikes = getArguments().getParcelableArrayList("bikes");
 
 		// default bounding box
-		currentBoundingBox = defaultBoundingBox;
+		if (getArguments().containsKey("station")) {
+			Station s = (Station) getArguments().get("station");
+			currentBoundingBox = createBoundingBoxFromPosition(s.getPosition());
+		} else {
+			currentBoundingBox = defaultBoundingBox;
+		}
 
 		setCallBackListeners();
 		super.onCreate(savedInstanceState);
@@ -158,16 +165,30 @@ public class OsmMap extends Fragment implements onBackListener {
 	public void onResume() {
 		super.onResume();
 		mLocationOverlay.enableMyLocation();
+		if (getArguments() != null && getArguments().containsKey("station")) {
+			final Station s = (Station) getArguments().get("station");
+			currentBoundingBox = createBoundingBoxFromPosition(s.getPosition());
+			// mapView.getController().animateTo(s.getPosition());
+			 mapView.postDelayed(new Runnable() {
+				
+				@Override
+				public void run() {
+					mapView.getController().setZoom(20);
+				}
+			},500);
+		}
 		mapView.post(new Runnable() {
 			@Override
 			public void run() {
-				// cycle because the zoomToBoundingBox must be called 3 times to
+				// cycle because the zoomToBoundingBox must be called 3
+				// times to
 				// take effect (osm bug?)
 				for (int i = 0; i < 3; i++) {
 					mapView.zoomToBoundingBox(currentBoundingBox);
 				}
 			}
 		});
+
 		getActivity().getActionBar().setTitle(getString(R.string.app_name));
 	}
 
@@ -274,11 +295,11 @@ public class OsmMap extends Fragment implements onBackListener {
 			super.onLocationChanged(location);
 			((MainActivity) getActivity()).setCurrentLocation(new GeoPoint(
 					location));
-//			if (firstTime) {
-//				if (stations == null || stations.size() == 0)
-//					mapView.getController().animateTo(new GeoPoint(location));
-//				firstTime = false;
-//			}
+			// if (firstTime) {
+			// if (stations == null || stations.size() == 0)
+			// mapView.getController().animateTo(new GeoPoint(location));
+			// firstTime = false;
+			// }
 		}
 	}
 
@@ -291,9 +312,9 @@ public class OsmMap extends Fragment implements onBackListener {
 				if (mLocationOverlay.getMyLocation() != null) {
 					mapView.getController().animateTo(
 							mLocationOverlay.getMyLocation());
-				}
-				else{
-					Toast.makeText(getActivity(), R.string.positionnotavail, Toast.LENGTH_SHORT).show();
+				} else {
+					Toast.makeText(getActivity(), R.string.positionnotavail,
+							Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
@@ -423,7 +444,7 @@ public class OsmMap extends Fragment implements onBackListener {
 	}
 
 	public void refresh() {
-		if (mapView != null && mapView.getOverlays() != null){
+		if (mapView != null && mapView.getOverlays() != null) {
 			mapView.getOverlays().clear();
 			mapView.invalidate();
 		}
@@ -494,6 +515,25 @@ public class OsmMap extends Fragment implements onBackListener {
 			getFragmentManager().popBackStack();
 		else
 			getActivity().finish();
+	}
+
+	private BoundingBoxE6 createBoundingBoxFromPosition(GeoPoint location) {
+		double latitude = location.getLatitude();
+		double longitude = location.getLongitude();
+
+		// 6378000 Size of the Earth (in meters)
+		double longitudeD = (Math.asin(1000 / (6378000 * Math.cos(Math.PI
+				* latitude / 180))))
+				* 180 / Math.PI;
+		double latitudeD = (Math.asin((double) 1000 / (double) 6378000)) * 180
+				/ Math.PI;
+
+		double latitudeMax = latitude + (latitudeD);
+		double latitudeMin = latitude - (latitudeD);
+		double longitudeMax = longitude + (longitudeD);
+		double longitudeMin = longitude - (longitudeD);
+		return new BoundingBoxE6(latitudeMax, longitudeMax, latitudeMin,
+				longitudeMin);
 	}
 
 }
