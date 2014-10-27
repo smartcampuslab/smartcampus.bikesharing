@@ -7,6 +7,7 @@ import org.osmdroid.views.overlay.Overlay;
 
 import smartcampus.model.Station;
 import smartcampus.util.StationMarker;
+import smartcampus.util.StationsHelper;
 import smartcampus.util.Tools;
 import android.content.Context;
 import android.content.Intent;
@@ -61,14 +62,16 @@ public class DetailsActivity extends ActionBarActivity {
 	public boolean onPrepareOptionsMenu(Menu menu) {
 
 		if (mStation != null) {
-			if (mStation.getFavourite())
+			if (mStation.getFavourite()
+					|| StationsHelper.sFavouriteStations.contains(mStation)) {
 				menu.getItem(0).setIcon(
 						getResources().getDrawable(
 								R.drawable.ic_action_favourite));
-			else
+			} else {
 				menu.getItem(0).setIcon(
 						getResources().getDrawable(
 								R.drawable.ic_action_non_favourite));
+			}
 		}
 
 		return super.onPrepareOptionsMenu(menu);
@@ -226,6 +229,12 @@ public class DetailsActivity extends ActionBarActivity {
 		editor.putBoolean(Tools.STATION_PREFIX + mStation.getId(),
 				mStation.getFavourite());
 		editor.apply();
+
+		if (mStation.getFavourite()) {
+			StationsHelper.sStations.add(mStation);
+		} else {
+			StationsHelper.sFavouriteStations.remove(mStation);
+		}
 		invalidateOptionsMenu();
 	}
 }
