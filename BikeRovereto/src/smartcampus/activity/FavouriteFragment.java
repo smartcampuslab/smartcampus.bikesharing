@@ -28,7 +28,7 @@ import android.widget.TextView;
 
 public class FavouriteFragment extends ListFragment implements onBackListener {
 	private StationsAdapter adapter;
-	private TextView empty;
+	private View empty;
 
 	private OnStationSelectListener mCallback;
 
@@ -72,6 +72,7 @@ public class FavouriteFragment extends ListFragment implements onBackListener {
 		 * sortByAvailableBikes(false); else sortByDistance(false);
 		 */
 //		refreshDatas();
+		
 		super.onCreate(savedInstanceState);
 	}
 
@@ -88,7 +89,8 @@ public class FavouriteFragment extends ListFragment implements onBackListener {
 		adapter.setIsFavouriteAdapter(true);
 		setListAdapter(adapter);
 		View rootView = inflater.inflate(R.layout.fav_stations, null);
-		empty = (TextView) rootView.findViewById(android.R.id.empty);
+		empty = rootView.findViewById(android.R.id.empty);
+		
 		return rootView;
 	}
 
