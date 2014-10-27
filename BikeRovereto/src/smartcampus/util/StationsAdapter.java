@@ -85,7 +85,7 @@ public class StationsAdapter extends ArrayAdapter<Station> {
 						thisStation.getFavourite());
 				editor.apply();
 				if (thisStation.getFavourite()) {
-					StationsHelper.sStations.add(thisStation);
+					StationsHelper.sFavouriteStations.add(thisStation);
 				} else {
 					StationsHelper.sFavouriteStations.remove(thisStation);
 				}
