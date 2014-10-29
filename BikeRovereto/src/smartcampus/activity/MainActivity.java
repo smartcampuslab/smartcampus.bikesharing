@@ -44,7 +44,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import eu.trentorise.smartcampus.bikesharing.R;
 
-public class MainActivity extends ActionBarActivity implements
+public abstract class MainActivity extends ActionBarActivity implements
 		StationsListFragment.OnStationSelectListener,
 		FavouriteFragment.OnStationSelectListener {
 
@@ -130,6 +130,8 @@ public class MainActivity extends ActionBarActivity implements
 		this.mCallbackBikesRefreshed = onBikesRefresh;
 	}
 
+	protected abstract int getAboutLayout();
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -272,8 +274,8 @@ public class MainActivity extends ActionBarActivity implements
 									FRAGMENT_FAVOURITE, position);
 							break;
 						case 3:
-							Intent i2 = new Intent(getBaseContext(),
-									About.class);
+							
+							Intent i2 = About.createAbout(getBaseContext(), getAboutLayout());
 							startActivity(i2);
 							overridePendingTransition(R.anim.alpha_in,
 									R.anim.alpha_out);
@@ -434,8 +436,8 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	public void updateDistances() {
-		if (stations != null && myLocation != null) {
-			for (Station station : stations) {
+		if (StationsHelper.sStations != null && myLocation != null) {
+			for (Station station : StationsHelper.sStations) {
 				station.setDistance(myLocation.distanceTo(station.getPosition()));
 			}
 		}

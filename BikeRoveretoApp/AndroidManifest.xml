@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="eu.trentorise.smartcampus.bikerovereto.app"
+    package="it.smartcommunitylab.bikesharing.rovereto"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -34,7 +34,7 @@
             android:value="e-motion" />
 
         <activity
-            android:name="smartcampus.activity.MainActivity"
+            android:name=".activity.MainRoveretoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name" >
             <intent-filter>
@@ -55,10 +55,9 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
->
         </receiver>
 
-        <activity android:name="eu.trentorise.smartcampus.bikerovereto.AboutActivity" >
+        <activity android:name=".activity.About" >
         </activity>
         <activity android:name="smartcampus.activity.About" >
         </activity>
@@ -66,7 +65,6 @@
             android:name="smartcampus.activity.DetailsActivity"
             android:label="@string/title_activity_details" >
         </activity>
-]
         <activity
             android:name="smartcampus.activity.MailActivity"
             android:label="@string/title_activity_details" >
