@@ -234,15 +234,6 @@ public class DetailsActivity extends ActionBarActivity {
 	}
 
 	private void sendReport() {
-		// Intent i = new Intent(Intent.ACTION_SEND);
-		// i.setType("message/rfc822");
-		// // TODO mettere le cose giuste.
-		// i.putExtra(Intent.EXTRA_EMAIL, new String[] { "asdasd@gmail.com" });
-		// i.putExtra(Intent.EXTRA_SUBJECT, "bike sharing report");
-		// i.putExtra(Intent.EXTRA_TEXT, "Asda\n asd\n");
-		// startActivity(Intent.createChooser(i,
-		// getString(R.string.action_add_report)));
-
 		Intent i = new Intent(this, MailActivity.class);
 		startActivity(i);
 		overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
