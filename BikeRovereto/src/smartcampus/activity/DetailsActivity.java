@@ -1,8 +1,5 @@
 package smartcampus.activity;
 
-import java.util.Iterator;
-
-import org.osmdroid.ResourceProxy.bitmap;
 import org.osmdroid.bonuspack.overlays.Marker;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -23,7 +20,6 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -159,9 +155,7 @@ public class DetailsActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(DetailsActivity.this, MainActivity.class);
-				i.putExtra(EXTRA_STATION, mStation);
-				startActivity(i);
+				startActivity(MainActivity.createStationIntent(DetailsActivity.this, mStation));
 				DetailsActivity.this.finish();
 				overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
 			}

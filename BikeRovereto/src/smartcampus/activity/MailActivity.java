@@ -1,28 +1,29 @@
 package smartcampus.activity;
 
-import eu.trentorise.smartcampus.bikesharing.R;
-import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import eu.trentorise.smartcampus.bikesharing.R;
 
 public class MailActivity extends ActionBarActivity {
 
-	private static final String MAIL_ADDR = "bikesharing@provincia.tn.it";
 	private static final String MAIL_SUBJ = "[BIKESHARING] ";
 	private static final int PICTURE_CODE = 1234;
+	private static final String METADATA_FEEDBACK_EMAIL = "eu.trentorise.smartcampus.bikerovereto.FEEDBACK_MAIL";
 
 	private EditText mBody;
 	private RadioGroup mKind;
@@ -87,8 +88,23 @@ public class MailActivity extends ActionBarActivity {
 		// MORE general, attachment works
 		Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 		emailIntent.setType("application/image");
-		emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
-				new String[] { MAIL_ADDR });
+
+		String email = null;
+		try {
+			ApplicationInfo app = getPackageManager().getApplicationInfo(
+					this.getPackageName(),
+					PackageManager.GET_ACTIVITIES
+							| PackageManager.GET_META_DATA);
+			Bundle metaData = app.metaData;
+			email = metaData.getString(METADATA_FEEDBACK_EMAIL);
+		} catch (NameNotFoundException e) {
+			Log.e(getClass().getName(), ""+e.getMessage());
+		}
+		if (email != null) {
+			emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
+					new String[] { email });
+		}
+		
 		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, MAIL_SUBJ
 				+ kind);
 		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, mBody.getText()

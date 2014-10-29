@@ -83,6 +83,8 @@ public abstract class MainActivity extends ActionBarActivity implements
 	private static final int CONNECTING = 2;
 	protected static final long CONNECTING_TIME = 120;
 
+	protected static Class<?> mainClass = null;
+	
 	public interface OnPositionAquiredListener {
 		public void onPositionAquired();
 	}
@@ -131,10 +133,17 @@ public abstract class MainActivity extends ActionBarActivity implements
 	}
 
 	protected abstract int getAboutLayout();
+
+	public static Intent createStationIntent(Context ctx, Station station) {
+		Intent i = new Intent(ctx, mainClass);
+		i.putExtra("station", station);
+		return i;
+	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 

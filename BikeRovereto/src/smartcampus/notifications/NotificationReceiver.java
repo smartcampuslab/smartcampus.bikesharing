@@ -1,12 +1,8 @@
 package smartcampus.notifications;
 
 import java.util.Calendar;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import smartcampus.activity.MainActivity;
-import smartcampus.asynctask.GetStationsTask;
 import smartcampus.model.NotificationBlock;
 import smartcampus.model.Station;
 import android.app.AlarmManager;
@@ -79,7 +75,7 @@ public class NotificationReceiver extends BroadcastReceiver
 
 		Station station = null;
 		String stationID = intent.getStringExtra("stationID");
-		Intent intentToDetails = new Intent(context, MainActivity.class);
+		Intent intentToDetails = MainActivity.createStationIntent(context, station);
 		try
 		{
 //			station = new GetStationsTask(context).execute(stationID).get(10000, TimeUnit.MILLISECONDS).get(0);

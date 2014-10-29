@@ -33,6 +33,10 @@
             android:name="eu.trentorise.smartcampus.bikerovereto.BIKE_TYPES"
             android:value="e-motion" />
 
+        <meta-data
+            android:name="eu.trentorise.smartcampus.bikerovereto.FEEDBACK_MAIL"
+            android:value="@string/feedback_mail" />
+        
         <activity
             android:name=".activity.MainRoveretoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
