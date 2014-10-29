@@ -62,5 +62,7 @@
     <string name="select_image_app">Seleziona la galleria:</string>
     <string name="empty_fav_title">Non hai ancora stazioni preferite</string>
     <string name="empty_fav_desc">Seleziona una stazione dalla mappa o dalla lista e clicca la stellina per aggiungerla ai favoriti</string>
+    <string name="partecipation">Hanno partecipato allo sviluppo:</string>
+    <string name="partecipants">Andrea Dematté\nDylan Stenico\nGabriele Maurina</string>
 
 </resources>

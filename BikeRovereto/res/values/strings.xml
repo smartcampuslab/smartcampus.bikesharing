@@ -57,9 +57,9 @@
     <string name="add_picture">Attach a picture</string>
     <string name="send_with">Send the e-mail via:</string>
     <string name="select_image_app">Choose a gallery:</string>
-   <string name="empty_fav_title">No favourite stations</string>
+    <string name="empty_fav_title">No favourite stations</string>
     <string name="empty_fav_desc">Select a station from the list or from the map and tap on the little star to add it here</string>
-    <string name="partecipation">Hanno partecipato allo sviluppo</string>
+    <string name="partecipation">partecipated to the development:</string>
     <string name="partecipants">Andrea Dematté\nDylan Stenico\nGabriele Maurina</string>
 
 </resources>
