@@ -45,7 +45,6 @@ public class StationsListFragment extends ListFragment implements
 	private static final int SORTED_BY_AVAILABLE_SLOTS = 4;
 
 	private OnStationSelectListener mCallback;
-	private ArrayList<Station> mStations;
 
 	// Container Activity must implement this interface
 	public interface OnStationSelectListener {
@@ -78,7 +77,6 @@ public class StationsListFragment extends ListFragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		mStations = new ArrayList<Station>(StationsHelper.sStations);
 		if (getArguments() != null && getArguments().containsKey("stationid")) {
 			mStationId = getArguments().getString("stationid");
 		}
@@ -116,7 +114,7 @@ public class StationsListFragment extends ListFragment implements
 				false);
 
 		emptyView = rootView.findViewById(android.R.id.empty);
-		stationsAdapter = new StationsAdapter(getActivity(), 0, mStations);
+		stationsAdapter = new StationsAdapter(getActivity(), 0, StationsHelper.sStations);
 		setListAdapter(stationsAdapter);
 
 		setHasOptionsMenu(true);
@@ -128,6 +126,7 @@ public class StationsListFragment extends ListFragment implements
 	public void onResume() {
 		super.onResume();
 		getActivity().getActionBar().setTitle(R.string.stations);
+		stationsAdapter.notifyDataSetChanged();
 	}
 
 	@Override
@@ -180,7 +179,6 @@ public class StationsListFragment extends ListFragment implements
 	}
 
 	private void onRefreshComplete() {
-		mStations = new ArrayList<Station>(StationsHelper.sStations);
 		Log.i("STR", "onRefreshComplete");
 		getActivity().setProgressBarIndeterminateVisibility(false);
 		// Reorder the arraylist in the previous order
@@ -253,35 +251,35 @@ public class StationsListFragment extends ListFragment implements
 	 */
 
 	private void sortByDistance(boolean updateList) {
-		Collections.sort(mStations, new DistanceComparator());
+		Collections.sort(StationsHelper.sStations, new DistanceComparator());
 		sortedBy = SORTED_BY_DISTANCE;
 		if (updateList)
 			stationsAdapter.notifyDataSetChanged();
 	}
 
 	private void sortByName(boolean updateList) {
-		Collections.sort(mStations, new NameComparator());
+		Collections.sort(StationsHelper.sStations, new NameComparator());
 		sortedBy = SORTED_BY_NAME;
 		if (updateList)
 			stationsAdapter.notifyDataSetChanged();
 	}
 
 	private void sortByAvailableSlots(boolean updateList) {
-		Collections.sort(mStations, new AvailableSlotsComparator());
+		Collections.sort(StationsHelper.sStations, new AvailableSlotsComparator());
 		sortedBy = SORTED_BY_AVAILABLE_SLOTS;
 		if (updateList)
 			stationsAdapter.notifyDataSetChanged();
 	}
 
 	private void sortByAvailableBikes(boolean updateList) {
-		Collections.sort(mStations, new AvailableBikesComparator());
+		Collections.sort(StationsHelper.sStations, new AvailableBikesComparator());
 		sortedBy = SORTED_BY_AVAILABLE_BIKES;
 		if (updateList)
 			stationsAdapter.notifyDataSetChanged();
 	}
 
 	private void sortByFavourites(boolean updateList) {
-		Collections.sort(mStations, new FavouriteComparator());
+		Collections.sort(StationsHelper.sStations, new FavouriteComparator());
 		sortedBy = SORTED_BY_FAVOURITES;
 		if (updateList && stationsAdapter != null)
 			stationsAdapter.notifyDataSetChanged();
