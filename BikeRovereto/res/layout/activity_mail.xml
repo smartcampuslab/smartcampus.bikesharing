@@ -52,6 +52,14 @@
             android:hint="@string/mail_text_hint"
             android:inputType="textMultiLine" >
         </EditText>
+        
+        <ImageView
+            android:id="@+id/feedback_img_result"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:scaleType="centerInside"
+            android:visibility="gone" />
+        
     </LinearLayout>
 
     <LinearLayout

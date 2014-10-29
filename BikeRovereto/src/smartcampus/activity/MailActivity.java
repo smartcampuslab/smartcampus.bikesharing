@@ -1,12 +1,17 @@
 package smartcampus.activity;
 
+import java.io.File;
+
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -14,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -24,6 +30,7 @@ public class MailActivity extends ActionBarActivity {
 	private static final String MAIL_SUBJ = "[BIKESHARING] ";
 	private static final int PICTURE_CODE = 1234;
 	private static final String METADATA_FEEDBACK_EMAIL = "eu.trentorise.smartcampus.bikerovereto.FEEDBACK_MAIL";
+	private static final int IMG_HEIGHT = 150;
 
 	private EditText mBody;
 	private RadioGroup mKind;
@@ -137,27 +144,10 @@ public class MailActivity extends ActionBarActivity {
 		super.onActivityResult(requestCode, requestCode, data);
 		if (requestCode == PICTURE_CODE && resultCode == RESULT_OK) {
 			mPath = data.getData();
+			ImageView myImage = (ImageView) findViewById(R.id.feedback_img_result);
+			myImage.setVisibility(View.VISIBLE);
+			myImage.setImageURI(mPath);
 		}
-	}
-
-	// And to convert the image URI to the direct file system path of the image
-	// file
-	public String getRealPathFromURI(Uri contentUri) {
-
-		// can post image
-		String[] proj = { MediaStore.Images.Media.DATA };
-		Cursor cursor = getContentResolver().query(contentUri, proj, // Which
-																		// columns
-																		// to
-																		// return
-				null, // WHERE clause; which rows to return (all rows)
-				null, // WHERE clause selection arguments (none)
-				null); // Order-by clause (ascending by name)
-		int column_index = cursor
-				.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-		cursor.moveToFirst();
-
-		return cursor.getString(column_index);
 	}
 
 }
