@@ -1,5 +1,7 @@
 package smartcampus.activity;
 
+import java.util.Iterator;
+
 import org.osmdroid.ResourceProxy.bitmap;
 import org.osmdroid.bonuspack.overlays.Marker;
 import org.osmdroid.util.GeoPoint;
@@ -68,8 +70,7 @@ public class DetailsActivity extends ActionBarActivity {
 	public boolean onPrepareOptionsMenu(Menu menu) {
 
 		if (mStation != null) {
-			if (mStation.getFavourite()
-					|| StationsHelper.sFavouriteStations.contains(mStation)) {
+			if (mStation.getFavourite()) {
 				menu.getItem(0).setIcon(
 						getResources().getDrawable(
 								R.drawable.ic_action_favourite));
@@ -142,16 +143,16 @@ public class DetailsActivity extends ActionBarActivity {
 			public void run() {
 				mMap.getController().animateTo(mStation.getPosition());
 				mImageMap.postDelayed(new Runnable() {
-					
+
 					@Override
 					public void run() {
-						mImageMap.setImageBitmap(mMap.getDrawingCache().copy(Bitmap.Config.RGB_565, false));
+						mImageMap.setImageBitmap(mMap.getDrawingCache().copy(
+								Bitmap.Config.RGB_565, false));
 						mMap.setVisibility(View.GONE);
 						mImageMap.setVisibility(View.VISIBLE);
 					}
 				}, 1500);
-									
-				
+
 			}
 		}, 500);
 		mImageMap.setOnClickListener(new View.OnClickListener() {
@@ -159,7 +160,7 @@ public class DetailsActivity extends ActionBarActivity {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(DetailsActivity.this, MainActivity.class);
-				i.putExtra(EXTRA_STATION, mStation); 
+				i.putExtra(EXTRA_STATION, mStation);
 				startActivity(i);
 				DetailsActivity.this.finish();
 				overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
@@ -262,11 +263,9 @@ public class DetailsActivity extends ActionBarActivity {
 				mStation.getFavourite());
 		editor.apply();
 
-		if (mStation.getFavourite()) {
-			StationsHelper.sStations.add(mStation);
-		} else {
-			StationsHelper.sFavouriteStations.remove(mStation);
-		}
-		invalidateOptionsMenu();
+		StationsHelper.updateStation(mStation);
+		
+		supportInvalidateOptionsMenu();
 	}
+
 }

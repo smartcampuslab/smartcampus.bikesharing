@@ -94,7 +94,7 @@ public class StationsListFragment extends ListFragment implements
 		// arraylist to prevent crash for nullpointer
 
 		if (StationsHelper.isNotInitialized()) {
-			StationsHelper.initialize(getActivity(),null);
+			StationsHelper.initialize(getActivity(), null);
 		}
 
 		// If the distance is already defined the list is sorted by distance,
@@ -116,8 +116,7 @@ public class StationsListFragment extends ListFragment implements
 				false);
 
 		emptyView = rootView.findViewById(android.R.id.empty);
-		stationsAdapter = new StationsAdapter(getActivity(), 0,
-				mStations);
+		stationsAdapter = new StationsAdapter(getActivity(), 0, mStations);
 		setListAdapter(stationsAdapter);
 
 		setHasOptionsMenu(true);
@@ -162,7 +161,6 @@ public class StationsListFragment extends ListFragment implements
 		GetStationsTask getStationsTask = new GetStationsTask(getActivity());
 
 		StationsHelper.sStations.clear();
-		StationsHelper.sFavouriteStations.clear();
 
 		getStationsTask.delegate = new AsyncStationResponse() {
 
@@ -249,7 +247,7 @@ public class StationsListFragment extends ListFragment implements
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Sorter and comparator
 	 */
@@ -283,11 +281,7 @@ public class StationsListFragment extends ListFragment implements
 	}
 
 	private void sortByFavourites(boolean updateList) {
-		mStations.removeAll(StationsHelper.sFavouriteStations);
 		Collections.sort(mStations, new FavouriteComparator());
-		Collections.sort(StationsHelper.sFavouriteStations,
-				new FavouriteComparator());
-		mStations.addAll(0, StationsHelper.sFavouriteStations);
 		sortedBy = SORTED_BY_FAVOURITES;
 		if (updateList && stationsAdapter != null)
 			stationsAdapter.notifyDataSetChanged();
@@ -324,18 +318,17 @@ public class StationsListFragment extends ListFragment implements
 
 		@Override
 		public int compare(Station station0, Station station1) {
-			if (StationsHelper.sFavouriteStations.contains(station0)
-					&& StationsHelper.sFavouriteStations.contains(station1)) {
+			if (station0.getFavourite() && station1.getFavourite()) {
 				if (station0.getDistance() > -1) {
 					return station0.getDistance() - station1.getDistance();
 				} else {
 					return new NameComparator().compare(station0, station1);
 				}
 			}
-			if (StationsHelper.sFavouriteStations.contains(station0)) {
-				return 1;
+			if (station0.getFavourite()) {
+				return -1;
 			}
-			if (StationsHelper.sFavouriteStations.contains(station1)) {
+			if (station1.getFavourite()) {
 				return 1;
 			}
 			if (station0.getDistance() > -1) {

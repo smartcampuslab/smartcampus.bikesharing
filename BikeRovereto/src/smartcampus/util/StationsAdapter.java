@@ -1,6 +1,7 @@
 package smartcampus.util;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import smartcampus.model.Station;
 import android.app.Activity;
@@ -20,9 +21,7 @@ public class StationsAdapter extends ArrayAdapter<Station> {
 
 	private ArrayList<Station> mStations;
 	private SharedPreferences pref;
-	private boolean isFavouriteAdapter = false;
-	private int mLastPosition = -1;
-	private int mSelection = -1;
+	private boolean mFavourite;
 
 	public StationsAdapter(Context context, int resource,
 			ArrayList<Station> stations) {
@@ -32,12 +31,13 @@ public class StationsAdapter extends ArrayAdapter<Station> {
 				.getSharedPreferences("favStations", Context.MODE_PRIVATE);
 	}
 
-	public void setSelectionPos(int mSelection) {
-		this.mSelection = mSelection;
-	}
-
-	public void cancelSelection() {
-		this.mSelection = -1;
+	public StationsAdapter(Context context, int resource,
+			ArrayList<Station> stations, boolean fav) {
+		super(context, resource, stations);
+		mStations = stations;
+		this.mFavourite = fav;
+		pref = context
+				.getSharedPreferences("favStations", Context.MODE_PRIVATE);
 	}
 
 	@Override
@@ -84,48 +84,14 @@ public class StationsAdapter extends ArrayAdapter<Station> {
 				editor.putBoolean(Tools.STATION_PREFIX + thisStation.getId(),
 						thisStation.getFavourite());
 				editor.apply();
-				if (thisStation.getFavourite()) {
-					StationsHelper.sFavouriteStations.add(thisStation);
-				} else {
-					StationsHelper.sFavouriteStations.remove(thisStation);
-				}
-				if (isFavouriteAdapter) {
+				if (mFavourite) {
 					notifyDataSetChanged();
+					StationsHelper.updateStation(thisStation);
 				}
 			}
 		});
-
-		// ATTENTION this is a cheat to avoid an Android bug.
-		if (position == mSelection) {
-			final View row = convertView;
-			convertView.postDelayed(new Runnable() {
-
-				@Override
-				public void run() {
-					row.setSelected(true);
-				}
-			}, 50);
-
-		}
-		if (position > mLastPosition) {
-			convertView.startAnimation(AnimationUtils.loadAnimation(
-					getContext(), R.anim.slide_up));
-			mLastPosition = position;
-		}
 		return convertView;
 
-	}
-
-	@Override
-	public void notifyDataSetChanged() {
-		super.notifyDataSetChanged();
-		mLastPosition = -1;
-	}
-
-	@Override
-	public void notifyDataSetInvalidated() {
-		super.notifyDataSetInvalidated();
-		mLastPosition = -1;
 	}
 
 	private static class ViewHolder {
@@ -135,10 +101,6 @@ public class StationsAdapter extends ArrayAdapter<Station> {
 		TextView distance;
 		CheckBox favouriteBtn;
 
-	}
-
-	public void setIsFavouriteAdapter(boolean isFavAdapter) {
-		isFavouriteAdapter = isFavAdapter;
 	}
 
 }

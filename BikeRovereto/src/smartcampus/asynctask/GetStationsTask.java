@@ -67,11 +67,7 @@ public class GetStationsTask extends AsyncTask<String, Void, Void> {
 		else{
 			StationsHelper.sStations.clear();
 		}
-		if(StationsHelper.sFavouriteStations==null){
-			StationsHelper.sFavouriteStations=new ArrayList<Station>();
-		}else{
-			StationsHelper.sFavouriteStations.clear();
-		}
+	
 		try {
 			HttpGet httpg;
 			httpg = new HttpGet(Tools.SERVICE_URL + Tools.STATIONS_REQUEST
@@ -132,8 +128,6 @@ public class GetStationsTask extends AsyncTask<String, Void, Void> {
 					station.setUsedSlots(availableBikes);
 					station.thereAreReports(reportsNumber > 0);
 					StationsHelper.sStations.add(station);
-					if (fav)
-						StationsHelper.sFavouriteStations.add(station);
 				}
 			} else {
 				JSONObject stationJSON = container.getJSONObject("data");

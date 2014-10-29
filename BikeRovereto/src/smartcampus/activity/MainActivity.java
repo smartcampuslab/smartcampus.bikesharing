@@ -536,7 +536,6 @@ public class MainActivity extends ActionBarActivity implements
 
 	public void refresh() {
 		StationsHelper.sStations.clear();
-		StationsHelper.sFavouriteStations.clear();
 		setSupportProgressBarIndeterminateVisibility(true);
 		initialization();
 	}

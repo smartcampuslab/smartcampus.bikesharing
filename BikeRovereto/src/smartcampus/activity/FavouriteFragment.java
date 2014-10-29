@@ -1,8 +1,5 @@
 package smartcampus.activity;
 
-import java.util.ArrayList;
-
-import eu.trentorise.smartcampus.bikesharing.R;
 import smartcampus.activity.MainActivity.OnPositionAquiredListener;
 import smartcampus.activity.MainActivity.onBackListener;
 import smartcampus.asynctask.GetStationsTask;
@@ -16,15 +13,14 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.TextView;
+import android.widget.Toast;
+import eu.trentorise.smartcampus.bikesharing.R;
 
 public class FavouriteFragment extends ListFragment implements onBackListener {
 	private StationsAdapter adapter;
@@ -71,8 +67,8 @@ public class FavouriteFragment extends ListFragment implements onBackListener {
 		 * (mStations.get(0).getDistance()==Station.DISTANCE_NOT_VALID)
 		 * sortByAvailableBikes(false); else sortByDistance(false);
 		 */
-//		refreshDatas();
-		
+		// refreshDatas();
+
 		super.onCreate(savedInstanceState);
 	}
 
@@ -85,12 +81,12 @@ public class FavouriteFragment extends ListFragment implements onBackListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		adapter = new StationsAdapter(getActivity(), 0, StationsHelper.sFavouriteStations);
-		adapter.setIsFavouriteAdapter(true);
+		adapter = new StationsAdapter(getActivity(), 0,
+				StationsHelper.getFavourites());
 		setListAdapter(adapter);
 		View rootView = inflater.inflate(R.layout.fav_stations, null);
 		empty = rootView.findViewById(android.R.id.empty);
-		
+
 		return rootView;
 	}
 
@@ -132,7 +128,8 @@ public class FavouriteFragment extends ListFragment implements onBackListener {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				mCallback.onStationSelected(StationsHelper.sFavouriteStations.get(position), true);
+				mCallback.onStationSelected(
+						StationsHelper.sStations.get(position), true);
 			}
 		});
 	}
