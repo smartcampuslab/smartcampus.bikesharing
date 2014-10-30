@@ -243,6 +243,7 @@ public class OsmMap extends Fragment implements onBackListener {
 				mMyPosMarker = new Marker(mapView);
 				mMyPosMarker.setIcon(new BitmapDrawable(getResources(), bmp));
 				mMyPosMarker.setDraggable(false);
+				mMyPosMarker.setInfoWindow(null);
 				mapView.getOverlays().add(mMyPosMarker);
 			}
 			mMyPosMarker.setPosition(mLocationOverlay.getMyLocation());
