@@ -60,7 +60,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:contentDescription="@null"
-                    android:src="@drawable/logo_smartcampus" />
+                    android:src="@drawable/logo_smart_campus" />
             </LinearLayout>
 
             <TextView
@@ -82,7 +82,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:contentDescription="@null"
-                    android:src="@drawable/logo_streetlife" />
+                    android:src="@drawable/logo_street_life" />
 
                 <ImageView
                     android:id="@+id/cct"
@@ -90,7 +90,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:contentDescription="@null"
-                    android:src="@drawable/logo_comunerovereto" />
+                    android:src="@drawable/logo_comune_rv" />
 
             </LinearLayout>
             
