@@ -47,7 +47,7 @@
     <string name="distancenotavail">Distance not available.</string>
     <string name="directions">Directions</string>
     <string name="positionnotavail">Your location isn\'t available at the moment.</string>
-    <string name="mail_info">Send an email to the local administration.</string>
+    <string name="mail_info">Send an email to help us improve this service.</string>
     <string name="suggestion">Suggestion</string>
     <string name="complaint">Complaint</string>
     <string name="alert">Report</string>
