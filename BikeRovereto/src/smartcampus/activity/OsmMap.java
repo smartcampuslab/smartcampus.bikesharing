@@ -38,12 +38,22 @@ import smartcampus.util.StationsHelper;
 import smartcampus.util.Tools;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.PorterDuff;
+import android.graphics.Bitmap.Config;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SlidingPaneLayout.PanelSlideListener;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -60,6 +70,9 @@ import android.widget.Toast;
 import eu.trentorise.smartcampus.bikesharing.R;
 
 public class OsmMap extends Fragment implements onBackListener {
+	
+	private static final int MARKER_SIZE = 48;
+	
 	// the view where the map is showed
 	private MapView mapView;
 	// overlya for current Location
@@ -223,19 +236,41 @@ public class OsmMap extends Fragment implements onBackListener {
 
 	public void addMyPositionMarker() {
 		if (mLocationOverlay.getMyLocation() != null) {
-			if (mMyPosMarker ==null) {
-				Drawable d = getResources().getDrawable(
-						R.drawable.ic_marker_map);
-				d.setColorFilter(getResources().getColor(R.color.darker_green),
-						Mode.MULTIPLY);
+			if (mMyPosMarker == null) {
+				Bitmap bmp = createMarker();
+				// d.setColorFilter(getResources().getColor(R.color.darker_green),
+				// Mode.MULTIPLY);
 				mMyPosMarker = new Marker(mapView);
-				mMyPosMarker.setIcon(d);
+				mMyPosMarker.setIcon(new BitmapDrawable(getResources(), bmp));
 				mMyPosMarker.setDraggable(false);
 				mapView.getOverlays().add(mMyPosMarker);
 			}
 			mMyPosMarker.setPosition(mLocationOverlay.getMyLocation());
 			mapView.invalidate();
 		}
+	}
+
+	private Bitmap createMarker() {
+		Bitmap bmp = Bitmap.createBitmap(MARKER_SIZE, MARKER_SIZE, Config.ARGB_8888);
+		int half= MARKER_SIZE/2;
+		Canvas c = new Canvas(bmp);
+
+		Paint s = new Paint();
+		s.setAntiAlias(true);
+		s.setColor(getResources().getColor(
+				R.color.base_green_transparent));
+		Paint w = new Paint();
+		w.setAntiAlias(true);
+		w.setColor(getResources().getColor(android.R.color.white));
+		Paint p = new Paint();
+		p.setAntiAlias(true);
+		p.setColor(getResources().getColor(R.color.base_green));
+		
+		
+		c.drawCircle(half, half, half, s);
+		c.drawCircle(half, half, half/2, w);
+		c.drawCircle(half, half, half/2-2, p);
+		return bmp;
 	}
 
 	@Override
@@ -278,7 +313,6 @@ public class OsmMap extends Fragment implements onBackListener {
 				|| !Tools.bikeTypesContains(Tools.METADATA_BIKE_TYPE_ANARCHIC)) {
 			return;
 		}
-
 
 		if (bikesMarkersOverlay == null) {
 			bikesMarkersOverlay = new ArrayList<BikeMarker>();
@@ -470,7 +504,7 @@ public class OsmMap extends Fragment implements onBackListener {
 		}
 		addStationsMarkers();
 		addBikesMarkers();
-		mMyPosMarker=null;
+		mMyPosMarker = null;
 		addMyPositionMarker();
 		mapView.invalidate();
 	}
