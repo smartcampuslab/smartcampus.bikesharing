@@ -463,6 +463,7 @@ public abstract class MainActivity extends ActionBarActivity implements
 			updateDistances();
 			if (mCallback != null)
 				mCallback.onPositionAquired();
+			((OsmMap)frags.get(0)).addMyPositionMarker();
 		}
 
 		@Override

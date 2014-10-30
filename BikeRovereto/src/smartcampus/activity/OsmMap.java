@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.bonuspack.overlays.InfoWindow;
+import org.osmdroid.bonuspack.overlays.Marker;
 import org.osmdroid.tileprovider.MapTile;
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
@@ -13,6 +14,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.MyLocationOverlay;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
@@ -36,6 +38,7 @@ import smartcampus.util.StationsHelper;
 import smartcampus.util.Tools;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
@@ -61,6 +64,7 @@ public class OsmMap extends Fragment implements onBackListener {
 	private MapView mapView;
 	// overlya for current Location
 	private MyLocationNewOverlay mLocationOverlay;
+	private Marker mMyPosMarker;
 
 	// the stations
 	// the bikes
@@ -169,13 +173,13 @@ public class OsmMap extends Fragment implements onBackListener {
 			final Station s = (Station) getArguments().get("station");
 			currentBoundingBox = createBoundingBoxFromPosition(s.getPosition());
 			// mapView.getController().animateTo(s.getPosition());
-			 mapView.postDelayed(new Runnable() {
-				
+			mapView.postDelayed(new Runnable() {
+
 				@Override
 				public void run() {
 					mapView.getController().setZoom(20);
 				}
-			},500);
+			}, 500);
 		}
 		mapView.post(new Runnable() {
 			@Override
@@ -215,6 +219,23 @@ public class OsmMap extends Fragment implements onBackListener {
 		// }
 
 		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	public void addMyPositionMarker() {
+		if (mLocationOverlay.getMyLocation() != null) {
+			if (mMyPosMarker ==null) {
+				Drawable d = getResources().getDrawable(
+						R.drawable.ic_marker_map);
+				d.setColorFilter(getResources().getColor(R.color.darker_green),
+						Mode.MULTIPLY);
+				mMyPosMarker = new Marker(mapView);
+				mMyPosMarker.setIcon(d);
+				mMyPosMarker.setDraggable(false);
+				mapView.getOverlays().add(mMyPosMarker);
+			}
+			mMyPosMarker.setPosition(mLocationOverlay.getMyLocation());
+			mapView.invalidate();
+		}
 	}
 
 	@Override
@@ -258,7 +279,6 @@ public class OsmMap extends Fragment implements onBackListener {
 			return;
 		}
 
-		Resources res = getResources();
 
 		if (bikesMarkersOverlay == null) {
 			bikesMarkersOverlay = new ArrayList<BikeMarker>();
@@ -274,7 +294,6 @@ public class OsmMap extends Fragment implements onBackListener {
 			return;
 		}
 
-		Resources res = getResources();
 		if (stationsMarkersOverlay == null) {
 			stationsMarkersOverlay = new ArrayList<StationMarker>();
 		} else {
@@ -312,6 +331,7 @@ public class OsmMap extends Fragment implements onBackListener {
 				if (mLocationOverlay.getMyLocation() != null) {
 					mapView.getController().animateTo(
 							mLocationOverlay.getMyLocation());
+					addMyPositionMarker();
 				} else {
 					Toast.makeText(getActivity(), R.string.positionnotavail,
 							Toast.LENGTH_SHORT).show();
@@ -450,6 +470,8 @@ public class OsmMap extends Fragment implements onBackListener {
 		}
 		addStationsMarkers();
 		addBikesMarkers();
+		mMyPosMarker=null;
+		addMyPositionMarker();
 		mapView.invalidate();
 	}
 
