@@ -37,9 +37,9 @@ public class Tools {
 		if (distance == Station.DISTANCE_NOT_VALID) {
 			return new SpannableString("N/D");
 		} else if (distance < 1000) {
-			return Html.fromHtml("<b>"+distance + "</b> m");
+			return Html.fromHtml(distance + " m");
 		} else {
-			return Html.fromHtml("<b>"+Math.round(distance / 100) / 10.0 + "</b> KM");
+			return Html.fromHtml(Math.round(distance / 100) / 10.0 + " Km");
 		}
 	}
 
