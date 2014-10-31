@@ -11,6 +11,7 @@ public class MainRoveretoActivity extends MainActivity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mainClass = MainRoveretoActivity.class;
+		getSupportActionBar().setTitle(R.string.app_name);
 	}
 
 	@Override
@@ -18,4 +19,10 @@ public class MainRoveretoActivity extends MainActivity{
 		return R.layout.fragment_about;
 	}
 
+	@Override
+	protected int getMainTitle() {
+		return R.string.app_name;
+	}
+
+	
 }

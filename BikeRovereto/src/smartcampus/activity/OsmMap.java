@@ -206,7 +206,9 @@ public class OsmMap extends Fragment implements onBackListener {
 			}
 		});
 
-		getActivity().getActionBar().setTitle(getString(R.string.app_name));
+		if (getActivity() instanceof MainActivity){
+			getActivity().getActionBar().setTitle(((MainActivity)getActivity()).getMainTitle());
+		}
 	}
 
 	@Override
