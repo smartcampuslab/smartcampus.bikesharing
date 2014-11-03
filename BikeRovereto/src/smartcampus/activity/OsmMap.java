@@ -206,7 +206,9 @@ public class OsmMap extends Fragment implements onBackListener {
 			}
 		});
 
-		getActivity().getActionBar().setTitle(getString(R.string.app_name));
+		if (getActivity() instanceof MainActivity){
+			getActivity().getActionBar().setTitle(((MainActivity)getActivity()).getMainTitle());
+		}
 	}
 
 	@Override
@@ -235,7 +237,7 @@ public class OsmMap extends Fragment implements onBackListener {
 	}
 
 	public void addMyPositionMarker() {
-		if (mLocationOverlay.getMyLocation() != null) {
+		if (mLocationOverlay != null && mLocationOverlay.getMyLocation() != null) {
 			if (mMyPosMarker == null) {
 				Bitmap bmp = createMarker();
 				// d.setColorFilter(getResources().getColor(R.color.darker_green),

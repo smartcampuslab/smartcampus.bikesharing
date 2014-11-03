@@ -167,11 +167,11 @@ public class Station implements Parcelable, Reportable {
 	}
 
 	public int getNBikesPresent() {
-		return nBikes - brokenBikes; // Bici presenti nella stazione
+		return nBikes; // Bici presenti nella stazione
 	}
 
 	public int getNSlotsEmpty() {
-		return maxSlots - (nBikes); // Bici mancanti nella stazione
+		return maxSlots - (nBikes) - brokenBikes; // Bici mancanti nella stazione
 	}
 
 	public int getDistance() {

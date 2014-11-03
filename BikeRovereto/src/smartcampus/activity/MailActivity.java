@@ -44,7 +44,7 @@ public class MailActivity extends ActionBarActivity {
 
 		getActionBar().setHomeButtonEnabled(true);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setTitle(getString(R.string.app_name));
+//		getActionBar().setTitle(getString(R.string.app_name));
 
 		mBody = (EditText) findViewById(R.id.Mail_text);
 		mKind = (RadioGroup) findViewById(R.id.mail_kind_rdg);

@@ -133,6 +133,7 @@ public abstract class MainActivity extends ActionBarActivity implements
 	}
 
 	protected abstract int getAboutLayout();
+	protected abstract int getMainTitle();
 
 	public static Intent createStationIntent(Context ctx, Station station) {
 		Intent i = new Intent(ctx, mainClass);

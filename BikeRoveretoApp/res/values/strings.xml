@@ -1,6 +1,6 @@
 <resources>
 
-    <string name="app_name">Bike Rovereto</string>
+    <string name="app_name">Rovereto Bike Sharing</string>
     <string name="feedback_mail">bikesharing@smartcommunitylab.it</string>
 
 </resources>

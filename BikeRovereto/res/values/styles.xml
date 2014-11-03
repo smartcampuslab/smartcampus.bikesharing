@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
@@ -21,7 +21,8 @@
     <style name="MyActionBar"
            parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@color/base_green</item>
-
+        <item name="android:titleTextStyle">@style/MyActionBarTitleText</item>
+        
         <!-- Support library compatibility -->
         <item name="background">@color/base_green</item>
         <item name="titleTextStyle">@style/MyActionBarTitleText</item>
@@ -29,7 +30,7 @@
     
     <!-- ActionBar title text -->
     <style name="MyActionBarTitleText"
-           parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+           parent="@android:style/TextAppearance.Medium">
         <item name="android:textColor">@color/nav_background</item>
         <!-- The textColor property is backward compatible with the Support Library -->
     </style>

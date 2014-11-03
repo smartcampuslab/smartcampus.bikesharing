@@ -22,13 +22,22 @@ public class StationsAdapter extends ArrayAdapter<Station> {
 	private ArrayList<Station> mStations;
 	private SharedPreferences pref;
 	private boolean mFavourite;
+	private OnFavouritesChanged mListener;
 
-	public StationsAdapter(Context context, int resource,
-			ArrayList<Station> stations) {
+	public interface OnFavouritesChanged {
+		public void changedFavourite(Station station);
+	}
+	public StationsAdapter(Context context, int resource, ArrayList<Station> stations, OnFavouritesChanged listener) {
 		super(context, resource, stations);
 		mStations = stations;
 		pref = context
 				.getSharedPreferences("favStations", Context.MODE_PRIVATE);
+		this.mListener = listener;
+	}
+	
+	public StationsAdapter(Context context, int resource,
+			ArrayList<Station> stations) {
+		this(context,resource,stations, null);
 	}
 
 	public StationsAdapter(Context context, int resource,
@@ -87,6 +96,9 @@ public class StationsAdapter extends ArrayAdapter<Station> {
 				if (mFavourite) {
 					notifyDataSetChanged();
 					StationsHelper.updateStation(thisStation);
+				}
+				if (StationsAdapter.this.mListener != null) {
+					StationsAdapter.this.mListener.changedFavourite(thisStation);
 				}
 			}
 		});
