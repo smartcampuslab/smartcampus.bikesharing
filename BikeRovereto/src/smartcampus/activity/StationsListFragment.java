@@ -85,7 +85,7 @@ public class StationsListFragment extends ListFragment implements
 
 					@Override
 					public void onPositionAquired() {
-						stationsAdapter.notifyDataSetChanged();
+						if (stationsAdapter != null) stationsAdapter.notifyDataSetChanged();
 					}
 				});
 		// If the app still waiting the server response, initiliaze the
