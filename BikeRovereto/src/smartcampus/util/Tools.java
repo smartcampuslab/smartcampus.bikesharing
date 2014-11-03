@@ -3,11 +3,18 @@ package smartcampus.util;
 import org.osmdroid.util.GeoPoint;
 
 import smartcampus.model.Station;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.util.Log;
 import android.util.TypedValue;
+import android.widget.Toast;
 
 public class Tools {
 	public static final String METADATA_SERVICE_URL = "eu.trentorise.smartcampus.bikerovereto.SERVICE_URL";
@@ -70,4 +77,53 @@ public class Tools {
 		return false;
 	}
 
+	public static void checkManifestConfiguration(Activity ctx) {
+		try {
+			ApplicationInfo app = ctx.getPackageManager().getApplicationInfo(
+					ctx.getPackageName(),
+					PackageManager.GET_ACTIVITIES
+							| PackageManager.GET_META_DATA);
+			Bundle metaData = app.metaData;
+
+			String errorString = null;
+
+			if (metaData == null) {
+				errorString = "Metadata not configured!";
+			} else if (metaData.get(Tools.METADATA_SERVICE_URL) == null
+					|| (metaData.get(Tools.METADATA_SERVICE_URL) + "")
+							.equals("")) {
+				errorString = "Metadata: service URL not configured!";
+			} else if (metaData.get(Tools.METADATA_CITY_CODE) == null
+					|| (metaData.get(Tools.METADATA_CITY_CODE) + "").equals("")) {
+				errorString = "Metadata: city code not configured!";
+			} else if (metaData.get(Tools.METADATA_BIKE_TYPES) == null
+					|| (metaData.get(Tools.METADATA_BIKE_TYPES) + "")
+							.equals("")) {
+				errorString = "Metadata: bike types not configured!";
+			}
+
+			if (errorString != null) {
+				Toast.makeText(ctx, errorString, Toast.LENGTH_LONG).show();
+				Log.e("BIKESHARING", errorString);
+				ctx.finish();
+			} else {
+				String serviceUrl = ""
+						+ metaData.get(Tools.METADATA_SERVICE_URL);
+				Tools.SERVICE_URL = serviceUrl;
+				String cityCode = "" + metaData.get(Tools.METADATA_CITY_CODE);
+				Tools.CITY_CODE = cityCode;
+				String bikeTypesString = ""
+						+ metaData.get(Tools.METADATA_BIKE_TYPES);
+				Tools.BIKE_TYPES = bikeTypesString.split(";");
+
+				Log.e("BIKESHARING", "EVERYTHING SEEMS TO BE RIGHT!\n"
+						+ Tools.SERVICE_URL + "\n" + Tools.CITY_CODE + "\n"
+						+ bikeTypesString);
+			}
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
+	
 }

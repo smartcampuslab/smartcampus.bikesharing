@@ -92,6 +92,7 @@ public class StationsListFragment extends ListFragment implements
 		// arraylist to prevent crash for nullpointer
 
 		if (StationsHelper.isNotInitialized()) {
+			if (Tools.SERVICE_URL == null) Tools.checkManifestConfiguration(getActivity());
 			StationsHelper.initialize(getActivity(), null);
 		}
 

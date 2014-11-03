@@ -152,7 +152,7 @@ public abstract class MainActivity extends ActionBarActivity implements
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
 
-		checkManifestConfiguration();
+		Tools.checkManifestConfiguration(this);
 
 		mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -335,54 +335,6 @@ public abstract class MainActivity extends ActionBarActivity implements
 		navAdapter.notifyDataSetChanged();
 	}
 
-	private void checkManifestConfiguration() {
-		try {
-			ApplicationInfo app = getPackageManager().getApplicationInfo(
-					this.getPackageName(),
-					PackageManager.GET_ACTIVITIES
-							| PackageManager.GET_META_DATA);
-			Bundle metaData = app.metaData;
-
-			String errorString = null;
-
-			if (metaData == null) {
-				errorString = "Metadata not configured!";
-			} else if (metaData.get(Tools.METADATA_SERVICE_URL) == null
-					|| (metaData.get(Tools.METADATA_SERVICE_URL) + "")
-							.equals("")) {
-				errorString = "Metadata: service URL not configured!";
-			} else if (metaData.get(Tools.METADATA_CITY_CODE) == null
-					|| (metaData.get(Tools.METADATA_CITY_CODE) + "").equals("")) {
-				errorString = "Metadata: city code not configured!";
-			} else if (metaData.get(Tools.METADATA_BIKE_TYPES) == null
-					|| (metaData.get(Tools.METADATA_BIKE_TYPES) + "")
-							.equals("")) {
-				errorString = "Metadata: bike types not configured!";
-			}
-
-			if (errorString != null) {
-				Toast.makeText(this, errorString, Toast.LENGTH_LONG).show();
-				Log.e("BIKESHARING", errorString);
-				finish();
-			} else {
-				String serviceUrl = ""
-						+ metaData.get(Tools.METADATA_SERVICE_URL);
-				Tools.SERVICE_URL = serviceUrl;
-				String cityCode = "" + metaData.get(Tools.METADATA_CITY_CODE);
-				Tools.CITY_CODE = cityCode;
-				String bikeTypesString = ""
-						+ metaData.get(Tools.METADATA_BIKE_TYPES);
-				Tools.BIKE_TYPES = bikeTypesString.split(";");
-
-				Log.e("BIKESHARING", "EVERYTHING SEEMS TO BE RIGHT!\n"
-						+ Tools.SERVICE_URL + "\n" + Tools.CITY_CODE + "\n"
-						+ bikeTypesString);
-			}
-		} catch (NameNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
-
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
@@ -445,6 +397,7 @@ public abstract class MainActivity extends ActionBarActivity implements
 		mLocationManager.removeUpdates(mLocationListener);
 	}
 
+	
 	public void updateDistances() {
 		if (StationsHelper.sStations != null && myLocation != null) {
 			for (Station station : StationsHelper.sStations) {
