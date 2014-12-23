@@ -61,13 +61,12 @@
 			<version>1.2.2</version>
 		</dependency>
 	</dependencies>
-	<repositories>
-		<repository>
-			<id>spring-milestone</id>
-			<name>Spring Maven MILESTONE Repository</name>
-			<url>http://repo.spring.io/libs-milestone</url>
-		</repository>
-	</repositories>
+    <repositories>
+        <repository>
+            <id>SmartCommunity</id>
+            <url>http://repository.smartcommunitylab.it/content/groups/public</url>
+        </repository>
+    </repositories>
 
 	<build>
 		<plugins>
@@ -82,4 +81,6 @@
 		</plugins>
 		<finalName>bikesharing</finalName>
 	</build>
+	
+	
 </project>
