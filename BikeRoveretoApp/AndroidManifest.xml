@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.smartcommunitylab.bikesharing.rovereto"
-    android:versionCode="1"
-    android:versionName="1.0.0" >
+    android:versionCode="2"
+    android:versionName="1.0.1" >
 
     <uses-sdk
         android:minSdkVersion="10"
@@ -25,7 +25,7 @@
         android:theme="@style/AppTheme" >
         <meta-data
             android:name="eu.trentorise.smartcampus.bikerovereto.SERVICE_URL"
-            android:value="https://tn.smartcampuslab.it/bikesharing/" />
+            android:value="https://tn.smartcommunitylab.it/bikesharing/" />
         <meta-data
             android:name="eu.trentorise.smartcampus.bikerovereto.CITY_CODE"
             android:value="rovereto" />

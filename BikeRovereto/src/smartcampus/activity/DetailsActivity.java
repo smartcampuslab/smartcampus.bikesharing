@@ -52,9 +52,18 @@ public class DetailsActivity extends ActionBarActivity {
 		getActionBar().setTitle(getString(R.string.to_details));
 
 		getData();
+	}
+
+	
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
 		instantiateViews();
 		fillViews();
 	}
+
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
