@@ -1,8 +1,8 @@
 package it.smartcommunitylab.bikesharing.rovereto.activity;
 
-import android.os.Bundle;
 import it.smartcommunitylab.bikesharing.rovereto.R;
 import smartcampus.activity.MainActivity;
+import android.os.Bundle;
 
 public class MainRoveretoActivity extends MainActivity{
 
@@ -23,6 +23,4 @@ public class MainRoveretoActivity extends MainActivity{
 	protected int getMainTitle() {
 		return R.string.app_name;
 	}
-
-	
 }

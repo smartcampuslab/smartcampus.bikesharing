@@ -31,6 +31,14 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@android:id/summary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="v"
+                android:layout_marginTop="@dimen/margin_small"
+                android:textColor="@android:color/darker_gray" />
+            
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small"
@@ -50,6 +58,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:onClick="onClick"
+                    android:tag="http://www.fbk.eu"
                     android:contentDescription="@null"
                     android:src="@drawable/logo_fbk" />
 
@@ -58,6 +68,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:onClick="onClick"
+                    android:tag="http://www.smartcampuslab.it"
                     android:contentDescription="@null"
                     android:src="@drawable/logo_smart_campus" />
             </LinearLayout>
@@ -81,6 +93,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:contentDescription="@null"
+                    android:onClick="onClick"
+                    android:tag="http://www.streetlife-project.eu/index.html"
                     android:src="@drawable/logo_street_life" />
 
                 <ImageView
@@ -89,6 +103,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:contentDescription="@null"
+                    android:onClick="onClick"
+                    android:tag="http://www.comune.rovereto.tn.it"
                     android:src="@drawable/logo_comune_rv" />
 
             </LinearLayout>
