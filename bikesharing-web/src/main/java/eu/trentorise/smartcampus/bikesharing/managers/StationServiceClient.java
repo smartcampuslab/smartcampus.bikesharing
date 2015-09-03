@@ -1,7 +1,6 @@
 package eu.trentorise.smartcampus.bikesharing.managers;
 
-import it.sayservice.platform.smartplanner.data.message.otpbeans.Parking;
-
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +16,9 @@ import eu.trentorise.smartcampus.bikesharing.exceptions.WebServiceErrorException
 import eu.trentorise.smartcampus.bikesharing.feedback.FeedbackManager;
 import eu.trentorise.smartcampus.bikesharing.model.Station;
 import eu.trentorise.smartcampus.mobilityservice.MobilityDataService;
-import eu.trentorise.smartcampus.mobilityservice.MobilityServiceException;
+import eu.trentorise.smartcampus.network.JsonUtils;
+import eu.trentorise.smartcampus.network.RemoteConnector;
+import eu.trentorise.smartcampus.network.RemoteException;
 
 @Component
 public class StationServiceClient
@@ -51,40 +52,50 @@ public class StationServiceClient
 	{
 		String agencyId = agencyMap.get(cityId);
 		if (agencyId == null) return Collections.emptyMap();
-		List<Parking> bikeSharings = null;
-		try {
-			bikeSharings = mobilityDataService.getBikeSharings(agencyId, null);
-		} catch (MobilityServiceException e) {
-			throw new WebServiceErrorException(e.getMessage());
-		}
-		
+//		List<Parking> bikeSharings = null;
+//		try {
+//			bikeSharings = mobilityDataService.getBikeSharings(agencyId, null);
+//		} catch (MobilityServiceException e) {
+//			throw new WebServiceErrorException(e.getMessage());
+//		}
+//		
 		Map<String, Station> stations = new HashMap<String, Station>();
 		
-		if(bikeSharings == null || bikeSharings.isEmpty()) throw new WebServiceErrorException("No data for ID: " + cityId);
+		List<Station> bikeSharings = null;
+		try {
+			bikeSharings = readStations(mobilityUrl, cityId);
+		} catch (Exception e) {
+			throw new WebServiceErrorException(e.getMessage());
+		}
+ 		if(bikeSharings == null || bikeSharings.isEmpty()) throw new WebServiceErrorException("No data for ID: " + cityId);
 		
-		for(Parking parking : bikeSharings)
+		for(Station s : bikeSharings)
 		{
-			//create the station from the string
-			Station s = new Station();
-			s.setName(parking.getName());
-			s.setId(parking.getName());
-			s.setLatitude(parking.getPosition()[0]);
-			s.setLongitude(parking.getPosition()[1]);
-			if (parking.isMonitored()) {
-				s.setMaxSlots(parking.getSlotsTotal());
-				s.setnBikes((Integer)parking.getExtra().get("bikes"));
-				s.setnBrokenBikes(Math.max(s.getMaxSlots() - s.getnBikes()-parking.getSlotsAvailable(), 0));
-			} else {
-				s.setMaxSlots(0);
-				s.setnBikes(0);
-				s.setnBrokenBikes(0);
-			}
-			
-			s.setStreet(parking.getDescription());
 			s.setReportsNumber(feedBackManager.getStationFeedbacks(cityId, s.getId()).size());
-			
 			stations.put(s.getId(), s);
 		}
 		return stations;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	private static List<Station> readStations(String url, String city) throws SecurityException, RemoteException {
+		List<Station> result = new ArrayList<Station>();
+		String json = RemoteConnector.getJSON(url, "/bikesharing/"+city, null);
+		List<Map> objectList = JsonUtils.toObjectList(json, Map.class);
+		for (Map map: objectList) {
+			Station s = new Station();
+			s.setName((String)map.get("name"));
+			s.setId((String)map.get("id"));
+			List<Double> position = (List<Double>) map.get("position");
+			s.setLatitude(position.get(0));
+			s.setLongitude(position.get(1));
+			s.setMaxSlots((Integer) map.get("totalSlots"));
+			s.setnBikes((Integer)map.get("bikes"));
+			int slots = (Integer) map.get("slots");
+			s.setnBrokenBikes(Math.max(s.getMaxSlots() - s.getnBikes()-slots, 0));
+			s.setStreet((String) map.get("address"));
+			result.add(s);
+		}
+		return result;
 	}
 }
