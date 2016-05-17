@@ -1,0 +1,15 @@
+{
+    "bikeAgencyId": "trento",
+    "weliveAppId":"trento_bikesharing",
+    "apptoken": "bikesharingtrento",
+    "appid": "trento",
+    "appversion": "0.1.0",
+    "appname": "Trento Bike Sharing",
+    "serverURL": "https://tn.smartcommunitylab.it/core.mobility",
+    "contact_link" : "mailto:viaggia@smartcommunitylab.it?subject=OrariTrento:%20segnalazione%20problema",
+    "center_map": [
+      46.069672,
+      11.121270
+   ],
+    "zoom_map": 15
+}

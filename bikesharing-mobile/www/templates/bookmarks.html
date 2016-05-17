@@ -1,0 +1,21 @@
+        <ion-list class="bookmark-list" can-swipe="true" show-reorder="showReorder">
+            <ion-item id="focusHere" class="item-icon-left bookmark-rt" item="item" ng-repeat="m in bookmarks track by $index" ng-click="go(m.state)">
+                    <div class="row">
+                        <i class="col-center icon" ng-class="m.icon" style="{{'color: '+m.color}}"></i>
+                        <div class="col col-center">
+                            <ng-include src="getBookmarkItemTemplate(m.type)"></ng-include>
+                        </div>
+                    </div>
+              <!--
+                <h2>
+          <i class="icon img" ng-class="m.icon" style="{{'color: '+m.color}}"></i>
+          <span>{{m.label | translate}}</span>
+        </h2>
+-->
+                <ion-option-button ng-if="m.removable" class="button button-clear" ng-click="delete($index, $event)"><i class="icon ion-android-delete"></i></ion-option-button>
+                <ion-reorder-button class="button button-clear ion-drag" on-reorder="reorder($fromIndex, $toIndex)"></ion-reorder-button>
+            </ion-item>
+        </ion-list>
+        <div ng-if="(!bookmarks || bookmarks.length == 0)" class="text-center">
+            <h4>{{'no_data' | translate}}</h4>
+        </div>

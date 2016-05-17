@@ -1,0 +1,34 @@
+<ion-refresher on-refresh="load()">
+</ion-refresher>
+<ion-list class="list bikesharing-list">
+    <div class="bikesharing-item" ng-repeat="p in parkings | orderBy:'distance'" ng-last-repeat="parkings" ng-click="select(p)">
+        <!--                <div class="item parking-card" ng-class="{'selected': selected == p}">-->
+        <div class="item parking-card">
+            <div class="row">
+                <div class="col">
+                    <h2>{{p.name}}</h2>
+                    <p>{{p.address}}</p>
+                </div>
+                <!--            <div class="col col-20 text-right"><i class="icon ic_bookmark-outline"></i></div>-->
+            </div>
+            <div class="row parking-card-footer">
+                <div class="col"><span ng-if="p.distance">{{p.distance| number:1}}km</span>
+                </div>
+                <div class="col col-right">
+                    <div class="row  text-center">
+                        <div class="col text-right"><b>{{p.bikes}} {{'bikesharings_bikes' | translate}}</b>
+                        </div>
+
+                    </div>
+                    <div class="row text-center">
+                        <div class="col text-right"><b>{{p.slots}} {{'bikesharings_free_slots' | translate}}</b>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ion-list>
+<div ng-if="(!parkings || parkings.length == 0)&& !loading" class="text-center">
+    <h4>{{'no_data' | translate}}</h4>
+</div>
