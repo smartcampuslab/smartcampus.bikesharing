@@ -1,6 +1,6 @@
 angular.module('viaggia.controllers.home', [])
 
-.controller('HomeCtrl', function ($scope, $state, $rootScope, $ionicPlatform, $timeout, $filter, $location, $ionicHistory, Config, GeoLocate, mapService, ionicMaterialMotion, ionicMaterialInk, bookmarkService) {
+.controller('HomeCtrl', function ($scope, $state, $stateParams, $rootScope, $ionicPlatform, $timeout, $filter, $location, $ionicHistory, Config, GeoLocate, mapService, ionicMaterialMotion, ionicMaterialInk, bookmarkService) {
 
     $scope.tab = 0;
 
@@ -24,5 +24,12 @@ angular.module('viaggia.controllers.home', [])
     $scope.go = function (state) {
         $location.path(state);
     }
+
+    $scope.$on('$ionicView.beforeEnter', function () {
+      if (!!$stateParams.stationId) {
+        $scope.select(0);
+        $rootScope.stationId = $stateParams.stationId;
+      }
+    });
 
 })

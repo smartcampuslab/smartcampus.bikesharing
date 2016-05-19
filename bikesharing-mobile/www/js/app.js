@@ -140,6 +140,9 @@ angular.module('viaggia', [
             templateUrl: "templates/home.html",
             controller: 'HomeCtrl'
           }
+        },
+        params: {
+          stationId: null
         }
       })
       .state('app.bookmarks', {

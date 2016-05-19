@@ -31,6 +31,7 @@ angular.module('viaggia.controllers.info', [])
             $scope.loading = false;
             Config.loaded();
             $scope.$broadcast('scroll.refreshComplete');
+            $rootScope.stationId = null;
             //            if ($scope.selected) {
             //                $scope.showMap(true);
             //            }
@@ -71,7 +72,7 @@ angular.module('viaggia.controllers.info', [])
 
         $scope.loading = true;
         Config.loading();
-        $scope.load($stateParams.id);
+        $scope.load($rootScope.stationId);
       });
     };
 
@@ -175,7 +176,7 @@ angular.module('viaggia.controllers.info', [])
     };
 
     $scope.bookmark = function () {
-        var path = $stateParams.id ? $location.path() : ($location.path() + '/' + $scope.selected.id);
+        var path = $location.path();//$stateParams.id ? $location.path() : ($location.path() + '/' + $scope.selected.id);
         bookmarkService.toggleBookmark(path, $scope.selected.name, 'BIKESHARING', {
             agencyId: $scope.agencyId,
             parkingId: $scope.selected.id

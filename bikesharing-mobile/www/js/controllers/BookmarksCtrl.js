@@ -1,11 +1,7 @@
 angular.module('viaggia.controllers.bookmarks', [])
 
-.controller('BookmarksCtrl', function ($scope, $rootScope, $location, $filter, $ionicHistory, $timeout, $ionicModal, $ionicListDelegate, Config, bookmarkService) {
+.controller('BookmarksCtrl', function ($scope, $rootScope, $state, $location, $filter, $ionicHistory, $timeout, $ionicModal, $ionicListDelegate, Config, bookmarkService) {
     $scope.languageTutorial = "en";
-
-    $scope.$on('$ionicView.beforeEnter', function () {
-       ('alert 2');
-    });
 
     $scope.init = function () {
         Config.init().then(function () {
@@ -48,11 +44,15 @@ angular.module('viaggia.controllers.bookmarks', [])
         $scope.showReorder = !$scope.showReorder;
     }
 
-    $scope.go = function (state) {
+    $scope.go = function (bm) {
         if ($scope.deleting) {
             $scope.deleting = false;
         } else {
-            $location.path(state);
+            $ionicHistory.nextViewOptions({
+              historyRoot: true,
+              disableBack: true
+            });
+            $state.go('app.home',{stationId:bm.data.parkingId},{reload:true});
         }
     }
 

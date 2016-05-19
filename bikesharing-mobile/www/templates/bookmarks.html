@@ -1,5 +1,5 @@
         <ion-list class="bookmark-list" can-swipe="true" show-reorder="showReorder">
-            <ion-item id="focusHere" class="item-icon-left bookmark-rt" item="item" ng-repeat="m in bookmarks track by $index" ng-click="go(m.state)">
+            <ion-item id="focusHere" class="item-icon-left bookmark-rt" item="item" ng-repeat="m in bookmarks track by $index" ng-click="go(m)">
                     <div class="row">
                         <i class="col-center icon" ng-class="m.icon" style="{{'color: '+m.color}}"></i>
                         <div class="col col-center">
