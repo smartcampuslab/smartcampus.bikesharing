@@ -57,7 +57,7 @@ angular.module('viaggia.services.bookmarks', [])
             localStorage.setItem(repo, JSON.stringify(list));
             deferred.resolve(list);
 
-            Config.log({action:'personalize',subaction: 'add'});
+            Config.log('AppPersonalize', {action: 'add'});
 
             return deferred.promise;
         },
@@ -104,7 +104,7 @@ angular.module('viaggia.services.bookmarks', [])
             }
             deferred.resolve(list);
 
-            Config.log({action:'personalize',subaction: 'remove'});
+            Config.log('AppPersonalize', {action: 'remove'});
             return deferred.promise;
         },
         /**

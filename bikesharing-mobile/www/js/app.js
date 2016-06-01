@@ -101,7 +101,7 @@ angular.module('viaggia', [
         StatusBar.styleDefault();
       }
       Config.init().then(function () {
-        Config.log({action:'start'});
+        Config.log('AppStarted',{});
       });
 
       if (typeof navigator.globalization !== "undefined") {
@@ -187,7 +187,7 @@ angular.module('viaggia', [
 
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise(function ($injector) {
-        var acceptStr = localStorage["orariapp_isPrivacyAccepted"];
+        var acceptStr = localStorage["bikesharingapp_isPrivacyAccepted"];
         var isPrivacyAccepted = acceptStr == 'true';
         if (isPrivacyAccepted) {
             return '/app/home';
@@ -209,7 +209,7 @@ angular.module('viaggia', [
       menu_real_time_bus_urban: 'Autobus Urbani',
       menu_real_time_bus_suburban: 'Autobus Extraurbani',
       menu_real_time_train: 'Treni',
-      menu_real_time_bike: 'Biciclette condivise',
+      menu_real_time_bike: 'Bike Sharing',
       menu_real_time_park: 'Parcheggi',
       menu_credits: "Credits",
       menu_questionary: "Questionario",
@@ -384,7 +384,7 @@ angular.module('viaggia', [
       menu_real_time_bus_urban: 'Urban Bus',
       menu_real_time_bus_suburban: 'Suburban Bus',
       menu_real_time_train: 'Trains',
-      menu_real_time_bike: 'Shared bikes',
+      menu_real_time_bike: 'Bike Sharing',
       menu_real_time_park: 'Parking lots',
       menu_credits: "Credits",
       menu_questionary: "Survey",

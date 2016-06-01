@@ -1,7 +1,22 @@
 angular.module('viaggia.services.conf', [])
 
-.factory('Config', function ($q, $http, $window, $filter, $rootScope, $ionicLoading) {
+.factory('Config', function ($q, $http, $window, $filter, $rootScope, $ionicLoading, $ionicPlatform, $translate) {
 
+    var langPromise = $q.defer();
+
+    $ionicPlatform.ready(function () { // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+      if (typeof navigator.globalization !== "undefined") {
+        navigator.globalization.getPreferredLanguage(function (language) {
+          $translate.use((language.value).split("-")[0]).then(function (data) {
+            console.log("SUCCESS -> " + data);
+            langPromise.resolve($translate.use());
+          }, function (error) {
+            console.log("ERROR -> " + error);
+            langPromise.resolve($translate.use());
+          });
+        }, null);
+      }
+    });
     var isDarkColor = function (color) {
         if (!color) return true;
         var c = color.substring(1); // strip #
@@ -155,16 +170,7 @@ angular.module('viaggia.services.conf', [])
             return lang;
         },
         getLanguage: function () {
-
-            navigator.globalization.getLocaleName(
-                function (locale) {
-                    alert('locale: ' + locale.value + '\n');
-                },
-                function () {
-                    alert('Error getting locale\n');
-                }
-            );
-
+          return langPromise.promise;
         },
         loading: function () {
             $ionicLoading.show();
@@ -175,11 +181,13 @@ angular.module('viaggia.services.conf', [])
         getContactLink: function() {
             return mapJsonConfig["contact_link"];
         },
-        log: function(customAttrs) {
+        log: function(type, customAttrs) {
+          if (customAttrs == null) customAttrs = {};
           customAttrs.uuid = ionic.Platform.device().uuid;
+          customAttrs.appname = mapJsonConfig['appname'];
           $http.post('https://dev.welive.eu/dev/api/log/'+mapJsonConfig['weliveAppId'],{
             appId: mapJsonConfig['weliveAppId'],
-            type: 'AppCustom',
+            type: type,
             timestamp: new Date().getTime(),
             custom_attr: customAttrs
           },{headers:{Authorization:'Bearer '+weliveLoggingToken}})
