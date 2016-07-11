@@ -184,7 +184,7 @@ angular.module('viaggia.services.conf', [])
         log: function(type, customAttrs) {
           if (customAttrs == null) customAttrs = {};
           customAttrs.uuid = ionic.Platform.device().uuid;
-          customAttrs.appname = mapJsonConfig['appname'];
+          customAttrs.appname = mapJsonConfig['weliveAppId'];
           $http.post('https://dev.welive.eu/dev/api/log/'+mapJsonConfig['weliveAppId'],{
             appId: mapJsonConfig['weliveAppId'],
             type: type,
