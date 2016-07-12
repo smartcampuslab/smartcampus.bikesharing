@@ -143,7 +143,7 @@ public class OsmMap extends Fragment implements onBackListener {
 		// my LOCATION stuff
 		mLocationOverlay = new MyLocationNewOverlay(getActivity(),
 				new CustomLocationProvider(getActivity()), mapView);
-		mapView.setTileSource(TileSourceFactory.getTileSource("MapquestOSM"));
+		mapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
 		mapView.getOverlays().add(mLocationOverlay);
 
 		toMyLoc = (ImageView) rootView.findViewById(R.id.bt_to_my_loc);
