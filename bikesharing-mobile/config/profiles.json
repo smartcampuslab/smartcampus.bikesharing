@@ -2,8 +2,8 @@
     "TRENTO": {
         "resource_folder": "config/instances/TRENTO",
         "widget_id" : "it.smartcommunitylab.bikesharing.trento",
-        "version": "0.1.6",
-        "version_code": "7",
+        "version": "0.1.7",
+        "version_code": "8",
         "app_name": "Trento Bike Sharing"
     }
 }
