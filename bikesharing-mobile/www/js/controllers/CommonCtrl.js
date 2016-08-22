@@ -28,8 +28,9 @@ angular.module('viaggia.controllers.common', [])
         $scope.creditsModal.hide();
     };
     $scope.openCredits = function () {
-            $scope.creditsModal.show();
-        }
+        $rootScope.credits_info_p1 = $filter('translate')('credits_info');
+        $scope.creditsModal.show();
+    }
         /*pop up managers*/
         //    $scope.newPlan = function () {
         //        planService.setTripId(null); //reset data for pianification
@@ -104,7 +105,7 @@ angular.module('viaggia.controllers.common', [])
         var processThat = false;
 
 
-      var url = 'https://in-app.cloudfoundry.welive.eu/html/index.html?app=' + Config.getWeLiveAppId() + '&pilotId=Trento&callback=http://localhost' + '&lang=' + $translate.use().toUpperCase();
+      var url = 'https://in-app.cloudfoundry.welive.eu/html/index.html?app=' + Config.getWeLiveAppName() + '&pilotId=Trento&callback=http://localhost' + '&lang=' + $translate.use().toUpperCase();
 
 
         //Open the questionnaire page in the InAppBrowser
@@ -142,9 +143,6 @@ angular.module('viaggia.controllers.common', [])
             });
         }
     }
-
-    $rootScope.credits_info_p1 = $filter('translate')('credits_info');
-
 })
 
 .factory('Toast', function ($rootScope, $timeout, $ionicPopup, $cordovaToast) {

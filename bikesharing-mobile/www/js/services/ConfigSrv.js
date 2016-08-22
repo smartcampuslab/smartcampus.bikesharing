@@ -114,6 +114,9 @@ angular.module('viaggia.services.conf', [])
         getWeLiveAppId: function() {
           return mapJsonConfig['weliveAppId'];
         },
+        getWeLiveAppName: function() {
+          return mapJsonConfig['weliveAppName'];
+        },
         init: function () {
             var deferred = $q.defer();
             if (mapJsonConfig != null) deferred.resolve(true);
@@ -182,9 +185,10 @@ angular.module('viaggia.services.conf', [])
             return mapJsonConfig["contact_link"];
         },
         log: function(type, customAttrs) {
+
           if (customAttrs == null) customAttrs = {};
           customAttrs.uuid = ionic.Platform.device().uuid;
-          customAttrs.appname = mapJsonConfig['weliveAppId'];
+          customAttrs.appname = mapJsonConfig['weliveAppName'];
           $http.post('https://dev.welive.eu/dev/api/log/'+mapJsonConfig['weliveAppId'],{
             appId: mapJsonConfig['weliveAppId'],
             type: type,

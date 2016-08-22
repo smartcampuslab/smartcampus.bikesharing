@@ -1,9 +1,10 @@
 {
     "bikeAgencyId": "trento",
     "weliveAppId":"BikeSharing",
+    "weliveAppName":"Trento Bike Sharing",
     "apptoken": "bikesharingtrento",
     "appid": "trento",
-    "appversion": "0.1.7",
+    "appversion": "0.1.9",
     "appname": "Trento Bike Sharing",
     "serverURL": "https://tn.smartcommunitylab.it/core.mobility",
     "contact_link" : "mailto:viaggia@smartcommunitylab.it?subject=BikeSharingTrento:%20segnalazione%20problema",

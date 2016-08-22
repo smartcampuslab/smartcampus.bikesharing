@@ -176,7 +176,7 @@ angular.module('viaggia.controllers.info', [])
     };
 
     $scope.bookmark = function () {
-        var path = $location.path();//$stateParams.id ? $location.path() : ($location.path() + '/' + $scope.selected.id);
+        var path = $stateParams.id ? $location.path() : ($location.path() + '/' + $scope.selected.id);
         bookmarkService.toggleBookmark(path, $scope.selected.name, 'BIKESHARING', {
             agencyId: $scope.agencyId,
             parkingId: $scope.selected.id
