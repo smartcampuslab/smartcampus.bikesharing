@@ -25,6 +25,5 @@ proguard/
 
 #Log Files
 *.log
-/bikesharing-mobile/www/js/secure.js
 /bikesharing-mobile/.bowerrc
 /bikesharing-mobile/.editorconfig
